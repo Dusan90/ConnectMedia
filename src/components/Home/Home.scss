@@ -1,0 +1,804 @@
+.mainSecondHeaderDiv {
+  font-family: "Calibri";
+  margin: 40px 35px 0 35px;
+  .secondHeaderDiv {
+    height: 55px;
+    border-radius: 5px;
+    border-bottom-right-radius: 0;
+    background: #295265;
+    display: flex;
+    div {
+      display: flex;
+      p {
+        color: #94d7e0;
+        font-size: 18px;
+        line-height: 22px;
+        margin: 0 10px 0 30px;
+        align-self: center;
+      }
+      img {
+        width: 11px;
+        margin: 0 20px 0 0;
+      }
+    }
+    .horizontal {
+      width: 1px;
+      background: #94d7e0;
+      margin: 2px;
+    }
+
+    .sectionWithTrash {
+      .col1 {
+        background: #295265;
+        width: 120px;
+        p {
+          margin: 0 20px;
+        }
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      .col2 {
+        background: #abd996;
+        p {
+          color: #0b191f;
+          margin: 0 15px;
+        }
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      .col3 {
+        background: #dfe094;
+        p {
+          color: #0b191f;
+          margin: 0 15px;
+        }
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      .col4 {
+        background: #e09494;
+        p {
+          color: #0b191f;
+          margin: 0 15px;
+        }
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      .trashDiv {
+        img {
+          width: 15.5px;
+          margin: 0 15px;
+        }
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+    .section2 {
+      width: 100%;
+    }
+    .sectionSearch {
+      margin-left: 40px;
+
+      div {
+        form {
+          position: relative;
+          display: flex;
+          img {
+            width: 19px;
+            position: absolute;
+            top: 18px;
+            left: 10px;
+          }
+          input {
+            height: 31px;
+            width: 187px;
+            border: 1px solid #94d7e0;
+            border-radius: 20px;
+            background: transparent;
+            align-self: center;
+            text-indent: 35px;
+            color: #94d7e0;
+            outline: none;
+            &::placeholder {
+              color: #94d7e0;
+            }
+          }
+        }
+      }
+      @media only screen and (max-width: 370px) {
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
+      }
+
+      @media only screen and (max-width: 1200px) {
+        margin-left: 0px;
+      }
+    }
+    .sectionWithAddButton {
+      margin: 0 20px 0 auto;
+      img {
+        width: 15.5px;
+        margin: 0 7.5px 0 0;
+      }
+      p {
+        color: #ffffff;
+        margin: 0;
+      }
+    }
+    .secondHeaderDivSection1 {
+      .info1 {
+        .box-1 {
+          min-width: 75px;
+        }
+        .box-2 {
+          min-width: 140px;
+          position: relative;
+          .options {
+            position: absolute;
+            width: 250px;
+            height: 400px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid gray;
+            top: 60px;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: scroll;
+            &::-webkit-scrollbar {
+              width: 0 !important;
+            }
+            div {
+              height: 30px;
+              p {
+                margin: 0;
+                color: black;
+              }
+              &:hover {
+                background: #d6dbdc;
+                cursor: pointer;
+              }
+            }
+            @media only screen and (max-width: 1150px) {
+              z-index: 100;
+              height: 400px !important;
+              div {
+                height: 30px !important;
+                background: white;
+                p {
+                  margin: 0;
+                  color: black;
+                }
+                &:hover {
+                  background: #d6dbdc;
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+        }
+        .box-3 {
+          min-width: 168px;
+          position: relative;
+          .options {
+            position: absolute;
+            width: 250px;
+            height: 400px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid gray;
+            top: 60px;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: scroll;
+            &::-webkit-scrollbar {
+              width: 0 !important;
+            }
+            div {
+              height: 30px;
+              p {
+                margin: 0;
+                color: black;
+              }
+              &:hover {
+                background: #d6dbdc;
+                cursor: pointer;
+              }
+            }
+            @media only screen and (max-width: 1150px) {
+              z-index: 100;
+              height: 400px !important;
+              div {
+                height: 30px !important;
+                background: white;
+                p {
+                  margin: 0;
+                  color: black;
+                }
+                &:hover {
+                  background: #d6dbdc;
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .pagesAndPagination {
+    display: flex;
+    justify-content: flex-end;
+    // margin: 0 35px 0 0;
+    align-items: center;
+    div {
+      span {
+        font-weight: bold;
+      }
+    }
+    .pageInfoDiv {
+      background: #295265;
+      width: 324px;
+      height: 63px;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      margin: 0 0 0 15px;
+      div {
+        border: 1px solid #94d7e0;
+        height: 31px;
+        width: 105px;
+        border-radius: 3px;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        p {
+          align-self: center;
+          color: #ffffff;
+          opacity: 1;
+        }
+      }
+      p {
+        font-size: 18px;
+        line-height: 22px;
+        color: #94d7e0;
+        opacity: 0.7;
+        margin-right: 7px;
+      }
+      input {
+        border: 1px solid #94d7e0;
+        height: 31px;
+        width: 32px;
+        background: transparent;
+        border-radius: 3px;
+        margin: 0 8px;
+        color: #ffffff;
+        font-size: 17px;
+        line-height: 22px;
+        outline: none;
+        text-align: center;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      @media only screen and (max-width: 370px) {
+        p {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+.mainTableDiv {
+  padding: 0 35px;
+  font-family: "Calibri";
+  margin: 15px 0 0 0;
+  .shortScreenTableDiv {
+    display: none;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    thead {
+      border-bottom: 1px solid #bbbbbb;
+      tr {
+        th {
+          padding: 7px 10px;
+          div {
+            display: flex;
+            div {
+              display: flex;
+              flex-direction: column;
+              gap: 2px;
+              justify-content: center;
+              margin: 0 6px 0 0;
+              img {
+                width: 11px;
+              }
+            }
+            p {
+              font-size: 16px;
+              color: #000000;
+              line-height: 37px;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        height: 53px;
+        border-bottom: 1px solid #bbbbbb !important;
+        transition: all 0.3s ease-in-out;
+        &:hover {
+          background: #d6dbdc;
+        }
+        td {
+          padding: 0 10px;
+          .divWithClicableIcons {
+            display: flex;
+            img {
+              margin: 0 5px;
+            }
+            p {
+              color: #919fa1;
+              &:hover {
+                text-decoration: underline;
+                cursor: pointer;
+              }
+            }
+          }
+          .ownerClass {
+            font-size: 15px;
+            line-height: 32px;
+          }
+          .ownersNameClass {
+            font-size: 15px;
+            line-height: 32px;
+          }
+          .divWithHashes {
+            display: flex;
+            p {
+              font-size: 14px;
+              font-weight: bold;
+            }
+            div {
+              display: flex;
+              p {
+                color: #19b1c6;
+                margin: 0 4px 0 12px;
+              }
+            }
+          }
+          .coloredDivStatus {
+            height: 47px;
+            width: 83px;
+            font-size: 15px;
+            line-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+.active {
+  a {
+    color: #ffffff !important;
+    opacity: 1 !important;
+  }
+}
+
+.mainLinkClass {
+  font-family: "Calibri";
+  list-style: none;
+  margin: 0 5px;
+  a {
+    text-decoration: none;
+    color: #94d7e0;
+    opacity: 0.7;
+  }
+}
+
+.pagination {
+  display: flex;
+}
+
+@media only screen and (max-width: 1150px) {
+  .mainDivForViewSection {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    justify-content: space-around;
+    margin: 0 35px;
+    div {
+      margin-top: 0 !important;
+    }
+  }
+  .mainSecondHeaderDiv {
+    .secondHeaderDiv {
+      background: transparent;
+      gap: 10px;
+      flex-direction: column;
+      height: 130px;
+      .secondHeaderDivSection1 {
+        gap: 10px;
+        background: transparent;
+        min-width: 100% !important;
+        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        .info1 {
+          min-width: 100%;
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+          background: transparent;
+          .box-1 {
+            min-width: 75px;
+            width: 100%;
+            justify-content: center;
+            border-radius: 5px;
+            p {
+              margin: 0 !important;
+            }
+          }
+          .box-2 {
+            min-width: 140px;
+            width: 100%;
+            justify-content: center;
+            border-radius: 5px;
+          }
+          .box-3 {
+            min-width: 140px;
+            width: 100%;
+            justify-content: center;
+            border-radius: 5px;
+            p {
+              margin-left: 0;
+            }
+            img {
+              margin-right: 0;
+            }
+          }
+        }
+        .info2 {
+          min-width: 100%;
+          border-radius: 5px;
+          background: transparent;
+          justify-content: flex-end;
+
+          .sectionWithTrash {
+            border-radius: 5px;
+            min-width: 100%;
+
+            .col1 {
+              border-top-left-radius: 5px;
+              border-bottom-left-radius: 5px;
+              min-width: 100px;
+              width: 100%;
+              justify-content: center;
+              p {
+                margin: 0;
+              }
+            }
+            .col2,
+            .col3,
+            .col4 {
+              min-width: 100px;
+              width: 100%;
+              justify-content: center;
+            }
+            .trashDiv {
+              border-top-right-radius: 5px;
+              border-bottom-right-radius: 5px;
+            }
+          }
+        }
+      }
+      .section2 {
+        min-width: 50%;
+        display: flex;
+        gap: 10px;
+        background: transparent;
+        .sectionSearch {
+          min-width: 236px;
+          width: 100%;
+          border-radius: 5px;
+          justify-content: center;
+          margin: 0;
+        }
+        .sectionWithAddButton {
+          min-width: 120px;
+          width: 100%;
+          justify-content: center;
+          border-radius: 5px;
+        }
+      }
+      div {
+        background: #295265;
+        height: 55px !important;
+        max-width: 386px;
+      }
+      .horizontal {
+        display: none;
+      }
+    }
+    .pagesAndPagination {
+      width: 100%;
+      float: left;
+      flex-direction: column-reverse;
+      .pageInfoDiv {
+        border-radius: 5px;
+        position: absolute;
+        right: 0px;
+        bottom: 28px;
+        margin: 0;
+        height: 55px;
+        width: 48%;
+      }
+      position: relative;
+      .divWithInfoText {
+        margin: 0px auto 0 0px;
+      }
+    }
+  }
+  .mainTableDiv {
+    margin: 80px 0 0 0;
+    table {
+      display: none;
+    }
+    .shortScreenTableDiv {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(315px, 1fr));
+      justify-content: center;
+      gap: 20px;
+      .mainDivShotScreen {
+        width: 315px;
+        margin: 0 auto;
+        div {
+          display: flex;
+          justify-content: space-between;
+          height: 50px;
+          border-bottom: 1px solid #bbbbbb;
+          div {
+            align-items: center;
+            border: none;
+            .arrowDiv {
+              display: flex;
+              flex-direction: column;
+              gap: 3px;
+              height: 10px;
+              margin-right: 5px;
+              border: none;
+            }
+            p {
+              padding-top: 5px;
+              font-weight: bold;
+              font-size: 16px;
+              line-height: 37px;
+            }
+          }
+          .coloredDivStatus {
+            width: 114px;
+            height: 39px;
+            justify-content: center;
+            align-self: center;
+          }
+        }
+        .checkAndTrashDiv {
+          margin-bottom: 15px;
+          height: 15px;
+          border: none;
+        }
+        .mainForIcons {
+          img {
+            margin-right: 5px;
+          }
+          p {
+            padding-top: 0;
+            margin-right: 15px;
+            font-weight: normal;
+            color: #919fa1;
+          }
+        }
+        .mainDivHashes {
+          justify-content: flex-end;
+          .divWithHashes {
+            P {
+              margin-right: 10px;
+            }
+            div {
+              p {
+                color: #19b1c6;
+              }
+              img {
+                padding-top: 5px;
+                align-items: center;
+              }
+            }
+          }
+        }
+        .mainDivInOutTxr {
+          border: none;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(151px, 1fr));
+          gap: 10px;
+          height: 110px;
+          &.bigStatics {
+            height: 230px;
+          }
+
+          .statistic {
+            border-bottom: 1px solid #bbbbbb;
+            justify-content: flex-start;
+            gap: 30px;
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 970px) {
+  .mainDivForViewSection {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    justify-content: space-around;
+    margin: 0 35px;
+    div {
+      margin-top: 0 !important;
+    }
+  }
+
+  .mainSecondHeaderDiv {
+    height: 300px;
+    .secondHeaderDiv {
+      background: transparent;
+      gap: 10px;
+      flex-direction: column;
+      height: 195px;
+      &.customStyleForlesTabs {
+        height: 120px !important;
+        margin-bottom: 10px;
+      }
+      &.customStyleForTotals {
+        height: 55px !important;
+      }
+      .secondHeaderDivSection1 {
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+        height: 120px !important;
+      }
+      .section2 {
+        min-width: 100%;
+        .sectionWithAddButton {
+          margin-right: 0;
+        }
+      }
+    }
+    .pagesAndPagination {
+      width: 100%;
+      flex-direction: column-reverse;
+      .pageInfoDiv {
+        border-radius: 5px;
+        position: static;
+        width: 100%;
+        height: 55px;
+        margin: 0 35px !important;
+        justify-content: center;
+      }
+      .divWithInfoText {
+        margin: 15px auto 0 0px;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 520px) {
+  .mainSecondHeaderDiv {
+    .secondHeaderDiv {
+      .section2 {
+        gap: 10px;
+        display: flex;
+        justify-content: space-between;
+        .sectionSearch {
+          div {
+            border-radius: 5px;
+          }
+        }
+        .sectionWithAddButton {
+          min-width: 60px;
+          max-width: 60%;
+          display: flex;
+          margin: 0;
+        }
+      }
+      .secondHeaderDivSection1 {
+        .info1 {
+          .box-1 {
+            min-width: 50px;
+            p {
+              font-size: 15px;
+            }
+          }
+          .box-2 {
+            min-width: 90px;
+
+            p {
+              font-size: 15px;
+              margin-left: 5px;
+            }
+            img {
+              margin-right: 0;
+            }
+          }
+          .box-3 {
+            min-width: 110px;
+
+            p {
+              font-size: 15px;
+            }
+          }
+        }
+        .info2 {
+          .sectionWithTrash {
+            .col1 {
+              min-width: 80px;
+              p {
+                font-size: 15px;
+              }
+            }
+            .col2 {
+              min-width: 80px;
+              p {
+                font-size: 15px;
+              }
+            }
+            .col3 {
+              min-width: 52px;
+              p {
+                font-size: 15px;
+              }
+            }
+            .col4 {
+              min-width: 42px;
+              p {
+                font-size: 15px;
+              }
+            }
+            .trashDiv {
+              min-width: 20px;
+              img {
+                margin: 0 2px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 400px) {
+  .mainTableDiv {
+    padding: 0;
+  }
+}

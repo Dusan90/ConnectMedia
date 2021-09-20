@@ -1,0 +1,88 @@
+.loginHeader {
+  background: #062c3d;
+  height: 266px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+h1 {
+  font-weight: bold;
+  font-size: 72px;
+  line-height: 88px;
+  color: #062c3d;
+  text-align: center;
+  margin: 20px 0 0 0;
+}
+.underH1ptag {
+  font-weight: bold;
+  color: #062c3d;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  margin: 0 0 40px 0;
+}
+.loginInfoDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  background: #062c3d;
+  width: 413px;
+  height: 340px;
+  border-radius: 63px;
+  padding: 40px 81px;
+  margin: 0 auto;
+  @media only screen and (max-width: 400px) {
+    padding: 40px 10px;
+    align-items: center;
+    width: 300px;
+  }
+  .mainPunchLine {
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    margin: 0 0 30px 0;
+    color: #7befff;
+  }
+  input {
+    width: 251px;
+    height: 38px;
+    background: rgba(123, 239, 255, 0.17);
+    border-radius: 5px;
+    border: 1px solid rgba(123, 239, 255, 0.31);
+    text-indent: 15px;
+    outline: none;
+    color: #7befff;
+    font-size: 18px;
+    line-height: 22px;
+
+    &:focus {
+      box-shadow: 0px 0px 9px #7befff;
+      border: 1px solid #7befff;
+
+      &::placeholder {
+        color: #7befff;
+      }
+    }
+
+    &::placeholder {
+      font-size: 20px;
+      line-height: 22px;
+      color: rgba(123, 239, 255, 0.5);
+    }
+  }
+  .buttonAndATagDiv {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    a {
+      color: #418d9e;
+      font-size: 18px;
+      line-height: 22px;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

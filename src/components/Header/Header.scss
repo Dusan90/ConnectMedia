@@ -1,0 +1,232 @@
+.MainHeaderDiv {
+  background: #062c3d;
+  height: 128px;
+  display: flex;
+  gap: 0;
+  position: relative;
+  z-index: 10 !important;
+
+  .IconDiv {
+    display: flex;
+    align-items: center;
+    margin: 0 120px 0 30px;
+  }
+
+  .NavBarDiv {
+    display: flex;
+    align-items: flex-end;
+    text-transform: uppercase;
+    font-family: "Calibri";
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 26.86px;
+    color: #d8f1fc;
+    .cont {
+      margin-right: 57px;
+      p {
+        opacity: 0.6;
+        margin: 0 auto 6px auto;
+        text-align: center;
+        width: calc(100% + 30px);
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      .bars {
+        width: calc(100% + 30px);
+        .firstBlueBar {
+          background: #7befff;
+          height: 5px;
+          margin-bottom: 3px;
+        }
+        .secondBlueBar {
+          background: #a7e1e9;
+          height: 5px;
+          margin-bottom: 3px;
+        }
+        .whiteBar {
+          background: #ffffff;
+          height: 5px;
+        }
+      }
+    }
+  }
+  .UserDetailDiv {
+    display: flex;
+    align-items: flex-end;
+    margin: 0 25px 0 auto;
+    .col-1 {
+      margin-bottom: 23px;
+      .bell {
+        display: flex;
+        margin: 0 0 8px auto;
+      }
+      div {
+        font-family: "Calibri";
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 24.41px;
+        color: #7befff;
+        display: flex;
+        gap: 9px;
+        p {
+          padding-top: 3px;
+        }
+        .arrowDown {
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+  .shortScreenHamburger {
+    width: 55px !important;
+    align-self: center;
+    margin: 0 25px 0 0;
+    display: none;
+    &:hover {
+      cursor: pointer;
+    }
+    .bars {
+      .firstBlueBar {
+        background: #7befff;
+        height: 5px;
+        margin-bottom: 13px;
+      }
+      .secondBlueBar {
+        background: #a7e1e9;
+        height: 5px;
+        margin-bottom: 13px;
+      }
+      .whiteBar {
+        background: #ffffff;
+        height: 5px;
+      }
+    }
+  }
+  .dropDownDiv {
+    position: absolute;
+    bottom: -161px;
+    right: 0;
+    width: 279px;
+    height: 161px;
+    background: #062c3d;
+    display: flex;
+    border-bottom-left-radius: 5px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    transition: all 0.5s ease-in-out;
+    z-index: 10;
+  }
+  .dropDownDivChangePass {
+    position: absolute;
+    bottom: -214px;
+    right: 0;
+    width: 313px;
+    height: 214px;
+    background: #062c3d;
+    display: flex;
+    border-bottom-left-radius: 5px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s ease-in-out;
+    z-index: 10;
+    gap: 10px;
+    input {
+      width: 251px;
+      height: 38px;
+      background: rgba(123, 239, 255, 0.17);
+      border-radius: 5px;
+      border: 1px solid rgba(123, 239, 255, 0.31);
+      text-indent: 15px;
+      outline: none;
+      color: #7befff;
+      font-size: 18px;
+      line-height: 22px;
+
+      &:focus {
+        box-shadow: 0px 0px 9px #7befff;
+        border: 1px solid #7befff;
+
+        &::placeholder {
+          color: #7befff;
+        }
+      }
+
+      &::placeholder {
+        font-size: 18px;
+        line-height: 22px;
+        color: rgba(123, 239, 255, 0.5);
+      }
+    }
+    .buttonsChangePass {
+      margin-top: 17px;
+      display: flex;
+      gap: 10px;
+    }
+  }
+}
+
+@media only screen and (max-width: 1350px) {
+  .MainHeaderDiv {
+    .NavBarDiv {
+      display: none;
+    }
+    .NavBarDivSmall {
+      position: absolute;
+      right: 0;
+      top: 128px;
+      flex-direction: column;
+      background: #062c3d;
+      padding: 30px;
+      width: 300px;
+      display: none;
+      text-transform: uppercase;
+      font-family: "Calibri";
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 26.86px;
+      color: #d8f1fc;
+      .cont {
+        margin: 10px 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        p {
+          margin: 0;
+        }
+        .bars {
+          display: none;
+        }
+      }
+    }
+    .shortScreenHamburger {
+      display: block;
+    }
+  }
+}
+@media only screen and (max-width: 550px) {
+  .MainHeaderDiv {
+    .UserDetailDiv {
+      .col-1 {
+        div {
+          p {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+// @media only screen and (min-width: 1350px) {
+//   .MainHeaderDiv {
+//     .NavBarDivSmall {
+//       display: none;
+//     }
+//   }
+// }

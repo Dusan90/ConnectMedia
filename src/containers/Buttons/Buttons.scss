@@ -1,0 +1,46 @@
+.outOFBlure {
+  width: 177px;
+  height: 38px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #418d9e;
+  user-select: none;
+
+  &:hover {
+    cursor: pointer;
+    background: #7befff;
+  }
+
+  // &.Blured {
+  //   background: #418d9e;
+  // }
+
+  p {
+    font-family: "Calibri";
+    color: #062c3d;
+    font-size: 18px;
+    line-height: 22px;
+  }
+}
+
+.ScrapeClass {
+  background: #418d9e;
+  border-radius: 3px;
+  height: 42px;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  p {
+    margin: 0 auto;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}
+.clicked {
+  background: white;
+  border: 2px solid #418d9e;
+}
