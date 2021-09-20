@@ -33,7 +33,7 @@ export const PrivateRoute = ({ component: Component, permissions, title, ...rest
                 if (sessionStorage.getItem('token')) {
                     return <Component {...props} title={title} />
                 } else {
-                    History.push('/login')
+                    History.push('/')
                 }
             }}
         />

@@ -33,12 +33,6 @@ const routesList = [
         page: 'Home',
         title: 'Home page',
     },
-    // {
-    //     permissions: null,
-    //     path: `/login`,
-    //     page: 'Login',
-    //     title: 'Login',
-    // },
     {
         permissions: null,
         path: `/stats`,
@@ -115,7 +109,7 @@ const Routes = (
         <Suspense fallback={<div>Loading...</div>}>
             <Route path={['/sites', '/stats', '/sites/:id', '/posts', '/widgets', '/widgets/:id', '/users', '/users/:id', '/categories', '/categories/:id', '/totals', '/posts/:id']} component={Header} />
             <Switch>
-                <Route path={'/login'} component={Login} exact />
+                <Route path={'/'} component={Login} exact />
                 {routesList.map(route => {
                     const { permissions, path, page, title } = route;
                     const ComponentToShow = pageComponentMap[page];
