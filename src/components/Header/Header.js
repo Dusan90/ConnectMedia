@@ -49,7 +49,8 @@ function Header() {
     }
 
     const hanldeLogOut = () => {
-        history.push('/login')
+        sessionStorage.removeItem('token')
+        window.location.reload();
     }
 
     const handleTabChange = (path) => {

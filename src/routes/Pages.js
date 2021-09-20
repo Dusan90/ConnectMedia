@@ -21,7 +21,7 @@ function retry(fn, retriesLeft = 2, interval = 1000) {
 }
 
 export const Home = React.lazy(() => retry(() => import('../components/Home/Home')));
-export const Login = React.lazy(() => retry(() => import('../components/Login/Login')));
+// export const Login = React.lazy(() => retry(() => import('../components/Login/Login')));
 export const SiteDetails = React.lazy(() => retry(() => import('../components/SiteDetails/SiteDetails')));
 export const Stats = React.lazy(() => retry(() => import('../components/Stats/Stats')));
 export const Posts = React.lazy(() => retry(() => import('../components/Posts/Posts')));

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import './Login.scss'
 import mainImage from '../../assets/img/Header/mainPic.svg'
 import LogOutButton from '../../containers/Buttons/LogOutButton'
+import history from '../../routes/History'
 
 export class Login extends Component {
     constructor(props) {
@@ -11,6 +12,15 @@ export class Login extends Component {
             password: ''
         }
     }
+
+    handleSubmit = () => {
+        const { email, password } = this.state
+        if (email && password) {
+            sessionStorage.setItem('token', 'nekitoknetamo')
+            history.push('/sites')
+        }
+    }
+
     render() {
         return (
             <>
@@ -24,7 +34,7 @@ export class Login extends Component {
                     <input type='email' placeholder='nina.aralica@alo.rs' onChange={(e) => this.setState({ email: e.target.value })} />
                     <input type="password" placeholder='...........' onChange={(e) => this.setState({ password: e.target.value })} />
                     <div className='buttonAndATagDiv'>
-                        <LogOutButton label={'Sing in'} colorization={'outOFBlure'} customStyles={{ width: '106px', height: "55px", background: '#7BEFFF' }} />
+                        <LogOutButton label={'Sing in'} handleClick={this.handleSubmit} colorization={'outOFBlure'} customStyles={{ width: '106px', height: "55px", background: '#7BEFFF' }} />
                         <a href="#">Forgot password</a>
                     </div>
                 </div>

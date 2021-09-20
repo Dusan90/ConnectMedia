@@ -1,13 +1,18 @@
 import React, { Suspense } from "react";
-import { Switch } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import * as Pages from "./Pages";
 import PrivateRoute from "./PrivateRoute";
+import history from './History'
+import Login from '../components/Login/Login'
+import Footer from '../components/Footer/Footer'
+import Header from '../components/Header/Header'
+
 
 // const urlPrefix = process.env.REACT_APP_BSC_URL_PREFIX;
 
 const pageComponentMap = {
     Home: Pages.Home,
-    Login: Pages.Login,
+    // Login: Pages.Login,
     SiteDetails: Pages.SiteDetails,
     Stats: Pages.Stats,
     Posts: Pages.Posts,
@@ -28,12 +33,12 @@ const routesList = [
         page: 'Home',
         title: 'Home page',
     },
-    {
-        permissions: null,
-        path: `/login`,
-        page: 'Login',
-        title: 'Login',
-    },
+    // {
+    //     permissions: null,
+    //     path: `/login`,
+    //     page: 'Login',
+    //     title: 'Login',
+    // },
     {
         permissions: null,
         path: `/stats`,
@@ -106,22 +111,27 @@ const routesList = [
 
 
 const Routes = (
-    <Suspense fallback={<div>Loading...</div>}>
-        <Switch>
-            {routesList.map(route => {
-                const { permissions, path, page, title } = route;
-                const ComponentToShow = pageComponentMap[page];
-                // if (!permissions) {
-                //     return <ComponentToShow path={path} key={route.title} exact />
-                // } else {
-                //     return <PrivateRoute permissions={permissions} key={route.title} component={ComponentToShow} path={path} title={title} exact />
-                // }
-                return <PrivateRoute permissions={permissions} key={route.title} component={ComponentToShow} path={path} title={title} exact />
-            })}
+    <>
+        <Suspense fallback={<div>Loading...</div>}>
+            <Route path={['/sites', '/stats', '/sites/:id', '/posts', '/widgets', '/widgets/:id', '/users', '/users/:id', '/categories', '/categories/:id', '/totals', '/posts/:id']} component={Header} />
+            <Switch>
+                <Route path={'/login'} component={Login} exact />
+                {routesList.map(route => {
+                    const { permissions, path, page, title } = route;
+                    const ComponentToShow = pageComponentMap[page];
+                    // if (!permissions) {
+                    //     return <ComponentToShow path={path} key={route.title} exact />
+                    // } else {
+                    //     return <PrivateRoute permissions={permissions} key={route.title} component={ComponentToShow} path={path} title={title} exact />
+                    // }
+                    return <PrivateRoute permissions={permissions} key={route.title} component={ComponentToShow} path={path} title={title} exact />
+                })}
 
-            <Pages.NotFound path="**" title="This page doesn't exist..." exact />
-        </Switch>
-    </Suspense>
+                <Pages.NotFound path="**" title="This page doesn't exist..." exact />
+            </Switch>
+        </Suspense>
+        <Footer />
+    </>
 );
 
 export default Routes;

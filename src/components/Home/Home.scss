@@ -369,6 +369,11 @@
           .ownersNameClass {
             font-size: 15px;
             line-height: 32px;
+            &.tdWithImgDiv {
+              img {
+                width: 40px;
+              }
+            }
           }
           .divWithHashes {
             display: flex;
@@ -378,6 +383,7 @@
             }
             div {
               display: flex;
+              align-items: center;
               p {
                 color: #19b1c6;
                 margin: 0 4px 0 12px;
@@ -574,6 +580,13 @@
       .mainDivShotScreen {
         width: 315px;
         margin: 0 auto;
+        .ownerDiv {
+          .tdWithImgDiv {
+            img {
+              width: 40px;
+            }
+          }
+        }
         div {
           display: flex;
           justify-content: space-between;

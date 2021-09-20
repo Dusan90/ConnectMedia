@@ -169,8 +169,8 @@ export class Posts extends Component {
                                         </div>
                                         <p>img</p>
                                     </div>
-                                    <div className='ownerClass'>
-                                        {item.owner}
+                                    <div className='ownerClass tdWithImgDiv'>
+                                        <img src={edit} alt="" />
                                     </div>
                                 </div>
                                 <div className='ownerDiv'>
@@ -429,7 +429,7 @@ export class Posts extends Component {
                                     <td><div className='ownerClass'>
                                         b92.rs
                                     </div></td>
-                                    <td><div className='ownersNameClass'>
+                                    <td><div className='ownersNameClass tdWithImgDiv'>
                                         <img src={edit} alt="" />
                                     </div></td>
                                     {/* <td><div className="divWithClicableIcons">

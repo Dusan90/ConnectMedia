@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import Auth from "./Auth";
 import { store } from '../store';
+import History from "./History";
 // const urlPrefix = process.env.REACT_APP_BSC_URL_PREFIX;
 
 // const navbarItems = {
@@ -27,8 +28,13 @@ export const PrivateRoute = ({ component: Component, permissions, title, ...rest
             render={props => {
                 // return 
                 // Auth.isAuth() && permissions.split(';').includes(Auth.getRole()) ?
-                return <Component {...props} title={title} />
+                // return <Component {...props} title={title} />
                 //  : <Redirect to={`/`} />
+                if (sessionStorage.getItem('token')) {
+                    return <Component {...props} title={title} />
+                } else {
+                    History.push('/login')
+                }
             }}
         />
     );
