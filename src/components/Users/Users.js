@@ -7,6 +7,7 @@ import edit from '../../assets/img/TableIcons/edit.svg'
 import posts from '../../assets/img/TableIcons/posts.svg'
 import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
+import history from '../../routes/History'
 import '../Home/Home.scss'
 
 const test = [{
@@ -65,6 +66,14 @@ export class Users extends Component {
         console.log(value);
     }
 
+    handlePageRedirect = (item) => {
+        history.push({
+            pathname: `/users/${item.id}`,
+            state: item
+        })
+
+    }
+
     render() {
         return (
             <>
@@ -74,7 +83,7 @@ export class Users extends Component {
                     <div className='shortScreenTableDiv'>
                         {test.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
-                                <div className='nazivDiv'>
+                                <div className='nazivDiv' onClick={() => this.handlePageRedirect(item)}>
                                     <div>
                                         <div className='arrowDiv'>
                                             <img src={arrowUp} onClick={() => this.handleArrowSort('emailUp')} alt="arrow" />
@@ -145,7 +154,7 @@ export class Users extends Component {
 
                         <tbody>
                             {test.map((item, key) => {
-                                return <tr key={key}>
+                                return <tr key={key} onClick={() => this.handlePageRedirect(item)}>
                                     <td><div className='ownerClass'>
                                         {item.owner}
                                     </div></td>

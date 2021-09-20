@@ -106,8 +106,8 @@ const routesList = [
 
 const Routes = (
     <>
+        <Route path={['/sites', '/stats', '/sites/:id', '/posts', '/widgets', '/widgets/:id', '/users', '/users/:id', '/categories', '/categories/:id', '/totals', '/posts/:id']} component={Header} />
         <Suspense fallback={<div>Loading...</div>}>
-            <Route path={['/sites', '/stats', '/sites/:id', '/posts', '/widgets', '/widgets/:id', '/users', '/users/:id', '/categories', '/categories/:id', '/totals', '/posts/:id']} component={Header} />
             <Switch>
                 <Route path={'/'} component={Login} exact />
                 {routesList.map(route => {

@@ -7,6 +7,7 @@ import edit from '../../assets/img/TableIcons/edit.svg'
 import posts from '../../assets/img/TableIcons/posts.svg'
 import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
+import history from '../../routes/History'
 import '../Home/Home.scss'
 
 const test = [{
@@ -71,7 +72,6 @@ export class Categories extends Component {
         })
         this.setState({ filteredDate: newData })
 
-        console.log('hell0');
     }
 
     handleSearchBar = (e) => {
@@ -86,6 +86,14 @@ export class Categories extends Component {
         console.log(value);
     }
 
+    handlePageRedirect = (item) => {
+        history.push({
+            pathname: `/categories/${item.id}`,
+            state: item
+        })
+
+    }
+
     render() {
         return (
             <>
@@ -95,7 +103,7 @@ export class Categories extends Component {
                     <div className='shortScreenTableDiv'>
                         {test.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
-                                <div className='nazivDiv'>
+                                <div className='nazivDiv' onClick={() => this.handlePageRedirect(item)}>
                                     <div>
                                         <div className='arrowDiv'>
                                             <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('nameUp')} />
@@ -154,7 +162,7 @@ export class Categories extends Component {
 
                         <tbody>
                             {test.map((item, key) => {
-                                return <tr key={key}>
+                                return <tr key={key} onClick={() => this.handlePageRedirect(item)}>
                                     <td><div className='ownerClass'>
                                         {item.owner}
                                     </div></td>

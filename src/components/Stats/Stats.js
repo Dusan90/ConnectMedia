@@ -7,7 +7,7 @@ const categories = ['Site', 'B92', 'Auto', 'Biznis', 'Kuhinja', 'Ljubav', 'Moda'
 const data = [
     { site: 'Jack', address: 'some where', auto: [<p><span>0</span> <span className="span2">2</span></p>], key: '1' },
     { site: 'Rose', auto: [<p><span>36</span> <span className="span2">23</span></p>], address: 'some where', key: '2' },
-    { site: 'Total', auto: [<p><span>36</span> <span className="span2">23</span></p>], address: 'some where', key: '3' },
+    { site: 'Total', auto: [<p><span>36</span> <span className="span2">25</span></p>], address: 'some where', key: '3' },
 ];
 
 

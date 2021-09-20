@@ -7,8 +7,26 @@ import edit from '../../assets/img/TableIcons/edit.svg'
 import posts from '../../assets/img/TableIcons/posts.svg'
 import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
+import history from '../../routes/History'
 
 function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, handleArrowSort }) {
+
+
+
+    const handlePageRedirect = (item) => {
+        if (pageName === 'widgets') {
+            history.push({
+                pathname: `/widgets/${item.id}`,
+                state: item
+            })
+        } else {
+            history.push({
+                pathname: `/sites/${item.id}`,
+                state: item
+            })
+        }
+    }
+
     return (
         <div className='shortScreenTableDiv'>
             {data.map((item, key) => {
@@ -29,7 +47,7 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
                             {item.status}
                         </div>
                     </div>
-                    <div className='ownerDiv'>
+                    <div className='ownerDiv' onClick={() => handlePageRedirect(item)}>
                         <div>
                             <div className='arrowDiv'>
                                 <img src={arrowUp} alt="arrow" onClick={() => handleArrowSort(pageName === 'widgets' ? 'NameUp' : 'OWNERUP')} />

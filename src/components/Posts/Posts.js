@@ -9,6 +9,8 @@ import posts from '../../assets/img/TableIcons/posts.svg'
 import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import EditableInline from '../../containers/EditableInline/EditableInline'
+import history from '../../routes/History'
+
 
 import '../Home/Home.scss'
 
@@ -121,6 +123,14 @@ export class Posts extends Component {
         console.log(value);
     }
 
+    handlePageRedirect = (item) => {
+        history.push({
+            pathname: `/posts/${item.id}`,
+            state: item
+        })
+
+    }
+
     render() {
         console.log(this.state);
         return (
@@ -149,7 +159,7 @@ export class Posts extends Component {
                                     </div>
                                 </div>
 
-                                <div className='ownerDiv'>
+                                <div className='ownerDiv' onClick={() => this.handlePageRedirect(item)}>
                                     <div>
                                         <div className='arrowDiv'>
                                             <img src={arrowUp} onClick={() => this.handleArrowSort('siteUp')} alt="arrow" />
@@ -419,7 +429,7 @@ export class Posts extends Component {
 
                         <tbody>
                             {test.map((item, key) => {
-                                return <tr key={key}>
+                                return <tr key={key} onClick={() => this.handlePageRedirect(item)}>
                                     <td><input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /></td>
                                     <td><img src={secondTrash} alt="trash" /></td>
                                     <td> <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>

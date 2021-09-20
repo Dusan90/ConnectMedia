@@ -7,12 +7,27 @@ import edit from '../../assets/img/TableIcons/edit.svg'
 import posts from '../../assets/img/TableIcons/posts.svg'
 import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
+import history from '../../routes/History'
 
 function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handleArrowSort }) {
 
 
     const haneldeRedirect = (value) => {
         console.log(value);
+    }
+
+    const handlePageRedirect = (item) => {
+        if (pageName === 'widgets') {
+            history.push({
+                pathname: `/widgets/${item.id}`,
+                state: item
+            })
+        } else {
+            history.push({
+                pathname: `/sites/${item.id}`,
+                state: item
+            })
+        }
     }
 
     return (
@@ -82,7 +97,7 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
 
             <tbody>
                 {data.map((item, key) => {
-                    return <tr key={key}>
+                    return <tr key={key} onClick={() => handlePageRedirect(item)}>
                         <td><input type="checkbox" value={checkboxList} checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td>
                         <td><img src={secondTrash} alt="trash" /></td>
                         <td> <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>
