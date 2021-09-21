@@ -20,6 +20,7 @@ function Header() {
     const [isItClicked, setIsItClicked] = useState(false)
     const [isItClickedChangePass, setIsClickedChangePass] = useState(false)
     const [isHamburgerClicked, setIsHamburgerClicked] = useState(false)
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false)
     const [currentPass, setCurrentPass] = useState('')
     const [newPass, setNewPass] = useState('')
     const [whoIsActive, setWhoIsActive] = useState('')
@@ -30,6 +31,9 @@ function Header() {
 
 
     const handleDropDown = () => {
+        setIsNotificationOpen(false)
+        setIsClickedChangePass(false)
+        setIsHamburgerClicked(false)
         setIsItClicked(prevState => {
             return !prevState
         })
@@ -43,6 +47,9 @@ function Header() {
     }
 
     const handleHamburgerClick = () => {
+        setIsNotificationOpen(false)
+        setIsClickedChangePass(false)
+        setIsItClicked(false)
         setIsHamburgerClicked(prevState => {
             return !prevState
         })
@@ -56,6 +63,15 @@ function Header() {
     const handleTabChange = (path) => {
         setWhoIsActive(path)
         history.push(`${path}`)
+    }
+
+    const handleBellNotifications = () => {
+        setIsHamburgerClicked(false)
+        setIsClickedChangePass(false)
+        setIsItClicked(false)
+        setIsNotificationOpen(prevProps => {
+            return !prevProps
+        })
     }
 
     return (
@@ -72,7 +88,8 @@ function Header() {
             </div>
             <div className='UserDetailDiv'>
                 <div className='col-1'>
-                    <img className='bell' src={Bell} alt="bell" />
+                    <img className='bell' src={Bell} alt="bell" onClick={handleBellNotifications} />
+                    <div className='redDot'></div>
                     <div>
                         <p>nina.aralica@alo.rs</p>
                         <img src={User} alt="User" />
@@ -109,6 +126,12 @@ function Header() {
                 <div className='cont'><p onClick={() => handleTabChange('/categories')} style={{ opacity: pathname === '/categories' ? '1' : '0.6' }}>Categories</p><Bars active={pathname === '/categories'} /></div>
                 <div className='cont'><p onClick={() => handleTabChange('/totals')} style={{ opacity: pathname === '/totals' ? '1' : '0.6' }}>Totals</p><Bars active={pathname === '/totals'} /></div>
             </div>
+            {isNotificationOpen && <div className='NavBarDivNotifications'>
+                <div className='notification' onClick={handleBellNotifications}>
+                    <h1>Neki tamo tekst koji bi trebalo da bude informacija</h1>
+                    <p>jos neke informacije u vezi notifikacija</p>
+                </div>
+            </div>}
         </div>
     )
 }

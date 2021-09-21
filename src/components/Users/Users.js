@@ -66,11 +66,13 @@ export class Users extends Component {
         console.log(value);
     }
 
-    handlePageRedirect = (item) => {
-        history.push({
-            pathname: `/users/${item.id}`,
-            state: item
-        })
+    handlePageRedirect = (e, item) => {
+        if (!e.target.id || e.target.id !== 'noredirection') {
+            history.push({
+                pathname: `/users/${item.id}`,
+                state: item
+            })
+        }
 
     }
 
@@ -83,7 +85,7 @@ export class Users extends Component {
                     <div className='shortScreenTableDiv'>
                         {test.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
-                                <div className='nazivDiv' onClick={() => this.handlePageRedirect(item)}>
+                                <div className='nazivDiv' onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <div>
                                         <div className='arrowDiv'>
                                             <img src={arrowUp} onClick={() => this.handleArrowSort('emailUp')} alt="arrow" />
@@ -154,21 +156,21 @@ export class Users extends Component {
 
                         <tbody>
                             {test.map((item, key) => {
-                                return <tr key={key} onClick={() => this.handlePageRedirect(item)}>
+                                return <tr key={key} onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <td><div className='ownerClass'>
                                         {item.owner}
                                     </div></td>
                                     <td><div className="divWithClicableIcons">
                                         <img src={visit} alt="visit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>visit</p>
+                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>visit</p>
                                         <img src={edit} alt="edit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>edit</p>
+                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>edit</p>
                                         <img src={stats} alt="stats" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>stats</p>
+                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>stats</p>
                                         <img src={posts} alt="posts" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>posts</p>
+                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>posts</p>
                                         <img src={widgets} alt="widgets" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>widgets</p>
+                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>widgets</p>
 
                                     </div></td>
                                     <td>

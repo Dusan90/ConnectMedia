@@ -16,17 +16,20 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
         console.log(value);
     }
 
-    const handlePageRedirect = (item) => {
-        if (pageName === 'widgets') {
-            history.push({
-                pathname: `/widgets/${item.id}`,
-                state: item
-            })
-        } else {
-            history.push({
-                pathname: `/sites/${item.id}`,
-                state: item
-            })
+    const handlePageRedirect = (e, item) => {
+        if (!e.target.id || e.target.id !== 'noredirection') {
+            if (pageName === 'widgets') {
+                history.push({
+                    pathname: `/widgets/${item.id}`,
+                    state: item
+                })
+            } else {
+                history.push({
+                    pathname: `/sites/${item.id}`,
+                    state: item
+                })
+            }
+
         }
     }
 
@@ -97,9 +100,9 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
 
             <tbody>
                 {data.map((item, key) => {
-                    return <tr key={key} onClick={() => handlePageRedirect(item)}>
-                        <td><input type="checkbox" value={checkboxList} checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td>
-                        <td><img src={secondTrash} alt="trash" /></td>
+                    return <tr key={key} onClick={(e) => handlePageRedirect(e, item)}>
+                        <td><input type="checkbox" value={checkboxList} id='noredirection' checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td>
+                        <td><img src={secondTrash} alt="trash" id='noredirection' /></td>
                         <td> <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>
                             {item.status}
                         </div>
@@ -112,15 +115,15 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
                         </div></td>
                         <td><div className="divWithClicableIcons">
                             <img src={visit} alt="visit" />
-                            <p onClick={() => haneldeRedirect(item)}>visit</p>
+                            <p onClick={() => haneldeRedirect(item)} id='noredirection'>visit</p>
                             <img src={edit} alt="edit" />
-                            <p onClick={() => haneldeRedirect(item)}>edit</p>
+                            <p onClick={() => haneldeRedirect(item)} id='noredirection'>edit</p>
                             <img src={stats} alt="stats" />
-                            <p onClick={() => haneldeRedirect(item)}>stats</p>
+                            <p onClick={() => haneldeRedirect(item)} id='noredirection'>stats</p>
                             {pageName !== 'widgets' && <img src={posts} alt="posts" />}
-                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)}>posts</p>}
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)} id='noredirection'>posts</p>}
                             {pageName !== 'widgets' && <img src={widgets} alt="widgets" />}
-                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)}>widgets</p>}
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)} id='noredirection'>widgets</p>}
 
                         </div></td>
                         <td>
@@ -128,7 +131,7 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
                                 <p>Kuhinja ljubav moda</p>
                                 <div>
                                     <p>+<span>2</span></p>
-                                    <img src={secondarrowDown} alt="arrow" />
+                                    <img src={secondarrowDown} alt="arrow" id='noredirection' />
                                 </div>
                             </div>
                         </td>

@@ -123,11 +123,14 @@ export class Posts extends Component {
         console.log(value);
     }
 
-    handlePageRedirect = (item) => {
-        history.push({
-            pathname: `/posts/${item.id}`,
-            state: item
-        })
+    handlePageRedirect = (e, item) => {
+        console.log(e.target);
+        if (!e.target.id || e.target.id !== 'noredirection') {
+            history.push({
+                pathname: `/posts/${item.id}`,
+                state: item
+            })
+        }
 
     }
 
@@ -159,7 +162,7 @@ export class Posts extends Component {
                                     </div>
                                 </div>
 
-                                <div className='ownerDiv' onClick={() => this.handlePageRedirect(item)}>
+                                <div className='ownerDiv' onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <div>
                                         <div className='arrowDiv'>
                                             <img src={arrowUp} onClick={() => this.handleArrowSort('siteUp')} alt="arrow" />
@@ -429,9 +432,9 @@ export class Posts extends Component {
 
                         <tbody>
                             {test.map((item, key) => {
-                                return <tr key={key} onClick={() => this.handlePageRedirect(item)}>
-                                    <td><input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /></td>
-                                    <td><img src={secondTrash} alt="trash" /></td>
+                                return <tr key={key} onClick={(e) => this.handlePageRedirect(e, item)}>
+                                    <td><input type="checkbox" id='noredirection' value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /></td>
+                                    <td><img src={secondTrash} alt="trash" id='noredirection' /></td>
                                     <td> <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>
                                         {item.status}
                                     </div>
@@ -462,7 +465,7 @@ export class Posts extends Component {
                                             <p>Kuhinja ljubav moda</p>
                                             <div>
                                                 <p>+<span>2</span></p>
-                                                <img src={secondarrowDown} alt="arrow" />
+                                                <img src={secondarrowDown} id='noredirection' alt="arrow" />
                                             </div>
                                         </div>
                                     </td>

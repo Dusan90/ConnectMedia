@@ -27,6 +27,10 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
         }
     }
 
+    const haneldeRedirect = (value) => {
+        console.log(value);
+    }
+
     return (
         <div className='shortScreenTableDiv'>
             {data.map((item, key) => {
@@ -76,15 +80,15 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
                     <div className='mainForIcons'>
                         <div className="divWithClicableIcons">
                             <img src={visit} alt="visit" />
-                            <p>visit</p>
+                            <p onClick={() => haneldeRedirect(item)}>visit</p>
                             <img src={edit} alt="edit" />
-                            <p>edit</p>
+                            <p onClick={() => haneldeRedirect(item)}>edit</p>
                             <img src={stats} alt="stats" />
-                            <p>stats</p>
+                            <p onClick={() => haneldeRedirect(item)}>stats</p>
                             {pageName !== 'widgets' && <img src={posts} alt="posts" />}
-                            {pageName !== 'widgets' && <p>posts</p>}
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)}>posts</p>}
                             {pageName !== 'widgets' && <img src={widgets} alt="widgets" />}
-                            {pageName !== 'widgets' && <p>widgets</p>}
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)}>widgets</p>}
 
                         </div>
                     </div>

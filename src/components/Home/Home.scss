@@ -152,7 +152,15 @@
             padding: 10px;
             overflow-y: scroll;
             &::-webkit-scrollbar {
-              width: 0 !important;
+              width: 5px !important;
+            }
+            &::-webkit-scrollbar-track {
+              box-shadow: inset 0 0 5px lightgray;
+              border-radius: 10px;
+            }
+            &::-webkit-scrollbar-thumb {
+              background: gray;
+              border-radius: 10px;
             }
             div {
               height: 30px;
@@ -199,7 +207,15 @@
             padding: 10px;
             overflow-y: scroll;
             &::-webkit-scrollbar {
-              width: 0 !important;
+              width: 5px !important;
+            }
+            &::-webkit-scrollbar-track {
+              box-shadow: inset 0 0 5px lightgray;
+              border-radius: 10px;
+            }
+            &::-webkit-scrollbar-thumb {
+              background: gray;
+              border-radius: 10px;
             }
             div {
               height: 30px;
@@ -765,10 +781,12 @@
             }
           }
           .box-3 {
-            min-width: 110px;
-
+            min-width: 115px;
             p {
               font-size: 15px;
+            }
+            .options {
+              right: 0;
             }
           }
         }

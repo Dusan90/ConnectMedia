@@ -123,13 +123,22 @@
 @media only screen and (max-width: 500px) {
   .mainSiteDetailsNavigation {
     .siteDetailsNavigate {
+      margin: 5px 0 65px 0;
+
       div {
         background: #295265;
         border-radius: 5px;
         height: 55px;
         max-width: 75px;
+        display: flex;
+        justify-content: center;
         p {
           font-size: 14px;
+        }
+      }
+      .postsPorDiv {
+        p {
+          width: 50px !important;
         }
       }
     }
