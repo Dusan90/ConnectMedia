@@ -61,6 +61,7 @@ function Header() {
     }
 
     const handleTabChange = (path) => {
+        setIsHamburgerClicked(false)
         setWhoIsActive(path)
         history.push(`${path}`)
     }

@@ -23,13 +23,11 @@ function SearchContainer({ page, handlePageChange, pageName, handleSortByStatus,
 
     const handleChangeOptionsuser = (el) => {
         handleHomePageSort(el, 'users')
-        setShowUserOptions(false)
         setUser(el)
     }
 
     const handleChangeOptionscategorie = (el) => {
         handleHomePageSort(el, 'categories')
-        setShowCategorieOptions(false)
         setCategorie(el)
     }
 
@@ -59,11 +57,11 @@ function SearchContainer({ page, handlePageChange, pageName, handleSortByStatus,
 
     const handleChangeOptionssites = (el) => {
         handleHomePageSort(el, 'sites')
-        setShowSitesOptions(false)
         setSites(el)
     }
 
 
+    console.log(showCategorieOptions);
 
     return (
         <div className='mainSecondHeaderDiv' style={secondHeaderCustomStyle && secondHeaderCustomStyle}>
