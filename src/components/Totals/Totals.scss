@@ -3,7 +3,11 @@
   margin-top: 50px;
 }
 
-.mainSiteDetailsNavigation {
+.secondHeaderOnTotals {
+  font-size: 30px;
+}
+
+.mainSiteDetailsNavigationTotal {
   font-family: "Calibri";
   .siteDetailsNavigate {
     display: flex;
@@ -74,7 +78,7 @@
 }
 
 @media only screen and (max-width: 600px) {
-  .mainSiteDetailsNavigation {
+  .mainSiteDetailsNavigationTotal {
     font-family: "Calibri";
     .siteDetailsNavigate {
       margin: 0px 0 55px 0;
@@ -121,7 +125,7 @@
 }
 
 @media only screen and (max-width: 500px) {
-  .mainSiteDetailsNavigation {
+  .mainSiteDetailsNavigationTotal {
     .siteDetailsNavigate {
       margin: 5px 0 65px 0;
 
@@ -142,5 +146,8 @@
         }
       }
     }
+  }
+  .linechart {
+    padding: 20px 0 0 0;
   }
 }

@@ -68,7 +68,7 @@ export class Totals extends Component {
             <>
                 <SearchContainer pageName={"TOTALS"} handleHomePageSort={this.handleHomePageSort} secondHeaderCustomStyle={{ height: '55px' }} />
                 <div style={{ padding: '0 35px' }}>
-                    <div className='mainSiteDetailsNavigation'>
+                    <div className='mainSiteDetailsNavigationTotal'>
                         <div className='siteDetailsNavigate'>
                             <div onClick={() => { return this.handlePageChange('goback'), this.props.history.goBack() }} className={`goback ${whichIsActive === 'goback' && 'active'}`}><p>GO BACK</p></div>
                             <div onClick={() => this.handlePageChange('siteDetails')} className={`siteDetails ${whichIsActive === 'siteDetails' && 'active'}`}><p>Site details</p></div>
@@ -94,10 +94,10 @@ export class Totals extends Component {
                     </div>
                 </div>
 
-                <div style={{ height: '500px', marginTop: '20px' }}>
+                <div style={{ height: '500px', marginTop: '20px' }} className='linechart'>
                     <Chart />
                 </div>
-                <h1 style={{ marginTop: '50px', textAlign: 'center' }}>Daily totals for sites</h1>
+                <h1 className='secondHeaderOnTotals' style={{ marginTop: '50px', textAlign: 'center' }}>Daily totals for sites</h1>
                 <div style={{ height: `${dataLength * 30}px` }}>
                     <VerticalChart />
                 </div>

@@ -95,7 +95,7 @@ export class WidgetsDetails extends Component {
                 {tabClicked === 'statsDiv' && <> <div style={{ height: '500px', marginTop: '20px' }}>
                     <Chart customStyle={{ padding: '0' }} />
                 </div>
-                    <h1 style={{ marginTop: '50px', textAlign: 'center' }}>Daily totals for post</h1>
+                    <h1 style={{ marginTop: '50px', textAlign: 'center', fontSize: '30px' }}>Daily totals for post</h1>
                     <div style={{ height: `200px` }}>
                         <VerticalChart customData={data} customStyle={{ padding: '0' }} />
                     </div>

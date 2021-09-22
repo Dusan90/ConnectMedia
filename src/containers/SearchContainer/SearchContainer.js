@@ -61,7 +61,6 @@ function SearchContainer({ page, handlePageChange, pageName, handleSortByStatus,
     }
 
 
-    console.log(showCategorieOptions);
 
     return (
         <div className='mainSecondHeaderDiv' style={secondHeaderCustomStyle && secondHeaderCustomStyle}>
