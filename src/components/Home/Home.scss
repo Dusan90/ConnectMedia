@@ -148,6 +148,7 @@
             border: 1px solid gray;
             top: 60px;
             display: flex;
+            z-index: 10;
             flex-direction: column;
             padding: 10px;
             overflow-y: scroll;
@@ -206,6 +207,7 @@
             flex-direction: column;
             padding: 10px;
             overflow-y: scroll;
+            z-index: 10;
             &::-webkit-scrollbar {
               width: 5px !important;
             }
@@ -397,12 +399,70 @@
               font-size: 14px;
               font-weight: bold;
             }
-            div {
+            .box {
               display: flex;
               align-items: center;
               p {
                 color: #19b1c6;
                 margin: 0 4px 0 12px;
+              }
+            }
+          }
+          position: relative;
+          .offeredHashes {
+            position: absolute;
+            width: 250px;
+            height: 400px;
+            background: white;
+            z-index: 100;
+            border-radius: 5px;
+            border: 1px solid gray;
+            bottom: -400px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: scroll;
+            &::-webkit-scrollbar {
+              width: 5px !important;
+            }
+            &::-webkit-scrollbar-track {
+              box-shadow: inset 0 0 5px lightgray;
+              border-radius: 10px;
+            }
+            &::-webkit-scrollbar-thumb {
+              background: gray;
+              border-radius: 10px;
+            }
+            div {
+              height: 30px;
+              width: 100%;
+              p {
+                margin: 0;
+                color: black;
+                line-height: 22px;
+                font-size: 18px;
+                font-weight: normal;
+              }
+              &:hover {
+                background: #d6dbdc;
+                cursor: pointer;
+              }
+            }
+            @media only screen and (max-width: 1150px) {
+              z-index: 100;
+              height: 400px !important;
+              div {
+                height: 30px !important;
+                background: white;
+                p {
+                  margin: 0;
+                  color: black;
+                }
+                &:hover {
+                  background: #d6dbdc;
+                  cursor: pointer;
+                }
               }
             }
           }
@@ -667,6 +727,65 @@
               img {
                 padding-top: 5px;
                 align-items: center;
+              }
+            }
+          }
+          position: relative;
+          .offeredHashes {
+            position: absolute;
+            width: 250px;
+            height: 400px;
+            background: white;
+            z-index: 100;
+            border-radius: 5px;
+            border: 1px solid gray;
+            bottom: -400px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start !important;
+            padding: 10px;
+            overflow-y: scroll;
+            &::-webkit-scrollbar {
+              width: 5px !important;
+            }
+            &::-webkit-scrollbar-track {
+              box-shadow: inset 0 0 5px lightgray;
+              border-radius: 10px;
+            }
+            &::-webkit-scrollbar-thumb {
+              background: gray;
+              border-radius: 10px;
+            }
+            div {
+              height: 30px;
+              width: 100%;
+              p {
+                margin: 0;
+                color: black;
+                line-height: 22px;
+                font-size: 18px;
+                font-weight: normal;
+              }
+              &:hover {
+                background: #d6dbdc;
+                cursor: pointer;
+              }
+            }
+            @media only screen and (max-width: 1150px) {
+              z-index: 100;
+              height: 400px !important;
+              div {
+                height: 30px !important;
+                background: white;
+                p {
+                  margin: 0;
+                  color: black;
+                }
+                &:hover {
+                  background: #d6dbdc;
+                  cursor: pointer;
+                }
               }
             }
           }

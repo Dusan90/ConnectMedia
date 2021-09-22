@@ -9,7 +9,7 @@ import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import history from '../../routes/History'
 
-function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, handleArrowSort }) {
+function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, handleArrowSort, handleHashArrowClick, state }) {
 
 
 
@@ -93,13 +93,22 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
                         </div>
                     </div>
                     <div className='mainDivHashes'>
-                        <div className="divWithHashes">
-                            <p>Kuhinja ljubav moda</p>
-                            <div>
-                                <p>+<span>2</span></p>
-                                <img src={secondarrowDown} alt="arrow" />
+                        <>
+                            <div className="divWithHashes">
+                                <p>Kuhinja ljubav moda</p>
+                                <div className='box'>
+                                    <p>+<span>2</span></p>
+                                    <img src={secondarrowDown} alt="arrow" onClick={() => handleHashArrowClick(item)} />
+                                </div>
                             </div>
-                        </div>
+                            {state.hashesArrowDown && item.id === state.hashesArrowWitchIsOn.id && <div className='offeredHashes'>
+                                {state.hashesArrowWitchIsOn.hashes.map((item, i) => {
+                                    return <div key={i} id='noredirection'>
+                                        <p id='noredirection'>{item}</p>
+                                    </div>
+                                })}
+                            </div>}
+                        </>
                     </div>
                     <div className='mainDivInOutTxr'>
                         <div className='statistic'>

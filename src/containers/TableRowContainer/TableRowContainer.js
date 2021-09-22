@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
 import secondarrowDown from '../../assets/img/TableIcons/arrow.svg'
 import secondTrash from '../../assets/img/TableIcons/trash.svg'
@@ -9,14 +9,15 @@ import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import history from '../../routes/History'
 
-function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handleArrowSort }) {
 
+function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handleArrowSort, handleHashArrowClick, state }) {
 
     const haneldeRedirect = (value) => {
         console.log(value);
     }
 
     const handlePageRedirect = (e, item) => {
+        console.log(e.target);
         if (!e.target.id || e.target.id !== 'noredirection') {
             if (pageName === 'widgets') {
                 history.push({
@@ -127,13 +128,22 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
 
                         </div></td>
                         <td>
-                            <div className="divWithHashes">
-                                <p>Kuhinja ljubav moda</p>
-                                <div>
-                                    <p>+<span>2</span></p>
-                                    <img src={secondarrowDown} alt="arrow" id='noredirection' />
+                            <>
+                                <div className="divWithHashes">
+                                    <p>Kuhinja ljubav moda</p>
+                                    <div className='box'>
+                                        <p>+<span>2</span></p>
+                                        <img src={secondarrowDown} onClick={() => handleHashArrowClick(item)} alt="arrow" id='noredirection' />
+                                    </div>
                                 </div>
-                            </div>
+                                {state.hashesArrowDown && item.id === state.hashesArrowWitchIsOn.id && <div className='offeredHashes' >
+                                    {state.hashesArrowWitchIsOn.hashes.map((item, i) => {
+                                        return <div key={i} id='noredirection'>
+                                            <p id='noredirection'>{item}</p>
+                                        </div>
+                                    })}
+                                </div>}
+                            </>
                         </td>
                         <td>{item.in}</td>
                         <td>{item.out}</td>
@@ -141,7 +151,7 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
                     </tr>
                 })}
             </tbody>
-        </table>
+        </table >
     )
 }
 

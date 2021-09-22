@@ -9,17 +9,21 @@ const test = [{
     status: 'PUBLISHED',
     owner: 'nina.simone@gmail.com',
     nazivKorisnika: 'B92.net',
+    hashes: ['test1', 'test2'],
     in: '11212',
     out: '2',
-    txr: '0.02%'
+    txr: '0.02%',
+    id: '1'
 },
 {
     status: 'PUBLISHED',
     owner: 'nina.simone@gmail.com',
     nazivKorisnika: 'B92.net',
+    hashes: ['test1', 'test2'],
     in: '11212',
     out: '2',
-    txr: '0.02%'
+    txr: '0.02%',
+    id: '2'
 },
 ]
 
@@ -31,7 +35,9 @@ export class Widgets extends Component {
             data: test,
             filteredDate: [],
             inputValue: '',
-            checkboxList: []
+            checkboxList: [],
+            hashesArrowDown: false,
+            hashesArrowWitchIsOn: ''
         }
     }
 
@@ -98,14 +104,18 @@ export class Widgets extends Component {
         console.log(value);
     }
 
+    handleHashArrowClick = (item) => {
+        this.setState({ hashesArrowDown: !this.state.hashesArrowDown, hashesArrowWitchIsOn: item })
+    }
+
     render() {
         return (
             <>
                 <SearchContainer page={this.state.page} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
                 <div className='mainTableDiv'>
-                    <ShortTableRowContainer data={test} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
-                    <TableRowContainer data={test} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
+                    <ShortTableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
+                    <TableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
                 </div>
             </>
         )

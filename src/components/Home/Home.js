@@ -7,24 +7,27 @@ import SearchContainer from '../../containers/SearchContainer/SearchContainer'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 
 
-const test = [{
-    status: 'PUBLISHED',
-    owner: 'nina.simone@gmail.com',
-    nazivKorisnika: 'B92.net',
-    in: '11212',
-    out: '2',
-    txr: '0.02%',
-    id: '1'
-},
-{
-    status: 'PUBLISHED',
-    owner: 'nina.simone@gmail.com',
-    nazivKorisnika: 'B92.net',
-    in: '11212',
-    out: '2',
-    txr: '0.02%',
-    id: '2'
-},
+const test = [
+    {
+        status: 'PUBLISHED',
+        owner: 'nina.simone@gmail.com',
+        nazivKorisnika: 'B92.net',
+        hashes: ['test1', 'test2'],
+        in: '11212',
+        out: '2',
+        txr: '0.02%',
+        id: '1'
+    },
+    {
+        status: 'PUBLISHED',
+        owner: 'nina.simone@gmail.com',
+        nazivKorisnika: 'B92.net',
+        hashes: ['test1', 'test2'],
+        in: '11212',
+        out: '2',
+        txr: '0.02%',
+        id: '2'
+    },
 ]
 
 export class Home extends Component {
@@ -35,7 +38,9 @@ export class Home extends Component {
             data: test,
             filteredDate: [],
             inputValue: '',
-            checkboxList: []
+            checkboxList: [],
+            hashesArrowDown: false,
+            hashesArrowWitchIsOn: ''
         }
     }
 
@@ -108,6 +113,10 @@ export class Home extends Component {
         console.log(value);
     }
 
+    handleHashArrowClick = (item) => {
+        this.setState({ hashesArrowDown: !this.state.hashesArrowDown, hashesArrowWitchIsOn: item })
+    }
+
     render() {
         return (
             <>
@@ -125,8 +134,8 @@ export class Home extends Component {
                 <SearchContainer page={this.state.page} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} />
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
                 <div className='mainTableDiv'>
-                    <ShortTableRowContainer data={test} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} />
-                    <TableRowContainer data={test} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} handleArrowSort={this.handleArrowSort} />
+                    <ShortTableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} />
+                    <TableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} handleArrowSort={this.handleArrowSort} />
                 </div>
             </>
         )

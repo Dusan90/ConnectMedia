@@ -14,24 +14,27 @@ import history from '../../routes/History'
 
 import '../Home/Home.scss'
 
-const test = [{
-    status: 'PUBLISHED',
-    owner: 'nina.simone@gmail.com',
-    nazivKorisnika: 'B92.net',
-    in: '11212',
-    out: '2',
-    txr: '0.02%',
-    id: '1'
-},
-{
-    status: 'PUBLISHED',
-    owner: 'nina.simone@gmail.com',
-    nazivKorisnika: 'B92.net',
-    in: '11212',
-    out: '2',
-    txr: '0.02%',
-    id: '2'
-},
+const test = [
+    {
+        status: 'PUBLISHED',
+        owner: 'nina.simone@gmail.com',
+        nazivKorisnika: 'B92.net',
+        hashes: ['test1', 'test2'],
+        in: '11212',
+        out: '2',
+        txr: '0.02%',
+        id: '1'
+    },
+    {
+        status: 'PUBLISHED',
+        owner: 'nina.simone@gmail.com',
+        nazivKorisnika: 'B92.net',
+        hashes: ['test1', 'test2'],
+        in: '11212',
+        out: '2',
+        txr: '0.02%',
+        id: '2'
+    },
 ]
 
 export class Posts extends Component {
@@ -42,7 +45,9 @@ export class Posts extends Component {
             data: test,
             filteredDate: [],
             inputValue: '',
-            checkboxList: []
+            checkboxList: [],
+            hashesArrowDown: false,
+            hashesArrowWitchIsOn: ''
 
         }
     }
@@ -132,6 +137,10 @@ export class Posts extends Component {
             })
         }
 
+    }
+
+    handleHashArrowClick = (item) => {
+        this.setState({ hashesArrowDown: !this.state.hashesArrowDown, hashesArrowWitchIsOn: item })
     }
 
     render() {
@@ -228,13 +237,22 @@ export class Posts extends Component {
                                     </div>
                                 </div>
                                 <div className='mainDivHashes'>
-                                    <div className="divWithHashes">
-                                        <p>Kuhinja ljubav moda</p>
-                                        <div>
-                                            <p>+<span>2</span></p>
-                                            <img src={secondarrowDown} alt="arrow" />
+                                    <>
+                                        <div className="divWithHashes">
+                                            <p>Kuhinja ljubav moda</p>
+                                            <div className='box'>
+                                                <p>+<span>2</span></p>
+                                                <img src={secondarrowDown} alt="arrow" onClick={() => this.handleHashArrowClick(item)} />
+                                            </div>
                                         </div>
-                                    </div>
+                                        {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div className='offeredHashes' >
+                                            {this.state.hashesArrowWitchIsOn.hashes.map((item, i) => {
+                                                return <div key={i} id='noredirection'>
+                                                    <p id='noredirection'>{item}</p>
+                                                </div>
+                                            })}
+                                        </div>}
+                                    </>
                                 </div>
                                 <div className='mainDivInOutTxr bigStatics'>
                                     <div className='statistic'>
@@ -461,13 +479,22 @@ export class Posts extends Component {
                                     <td>31.12.2001</td>
                                     <td>Neki tamo je udario nekog tamo i od toga se napravila pometnja pa je taj neko pozvao nekoga pa se sve nastavilo</td>
                                     <td>
-                                        <div className="divWithHashes">
-                                            <p>Kuhinja ljubav moda</p>
-                                            <div>
-                                                <p>+<span>2</span></p>
-                                                <img src={secondarrowDown} id='noredirection' alt="arrow" />
+                                        <>
+                                            <div className="divWithHashes">
+                                                <p>Kuhinja ljubav moda</p>
+                                                <div className='box'>
+                                                    <p>+<span>2</span></p>
+                                                    <img src={secondarrowDown} id='noredirection' alt="arrow" onClick={() => this.handleHashArrowClick(item)} />
+                                                </div>
                                             </div>
-                                        </div>
+                                            {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div className='offeredHashes' >
+                                                {this.state.hashesArrowWitchIsOn.hashes.map((item, i) => {
+                                                    return <div key={i} id='noredirection'>
+                                                        <p id='noredirection'>{item}</p>
+                                                    </div>
+                                                })}
+                                            </div>}
+                                        </>
                                     </td>
                                     <td>{item.txr}</td>
                                     <td>{item.txr}</td>
