@@ -82,9 +82,9 @@ export class Totals extends Component {
                                 <p>posts on portal</p>
 
                             </div>
-                            {<div onClick={() => { return this.handlePageChange('postsDiv'), this.props.history.push('/posts') }} className={`postsDiv ${whichIsActive === 'postsDiv' && 'active'}`}>
-                                <img src={whichIsActive === 'postsDiv' ? postsBlack : posts} alt="posts" />
-                                <p>posts</p>
+                            {<div onClick={() => { return this.handlePageChange('postsWidgDiv') }} className={`postsWidgDiv ${whichIsActive === 'postsWidgDiv' && 'active'}`}>
+                                <img src={whichIsActive === 'postsWidgDiv' ? postsBlack : posts} alt="posts" />
+                                <p>posts on widgets</p>
                             </div>}
                             {<div onClick={() => this.handlePageChange('widgetsDiv')} className={`widgetsDiv ${whichIsActive === 'widgetsDiv' && 'active'}`}>
                                 <img src={whichIsActive === 'widgetsDiv' ? postsBlack : posts} alt="posts" />

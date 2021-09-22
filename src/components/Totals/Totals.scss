@@ -26,6 +26,7 @@
     .sitesDiv,
     .statsDiv,
     .postsPorDiv,
+    .postsWidgDiv,
     .postsDiv,
     .widgetsDiv {
       color: #94d7e0;
@@ -45,6 +46,7 @@
     .sitesDiv,
     .statsDiv,
     .postsPorDiv,
+    .postsWidgDiv,
     .postsDiv,
     .widgetsDiv {
       font-size: 18px;
@@ -55,7 +57,8 @@
         margin: 0 7px 0 0;
       }
     }
-    .postsPorDiv {
+    .postsPorDiv,
+    .postsWidgDiv {
       width: 150px;
     }
     .postsDiv {
@@ -77,10 +80,11 @@
   }
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 800px) {
   .mainSiteDetailsNavigationTotal {
     .siteDetailsNavigate {
-      .postsPorDiv {
+      .postsPorDiv,
+      .postsWidgDiv {
         p {
           width: 70px !important;
         }
@@ -126,7 +130,7 @@
       .postsPorDiv {
         grid-area: box4;
       }
-      .postsDiv {
+      .postsWidgDiv {
         grid-area: box5;
       }
       .widgetsDiv {
@@ -150,7 +154,8 @@
           font-size: 14px;
         }
       }
-      .postsPorDiv {
+      .postsPorDiv,
+      .postsWidgDiv {
         p {
           width: 60px !important;
         }
