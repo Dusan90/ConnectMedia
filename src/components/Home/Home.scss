@@ -467,7 +467,9 @@
         justify-content: space-between;
         display: grid;
         grid-template-columns: 1fr 1fr;
-
+        &.secondUserHeaderDiv {
+          display: flex;
+        }
         .info1 {
           min-width: 100%;
           display: flex;
@@ -481,6 +483,9 @@
             border-radius: 5px;
             p {
               margin: 0 !important;
+            }
+            &.userAloneBox {
+              max-width: 100% !important;
             }
           }
           .box-2 {

@@ -65,9 +65,9 @@ function SearchContainer({ page, handlePageChange, pageName, handleSortByStatus,
     return (
         <div className='mainSecondHeaderDiv' style={secondHeaderCustomStyle && secondHeaderCustomStyle}>
             <div className={`secondHeaderDiv ${customStyleForlesTabs && 'customStyleForlesTabs'} ${secondHeaderCustomStyle && 'customStyleForTotals'} `}>
-                <div className='secondHeaderDivSection1'>
+                <div className={`secondHeaderDivSection1 ${(pageName === 'USERS' || pageName === 'CATEGORIES' || pageName === 'TOTALS') && 'secondUserHeaderDiv'}`}>
                     <div className='info1'>
-                        <div className='box-1'><p style={{ marginRight: '30px' }}>{pageName}</p></div>
+                        <div className={`box-1 ${pageName === 'USERS' && 'userAloneBox'}`}><p style={{ marginRight: '30px' }}>{pageName}</p></div>
                         <div className='horizontal' />
                         {pageName === 'SITES' && <div className='box-2' onClick={handleUsersShow}>
                             <DropDown label={user} isItOpen={showUserOptions} options={options} handleChangeOptions={handleChangeOptionsuser} />

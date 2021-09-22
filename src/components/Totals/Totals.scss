@@ -77,11 +77,23 @@
   }
 }
 
+@media only screen and (max-width: 700px) {
+  .mainSiteDetailsNavigationTotal {
+    .siteDetailsNavigate {
+      .postsPorDiv {
+        p {
+          width: 70px !important;
+        }
+      }
+    }
+  }
+}
+
 @media only screen and (max-width: 600px) {
   .mainSiteDetailsNavigationTotal {
     font-family: "Calibri";
     .siteDetailsNavigate {
-      margin: 0px 0 55px 0;
+      margin: 5px 0 65px 0;
       max-width: 100%;
       background: transparent;
       display: grid;
@@ -127,8 +139,6 @@
 @media only screen and (max-width: 500px) {
   .mainSiteDetailsNavigationTotal {
     .siteDetailsNavigate {
-      margin: 5px 0 65px 0;
-
       div {
         background: #295265;
         border-radius: 5px;
