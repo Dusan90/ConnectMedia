@@ -47,7 +47,9 @@ export class Posts extends Component {
             inputValue: '',
             checkboxList: [],
             hashesArrowDown: false,
-            hashesArrowWitchIsOn: ''
+            hashesArrowWitchIsOn: '',
+            countPerPage: ''
+
 
         }
     }
@@ -143,11 +145,15 @@ export class Posts extends Component {
         this.setState({ hashesArrowDown: !this.state.hashesArrowDown, hashesArrowWitchIsOn: item })
     }
 
+    handleCountPerPage = (e) => {
+        this.setState({ countPerPage: e.target.value })
+    }
+
     render() {
         console.log(this.state);
         return (
             <>
-                <SearchContainer page={this.state.page} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                <SearchContainer page={this.state.page} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
 
                 <div className='mainTableDiv'>

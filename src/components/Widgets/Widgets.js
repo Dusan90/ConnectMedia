@@ -37,7 +37,9 @@ export class Widgets extends Component {
             inputValue: '',
             checkboxList: [],
             hashesArrowDown: false,
-            hashesArrowWitchIsOn: ''
+            hashesArrowWitchIsOn: '',
+            countPerPage: ''
+
         }
     }
 
@@ -108,10 +110,14 @@ export class Widgets extends Component {
         this.setState({ hashesArrowDown: !this.state.hashesArrowDown, hashesArrowWitchIsOn: item })
     }
 
+    handleCountPerPage = (e) => {
+        this.setState({ countPerPage: e.target.value })
+    }
+
     render() {
         return (
             <>
-                <SearchContainer page={this.state.page} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                <SearchContainer page={this.state.page} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
                 <div className='mainTableDiv'>
                     <ShortTableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />

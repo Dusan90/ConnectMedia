@@ -7,16 +7,29 @@ import '../SiteDetails/SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
 import Chart from '../../containers/Chart/Chart'
 import VerticalChart from '../../containers/Chart/VerticalChart'
+import Select from 'react-select'
 
 
-// const test = [{
-//     title: 'vesti',
-//     keep: 50,
-//     expire: 23,
-//     maxAge: 24
-// }]
+const optionss = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+]
 
-// const test2 = [{ mesto: 'Beograd', title: 'vesti' }, { mesto: 'dobra vest', title: 'vesti' }, { mesto: 'dobra vest', title: 'vesti' }, { mesto: 'kultura', title: 'zanimljivosti' }]
+const customSelectStyles = {
+    control: (base, state) => ({
+        ...base,
+        // height: "48px",
+        flex: "1",
+        fontWeight: "500",
+        // background: "white",
+        background: '#d6dbdc',
+        // !props.organization && props.color && "rgb(245, 192, 192)",
+    }),
+    placeholder: () => ({
+        color: 'black'
+    })
+};
 
 const data = [
     {
@@ -118,15 +131,26 @@ export class PostsDetails extends Component {
                             <div className='owner_div selectable'>
                                 <h4>Site</h4>
                                 {!isIteditable && <p></p>}
-                                {isIteditable && <select style={{ flex: '1', marginRight: '20px', border: 'none', background: '#d6dbdc', textIndent: '10px', borderRadius: '5px' }}>
+                                {/* {isIteditable && <select style={{ flex: '1', marginRight: '20px', border: 'none', background: '#d6dbdc', textIndent: '10px', borderRadius: '5px' }}>
                                     <option className='options' value="test">test</option>
                                     <option className='options' value="test">test</option>
-                                </select>}
+                                </select>} */}
+                                {isIteditable && <Select
+                                    className="basic-single"
+                                    classNamePrefix="select"
+                                    // defaultValue={colourOptions[0]}
+                                    // isLoading={true}
+                                    styles={customSelectStyles}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    name="merge"
+                                    options={optionss}
+                                />}
                             </div>
                             <div className='owner_div'>
                                 <h4>Owner</h4>
-                                {!isIteditable && <Link to='nina.aralica@alo.rs'>nina.aralica@alo.rs</Link>}
-                                {isIteditable && <input type="text" placeholder='nina.aralica@alo.rs' />}
+                                <Link to='nina.aralica@alo.rs'>nina.aralica@alo.rs</Link>
+                                {/* {isIteditable && <input type="text" placeholder='nina.aralica@alo.rs' />} */}
                             </div>
                             <div className='description_div'>
                                 <h4>Description</h4>
@@ -156,7 +180,7 @@ export class PostsDetails extends Component {
                             <h1>Categories</h1>
                             <div className='categ_div'>
                                 <h4>Categories</h4>
-                                <div>
+                                {!isIteditable && <div className='listOfCateg'>
                                     {test3.map((item, key) => {
                                         if (!isIteditable) {
                                             return <p key={key}>{item.text}</p>
@@ -169,7 +193,19 @@ export class PostsDetails extends Component {
                                         }
                                     })}
 
-                                </div>
+                                </div>}
+                                {isIteditable && <Select
+                                    className="basic-single"
+                                    classNamePrefix="select"
+                                    // defaultValue={colourOptions[0]}
+                                    // isLoading={true}
+                                    isMulti
+                                    styles={customSelectStyles}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    name="merge"
+                                    options={optionss}
+                                />}
                             </div>
                             <div className='categ_div'>
                                 <h4>Date</h4>
@@ -180,8 +216,8 @@ export class PostsDetails extends Component {
                             </div>
                             <div className='categ_div'>
                                 <h4>Image</h4>
-                                {!isIteditable && <img src={arrowUp} alt='arrow up' />}
-                                {isIteditable && <input type="file" onChange={this.handleChangeFile} placeholder='' />}
+                                {isIteditable && <input type="file" id='file' onChange={this.handleChangeFile} placeholder='' />}
+                                {isIteditable && <label className='labelForInputImage' htmlFor="file">Select file</label>}
                             </div>
                             {this.state.file && <div className='categ_div'>
                                 <img style={{ width: '300px' }} src={this.state.file} alt='uploaded' />

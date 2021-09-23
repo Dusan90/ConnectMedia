@@ -2,19 +2,28 @@ import React, { Component } from 'react'
 import NavWidget from '../../containers/NavWidget/NavWidget'
 import '../SiteDetails/SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
+import Select from 'react-select'
 
-// const test = [{
-//     title: 'vesti',
-//     keep: 50,
-//     expire: 23,
-//     maxAge: 24
-// }]
+const options = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+]
 
-// const test2 = [{ mesto: 'Beograd', title: 'vesti' }, { mesto: 'dobra vest', title: 'vesti' }, { mesto: 'dobra vest', title: 'vesti' }, { mesto: 'kultura', title: 'zanimljivosti' }]
-
-// const test3 = [{ text: 'vesti' }, { text: 'zabava' }]
-
-// const options = ["PUBLISHED", 'DRAFT', 'ERROR', 'TRASH']
+const customSelectStyles = {
+    control: (base, state) => ({
+        ...base,
+        // height: "48px",
+        flex: "1",
+        fontWeight: "500",
+        // background: "white",
+        background: '#d6dbdc',
+        // !props.organization && props.color && "rgb(245, 192, 192)",
+    }),
+    placeholder: () => ({
+        color: 'black'
+    })
+};
 
 export class UsersDetails extends Component {
     constructor(prosp) {
@@ -80,10 +89,22 @@ export class UsersDetails extends Component {
                             <div className='url_div selectable'>
                                 <h4>Roles</h4>
                                 {!isIteditable && <p></p>}
-                                {isIteditable && <select style={{ flex: '1', marginRight: '20px', border: 'none', background: '#d6dbdc', textIndent: '10px', borderRadius: '5px' }}>
+                                {/* {isIteditable && <select style={{ flex: '1', marginRight: '20px', border: 'none', background: '#d6dbdc', textIndent: '10px', borderRadius: '5px' }}>
                                     <option className='options' value="test">test</option>
                                     <option className='options' value="test">test</option>
-                                </select>}
+                                </select>} */}
+                                {isIteditable && <Select
+                                    className="basic-single"
+                                    classNamePrefix="select"
+                                    // defaultValue={colourOptions[0]}
+                                    // isLoading={true}
+                                    styles={customSelectStyles}
+                                    // isClearable={true}
+                                    isMulti
+                                    isSearchable={true}
+                                    name="merge"
+                                    options={options}
+                                />}
 
                             </div>
                             <div className='name_div'>

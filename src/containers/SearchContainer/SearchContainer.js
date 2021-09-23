@@ -10,7 +10,7 @@ import '../../components/Home/Home.scss'
 
 const options = ['test', 'test2', 'test3']
 
-function SearchContainer({ page, handlePageChange, pageName, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
+function SearchContainer({ page, handlePageChange, pageName, state, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
     const [user, setUser] = useState('all users')
     const [showUserOptions, setShowUserOptions] = useState(false)
     const [categorie, setCategorie] = useState('all categories')
@@ -114,14 +114,14 @@ function SearchContainer({ page, handlePageChange, pageName, handleSortByStatus,
                 <div className='divWithInfoText'>LEGEND: <span>in:</span> clicks coming from site X, <span>out:</span> clicks sent to site X <span>txr:</span> out / in</div>
                 <div className='pageInfoDiv'>
                     <div>
-                        <p>1 - 20 of 23 </p>
+                        <p>1 - 20 of 23</p>
                     </div>
 
-                    <input type="number" />
+                    <input type="number" onChange={(e) => handleCountPerPage(e)} />
                     <p>per page </p>
                     <Pagination
                         activePage={page}
-                        itemsCountPerPage={10}
+                        itemsCountPerPage={state.countPerPage ? parseInt(state.countPerPage) : 10}
                         totalItemsCount={450}
                         pageRangeDisplayed={2}
                         onChange={handlePageChange}

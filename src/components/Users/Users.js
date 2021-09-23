@@ -35,7 +35,9 @@ export class Users extends Component {
             page: 1,
             data: test,
             filteredDate: [],
-            inputValue: ''
+            inputValue: '',
+            countPerPage: ''
+
         }
     }
 
@@ -73,13 +75,16 @@ export class Users extends Component {
                 state: item
             })
         }
+    }
 
+    handleCountPerPage = (e) => {
+        this.setState({ countPerPage: e.target.value })
     }
 
     render() {
         return (
             <>
-                <SearchContainer page={this.state.page} pageName={"USERS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
+                <SearchContainer page={this.state.page} pageName={"USERS"} state={this.state} handleCountPerPage={this.handleCountPerPage} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
 
                 <div className='mainTableDiv'>
                     <div className='shortScreenTableDiv'>

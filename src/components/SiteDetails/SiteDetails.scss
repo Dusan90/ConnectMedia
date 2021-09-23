@@ -13,6 +13,7 @@
         border-bottom: 1px solid #bbbbbb;
         padding-bottom: 35px;
         text-align: start;
+        margin-bottom: 0px !important;
       }
       .generalDiv {
         .status_div,
@@ -47,7 +48,8 @@
             align-items: center;
             color: #00a3ff;
           }
-          input {
+          input,
+          .basic-single {
             background: #d6dbdc;
             border-radius: 5px;
             border: none;
@@ -63,7 +65,8 @@
             }
           }
           &.selectable {
-            select {
+            select,
+            .basic-single {
               .options {
                 background: white !important;
                 font-size: 18px;
@@ -328,6 +331,21 @@
               line-height: 37px;
             }
           }
+          .basic-single {
+            background: #d6dbdc;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            width: 100%;
+            text-indent: 10px;
+            margin-right: 20px;
+            font-size: 14px;
+            line-height: 37px;
+            &::placeholder {
+              font-size: 14px;
+              line-height: 37px;
+            }
+          }
 
           &.selectable {
             select {
@@ -363,7 +381,7 @@
           h4 {
             width: 120px;
           }
-          div {
+          .listOfCateg {
             display: flex;
             gap: 20px;
             p {
@@ -379,6 +397,27 @@
                   cursor: pointer;
                 }
               }
+            }
+          }
+          #file {
+            opacity: 0;
+            width: 0.1px;
+            height: 0.1px;
+            position: absolute;
+          }
+          .labelForInputImage {
+            background: #d6dbdc;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            width: 100%;
+            text-indent: 10px;
+            margin-right: 20px;
+            font-size: 14px;
+            line-height: 37px;
+            padding: 3px 10px 0 10px;
+            &:hover {
+              cursor: pointer;
             }
           }
         }
@@ -427,7 +466,8 @@
             display: flex;
             max-width: 390px !important;
             width: 390px;
-            select {
+            select,
+            .basic-single {
               background: #d6dbdc;
               border-radius: 5px;
               border: none;
@@ -454,6 +494,11 @@
             }
           }
           @media only screen and (max-width: 400px) {
+            flex-direction: column;
+            gap: 10px;
+            div {
+              width: 100%;
+            }
             a {
               width: 180px;
               min-width: 180px;
@@ -533,7 +578,8 @@
                   width: 100%;
                   display: flex;
 
-                  select {
+                  select,
+                  .basic-single {
                     background: #d6dbdc;
                     border-radius: 3px;
                     border: none;

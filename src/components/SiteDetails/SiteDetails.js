@@ -7,6 +7,7 @@ import xButton from '../../assets/img/SiteDetails/xButton.svg'
 import './SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
 import Chart from '../../containers/Chart/Chart'
+import Select from 'react-select'
 
 const test = [{
     title: 'vesti',
@@ -20,6 +21,27 @@ const test2 = [{ mesto: 'Beograd', title: 'vesti' }, { mesto: 'dobra vest', titl
 const test3 = [{ text: 'vesti' }, { text: 'zabava' }]
 
 const options = ["PUBLISHED", 'DRAFT', 'ERROR', 'TRASH']
+
+const optionss = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+]
+
+const customSelectStyles = {
+    control: (base, state) => ({
+        ...base,
+        // height: "48px",
+        flex: "1",
+        fontWeight: "500",
+        // background: "white",
+        background: '#d6dbdc',
+        // !props.organization && props.color && "rgb(245, 192, 192)",
+    }),
+    placeholder: () => ({
+        color: 'black'
+    })
+};
 
 export class SiteDetails extends Component {
     constructor(prosp) {
@@ -114,7 +136,18 @@ export class SiteDetails extends Component {
                             <div className='owner_div'>
                                 <h4>Owner</h4>
                                 {!isIteditable && <Link to='nina.aralica@alo.rs'>nina.aralica@alo.rs</Link>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Owner' placeholder='nina.aralica@alo.rs' />}
+                                {/* {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Owner' placeholder='nina.aralica@alo.rs' />} */}
+                                {isIteditable && <Select
+                                    className="basic-single"
+                                    classNamePrefix="select"
+                                    // defaultValue={colourOptions[0]}
+                                    // isLoading={true}
+                                    styles={customSelectStyles}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    name="merge"
+                                    options={optionss}
+                                />}
                             </div>
                             <div className='description_div'>
                                 <h4>Description</h4>
@@ -279,7 +312,7 @@ export class SiteDetails extends Component {
                             <h1>Categories</h1>
                             <div className='categ_div'>
                                 <h4>Categories</h4>
-                                <div>
+                                {!isIteditable && <div className='listOfCateg'>
                                     {test3.map((item, key) => {
                                         if (!isIteditable) {
                                             return <p key={key}>{item.text}</p>
@@ -292,7 +325,19 @@ export class SiteDetails extends Component {
                                         }
                                     })}
 
-                                </div>
+                                </div>}
+                                {isIteditable && <Select
+                                    className="basic-single"
+                                    classNamePrefix="select"
+                                    // defaultValue={colourOptions[0]}
+                                    // isLoading={true}
+                                    isMulti
+                                    styles={customSelectStyles}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    name="merge"
+                                    options={optionss}
+                                />}
                             </div>
                             <div className='copySite_div'>
                                 <h4>Copy from site</h4>

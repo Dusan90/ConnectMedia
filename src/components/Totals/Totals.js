@@ -34,7 +34,9 @@ export class Totals extends Component {
             whichIsActive: '',
             data: test,
             filteredDate: [],
-            inputValue: ''
+            inputValue: '',
+            countPerPage: ''
+
         }
     }
     handlePageChange = (page) => {
@@ -62,11 +64,15 @@ export class Totals extends Component {
         this.setState({ filteredDate: newData })
     }
 
+    handleCountPerPage = (e) => {
+        this.setState({ countPerPage: e.target.value })
+    }
+
     render() {
         const { dataLength, whichIsActive } = this.state
         return (
             <>
-                <SearchContainer pageName={"TOTALS"} handleHomePageSort={this.handleHomePageSort} secondHeaderCustomStyle={{ height: '55px' }} />
+                <SearchContainer pageName={"TOTALS"} state={this.state} handleCountPerPage={this.handleCountPerPage} handleHomePageSort={this.handleHomePageSort} secondHeaderCustomStyle={{ height: '55px' }} />
                 <div style={{ padding: '0 35px' }}>
                     <div className='mainSiteDetailsNavigationTotal'>
                         <div className='siteDetailsNavigate'>

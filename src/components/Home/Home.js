@@ -40,7 +40,9 @@ export class Home extends Component {
             inputValue: '',
             checkboxList: [],
             hashesArrowDown: false,
-            hashesArrowWitchIsOn: ''
+            hashesArrowWitchIsOn: '',
+            countPerPage: ''
+
         }
     }
 
@@ -117,6 +119,10 @@ export class Home extends Component {
         this.setState({ hashesArrowDown: !this.state.hashesArrowDown, hashesArrowWitchIsOn: item })
     }
 
+    handleCountPerPage = (e) => {
+        this.setState({ countPerPage: e.target.value })
+    }
+
     render() {
         return (
             <>
@@ -131,7 +137,7 @@ export class Home extends Component {
                         <ViewSectionCard label={'<p><span>Error categories </span> <br> on site <span>Novosti.rs</span></p>'} description={'<p>Following categories were disabled: <span> sport, vesti, zabava </span> <br> They were disabled because they have less than 2 posts.</p>'} customDescriptionStyle={{ backgroundColor: '#F0D2AE' }} customStyle={{ backgroundColor: '#E0B494' }} />
                     </div>
                 </div>
-                <SearchContainer page={this.state.page} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} />
+                <SearchContainer page={this.state.page} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} />
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
                 <div className='mainTableDiv'>
                     <ShortTableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} />
