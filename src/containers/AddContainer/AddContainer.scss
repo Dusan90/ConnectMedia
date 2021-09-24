@@ -1,0 +1,52 @@
+.mainAddContainer {
+  min-height: 55px;
+  background: #295265;
+  margin: 20px 35px 0 35px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+
+  input {
+    background: #d6dbdc;
+    border-radius: 5px;
+    height: 42px;
+    align-self: center;
+    border: none;
+    outline: none;
+    width: 100%;
+    text-indent: 10px;
+    margin: 0 10px;
+    font-size: 14px;
+    line-height: 37px;
+  }
+
+  .basic-single {
+    width: 100%;
+    margin: 5px 10px;
+    align-self: center;
+    // .select__input {
+    //   height: 42px !important;
+    // }
+    // .css-b8ldur-Input {
+    //   background: blue;
+    //   height: 42px;
+    // }
+  }
+
+  button {
+    background: #418d9e;
+    height: 42px;
+    background: #418d9e;
+    border-radius: 3px;
+    border: none;
+    padding: 0 20px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      cursor: pointer;
+      background: #7befff;
+    }
+  }
+}

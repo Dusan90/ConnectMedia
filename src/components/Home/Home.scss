@@ -122,13 +122,18 @@
     }
     .sectionWithAddButton {
       margin: 0 20px 0 auto;
-      img {
-        width: 15.5px;
-        margin: 0 7.5px 0 0;
-      }
-      p {
-        color: #ffffff;
-        margin: 0;
+      div {
+        &:hover {
+          cursor: pointer;
+        }
+        img {
+          width: 15.5px;
+          margin: 0 7.5px 0 0;
+        }
+        p {
+          color: #ffffff;
+          margin: 0;
+        }
       }
     }
     .secondHeaderDivSection1 {

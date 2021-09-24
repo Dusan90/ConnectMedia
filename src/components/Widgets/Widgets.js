@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import TableRowContainer from '../../containers/TableRowContainer/TableRowContainer'
 import ShortTableRowContainer from '../../containers/TableRowContainer/ShortTableRowContainer'
 import SearchContainer from '../../containers/SearchContainer/SearchContainer'
+import AddContainer from '../../containers/AddContainer/AddContainer'
+import Select from 'react-select'
 import '../Home/Home.scss'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 
@@ -27,6 +29,26 @@ const test = [{
 },
 ]
 
+const optionss = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+]
+
+const customSelectStyles = {
+    control: (base, state) => ({
+        ...base,
+        flex: "1",
+        fontWeight: "500",
+        // background: "white",
+        background: '#d6dbdc',
+        // !props.organization && props.color && "rgb(245, 192, 192)",
+    }),
+    placeholder: () => ({
+        color: 'black'
+    })
+};
+
 export class Widgets extends Component {
     constructor(props) {
         super(props);
@@ -38,7 +60,10 @@ export class Widgets extends Component {
             checkboxList: [],
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
-            countPerPage: ''
+            countPerPage: '',
+            addButtonClicked: false,
+            selectedSiteSearch: '',
+            selectedCategorieSearch: ''
 
         }
     }
@@ -114,10 +139,40 @@ export class Widgets extends Component {
         this.setState({ countPerPage: e.target.value })
     }
 
+    handleAddSomeMore = () => {
+        this.setState({ addButtonClicked: !this.state.addButtonClicked })
+    }
+
+    handleSearchOnMainPage = (el, secondElement) => {
+        if (secondElement === 'sites') {
+            this.setState({ selectedSiteSearch: el })
+        } else if (secondElement === 'categories') {
+            this.setState({ selectedCategorieSearch: el })
+        }
+    }
+
     render() {
+        const { selectedSiteSearch } = this.state
         return (
             <>
-                <SearchContainer page={this.state.page} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                {this.state.addButtonClicked && <AddContainer>
+                    {!selectedSiteSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose a site.</p>}
+                    {selectedSiteSearch && <Select
+                        className="basic-single"
+                        classNamePrefix="select"
+                        // defaultValue={colourOptions[0]}
+                        // isLoading={true}
+                        placeholder='Select a widget to copy'
+                        styles={customSelectStyles}
+                        isClearable={true}
+                        isSearchable={true}
+                        name="merge"
+                        options={optionss}
+                    />}
+                    {selectedSiteSearch && <button><p>Create widget</p></button>}
+                </AddContainer>}
+
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
                 <div className='mainTableDiv'>
                     <ShortTableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />

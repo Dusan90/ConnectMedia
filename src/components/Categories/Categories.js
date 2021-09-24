@@ -9,6 +9,7 @@ import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import history from '../../routes/History'
 import '../Home/Home.scss'
+import AddContainer from '../../containers/AddContainer/AddContainer'
 
 const test = [{
     status: 'PUBLISHED',
@@ -36,7 +37,8 @@ export class Categories extends Component {
             data: test,
             filteredDate: [],
             inputValue: '',
-            countPerPage: ''
+            countPerPage: '',
+            addButtonClicked: false
         }
     }
 
@@ -100,11 +102,18 @@ export class Categories extends Component {
         this.setState({ countPerPage: e.target.value })
     }
 
+    handleAddSomeMore = () => {
+        this.setState({ addButtonClicked: !this.state.addButtonClicked })
+    }
+
     render() {
         return (
             <>
-                <SearchContainer page={this.state.page} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleHomePageSort={this.handleHomePageSort} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
-
+                <SearchContainer page={this.state.page} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleHomePageSort={this.handleHomePageSort} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
+                {this.state.addButtonClicked && <AddContainer>
+                    <input type="text" placeholder='Enter new name' />
+                    <button><p>Create category</p></button>
+                </AddContainer>}
                 <div className='mainTableDiv'>
                     <div className='shortScreenTableDiv'>
                         {test.map((item, key) => {

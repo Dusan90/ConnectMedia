@@ -10,6 +10,7 @@ import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import history from '../../routes/History'
+import AddContainer from '../../containers/AddContainer/AddContainer'
 
 
 import '../Home/Home.scss'
@@ -48,8 +49,8 @@ export class Posts extends Component {
             checkboxList: [],
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
-            countPerPage: ''
-
+            countPerPage: '',
+            addButtonClicked: false
 
         }
     }
@@ -149,11 +150,20 @@ export class Posts extends Component {
         this.setState({ countPerPage: e.target.value })
     }
 
+    handleAddSomeMore = () => {
+        this.setState({ addButtonClicked: !this.state.addButtonClicked })
+    }
+
     render() {
         console.log(this.state);
         return (
             <>
-                <SearchContainer page={this.state.page} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                <SearchContainer page={this.state.page} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                {this.state.addButtonClicked && <AddContainer>
+                    <input type="text" placeholder='Enter URL' />
+                    <button><p>Create post</p></button>
+                </AddContainer>}
+
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
 
                 <div className='mainTableDiv'>

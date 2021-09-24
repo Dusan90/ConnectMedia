@@ -102,8 +102,8 @@
       background: transparent;
       display: grid;
       grid-template-areas:
-        "box1 box2 box3"
-        "box4 box5 box6";
+        "box1 box3 box4"
+        "box5 box6 box2";
       grid-auto-rows: minmax(55px, auto);
       grid-auto-columns: minmax(55px, auto);
       row-gap: 5px;
@@ -121,9 +121,9 @@
       .goback {
         grid-area: box1;
       }
-      .siteDetails {
-        grid-area: box2;
-      }
+      // .siteDetails {
+      //   grid-area: box2;
+      // }
       .sitesDiv {
         grid-area: box3;
       }

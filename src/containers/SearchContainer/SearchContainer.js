@@ -10,7 +10,7 @@ import '../../components/Home/Home.scss'
 
 const options = ['test', 'test2', 'test3']
 
-function SearchContainer({ page, handlePageChange, pageName, state, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
+function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
     const [user, setUser] = useState('all users')
     const [showUserOptions, setShowUserOptions] = useState(false)
     const [categorie, setCategorie] = useState('all categories')
@@ -19,14 +19,15 @@ function SearchContainer({ page, handlePageChange, pageName, state, handleCountP
     const [showSitesOptions, setShowSitesOptions] = useState(false)
 
 
-
-
     const handleChangeOptionsuser = (el) => {
+        handleSearchOnMainPage(el, 'users')
         handleHomePageSort(el, 'users')
         setUser(el)
+
     }
 
     const handleChangeOptionscategorie = (el) => {
+        handleSearchOnMainPage(el, 'categories')
         handleHomePageSort(el, 'categories')
         setCategorie(el)
     }
@@ -56,6 +57,7 @@ function SearchContainer({ page, handlePageChange, pageName, state, handleCountP
     }
 
     const handleChangeOptionssites = (el) => {
+        handleSearchOnMainPage(el, 'sites')
         handleHomePageSort(el, 'sites')
         setSites(el)
     }
@@ -103,10 +105,11 @@ function SearchContainer({ page, handlePageChange, pageName, state, handleCountP
                         </div>
 
                     </div>
-                    <div className='sectionWithAddButton'>
-                        <img src={plas} alt="plas" />
-                        <p>add</p>
-
+                    <div className='sectionWithAddButton' >
+                        <div onClick={() => handleAddSomeMore()}>
+                            <img src={plas} alt="plas" />
+                            <p>add</p>
+                        </div>
                     </div>
                 </div>}
             </div>

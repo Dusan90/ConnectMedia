@@ -77,7 +77,7 @@ export class Totals extends Component {
                     <div className='mainSiteDetailsNavigationTotal'>
                         <div className='siteDetailsNavigate'>
                             <div onClick={() => { return this.handlePageChange('goback'), this.props.history.goBack() }} className={`goback ${whichIsActive === 'goback' && 'active'}`}><p>GO BACK</p></div>
-                            <div onClick={() => this.handlePageChange('siteDetails')} className={`siteDetails ${whichIsActive === 'siteDetails' && 'active'}`}><p>Site details</p></div>
+                            {/* <div onClick={() => this.handlePageChange('siteDetails')} className={`siteDetails ${whichIsActive === 'siteDetails' && 'active'}`}><p>Site details</p></div> */}
                             <div onClick={() => this.handlePageChange('sitesDiv')} className={`sitesDiv ${whichIsActive === 'sitesDiv' && 'active'}`}>
                                 <img src={whichIsActive === 'sitesDiv' ? postsBlack : posts} alt="posts" />
                                 <p>sites</p>

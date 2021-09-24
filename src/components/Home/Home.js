@@ -5,6 +5,7 @@ import TableRowContainer from '../../containers/TableRowContainer/TableRowContai
 import ShortTableRowContainer from '../../containers/TableRowContainer/ShortTableRowContainer'
 import SearchContainer from '../../containers/SearchContainer/SearchContainer'
 import EditableInline from '../../containers/EditableInline/EditableInline'
+import AddContainer from '../../containers/AddContainer/AddContainer'
 
 
 const test = [
@@ -41,7 +42,10 @@ export class Home extends Component {
             checkboxList: [],
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
-            countPerPage: ''
+            countPerPage: '',
+            selectedUserSearch: '',
+            selectedCategorieSearch: '',
+            addButtonClicked: false
 
         }
     }
@@ -112,6 +116,7 @@ export class Home extends Component {
     }
 
     handleArrowSort = (value) => {
+        // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
         console.log(value);
     }
 
@@ -123,7 +128,20 @@ export class Home extends Component {
         this.setState({ countPerPage: e.target.value })
     }
 
+    handleSearchOnMainPage = (el, secondElement) => {
+        if (secondElement === 'users') {
+            this.setState({ selectedUserSearch: el })
+        } else if (secondElement === 'categories') {
+            this.setState({ selectedCategorieSearch: el })
+        }
+    }
+
+    handleAddSomeMore = () => {
+        this.setState({ addButtonClicked: !this.state.addButtonClicked })
+    }
+
     render() {
+        const { selectedUserSearch } = this.state
         return (
             <>
                 <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>
@@ -137,7 +155,13 @@ export class Home extends Component {
                         <ViewSectionCard label={'<p><span>Error categories </span> <br> on site <span>Novosti.rs</span></p>'} description={'<p>Following categories were disabled: <span> sport, vesti, zabava </span> <br> They were disabled because they have less than 2 posts.</p>'} customDescriptionStyle={{ backgroundColor: '#F0D2AE' }} customStyle={{ backgroundColor: '#E0B494' }} />
                     </div>
                 </div>
-                <SearchContainer page={this.state.page} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} />
+                <SearchContainer handleAddSomeMore={this.handleAddSomeMore} page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} />
+                {this.state.addButtonClicked && <AddContainer>
+                    {!selectedUserSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose owner.</p>}
+                    {selectedUserSearch && <input type="text" placeholder='Enter site name' />}
+                    {selectedUserSearch && <button><p>Create site</p></button>}
+                </AddContainer>}
+
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
                 <div className='mainTableDiv'>
                     <ShortTableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} />

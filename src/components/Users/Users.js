@@ -8,6 +8,7 @@ import posts from '../../assets/img/TableIcons/posts.svg'
 import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import history from '../../routes/History'
+import AddContainer from '../../containers/AddContainer/AddContainer'
 import '../Home/Home.scss'
 
 const test = [{
@@ -36,7 +37,8 @@ export class Users extends Component {
             data: test,
             filteredDate: [],
             inputValue: '',
-            countPerPage: ''
+            countPerPage: '',
+            addButtonClicked: false
 
         }
     }
@@ -81,11 +83,20 @@ export class Users extends Component {
         this.setState({ countPerPage: e.target.value })
     }
 
+    handleAddSomeMore = () => {
+        this.setState({ addButtonClicked: !this.state.addButtonClicked })
+    }
+
     render() {
         return (
             <>
-                <SearchContainer page={this.state.page} pageName={"USERS"} state={this.state} handleCountPerPage={this.handleCountPerPage} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
-
+                <SearchContainer page={this.state.page} handleAddSomeMore={this.handleAddSomeMore} pageName={"USERS"} state={this.state} handleCountPerPage={this.handleCountPerPage} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
+                {this.state.addButtonClicked && <AddContainer>
+                    <input type="email" placeholder='Enter email' />
+                    <input type="password" placeholder='Enter password' />
+                    <input type="password" placeholder='Repeat password' />
+                    <button><p>Create user</p></button>
+                </AddContainer>}
                 <div className='mainTableDiv'>
                     <div className='shortScreenTableDiv'>
                         {test.map((item, key) => {
