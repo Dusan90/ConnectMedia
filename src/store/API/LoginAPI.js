@@ -1,21 +1,18 @@
 import { axiosInstance } from "./index";
 import {
-    BSC_API_URL,
+    API_URL,
     GET_LOGIN
 } from './urlConsts'
 
 // const handlerEnabled = false;
 
-const url = endpoint => `${BSC_API_URL}${endpoint}`;
+const url = endpoint => `${API_URL}${endpoint}`;
 
-
-
-const login = async () => {
-    return await axiosInstance.get(`${url(GET_LOGIN)}`, {
+const login = async ({ mail, password }) => {
+    return await axiosInstance.post(`${url(GET_LOGIN)}`, {
         //   handlerEnabled,
-        params: {
-
-        }
+        mail: mail,
+        pawd: password
     });
 }
 

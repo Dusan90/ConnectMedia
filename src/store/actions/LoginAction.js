@@ -1,7 +1,8 @@
 import * as types from "../types/LoginTypes";
 
-export const LoginActionRequest = () => ({
-    type: types.LOGIN_REQUEST
+export const LoginActionRequest = payload => ({
+    type: types.LOGIN_REQUEST,
+    payload
 });
 
 export const LoginActionReceive = payload => {
@@ -11,7 +12,8 @@ export const LoginActionReceive = payload => {
     };
 }
 
-export const LoginActionError = () => ({
+export const LoginActionError = payload => ({
     type: types.LOGIN_ERROR,
+    payload
 });
 

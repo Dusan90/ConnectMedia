@@ -1,6 +1,4 @@
-const urlPrefix = process.env.REACT_APP_BSC_API_URL_PREFIX;
-
-export const BSC_API_URL = `${document.location.origin}/${urlPrefix}`;
+export const API_URL = process.env.REACT_APP_API_URL_PREFIX;
 
 //login
-export const GET_LOGIN = '/frontend/users/owners/';
+export const GET_LOGIN = '/auth';

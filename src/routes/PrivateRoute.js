@@ -1,5 +1,7 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 import Auth from "./Auth";
 import { store } from '../store';
 import History from "./History";
@@ -20,6 +22,9 @@ import History from "./History";
 //   ]
 // }
 export const PrivateRoute = ({ component: Component, permissions, title, ...rest }) => {
+
+    const state = useSelector(state => state?.LoginReducer)
+    const { loading, data, error, errorData } = state?.login
     return (
         // Show the component only when the user is logged in and have rights to see page
         // Otherwise, redirect the user to /signin page
@@ -30,7 +35,7 @@ export const PrivateRoute = ({ component: Component, permissions, title, ...rest
                 // Auth.isAuth() && permissions.split(';').includes(Auth.getRole()) ?
                 // return <Component {...props} title={title} />
                 //  : <Redirect to={`/`} />
-                if (sessionStorage.getItem('token')) {
+                if (sessionStorage.getItem('token') && !loading && !error && data) {
                     return <Component {...props} title={title} />
                 } else {
                     History.push('/')
