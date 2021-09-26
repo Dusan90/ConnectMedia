@@ -33,7 +33,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
 
     return (
         <div className='shortScreenTableDiv'>
-            {data.map((item, key) => {
+            {data.length !== 0 && data.map((item, key) => {
+                console.log(item);
                 return <div key={key} className='mainDivShotScreen'>
                     <div className='checkAndTrashDiv'>
                         <input type="checkbox" value={checkboxList} checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} />
@@ -48,7 +49,7 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
                             <p>STATUS</p>
                         </div>
                         <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>
-                            {item.status}
+                            {item.auto_publish}
                         </div>
                     </div>
                     <div className='ownerDiv' onClick={() => handlePageRedirect(item)}>
@@ -61,7 +62,7 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
 
                         </div>
                         <div className='ownerClass'>
-                            {item.owner}
+                            {item.owner.email}
                         </div>
                     </div>
                     <div className='nazivDiv'>
@@ -74,7 +75,7 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
 
                         </div>
                         <div className='ownersNameClass'>
-                            {item.nazivKorisnika}
+                            {item.name}
                         </div>
                     </div>
                     <div className='mainForIcons'>

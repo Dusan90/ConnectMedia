@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import SearchContainer from '../../containers/SearchContainer/SearchContainer'
+import { connect } from 'react-redux'
 import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
 import secondarrowDown from '../../assets/img/TableIcons/arrow.svg'
 import visit from '../../assets/img/TableIcons/visit.svg'
@@ -9,6 +10,8 @@ import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import history from '../../routes/History'
 import AddContainer from '../../containers/AddContainer/AddContainer'
+import { CreateUserActionRequest } from '../../store/actions/UsersActions'
+import { NotificationManager } from 'react-notifications'
 import '../Home/Home.scss'
 
 const test = [{
@@ -38,8 +41,30 @@ export class Users extends Component {
             filteredDate: [],
             inputValue: '',
             countPerPage: '',
-            addButtonClicked: false
+            addButtonClicked: false,
+            newUseremail: '',
+            newUserpassword: '',
+            newUsername: ''
 
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { createUser } = this.props
+        const { loading: createUserLoading, error: createUserError, data: createUserData, errorData: createUserErrorData } = createUser
+
+        if (prevProps.createUser !== createUser && !createUserLoading && !createUserError && createUserData) {
+            console.log(createUserData);
+            this.setState({
+                newUseremail: '',
+                newUserpassword: '',
+                newUsername: '',
+                addButtonClicked: false
+            })
+            NotificationManager.success("User successfully created", "Success", 2000);
+
+        } else if (prevProps.createUser !== createUser && createUserError && createUserErrorData) {
+            NotificationManager.error(`${createUserErrorData.data.message}`, "Failed", 2000)
         }
     }
 
@@ -87,15 +112,28 @@ export class Users extends Component {
         this.setState({ addButtonClicked: !this.state.addButtonClicked })
     }
 
+    handleCreateUser = (e) => {
+        this.setState({ [e.target.id]: e.target.value })
+    }
+
+    handleClickCreateUser = () => {
+        this.props.dispatch(CreateUserActionRequest({
+            mail: this.state.newUseremail,
+            password: this.state.newUserpassword,
+            name: this.state.newUsername
+        }))
+    }
+
     render() {
+
         return (
             <>
                 <SearchContainer page={this.state.page} handleAddSomeMore={this.handleAddSomeMore} pageName={"USERS"} state={this.state} handleCountPerPage={this.handleCountPerPage} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
                 {this.state.addButtonClicked && <AddContainer>
-                    <input type="email" placeholder='Enter email' />
-                    <input type="password" placeholder='Enter password' />
-                    <input type="password" placeholder='Repeat password' />
-                    <button><p>Create user</p></button>
+                    <input type="email" placeholder='Enter email' id='newUseremail' onChange={(e) => this.handleCreateUser(e)} />
+                    <input type="password" placeholder='Enter password' id='newUserpassword' onChange={(e) => this.handleCreateUser(e)} />
+                    <input type="text" placeholder='Name' id='newUsername' onChange={(e) => this.handleCreateUser(e)} />
+                    <button onClick={this.handleClickCreateUser}><p>Create user</p></button>
                 </AddContainer>}
                 <div className='mainTableDiv'>
                     <div className='shortScreenTableDiv'>
@@ -191,7 +229,7 @@ export class Users extends Component {
                                     </div></td>
                                     <td>
                                         <div className="divWithHashes">
-                                            <p>Kuhinja ljubav moda</p>
+                                            <p>admin root moderator</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -204,4 +242,13 @@ export class Users extends Component {
     }
 }
 
-export default Users
+const mapStateToProps = (state) => {
+    const { UsersReducer } = state;
+    const { createUser } = UsersReducer
+    return {
+        createUser
+
+    }
+}
+
+export default connect(mapStateToProps, null)(Users)

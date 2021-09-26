@@ -1,42 +1,44 @@
 import React, { Component } from 'react'
 import './Home.scss'
+import { connect } from 'react-redux'
 import ViewSectionCard from '../../containers/viewSections/ViewSectionCard'
 import TableRowContainer from '../../containers/TableRowContainer/TableRowContainer'
 import ShortTableRowContainer from '../../containers/TableRowContainer/ShortTableRowContainer'
 import SearchContainer from '../../containers/SearchContainer/SearchContainer'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import AddContainer from '../../containers/AddContainer/AddContainer'
+import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
 
 
-const test = [
-    {
-        status: 'PUBLISHED',
-        owner: 'nina.simone@gmail.com',
-        nazivKorisnika: 'B92.net',
-        hashes: ['test1', 'test2'],
-        in: '11212',
-        out: '2',
-        txr: '0.02%',
-        id: '1'
-    },
-    {
-        status: 'PUBLISHED',
-        owner: 'nina.simone@gmail.com',
-        nazivKorisnika: 'B92.net',
-        hashes: ['test1', 'test2'],
-        in: '11212',
-        out: '2',
-        txr: '0.02%',
-        id: '2'
-    },
-]
+// const test = [
+//     {
+//         status: 'PUBLISHED',
+//         owner: 'nina.simone@gmail.com',
+//         nazivKorisnika: 'B92.net',
+//         hashes: ['test1', 'test2'],
+//         in: '11212',
+//         out: '2',
+//         txr: '0.02%',
+//         id: '1'
+//     },
+//     {
+//         status: 'PUBLISHED',
+//         owner: 'nina.simone@gmail.com',
+//         nazivKorisnika: 'B92.net',
+//         hashes: ['test1', 'test2'],
+//         in: '11212',
+//         out: '2',
+//         txr: '0.02%',
+//         id: '2'
+//     },
+// ]
 
 export class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
             page: 1,
-            data: test,
+            data: [],
             filteredDate: [],
             inputValue: '',
             checkboxList: [],
@@ -47,6 +49,20 @@ export class Home extends Component {
             selectedCategorieSearch: '',
             addButtonClicked: false
 
+        }
+    }
+
+    componentDidMount() {
+        this.props.dispatch(GetSitesListActionRequest())
+    }
+
+    componentDidUpdate(prevProps) {
+        const { getSitesList } = this.props
+        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError, errorData: getSitesListErrorData } = getSitesList;
+
+        if (prevProps.getSitesList !== getSitesList && !getSitesListError && !getSitesListLoading && getSitesListData) {
+            console.log(getSitesListData, prevProps);
+            this.setState({ data: getSitesListData.data })
         }
     }
 
@@ -164,12 +180,21 @@ export class Home extends Component {
 
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
                 <div className='mainTableDiv'>
-                    <ShortTableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} />
-                    <TableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} handleArrowSort={this.handleArrowSort} />
+                    <ShortTableRowContainer data={this.state.data} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} />
+                    <TableRowContainer data={this.state.data} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} handleArrowSort={this.handleArrowSort} />
                 </div>
             </>
         )
     }
 }
 
-export default Home
+const mapStateToProps = (state) => {
+    const { SitesListReducer } = state;
+    const { getSitesList } = SitesListReducer
+    return {
+        getSitesList
+
+    }
+}
+
+export default connect(mapStateToProps, null)(Home)

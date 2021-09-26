@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import NavWidget from '../../containers/NavWidget/NavWidget'
+import { connect } from 'react-redux'
 import '../SiteDetails/SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
+import { GetSpecUserDetailsActionRequest, UpdateSpecUsersActionRequest, DeleteSpecUsersActionRequest } from '../../store/actions/UsersActions'
+import { NotificationManager } from 'react-notifications'
 import Select from 'react-select'
 
 const options = [
@@ -30,8 +33,33 @@ export class UsersDetails extends Component {
         super(prosp)
         this.state = {
             isIteditable: false,
-            whichisit: '',
-            dataTest: 'PUBLISHED'
+            // whichisit: '',
+            dataTest: 'PUBLISHED',
+            usersData: '',
+            confirmMessage: false
+        }
+    }
+
+
+    componentDidMount() {
+        this.props.dispatch(GetSpecUserDetailsActionRequest({
+            id: this.props.match.params.id
+        }))
+    }
+
+    componentDidUpdate(prevProps) {
+        const { getSpecUserDetails, updateSpecUser, deleteSpecUser } = this.props
+        const { loading: getSpecUserDetailsLoading, error: getSpecUserDetailsError, data: getSpecUserDetailsData } = getSpecUserDetails
+        const { loading: updateSpecUserLoading, error: updateSpecUserError, data: updateSpecUserData } = updateSpecUser
+        const { loading: deleteSpecUserLoading, error: deleteSpecUserError, data: deleteSpecUserData } = deleteSpecUser
+
+        if (prevProps.getSpecUserDetails !== getSpecUserDetails && !getSpecUserDetailsLoading && !getSpecUserDetailsError && getSpecUserDetailsData) {
+            this.setState({ usersData: getSpecUserDetailsData.data })
+        }
+
+        if (prevProps.deleteSpecUser !== deleteSpecUser && !deleteSpecUserLoading && !deleteSpecUserError && deleteSpecUserData) {
+            NotificationManager.success("User successfully deleted", "Success", 2000);
+            this.props.history.push('/users')
         }
     }
 
@@ -62,19 +90,37 @@ export class UsersDetails extends Component {
         this.setState({ tabClicked: page })
     }
 
-    handleButtonActive = (page) => {
-        console.log(page);
-        this.setState({ whichisit: page })
+    handleButtonActive = () => {
+        this.props.dispatch(UpdateSpecUsersActionRequest({
+            id: this.props.match.params.id,
+            value: 'nestotamo'
+        }))
+        // this.setState({ whichisit: page })
     }
 
     handleStatusChange = (status) => {
         this.setState({ dataTest: status })
     }
+
+    handleTrashClick = () => {
+        this.setState({ confirmMessage: true })
+    }
+
+    deleteuserFunction = () => {
+        this.props.dispatch(DeleteSpecUsersActionRequest({
+            id: this.props.match.params.id
+        }))
+    }
     render() {
-        const { isIteditable } = this.state
+        const { isIteditable, usersData } = this.state
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget handleWhereEverNav={this.handleWhereEverNav} pageName={'users'} />
+                <NavWidget handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} pageName={'users'} />
+                {this.state.confirmMessage && <div className='confurmText'>
+                    <h4>Are you sure</h4>
+                    <button onClick={this.deleteuserFunction}>Yes</button>
+                    <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
+                </div>}
                 <div className='mainSiteInfoDiv'>
                     <div className='leftSideDiv'>
                         <h1>General</h1>
@@ -83,8 +129,8 @@ export class UsersDetails extends Component {
 
                             <div className='owner_div'>
                                 <h4>Email</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{usersData?.email ? usersData?.email : ''}</p>}
+                                {isIteditable && <input type="text" placeholder={usersData?.email ? usersData?.email : ''} />}
                             </div>
                             <div className='url_div selectable'>
                                 <h4>Roles</h4>
@@ -159,7 +205,7 @@ export class UsersDetails extends Component {
                 </div>
 
                 {isIteditable && <div className='buttonsDiv'>
-                    <SaveButtonEdit labeltext={'Save changes'} colorization={'ScrapeClass'} customStyle={{ fontWeight: 'bold', height: '58px', width: "260px" }} />
+                    <SaveButtonEdit labeltext={'Save changes'} handleButtonActive={this.handleButtonActive} colorization={'ScrapeClass'} customStyle={{ fontWeight: 'bold', height: '58px', width: "260px" }} />
                     <SaveButtonEdit labeltext={'Cancel'} colorization={`ScrapeClass clicked`} customStyle={{ fontWeight: 'bold', height: '58px', width: "184px" }} />
                 </div>}
             </div >
@@ -167,4 +213,15 @@ export class UsersDetails extends Component {
     }
 }
 
-export default UsersDetails
+const mapStateToProps = (state) => {
+    const { UsersReducer } = state;
+    const { getSpecUserDetails, updateSpecUser, deleteSpecUser } = UsersReducer
+    return {
+        getSpecUserDetails,
+        updateSpecUser,
+        deleteSpecUser
+
+    }
+}
+
+export default connect(mapStateToProps, null)(UsersDetails)

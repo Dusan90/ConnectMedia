@@ -4,8 +4,10 @@ import NavWidget from '../../containers/NavWidget/NavWidget'
 import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
 import secondarrowDown from '../../assets/img/TableIcons/arrow.svg'
 import xButton from '../../assets/img/SiteDetails/xButton.svg'
+import { connect } from 'react-redux'
 import './SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
+import { GetSiteDetailsActionRequest, DeleteSiteActionRequest } from '../../store/actions/SitesListAction'
 import Chart from '../../containers/Chart/Chart'
 import Select from 'react-select'
 
@@ -50,7 +52,31 @@ export class SiteDetails extends Component {
             isIteditable: false,
             whichisit: '',
             dataTest: 'PUBLISHED',
-            tabClicked: ''
+            tabClicked: '',
+            confirmMessage: false
+        }
+    }
+
+    componentDidMount() {
+        this.props.dispatch(GetSiteDetailsActionRequest({
+            id: this.props.match.params.id
+        }))
+    }
+
+    componentDidUpdate(prevProps) {
+        const { getSiteDetails, deleteSite } = this.props
+        const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError, errorData: getSiteDetailsErrorData } = getSiteDetails;
+        const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
+
+
+        if (prevProps.getSiteDetails !== getSiteDetails && !getSiteDetailsError && !getSiteDetailsLoading && getSiteDetailsData) {
+            console.log(getSiteDetailsData);
+            // this.setState({ data: getSiteDetailsData.data })
+        }
+
+        if (prevProps.deleteSite !== deleteSite && !deleteSiteError && !deleteSiteLoading && deleteSiteData) {
+            console.log(deleteSiteData);
+            // this.setState({ data: getSiteDetailsData.data })
         }
     }
 
@@ -77,6 +103,7 @@ export class SiteDetails extends Component {
         this.setState({ tabClicked: page })
     }
 
+
     handleButtonActive = (page) => {
         console.log(page);
         this.setState({ whichisit: page })
@@ -94,11 +121,26 @@ export class SiteDetails extends Component {
         console.log(value);
     }
 
+    handleTrashClick = () => {
+        this.setState({ confirmMessage: true })
+    }
+
+    deletesiteFunction = () => {
+        this.props.dispatch(DeleteSiteActionRequest({
+            id: this.props.match.params.id
+        }))
+    }
+
     render() {
         const { isIteditable, whichisit, dataTest, tabClicked } = this.state
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget handleWhereEverNav={this.handleWhereEverNav} />
+                <NavWidget handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
+                {this.state.confirmMessage && <div className='confurmText'>
+                    <h4>Are you sure</h4>
+                    <button onClick={this.deletesiteFunction}>Yes</button>
+                    <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
+                </div>}
                 {tabClicked === 'statsDiv' && <div style={{ height: '500px', marginTop: '20px' }}>
                     <Chart customStyle={{ padding: '0' }} />
                 </div>}
@@ -439,4 +481,14 @@ export class SiteDetails extends Component {
     }
 }
 
-export default SiteDetails
+const mapStateToProps = (state) => {
+    const { SitesListReducer } = state;
+    const { getSiteDetails, deleteSite } = SitesListReducer
+    return {
+        getSiteDetails,
+        deleteSite
+
+    }
+}
+
+export default connect(mapStateToProps, null)(SiteDetails)

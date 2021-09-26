@@ -18,7 +18,17 @@ export function* LoginSaga({ payload }) {
     }
 }
 
+export function* LogOutSaga({ payload }) {
+    try {
+        const response = yield call(API.logOut, payload);
+        yield put(ACTIONS.LogoutActionReceive(response.data));
+    } catch (err) {
+        yield put(ACTIONS.LogoutActionError(err.response));
+    }
+}
+
 
 export function* loginSaga() {
     yield takeLatest(TYPES.LOGIN_REQUEST, LoginSaga);
+    yield takeLatest(TYPES.LOGOUT_REQUEST, LogOutSaga);
 }

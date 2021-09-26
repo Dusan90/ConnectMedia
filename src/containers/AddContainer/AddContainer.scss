@@ -6,6 +6,12 @@
   display: flex;
   align-items: center;
 
+  @media only screen and (max-width: 600px) {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+
   input {
     background: #d6dbdc;
     border-radius: 5px;

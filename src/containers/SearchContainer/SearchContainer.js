@@ -117,7 +117,7 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
                 <div className='divWithInfoText'>LEGEND: <span>in:</span> clicks coming from site X, <span>out:</span> clicks sent to site X <span>txr:</span> out / in</div>
                 <div className='pageInfoDiv'>
                     <div>
-                        <p>1 - 20 of 23</p>
+                        <p>{`1 - 20 of ${state.data.length}`}</p>
                     </div>
 
                     <input type="number" onChange={(e) => handleCountPerPage(e)} />
@@ -125,7 +125,7 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
                     <Pagination
                         activePage={page}
                         itemsCountPerPage={state.countPerPage ? parseInt(state.countPerPage) : 10}
-                        totalItemsCount={450}
+                        totalItemsCount={state.data.length}
                         pageRangeDisplayed={2}
                         onChange={handlePageChange}
                         hideFirstLastPages={true}

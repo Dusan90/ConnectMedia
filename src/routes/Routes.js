@@ -8,6 +8,7 @@ import Footer from '../components/Footer/Footer'
 import Header from '../components/Header/Header'
 
 
+
 // const urlPrefix = process.env.REACT_APP_BSC_URL_PREFIX;
 
 const pageComponentMap = {

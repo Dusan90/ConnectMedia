@@ -16,11 +16,18 @@ export class Login extends Component {
         }
     }
 
+    componentDidMount() {
+        if (!sessionStorage.getItem('token')) {
+            sessionStorage.setItem('token', uuidv4())
+        }
+    }
+
     componentDidUpdate(prevProps) {
         const { login } = this.props
         const { data, loading, error, errorData } = login;
 
         if (!prevProps.login !== login && !loading && !error && data) {
+            sessionStorage.setItem('isLoged', 'true')
             history.push('/sites')
         }
     }
@@ -28,12 +35,11 @@ export class Login extends Component {
     handleSubmit = () => {
         const { email, password } = this.state
         if (email && password) {
-            sessionStorage.setItem('token', uuidv4())
+            this.props.dispatch(LoginActionRequest({
+                mail: email,
+                password
+            }))
         }
-        this.props.dispatch(LoginActionRequest({
-            mail: email,
-            password
-        }))
     }
 
     render() {

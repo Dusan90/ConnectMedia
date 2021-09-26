@@ -100,19 +100,19 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
             </thead>
 
             <tbody>
-                {data.map((item, key) => {
+                {data.length !== 0 && data.map((item, key) => {
                     return <tr key={key} onClick={(e) => handlePageRedirect(e, item)}>
                         <td><input type="checkbox" value={checkboxList} id='noredirection' checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td>
                         <td><img src={secondTrash} alt="trash" id='noredirection' /></td>
                         <td> <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>
-                            {item.status}
+                            {item.auto_publish}
                         </div>
                         </td>
-                        <td><div className='ownerClass'>
-                            {item.owner}
+                        <td><div className='ownerClass' id='noredirection' onClick={() => history.push(`/users/${item.owner.id}`)}>
+                            {item.owner.email}
                         </div></td>
                         <td><div className='ownersNameClass'>
-                            {item.nazivKorisnika}
+                            {item.name}
                         </div></td>
                         <td><div className="divWithClicableIcons">
                             <img src={visit} alt="visit" />

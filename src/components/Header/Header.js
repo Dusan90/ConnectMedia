@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import MainIcon from '../../assets/img/Header/Frame.svg'
 import User from '../../assets/img/Header/Group5378.svg'
 import Bell from '../../assets/img/Header/Icons.svg'
 import ArrowDown from '../../assets/img/Header/Vector.svg'
 import LogOutButton from '../../containers/Buttons/LogOutButton'
+import { LogoutActionRequest } from '../../store/actions/LoginAction'
+import { GetSelfUserActionRequest, ChangeSelfUserPassActionRequest } from '../../store/actions/UsersActions'
+import { NotificationManager } from 'react-notifications'
 import './Header.scss'
 
 const Bars = ({ active }) => {
@@ -16,7 +20,10 @@ const Bars = ({ active }) => {
 }
 
 function Header() {
+    const state = useSelector(state => state)
+    const { UsersReducer } = state
     const history = useHistory()
+    const dispatch = useDispatch()
     const [isItClicked, setIsItClicked] = useState(false)
     const [isItClickedChangePass, setIsClickedChangePass] = useState(false)
     const [isHamburgerClicked, setIsHamburgerClicked] = useState(false)
@@ -24,10 +31,32 @@ function Header() {
     const [currentPass, setCurrentPass] = useState('')
     const [newPass, setNewPass] = useState('')
     const [whoIsActive, setWhoIsActive] = useState('')
+    const [currentUserData, setCurrentUserData] = useState('')
 
     const { pathname } = history.location
 
+    const { loading: getSelfUserLoading, error: getSelfUserError, data: getSelfUserData } = UsersReducer.getSelfUser
+    const { loading: changeSelfUserPassLoading, errorData: changeSelfUserPassErrorData, error: changeSelfUserPassError, data: changeSelfUserPassData } = UsersReducer.changeSelfUserPass
 
+
+
+    useEffect(() => {
+        dispatch(GetSelfUserActionRequest())
+    }, [])
+
+    useEffect(() => {
+        if (!getSelfUserLoading && !getSelfUserError && getSelfUserData) {
+            setCurrentUserData(getSelfUserData.data)
+        }
+    }, [UsersReducer.getSelfUser])
+
+    useEffect(() => {
+        if (!changeSelfUserPassLoading && !changeSelfUserPassError && changeSelfUserPassData && !changeSelfUserPassErrorData) {
+            NotificationManager.success("Successfully changed password", "Success", 2000);
+        } else if (changeSelfUserPassError && changeSelfUserPassErrorData) {
+            NotificationManager.error(`${changeSelfUserPassErrorData.data.message}`, "Failed", 2000)
+        }
+    }, [UsersReducer.changeSelfUserPass])
 
 
     const handleDropDown = () => {
@@ -40,7 +69,6 @@ function Header() {
     }
 
     const handleChangePassShow = () => {
-        setIsItClicked(false)
         setIsClickedChangePass(prevState => {
             return !prevState
         })
@@ -56,7 +84,9 @@ function Header() {
     }
 
     const hanldeLogOut = () => {
+        dispatch(LogoutActionRequest())
         sessionStorage.removeItem('token')
+        sessionStorage.removeItem('isLoged')
         window.location.reload();
     }
 
@@ -73,6 +103,20 @@ function Header() {
         setIsNotificationOpen(prevProps => {
             return !prevProps
         })
+    }
+
+    const handleChangePassword = () => {
+        dispatch(ChangeSelfUserPassActionRequest({
+            newPassword: newPass,
+            password: currentPass
+        }))
+    }
+
+    const handleClickCancel = () => {
+        setIsItClicked(false)
+        setIsClickedChangePass(false)
+        setCurrentPass('')
+        setNewPass('')
     }
 
     return (
@@ -92,7 +136,7 @@ function Header() {
                     <img className='bell' src={Bell} alt="bell" onClick={handleBellNotifications} />
                     <div className='redDot'></div>
                     <div>
-                        <p>nina.aralica@alo.rs</p>
+                        <p>{currentUserData?.email}</p>
                         <img src={User} alt="User" />
                         <img onClick={handleDropDown} src={ArrowDown} alt="arrow" className='arrowDown' style={{ marginRight: '12px' }} />
                     </div>
@@ -106,8 +150,8 @@ function Header() {
                 <input type="password" placeholder='Current password' onChange={(e) => setCurrentPass(e.target.value)} />
                 <input type="password" placeholder='New password' onChange={(e) => setNewPass(e.target.value)} />
                 <div className='buttonsChangePass'>
-                    <LogOutButton label={'Change Password'} colorization={'outOFBlure'} customStyles={{ width: '166px' }} />
-                    <LogOutButton label={'Close'} colorization={'outOFBlure'} customStyles={{ width: '75px' }} handleClick={handleChangePassShow} />
+                    <LogOutButton label={'Change Password'} handleClick={handleChangePassword} colorization={'outOFBlure'} customStyles={{ width: '166px' }} />
+                    <LogOutButton label={'Close'} colorization={'outOFBlure'} customStyles={{ width: '75px' }} handleClick={handleClickCancel} />
 
                 </div>
             </div>}
@@ -136,5 +180,6 @@ function Header() {
         </div>
     )
 }
+
 
 export default Header

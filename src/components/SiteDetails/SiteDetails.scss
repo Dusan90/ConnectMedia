@@ -1,6 +1,25 @@
 .mainSiteDetailsDiv {
   padding: 0 35px;
   font-family: "Calibri";
+  position: relative;
+  .confurmText {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    position: absolute;
+    top: -50px;
+    button {
+      background: #418d9e;
+      border-radius: 3px;
+      padding: 5px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &.nobutton {
+        background: white;
+      }
+    }
+  }
   .mainSiteInfoDiv {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

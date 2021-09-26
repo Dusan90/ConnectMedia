@@ -11,7 +11,7 @@ import widgets from '../../assets/img/SiteDetails/Frame(3).svg'
 import widgetsBlack from '../../assets/img/SiteDetails/widgetsBlack.svg'
 import trash from '../../assets/img/SiteDetails/Icons9.svg'
 
-function NavWidget({ handleWhereEverNav, pageName }) {
+function NavWidget({ handleWhereEverNav, pageName, handleTrashClick }) {
     const [whichIsActive, setWhichIsActive] = useState('siteDetails')
 
     const history = useHistory()
@@ -55,7 +55,7 @@ function NavWidget({ handleWhereEverNav, pageName }) {
                     <p>widgets</p>
                 </div>}
                 <div className='trashDiv'>
-                    <img src={trash} alt="trash" />
+                    <img src={trash} onClick={handleTrashClick} alt="trash" />
                 </div>
             </div>
         </div>
