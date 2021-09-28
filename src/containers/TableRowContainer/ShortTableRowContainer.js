@@ -66,8 +66,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                     <div className='statusDiv'>
                         <div>
                             <div className='arrowDiv'>
-                                <img src={arrowUp} onClick={() => handleArrowSort('statusUp')} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort('statusDown')} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort('state', 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort('state', 'Down')} alt="arrow" />
                             </div>
                             <p>STATUS</p>
                         </div>
@@ -78,8 +78,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                     <div className='ownerDiv' onClick={() => handlePageRedirect(item)}>
                         <div>
                             <div className='arrowDiv'>
-                                <img src={arrowUp} alt="arrow" onClick={() => handleArrowSort(pageName === 'widgets' ? 'NameUp' : 'OWNERUP')} />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'NameDown' : 'OWNERDown')} alt="arrow" />
+                                <img src={arrowUp} alt="arrow" onClick={() => handleArrowSort(pageName === 'widgets' ? 'name' : 'owner', 'Up')} />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'name' : 'owner', 'Down')} alt="arrow" />
                             </div>
                             <p>{pageName === 'widgets' ? 'Name' : 'OWNER'}</p>
 
@@ -91,8 +91,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                     <div className='nazivDiv'>
                         <div>
                             <div className='arrowDiv'>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteUp' : "NameUp")} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteDown' : "NameDown")} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'site' : "name", "Up")} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'site' : "name", "Down")} alt="arrow" />
                             </div>
                             <p>{pageName === 'widgets' ? 'Site' : "Name"}</p>
 
@@ -143,8 +143,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                         <div className='statistic'>
                             <div>
                                 <div className='arrowDiv'>
-                                    <img src={arrowUp} alt="arrow" onClick={() => handleArrowSort(pageName === 'widgets' ? "impUp" : "inUp")} />
-                                    <img src={secondarrowDown} alt="arrow" onClick={() => handleArrowSort(pageName === 'widgets' ? "impDown" : "inDown")} />
+                                    <img src={arrowUp} alt="arrow" onClick={() => handleArrowSort(pageName === 'widgets' ? "imp" : "in", 'Up')} />
+                                    <img src={secondarrowDown} alt="arrow" onClick={() => handleArrowSort(pageName === 'widgets' ? "imp" : "in", "Down")} />
                                 </div>
                                 <p>{pageName === 'widgets' ? "imp" : "in"}</p>
 
@@ -155,8 +155,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
 
                             <div>
                                 <div className='arrowDiv'>
-                                    <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "clkUp" : "outUp")} alt="arrow" />
-                                    <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "clkDown" : "outDown")} alt="arrow" />
+                                    <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "clk" : "out", "Up")} alt="arrow" />
+                                    <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "clk" : "out", "Down")} alt="arrow" />
                                 </div>
                                 <p>{pageName === 'widgets' ? "clk" : "out"}</p>
 
@@ -166,8 +166,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                         <div className='statistic'>
                             <div>
                                 <div className='arrowDiv'>
-                                    <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "ctrUp" : "txrUp")} alt="arrow" />
-                                    <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "ctrDown" : "txrDown")} alt="arrow" />
+                                    <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "ctr" : "txr", 'Up')} alt="arrow" />
+                                    <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "ctr" : "txr", 'Down')} alt="arrow" />
                                 </div>
                                 <p>{pageName === 'widgets' ? "ctr" : "txr"}</p>
                             </div>

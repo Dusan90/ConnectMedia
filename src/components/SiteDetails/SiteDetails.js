@@ -89,10 +89,12 @@ export class SiteDetails extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { getSiteDetails, deleteSite, createSite } = this.props
+        const { getSiteDetails, deleteSite, createSite, updateSiteDetails } = this.props
         const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError, errorData: getSiteDetailsErrorData } = getSiteDetails;
         const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
         const { data: createSiteData, loading: createSiteLoading, error: createSiteError, errorData: createSiteErrorData } = createSite;
+        const { data: updateSiteDetailsData, loading: updateSiteDetailsLoading, error: updateSiteDetailsError, errorData: updateSiteDetailsErrorData } = updateSiteDetails;
+
 
 
         if (prevProps.getSiteDetails !== getSiteDetails && !getSiteDetailsError && !getSiteDetailsLoading && getSiteDetailsData) {
@@ -113,6 +115,14 @@ export class SiteDetails extends Component {
             this.props.history.push('/sites')
         } else if (prevProps.createSite !== createSite && createSiteError && createSiteErrorData) {
             NotificationManager.error(`${createSiteErrorData.data.message}`, "Failed", 2000);
+
+        }
+
+        if (prevProps.updateSiteDetails !== updateSiteDetails && !updateSiteDetailsError && !updateSiteDetailsLoading && updateSiteDetailsData) {
+            NotificationManager.success("Site successfully updated", "Success", 2000);
+            this.props.history.push('/sites')
+        } else if (prevProps.updateSiteDetails !== updateSiteDetails && updateSiteDetailsError && updateSiteDetailsErrorData) {
+            NotificationManager.error(`${updateSiteDetailsErrorData.data.message}`, "Failed", 2000);
 
         }
     }

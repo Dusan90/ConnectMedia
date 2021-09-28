@@ -67,8 +67,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort('statusUp')} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort('statusDown')} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort('state', 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort('state', 'Down')} alt="arrow" />
                             </div>
                             <p>STATUS</p>
                         </div>
@@ -76,8 +76,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'NameUp' : 'OWNERUP')} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'NameDown' : 'OWNERDown')} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'name' : 'owner', 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'name' : 'owner', 'Down')} alt="arrow" />
                             </div>
                             <p>{pageName === 'widgets' ? 'Name' : 'OWNER'}</p>
                         </div>
@@ -85,8 +85,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteUp' : "NameUp")} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteDown' : "NameDown")} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'site' : "name", 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'site' : "name", 'Down')} alt="arrow" />
                             </div>
                             <p>{pageName === 'widgets' ? 'Site' : "Name"}</p>
                         </div>
@@ -96,8 +96,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "impUp" : "inUp")} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "impDown" : "inDown")} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "imp" : "in", 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "imp" : "in", 'Down')} alt="arrow" />
                             </div>
                             <p>{pageName === 'widgets' ? "imp" : "in"}</p>
                         </div>
@@ -105,8 +105,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "clkUp" : "outUp")} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "clkDown" : "outDown")} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "clk" : "out", 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "clk" : "out", 'Down')} alt="arrow" />
                             </div>
                             <p>{pageName === 'widgets' ? "clk" : "out"}</p>
                         </div>
@@ -114,8 +114,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "ctrUp" : "txrUp")} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "ctrDown" : "txrDown")} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? "ctr" : "txr", 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? "ctr" : "txr", 'Down')} alt="arrow" />
                             </div>
                             <p>{pageName === 'widgets' ? "ctr" : "txr"}</p>
                         </div>

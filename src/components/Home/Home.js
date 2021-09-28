@@ -152,9 +152,16 @@ export class Home extends Component {
         console.log(value);
     }
 
-    handleArrowSort = (value) => {
+    handleArrowSort = (sortByClicked, value) => {
         // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
-        console.log(value);
+
+        if (value === 'Up') {
+            const sorted = this.state.data.sort((a, b) => { return b[sortByClicked] - a[sortByClicked] })
+            this.setState({ data: sorted })
+        } else if (value === 'Down') {
+            const sorted = this.state.data.sort((a, b) => { return a[sortByClicked] - b[sortByClicked] })
+            this.setState({ data: sorted })
+        }
     }
 
     handleHashArrowClick = (item) => {
@@ -189,6 +196,7 @@ export class Home extends Component {
     }
 
     render() {
+        console.log(this.state.data, 'ovde bi trebalo da ga sortira');
         const { selectedUserSearch, urlForCreate } = this.state
         return (
             <>
