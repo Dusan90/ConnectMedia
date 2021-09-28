@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
+import { useHistory } from 'react-router'
 import secondarrowDown from '../../assets/img/TableIcons/arrow.svg'
 import secondTrash from '../../assets/img/TableIcons/trash.svg'
 import visit from '../../assets/img/TableIcons/visit.svg'
@@ -10,10 +11,31 @@ import widgets from '../../assets/img/TableIcons/widgets.svg'
 import history from '../../routes/History'
 
 
-function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handleArrowSort, handleHashArrowClick, state }) {
+function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunctionaliti, checkboxList, handleArrowSort, handleHashArrowClick, state }) {
 
-    const haneldeRedirect = (value) => {
-        console.log(value);
+    const history = useHistory()
+    const haneldeRedirect = (value, tabClicked) => {
+        if (tabClicked === 'edit') {
+            history.push({
+                pathname: `/sites/${value.id}`,
+                data: { buttonClicked: 'editDiv' }
+            })
+        } else if (tabClicked === 'stats') {
+            history.push({
+                pathname: `/sites/${value.id}`,
+                data: { buttonClicked: 'statsDiv' }
+            })
+        } else if (tabClicked === 'posts') {
+            history.push({
+                pathname: `/posts`,
+                data: { searchBy: value.name }
+            })
+        } else if (tabClicked === 'widgets') {
+            history.push({
+                pathname: `/widgets`,
+                data: { searchBy: value.name }
+            })
+        }
     }
 
     const handlePageRedirect = (e, item) => {
@@ -33,6 +55,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
 
         }
     }
+
+    const dataToRender = state.filteredDate ? state.filteredDate : data
 
     return (
         <table>
@@ -61,10 +85,10 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteUp' : "NazivkorisnikaUp")} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteDown' : "NazivkorisnikaDown")} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteUp' : "NameUp")} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteDown' : "NameDown")} alt="arrow" />
                             </div>
-                            <p>{pageName === 'widgets' ? 'Site' : "Naziv korisnika"}</p>
+                            <p>{pageName === 'widgets' ? 'Site' : "Name"}</p>
                         </div>
                     </th>
                     <th></th>
@@ -100,12 +124,12 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
             </thead>
 
             <tbody>
-                {data.length !== 0 && data.map((item, key) => {
+                {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                     return <tr key={key} onClick={(e) => handlePageRedirect(e, item)}>
                         <td><input type="checkbox" value={checkboxList} id='noredirection' checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td>
-                        <td><img src={secondTrash} alt="trash" id='noredirection' /></td>
-                        <td> <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>
-                            {item.auto_publish}
+                        <td><img src={secondTrash} onClick={() => handleTrashFunctionaliti(item.id)} alt="trash" id='noredirection' /></td>
+                        <td> <div className='coloredDivStatus' style={{ background: item.state === 1 ? '#ABD996' : item.state === 0 ? '#dfe094' : item.state === 2 ? '#e09494' : item.state === 3 ? '#295265' : '' }}>
+                            {item.state === 1 ? 'PUBLISHED' : item.state === 0 ? 'DRAFT' : item.state === 2 ? 'ERROR' : item.state === 3 ? 'TRASH' : ''}
                         </div>
                         </td>
                         <td><div className='ownerClass' id='noredirection' onClick={() => history.push(`/users/${item.owner.id}`)}>
@@ -116,15 +140,20 @@ function TableRowContainer({ data, pageName, handleCheckbox, checkboxList, handl
                         </div></td>
                         <td><div className="divWithClicableIcons">
                             <img src={visit} alt="visit" />
-                            <p onClick={() => haneldeRedirect(item)} id='noredirection'>visit</p>
+                            <p onClick={() => {
+                                if (item.url) {
+                                    window.location.href = `${item.url}`
+                                } else return null
+                            }
+                            } id='noredirection'>visit</p>
                             <img src={edit} alt="edit" />
-                            <p onClick={() => haneldeRedirect(item)} id='noredirection'>edit</p>
+                            <p onClick={() => haneldeRedirect(item, 'edit')} id='noredirection'>edit</p>
                             <img src={stats} alt="stats" />
-                            <p onClick={() => haneldeRedirect(item)} id='noredirection'>stats</p>
+                            <p onClick={() => haneldeRedirect(item, 'stats')} id='noredirection'>stats</p>
                             {pageName !== 'widgets' && <img src={posts} alt="posts" />}
-                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)} id='noredirection'>posts</p>}
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'posts')} id='noredirection'>posts</p>}
                             {pageName !== 'widgets' && <img src={widgets} alt="widgets" />}
-                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)} id='noredirection'>widgets</p>}
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'widgets')} id='noredirection'>widgets</p>}
 
                         </div></td>
                         <td>

@@ -1,29 +1,51 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import trash from '../../assets/img/SecondHeader/Icons3.svg'
+import { useSelector, useDispatch } from 'react-redux'
 import search from '../../assets/img/SecondHeader/Frame.svg'
 import plas from '../../assets/img/SecondHeader/Group5361.svg'
 import arrowLeft from '../../assets/img/SecondHeader/Vector.svg'
 import arrowRight from '../../assets/img/SecondHeader/Vector(1).svg'
 import Pagination from "react-js-pagination";
 import DropDown from '../DropDown/DropDown'
+import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
+import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
+
 import '../../components/Home/Home.scss'
 
 const options = ['test', 'test2', 'test3']
 
 function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
     const [user, setUser] = useState('all users')
+    const dispatch = useDispatch()
     const [showUserOptions, setShowUserOptions] = useState(false)
     const [categorie, setCategorie] = useState('all categories')
     const [showCategorieOptions, setShowCategorieOptions] = useState(false)
     const [sites, setSites] = useState('all sites')
     const [showSitesOptions, setShowSitesOptions] = useState(false)
+    const states = useSelector(state => state)
+    const { CategoryReducer, SitesListReducer } = states
+    const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData } = CategoryReducer.getCategoryList
+    const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData } = SitesListReducer.getSitesList
+
+
+    useEffect(() => {
+        if (!getCategoryListLoading && !getCategoryListError && !getCategoryListData) {
+            dispatch(GetCategoryListActionRequest())
+        }
+    }, [CategoryReducer.getCategoryList])
+
+    useEffect(() => {
+        if (!getSitesListLoading && !getSitesListError && !getSitesListData) {
+            dispatch(GetSitesListActionRequest())
+
+        }
+    }, [CategoryReducer.getSitesList])
 
 
     const handleChangeOptionsuser = (el) => {
         handleSearchOnMainPage(el, 'users')
         handleHomePageSort(el, 'users')
         setUser(el)
-
     }
 
     const handleChangeOptionscategorie = (el) => {
@@ -62,6 +84,9 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
         setSites(el)
     }
 
+    console.log(state);
+
+    const dataToRender = state.filteredDate ? state.filteredDate : state.data
 
 
     return (
@@ -75,11 +100,11 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
                             <DropDown label={user} isItOpen={showUserOptions} options={options} handleChangeOptions={handleChangeOptionsuser} />
                         </div>}
                         {(pageName === 'POSTS' || pageName === 'WIDGETS' || pageName === 'CATEGORIES' || pageName === 'TOTALS') && <div className='box-2' onClick={handleSitesShow}>
-                            <DropDown label={sites} isItOpen={showSitesOptions} options={options} handleChangeOptions={handleChangeOptionssites} />
+                            <DropDown label={sites} isItOpen={showSitesOptions} options={!getSitesListError && getSitesListData && getSitesListData.data} handleChangeOptions={handleChangeOptionssites} />
                         </div>}
                         {pageName !== 'USERS' && <div className='horizontal' />}
                         {pageName !== 'USERS' && pageName !== 'CATEGORIES' && <div className='box-3' onClick={handleCategorieShow}>
-                            <DropDown label={categorie} isItOpen={showCategorieOptions} options={options} handleChangeOptions={handleChangeOptionscategorie} />
+                            <DropDown label={categorie} isItOpen={showCategorieOptions} options={!getCategoryListError && getCategoryListData && getCategoryListData.data} handleChangeOptions={handleChangeOptionscategorie} />
 
                         </div>}
                         {pageName !== 'USERS' && pageName !== 'CATEGORIES' && <div className='horizontal' />}
@@ -87,11 +112,11 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
                     {pageName !== 'TOTALS' && pageName !== 'USERS' && pageName !== 'CATEGORIES' && <div className='info2'>
                         <div className='sectionWithTrash'>
                             <div className='col1' onClick={() => handleSortByStatus('NOTRASH')}><p>NO TRASH</p></div>
-                            <div className='col2' onClick={() => handleSortByStatus('PUBLISHED')}><p>PUBLISHED</p></div>
-                            <div className='col3' onClick={() => handleSortByStatus('DRAFT')}><p>DRAFT</p></div>
-                            <div className='col4' onClick={() => handleSortByStatus('ERROR')}><p>ERROR</p></div>
+                            <div className='col2' onClick={() => handleSortByStatus(1)}><p>PUBLISHED</p></div>
+                            <div className='col3' onClick={() => handleSortByStatus(0)}><p>DRAFT</p></div>
+                            <div className='col4' onClick={() => handleSortByStatus(2)}><p>ERROR</p></div>
 
-                            <div className='trashDiv' onClick={() => handleSortByStatus('TRASH')}><img src={trash} alt="trash" /></div>
+                            <div className='trashDiv' onClick={() => handleSortByStatus(3)}><img src={trash} alt="trash" /></div>
                         </div>
                     </div>}
                 </div>
@@ -117,7 +142,7 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
                 <div className='divWithInfoText'>LEGEND: <span>in:</span> clicks coming from site X, <span>out:</span> clicks sent to site X <span>txr:</span> out / in</div>
                 <div className='pageInfoDiv'>
                     <div>
-                        <p>{`1 - 20 of ${state.data.length}`}</p>
+                        <p>{`1 - 20 of ${dataToRender.length}`}</p>
                     </div>
 
                     <input type="number" onChange={(e) => handleCountPerPage(e)} />
@@ -125,7 +150,7 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
                     <Pagination
                         activePage={page}
                         itemsCountPerPage={state.countPerPage ? parseInt(state.countPerPage) : 10}
-                        totalItemsCount={state.data.length}
+                        totalItemsCount={dataToRender.length}
                         pageRangeDisplayed={2}
                         onChange={handlePageChange}
                         hideFirstLastPages={true}

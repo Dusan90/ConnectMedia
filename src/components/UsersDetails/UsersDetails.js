@@ -113,6 +113,7 @@ export class UsersDetails extends Component {
     }
     render() {
         const { isIteditable, usersData } = this.state
+        console.log(usersData);
         return (
             <div className='mainSiteDetailsDiv'>
                 <NavWidget handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} pageName={'users'} />
@@ -129,8 +130,8 @@ export class UsersDetails extends Component {
 
                             <div className='owner_div'>
                                 <h4>Email</h4>
-                                {!isIteditable && <p>{usersData?.email ? usersData?.email : ''}</p>}
-                                {isIteditable && <input type="text" placeholder={usersData?.email ? usersData?.email : ''} />}
+                                {!isIteditable && <p>{usersData?.email}</p>}
+                                {isIteditable && <input type="text" placeholder={usersData?.email} />}
                             </div>
                             <div className='url_div selectable'>
                                 <h4>Roles</h4>

@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import NavWidget from '../../containers/NavWidget/NavWidget'
 import '../SiteDetails/SiteDetails.scss'
+import { connect } from 'react-redux'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
 import Select from 'react-select'
+import { GetCategoryDetailsActionRequest, CreateCategoryActionRequest, UpdateCategoryDetailsActionRequest } from '../../store/actions/CategoryAction'
+import { NotificationManager } from 'react-notifications'
 
 const options = [
     { value: 'chocolate', label: 'Chocolate' },
@@ -31,8 +34,59 @@ export class CategoriesDetails extends Component {
         this.state = {
             isIteditable: false,
             whichisit: '',
-            dataTest: 'PUBLISHED'
+            dataTest: 'PUBLISHED',
+            name: '',
+            description: '',
+            rename: null,
+            categoryDetailsData: '',
+            adult: false,
+            merge: null
         }
+    }
+
+    componentDidMount() {
+
+        if (this.props?.location?.data?.name) {
+            console.log(this.props.location, 'helllloooooo');
+            this.setState({ name: this.props.location.data?.name })
+        } else {
+            this.props.dispatch(GetCategoryDetailsActionRequest({
+                id: this.props.match.params.id
+            }))
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { createCategory, getCategoryDetails, updateCategoryDetails, deleteCategory } = this.props
+        const { data: getCategoryDetailsData, loading: getCategoryDetailsLoading, error: getCategoryDetailsError, errorData: getCategoryDetailsErrorData } = getCategoryDetails;
+        const { data: deleteCategoryData, loading: deleteCategoryLoading, error: deleteCategoryError, errorData: deleteCategoryErrorData } = deleteCategory;
+        const { data: createCategoryData, loading: createCategoryLoading, error: createCategoryError, errorData: createCategoryErrorData } = createCategory;
+        const { data: updateCategoryDetailsData, loading: updateCategoryDetailsLoading, error: updateCategoryDetailsError, errorData: updateCategoryDetailsErrorData } = updateCategoryDetails;
+
+
+        if (prevProps.getCategoryDetails !== getCategoryDetails && !getCategoryDetailsError && !getCategoryDetailsLoading && getCategoryDetailsData) {
+            console.log(getCategoryDetailsData);
+            this.setState({ categoryDetailsData: getCategoryDetailsData.data })
+        }
+
+        if (prevProps.deleteCategory !== deleteCategory && !deleteCategoryError && !deleteCategoryLoading && deleteCategoryData) {
+            NotificationManager.success("Category successfully deleted", "Success", 2000);
+            this.props.history.push('/categories')
+        }
+
+        if (prevProps.createCategory !== createCategory && !createCategoryError && !createCategoryLoading && createCategoryData) {
+            NotificationManager.success("Site successfully created", "Success", 2000);
+            this.props.history.push('/categories')
+        } else if (prevProps.createCategory !== createCategory && createCategoryError && createCategoryErrorData) {
+            NotificationManager.error(`${createCategoryErrorData.data.message}`, "Failed", 2000);
+
+        }
+    }
+
+
+
+    handleChangeCategory = (e) => {
+        this.setState({ [e.target.name]: e.target.value })
     }
 
 
@@ -64,34 +118,65 @@ export class CategoriesDetails extends Component {
 
     handleButtonActive = (page) => {
         console.log(page);
-        this.setState({ whichisit: page })
+        if (page === 'save') {
+            const { name, description, adult, rename, merge } = this.state
+            if (this.props.location.data?.createNew) {
+                console.log('this is create new ');
+                this.props.dispatch(CreateCategoryActionRequest({
+                    name,
+                    description,
+                    adult,
+                    rename,
+                    merge
+                }))
+            } else {
+                this.props.dispatch(UpdateCategoryDetailsActionRequest({
+                    id: this.props.match.params.id,
+                    name,
+                    description,
+                    adult,
+                    rename,
+                    merge
+                }))
+            }
+        } else if (page === 'cancel') {
+            this.setState({ isIteditable: false })
+        } else {
+            this.setState({ whichisit: page })
+        }
     }
 
     handleStatusChange = (status) => {
         this.setState({ dataTest: status })
     }
+
+    handleMergeOption = (item) => {
+        console.log(item);
+        this.setState({ merge: item.value })
+    }
     render() {
-        const { isIteditable } = this.state
+        const { isIteditable, categoryDetailsData, adult } = this.state
+        console.log(categoryDetailsData);
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget handleWhereEverNav={this.handleWhereEverNav} pageName={'categories'} />
+                <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} handleWhereEverNav={this.handleWhereEverNav} pageName={'categories'} />
                 <div className='mainSiteInfoDiv'>
                     <div className='leftSideDiv'>
-                        <h1>B92</h1>
+                        <h1>{this.props?.location?.data?.name ? this.props?.location?.data?.name : categoryDetailsData?.name}</h1>
                         <div className='generalDiv'>
 
 
                             <div className='name_div'>
                                 <h4>Description</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{categoryDetailsData?.description}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChangeCategory(e)} name='description' placeholder={categoryDetailsData?.description} />}
                             </div>
                             <div className='name_div'>
                                 <h4>Adult</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" /> <label htmlFor="check"></label></div>}
+                                {!isIteditable && <p>{categoryDetailsData?.adult}</p>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={adult} checked={adult} onChange={(e) => this.setState({ adult: e.target.checked })} /> <label htmlFor="check"></label></div>}
                             </div>
-                            <div className='owner_div'>
+                            {/* <div className='owner_div'>
                                 <h4>Site</h4>
                                 {!isIteditable && <p></p>}
                                 {isIteditable && <Select
@@ -105,15 +190,15 @@ export class CategoriesDetails extends Component {
                                     name="site"
                                     options={options}
                                 />}
-                            </div>
+                            </div> */}
                             <div className='owner_div'>
                                 <h4>Rename</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{categoryDetailsData?.rename}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChangeCategory(e)} name='rename' placeholder={categoryDetailsData?.rename} />}
                             </div>
                             <div className='url_div selectable'>
                                 <h4>Merge</h4>
-                                {!isIteditable && <p></p>}
+                                {!isIteditable && <p>{categoryDetailsData?.merge}</p>}
                                 {/* {isIteditable && <select style={{ flex: '1', marginRight: '20px', border: 'none', background: '#d6dbdc', textIndent: '10px', borderRadius: '5px' }}>
                                     <option className='options' value="test">test</option>
                                     <option className='options' value="test">test</option>
@@ -128,6 +213,7 @@ export class CategoriesDetails extends Component {
                                     isSearchable={true}
                                     name="merge"
                                     options={options}
+                                    onChange={this.handleMergeOption}
                                 />}
 
                             </div>
@@ -143,12 +229,24 @@ export class CategoriesDetails extends Component {
                 </div>
 
                 {isIteditable && <div className='buttonsDiv'>
-                    <SaveButtonEdit labeltext={'Save changes'} colorization={'ScrapeClass'} customStyle={{ fontWeight: 'bold', height: '58px', width: "260px" }} />
-                    <SaveButtonEdit labeltext={'Cancel'} colorization={`ScrapeClass clicked`} customStyle={{ fontWeight: 'bold', height: '58px', width: "184px" }} />
+                    <SaveButtonEdit labeltext={'Save changes'} handleButtonActive={() => this.handleButtonActive('save')} colorization={'ScrapeClass'} customStyle={{ fontWeight: 'bold', height: '58px', width: "260px" }} />
+                    <SaveButtonEdit labeltext={'Cancel'} handleButtonActive={() => this.handleButtonActive('cancel')} colorization={`ScrapeClass clicked`} customStyle={{ fontWeight: 'bold', height: '58px', width: "184px" }} />
                 </div>}
             </div >
         )
     }
 }
 
-export default CategoriesDetails
+const mapStateToProps = (state) => {
+    const { CategoryReducer } = state;
+    const { createCategory, getCategoryDetails, updateCategoryDetails, deleteCategory } = CategoryReducer
+    return {
+        createCategory,
+        getCategoryDetails,
+        updateCategoryDetails,
+        deleteCategory
+
+    }
+}
+
+export default connect(mapStateToProps, null)(CategoriesDetails)

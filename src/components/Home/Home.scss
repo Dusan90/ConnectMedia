@@ -325,6 +325,24 @@
   }
 }
 
+.confurmTextOnMani {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 20px 0 0 35px;
+  button {
+    background: #418d9e;
+    border-radius: 3px;
+    padding: 5px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &.nobutton {
+      background: white;
+    }
+  }
+}
+
 .mainTableDiv {
   padding: 0 35px;
   font-family: "Calibri";

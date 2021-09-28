@@ -2,10 +2,12 @@ import * as types from "../types/SitesListTypes";
 
 
 // GET SITES
-export const GetSitesListActionRequest = payload => ({
-    type: types.GET_SITES_LIST_REQUEST,
-    payload
-});
+export const GetSitesListActionRequest = payload => {
+    return {
+        type: types.GET_SITES_LIST_REQUEST,
+        payload
+    }
+};
 
 export const GetSitesListActionReceive = payload => {
     return {
@@ -14,17 +16,21 @@ export const GetSitesListActionReceive = payload => {
     };
 }
 
-export const GetSitesListActionError = payload => ({
-    type: types.GET_SITES_LIST_ERROR,
-    payload
-});
+export const GetSitesListActionError = payload => {
+    return {
+        type: types.GET_SITES_LIST_ERROR,
+        payload
+    }
+};
 
 // CREATE SITE 
 
-export const CreateSiteActionRequest = payload => ({
-    type: types.CREATE_SITE_REQUEST,
-    payload
-});
+export const CreateSiteActionRequest = payload => {
+    return {
+        type: types.CREATE_SITE_REQUEST,
+        payload
+    }
+};
 
 export const CreateSiteActionReceive = payload => {
     return {
@@ -33,17 +39,21 @@ export const CreateSiteActionReceive = payload => {
     };
 }
 
-export const CreateSiteActionError = payload => ({
-    type: types.CREATE_SITE_ERROR,
-    payload
-});
+export const CreateSiteActionError = payload => {
+    return {
+        type: types.CREATE_SITE_ERROR,
+        payload
+    }
+};
 
 //  GET SITE DETAILS
 
-export const GetSiteDetailsActionRequest = payload => ({
-    type: types.GET_SITE_DETAILS_REQUEST,
-    payload
-});
+export const GetSiteDetailsActionRequest = payload => {
+    return {
+        type: types.GET_SITE_DETAILS_REQUEST,
+        payload
+    }
+};
 
 export const GetSiteDetailsActionReceive = payload => {
     return {
@@ -52,17 +62,21 @@ export const GetSiteDetailsActionReceive = payload => {
     };
 }
 
-export const GetSiteDetailsActionError = payload => ({
-    type: types.GET_SITE_DETAILS_ERROR,
-    payload
-});
+export const GetSiteDetailsActionError = payload => {
+    return {
+        type: types.GET_SITE_DETAILS_ERROR,
+        payload
+    }
+};
 
 // UPDATE SITE DETAILS
 
-export const UpdateSiteDetailsActionRequest = payload => ({
-    type: types.UPDATE_SITE_DETAILS_REQUEST,
-    payload
-});
+export const UpdateSiteDetailsActionRequest = payload => {
+    return {
+        type: types.UPDATE_SITE_DETAILS_REQUEST,
+        payload
+    }
+};
 
 export const UpdateSiteDetailsActionReceive = payload => {
     return {
@@ -71,17 +85,21 @@ export const UpdateSiteDetailsActionReceive = payload => {
     };
 }
 
-export const UpdateSiteDetailsActionError = payload => ({
-    type: types.UPDATE_SITE_DETAILS_ERROR,
-    payload
-});
+export const UpdateSiteDetailsActionError = payload => {
+    return {
+        type: types.UPDATE_SITE_DETAILS_ERROR,
+        payload
+    }
+};
 
 // DELETE SITE
 
-export const DeleteSiteActionRequest = payload => ({
-    type: types.DELETE_SITE_REQUEST,
-    payload
-});
+export const DeleteSiteActionRequest = payload => {
+    return {
+        type: types.DELETE_SITE_REQUEST,
+        payload
+    }
+};
 
 export const DeleteSiteActionReceive = payload => {
     return {
@@ -90,7 +108,9 @@ export const DeleteSiteActionReceive = payload => {
     };
 }
 
-export const DeleteSiteActionError = payload => ({
-    type: types.DELETE_SITE_ERROR,
-    payload
-});
+export const DeleteSiteActionError = payload => {
+    return {
+        type: types.DELETE_SITE_ERROR,
+        payload
+    }
+};

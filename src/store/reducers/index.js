@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import LoginReducer from './LoginReducer'
 import SitesListReducer from "./SitesListReducer";
 import UsersReducer from "./UsersReducer";
+import CategoryReducer from './CategoryReducer'
 
 const persistConfig = {
     key: 'root',
@@ -11,7 +12,8 @@ const persistConfig = {
     whitelist: [
         LoginReducer,
         SitesListReducer,
-        UsersReducer
+        UsersReducer,
+        CategoryReducer
 
     ],
 }
@@ -19,7 +21,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
     LoginReducer,
     SitesListReducer,
-    UsersReducer
+    UsersReducer,
+    CategoryReducer
 
 });
 

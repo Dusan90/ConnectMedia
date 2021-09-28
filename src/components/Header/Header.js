@@ -21,7 +21,7 @@ const Bars = ({ active }) => {
 
 function Header() {
     const state = useSelector(state => state)
-    const { UsersReducer } = state
+    const { UsersReducer, LoginReducer } = state
     const history = useHistory()
     const dispatch = useDispatch()
     const [isItClicked, setIsItClicked] = useState(false)
@@ -37,12 +37,21 @@ function Header() {
 
     const { loading: getSelfUserLoading, error: getSelfUserError, data: getSelfUserData } = UsersReducer.getSelfUser
     const { loading: changeSelfUserPassLoading, errorData: changeSelfUserPassErrorData, error: changeSelfUserPassError, data: changeSelfUserPassData } = UsersReducer.changeSelfUserPass
+    const { loading: logOutLoading, errorData: logOutErrorData, error: logOutError, data: logOutData } = LoginReducer.logOut
 
 
 
     useEffect(() => {
         dispatch(GetSelfUserActionRequest())
     }, [])
+
+    useEffect(() => {
+        if (!logOutLoading && !logOutError && logOutData) {
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('isLoged')
+            history.push('/')
+        }
+    }, [LoginReducer.logOut])
 
     useEffect(() => {
         if (!getSelfUserLoading && !getSelfUserError && getSelfUserData) {
@@ -85,9 +94,7 @@ function Header() {
 
     const hanldeLogOut = () => {
         dispatch(LogoutActionRequest())
-        sessionStorage.removeItem('token')
-        sessionStorage.removeItem('isLoged')
-        window.location.reload();
+
     }
 
     const handleTabChange = (path) => {

@@ -11,7 +11,7 @@ function DropDown({ options, handleChangeOptions, label, isItOpen }) {
             <p >{label} </p><img src={arrowDown} alt="arrow down" />
             {isItOpen && <div className='options'>
                 {options?.map((el, i) => {
-                    return <div key={i} onClick={() => handleChangeOptions(el)}><p>{el}</p></div>
+                    return <div key={i} onClick={() => handleChangeOptions(el)}><p>{el?.name ? el.name : el}</p></div>
                 })}
             </div>}
         </>

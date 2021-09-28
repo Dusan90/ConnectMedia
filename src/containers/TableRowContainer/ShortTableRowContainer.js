@@ -9,7 +9,7 @@ import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import history from '../../routes/History'
 
-function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, handleArrowSort, handleHashArrowClick, state }) {
+function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFunctionaliti, checkboxList, handleArrowSort, handleHashArrowClick, state }) {
 
 
 
@@ -27,18 +27,41 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
         }
     }
 
-    const haneldeRedirect = (value) => {
-        console.log(value);
+    const haneldeRedirect = (value, tabClicked) => {
+        if (tabClicked === 'edit') {
+            history.push({
+                pathname: `/sites/${value.id}`,
+                data: { buttonClicked: 'editDiv' }
+            })
+        } else if (tabClicked === 'stats') {
+            history.push({
+                pathname: `/sites/${value.id}`,
+                data: { buttonClicked: 'statsDiv' }
+            })
+        } else if (tabClicked === 'posts') {
+            history.push({
+                pathname: `/posts`,
+                data: { searchBy: value.name }
+            })
+        } else if (tabClicked === 'widgets') {
+            history.push({
+                pathname: `/widgets`,
+                data: { searchBy: value.name }
+            })
+        }
     }
+
+    const dataToRender = state.filteredDate ? state.filteredDate : data
+
 
     return (
         <div className='shortScreenTableDiv'>
-            {data.length !== 0 && data.map((item, key) => {
+            {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                 console.log(item);
                 return <div key={key} className='mainDivShotScreen'>
                     <div className='checkAndTrashDiv'>
                         <input type="checkbox" value={checkboxList} checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} />
-                        <img src={secondTrash} alt="trash" />
+                        <img src={secondTrash} alt="trash" onClick={() => handleTrashFunctionaliti(item.id)} />
                     </div>
                     <div className='statusDiv'>
                         <div>
@@ -48,8 +71,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
                             </div>
                             <p>STATUS</p>
                         </div>
-                        <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>
-                            {item.auto_publish}
+                        <div className='coloredDivStatus' style={{ background: item.state === 1 ? '#ABD996' : item.state === 0 ? '#dfe094' : item.state === 2 ? '#e09494' : item.state === 3 ? '#295265' : '' }}>
+                            {item.state === 1 ? 'PUBLISHED' : item.state === 0 ? 'DRAFT' : item.state === 2 ? 'ERROR' : item.state === 3 ? 'TRASH' : ''}
                         </div>
                     </div>
                     <div className='ownerDiv' onClick={() => handlePageRedirect(item)}>
@@ -68,10 +91,10 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
                     <div className='nazivDiv'>
                         <div>
                             <div className='arrowDiv'>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteUp' : "NazivkorisnikaUp")} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteDown' : "NazivkorisnikaDown")} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteUp' : "NameUp")} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'SiteDown' : "NameDown")} alt="arrow" />
                             </div>
-                            <p>{pageName === 'widgets' ? 'Site' : "Naziv korisnika"}</p>
+                            <p>{pageName === 'widgets' ? 'Site' : "Name"}</p>
 
                         </div>
                         <div className='ownersNameClass'>
@@ -81,15 +104,20 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, checkboxList, 
                     <div className='mainForIcons'>
                         <div className="divWithClicableIcons">
                             <img src={visit} alt="visit" />
-                            <p onClick={() => haneldeRedirect(item)}>visit</p>
+                            <p onClick={() => {
+                                if (item.url) {
+                                    window.location.href = `${item.url}`
+                                } else return null
+                            }
+                            }>visit</p>
                             <img src={edit} alt="edit" />
-                            <p onClick={() => haneldeRedirect(item)}>edit</p>
+                            <p onClick={() => haneldeRedirect(item, 'edit')}>edit</p>
                             <img src={stats} alt="stats" />
-                            <p onClick={() => haneldeRedirect(item)}>stats</p>
+                            <p onClick={() => haneldeRedirect(item, 'stats')}>stats</p>
                             {pageName !== 'widgets' && <img src={posts} alt="posts" />}
-                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)}>posts</p>}
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'posts')}>posts</p>}
                             {pageName !== 'widgets' && <img src={widgets} alt="widgets" />}
-                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item)}>widgets</p>}
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'widgets')}>widgets</p>}
 
                         </div>
                     </div>

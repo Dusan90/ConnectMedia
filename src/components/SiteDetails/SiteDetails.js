@@ -7,9 +7,10 @@ import xButton from '../../assets/img/SiteDetails/xButton.svg'
 import { connect } from 'react-redux'
 import './SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
-import { GetSiteDetailsActionRequest, DeleteSiteActionRequest } from '../../store/actions/SitesListAction'
+import { GetSiteDetailsActionRequest, DeleteSiteActionRequest, UpdateSiteDetailsActionRequest, CreateSiteActionRequest } from '../../store/actions/SitesListAction'
 import Chart from '../../containers/Chart/Chart'
 import Select from 'react-select'
+import { NotificationManager } from 'react-notifications'
 
 const test = [{
     title: 'vesti',
@@ -22,7 +23,7 @@ const test2 = [{ mesto: 'Beograd', title: 'vesti' }, { mesto: 'dobra vest', titl
 
 const test3 = [{ text: 'vesti' }, { text: 'zabava' }]
 
-const options = ["PUBLISHED", 'DRAFT', 'ERROR', 'TRASH']
+const options = [0, 1, 2, 3]
 
 const optionss = [
     { value: 'chocolate', label: 'Chocolate' },
@@ -51,36 +52,73 @@ export class SiteDetails extends Component {
         this.state = {
             isIteditable: false,
             whichisit: '',
-            dataTest: 'PUBLISHED',
+            dataState: '',
             tabClicked: '',
-            confirmMessage: false
+            confirmMessage: false,
+            siteDetailsData: '',
+            name: '',
+            url: '',
+            description: '',
+            head: '',
+            encoding: '',
+            factor: '',
+            minimum: '',
+            tracking: '',
+            auto_publish: '',
+            better_images: '',
+            feed_definition: '',
+            post_definition: '',
+            refresh_interval: '',
+            copy_from_site: '',
+            guess_remote: '',
+            tag_map: ''
         }
     }
 
     componentDidMount() {
-        this.props.dispatch(GetSiteDetailsActionRequest({
-            id: this.props.match.params.id
-        }))
+
+
+        if (this.props?.location?.data?.url) {
+            this.setState({ url: this.props.location.data?.url })
+        } else {
+            this.props.dispatch(GetSiteDetailsActionRequest({
+                id: this.props.match.params.id
+            }))
+
+        }
     }
 
     componentDidUpdate(prevProps) {
-        const { getSiteDetails, deleteSite } = this.props
+        const { getSiteDetails, deleteSite, createSite } = this.props
         const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError, errorData: getSiteDetailsErrorData } = getSiteDetails;
         const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
+        const { data: createSiteData, loading: createSiteLoading, error: createSiteError, errorData: createSiteErrorData } = createSite;
 
 
         if (prevProps.getSiteDetails !== getSiteDetails && !getSiteDetailsError && !getSiteDetailsLoading && getSiteDetailsData) {
             console.log(getSiteDetailsData);
-            // this.setState({ data: getSiteDetailsData.data })
+            this.setState({
+                dataState: getSiteDetails.data.state,
+                siteDetailsData: getSiteDetailsData.data,
+            })
         }
 
         if (prevProps.deleteSite !== deleteSite && !deleteSiteError && !deleteSiteLoading && deleteSiteData) {
-            console.log(deleteSiteData);
-            // this.setState({ data: getSiteDetailsData.data })
+            NotificationManager.success("Site successfully deleted", "Success", 2000);
+            this.props.history.push('/sites')
+        }
+
+        if (prevProps.createSite !== createSite && !createSiteError && !createSiteLoading && createSiteData) {
+            NotificationManager.success("Site successfully created", "Success", 2000);
+            this.props.history.push('/sites')
+        } else if (prevProps.createSite !== createSite && createSiteError && createSiteErrorData) {
+            NotificationManager.error(`${createSiteErrorData.data.message}`, "Failed", 2000);
+
         }
     }
 
     handleWhereEverNav = (page) => {
+        console.log(page);
         if (page === 'editDiv') {
             this.setState({ isIteditable: true })
         } else if (page === 'statsDiv') {
@@ -106,14 +144,61 @@ export class SiteDetails extends Component {
 
     handleButtonActive = (page) => {
         console.log(page);
-        this.setState({ whichisit: page })
+        if (page === 'save') {
+            const { name, url, description, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map } = this.state
+            if (this.props.location.data?.createNew) {
+                this.props.dispatch(CreateSiteActionRequest({
+                    name,
+                    url,
+                    description,
+                    head,
+                    encoding,
+                    factor,
+                    minimum,
+                    tracking,
+                    auto_publish,
+                    better_images,
+                    feed_definition,
+                    post_definition,
+                    refresh_interval,
+                    copy_from_site,
+                    guess_remote,
+                    tag_map
+                }))
+            } else {
+                this.props.dispatch(UpdateSiteDetailsActionRequest({
+                    id: this.props.match.params.id,
+                    name,
+                    url,
+                    description,
+                    head,
+                    encoding,
+                    factor,
+                    minimum,
+                    tracking,
+                    auto_publish,
+                    better_images,
+                    feed_definition,
+                    post_definition,
+                    refresh_interval,
+                    copy_from_site,
+                    guess_remote,
+                    tag_map
+                }))
+            }
+        } else if (page === 'cancel') {
+            this.setState({ isIteditable: false })
+        } else {
+            this.setState({ whichisit: page })
+        }
     }
 
     handleStatusChange = (status) => {
-        this.setState({ dataTest: status })
+        this.setState({ dataState: status })
     }
 
     handleChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value })
         console.log(e.target.value);
     }
 
@@ -132,10 +217,11 @@ export class SiteDetails extends Component {
     }
 
     render() {
-        const { isIteditable, whichisit, dataTest, tabClicked } = this.state
+        console.log(this.state);
+        const { isIteditable, whichisit, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
+                <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
                 {this.state.confirmMessage && <div className='confurmText'>
                     <h4>Are you sure</h4>
                     <button onClick={this.deletesiteFunction}>Yes</button>
@@ -150,13 +236,13 @@ export class SiteDetails extends Component {
                             <h1>General</h1>
                             <div className='status_div'>
                                 <h4>Status</h4>
-                                {!isIteditable && <div className='coloredDivStatus' style={{ background: dataTest === 'PUBLISHED' ? '#ABD996' : dataTest === 'DRAFT' ? '#DFE094' : dataTest === 'ERROR' ? '#E09494' : '#295265' }}>
-                                    {dataTest}
+                                {!isIteditable && <div className='coloredDivStatus' style={{ background: siteDetailsData?.state === 1 ? '#ABD996' : siteDetailsData?.state === 0 ? '#DFE094' : siteDetailsData?.state === 2 ? '#E09494' : siteDetailsData?.state === 3 ? '#295265' : '' }}>
+                                    {siteDetailsData?.state === 1 ? 'PUBLISHED' : siteDetailsData?.state === 0 ? 'DRAFT' : siteDetailsData?.state === 2 ? 'ERROR' : siteDetailsData?.state === 3 ? 'TRASH' : ''}
                                 </div>}
                                 {isIteditable && <div className='mainOptionDiv'>
                                     {options.map((item, key) => {
-                                        return <div key={key} onClick={() => this.handleStatusChange(item)} className='coloredDivStatus' style={{ height: item === dataTest && '47px', background: item === 'PUBLISHED' ? '#ABD996' : item === 'DRAFT' ? '#DFE094' : item === 'ERROR' ? '#E09494' : '#295265' }}>
-                                            {item}
+                                        return <div key={key} onClick={() => this.handleStatusChange(item)} className='coloredDivStatus' style={{ height: item === dataState && '47px', background: item === 1 ? '#ABD996' : item === 0 ? '#DFE094' : item === 2 ? '#E09494' : '#295265' }}>
+                                            {item === 1 ? 'PUBLISHED' : item === 0 ? 'DRAFT' : item === 2 ? 'ERROR' : item === 3 ? 'TRASH' : ''}
                                         </div>
 
                                     })}
@@ -165,19 +251,19 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='name_div'>
                                 <h4>Name</h4>
-                                {!isIteditable && <p>24Online.rs</p>}
-                                {isIteditable && <input onChange={(e) => this.handleChange(e)} type="text" name='Name' placeholder='24Online.rs' />}
+                                {!isIteditable && <p>{siteDetailsData?.name}</p>}
+                                {isIteditable && <input onChange={(e) => this.handleChange(e)} type="text" name='name' placeholder={siteDetailsData?.name} />}
                             </div>
                             <div className='url_div'>
                                 <h4>Url</h4>
-                                {!isIteditable && <Link to='https://24online.rs/'>https://24online.rs/</Link>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} placeholder='https://24online.rs/' name='Url' />}
+                                {!isIteditable && <Link to={siteDetailsData?.url}>{siteDetailsData?.url}</Link>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} placeholder={this.state.url ? this.state.url : siteDetailsData?.url} name='url' />}
                                 {isIteditable && <SaveButtonEdit labeltext={'Scrape'} colorization={'ScrapeClass'} customStyle={{ width: '135px', marginRight: '20px' }} />}
 
                             </div>
                             <div className='owner_div'>
                                 <h4>Owner</h4>
-                                {!isIteditable && <Link to='nina.aralica@alo.rs'>nina.aralica@alo.rs</Link>}
+                                {!isIteditable && <Link to={`/users/${siteDetailsData?.owner?.id}`}>{siteDetailsData?.owner?.email}</Link>}
                                 {/* {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Owner' placeholder='nina.aralica@alo.rs' />} */}
                                 {isIteditable && <Select
                                     className="basic-single"
@@ -193,40 +279,41 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='description_div'>
                                 <h4>Description</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Description' placeholder='' />}
+                                {!isIteditable && <p>{siteDetailsData?.description}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='description' placeholder={siteDetailsData?.description} />}
 
                             </div>
                             <div className='head_div'>
                                 <h4>Head</h4>
-                                {!isIteditable && <Link to='https://24online.rs/wp-content/cache/autoptimize/css/autoptimize_d69707991926bccc2c924d199b5e56ac.css'>https://24online.rs/wp-content/cache/autoptimize/css/autoptimize_d69707991926bccc2c924d199b5e56ac.css</Link>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Head' placeholder='https://24online.rs/wp-content/cache/autoptimize/css/autoptimize_d69707991926bccc2c924d199b5e56ac.css' />}
+                                {!isIteditable && <Link to={siteDetailsData?.head}>{siteDetailsData?.head}</Link>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='head' placeholder={siteDetailsData?.head} />}
 
                             </div>
                             <div className='info_div'>
                                 <div>
                                     <h4>Encoding</h4>
-                                    {!isIteditable && <p>utf8</p>}
-                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Encoding' placeholder='utf8' style={{ width: '40px' }} />}
+                                    {!isIteditable && <p>{siteDetailsData?.encoding}</p>}
+                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='encoding' placeholder={siteDetailsData?.encoding} style={{ width: '40px' }} />}
 
                                 </div>
 
                                 <div>
                                     <h4>Factor</h4>
-                                    {!isIteditable && <p>1</p>}
-                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Factor' placeholder='1' style={{ width: '40px' }} />}
+                                    {!isIteditable && <p>{siteDetailsData?.factor}</p>}
+                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='factor' placeholder={siteDetailsData?.factor} style={{ width: '40px' }} />}
 
                                 </div>
                                 <div>
                                     <h4>Minimum</h4>
-                                    {!isIteditable && <p></p>}
-                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Minimum' placeholder='' style={{ width: '40px' }} />}
+                                    {!isIteditable && <p>{siteDetailsData?.minimum}</p>}
+                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='minimum' placeholder={siteDetailsData?.minimum} style={{ width: '40px' }} />}
 
                                 </div>
                             </div>
                             <div className='tracking_div'>
                                 <h4>Tracking</h4>
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='Tracking' style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">enable user tracking (sets cookie)</label></div>}
+                                {!isIteditable && <p>{siteDetailsData?.tracking}</p>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='tracking' value={tracking} checked={tracking} onChange={(e) => this.setState({ tracking: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">enable user tracking (sets cookie)</label></div>}
                             </div>
                         </div>
 
@@ -241,21 +328,21 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='images_div'>
                                 <h4>Look for better images</h4>
-                                {!isIteditable && <p>24Online.rs</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='betterImage' style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">scrape individual pages for images (insert only)</label></div>}
+                                {!isIteditable && <p>{siteDetailsData?.better_images}</p>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='betterImage' value={better_images} checked={better_images} onChange={(e) => this.setState({ better_images: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">scrape individual pages for images (insert only)</label></div>}
 
 
                             </div>
                             <div className='definition_div'>
                                 <h4>Feed definition</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input name='FeedDefinition' onChange={(e) => this.handleChange(e)} type="text" placeholder='' />}
+                                {!isIteditable && <p>{siteDetailsData?.feed_definition}</p>}
+                                {isIteditable && <input name='feed_definition' onChange={(e) => this.handleChange(e)} type="text" placeholder={siteDetailsData?.feed_definition} />}
 
                             </div>
                             <div className='postDefinition_div'>
                                 <h4>Single post definition</h4>
-                                {!isIteditable && <Link to='nina.aralica@alo.rs'>nina.aralica@alo.rs</Link>}
-                                {isIteditable && <input name='SingleDefinition' onChange={(e) => this.handleChange(e)} type="text" placeholder='nina.aralica@alo.rs' />}
+                                {!isIteditable && <p>{siteDetailsData?.post_definition}</p>}
+                                {isIteditable && <input name='post_definition' onChange={(e) => this.handleChange(e)} type="text" placeholder={siteDetailsData?.post_definition} />}
 
 
                             </div>
@@ -267,14 +354,14 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='interval_div'>
                                 <h4>Refresh interval (min)</h4>
-                                {!isIteditable && <p>73</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='RefreshInterval' placeholder='73' />}
+                                {!isIteditable && <p>{siteDetailsData?.refresh_interval}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='refresh_interval' placeholder={siteDetailsData?.refresh_interval} />}
 
                             </div>
                             <div className='autopublish_div'>
                                 <h4>Autopublish</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='Autopublish' style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">limit to feed</label></div>}
+                                {!isIteditable && <p>{siteDetailsData?.auto_publish}</p>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='auto_publish' value={auto_publish} checked={auto_publish} onChange={(e) => this.setState({ auto_publish: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">limit to feed</label></div>}
 
 
                             </div>
@@ -355,14 +442,14 @@ export class SiteDetails extends Component {
                             <div className='categ_div'>
                                 <h4>Categories</h4>
                                 {!isIteditable && <div className='listOfCateg'>
-                                    {test3.map((item, key) => {
+                                    {siteDetailsData?.categories?.map((item, key) => {
                                         if (!isIteditable) {
-                                            return <p key={key}>{item.text}</p>
+                                            return <p key={key}>{item}</p>
                                         }
                                         else {
                                             return <div key={key}>
                                                 <img src={xButton} alt="x" />
-                                                <p>{item.text}</p>
+                                                <p>{item}</p>
                                             </div>
                                         }
                                     })}
@@ -383,20 +470,20 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='copySite_div'>
                                 <h4>Copy from site</h4>
-                                <p></p>
-                                {isIteditable && <div><input type="checkbox" name="CopyFromSite" /> <label htmlFor="check">copy site categories to new posts</label></div>}
+                                {!isIteditable && < p > {siteDetailsData?.copy_from_site}</p>}
+                                {isIteditable && <div><input type="checkbox" value={copy_from_site} checked={copy_from_site} onChange={(e) => this.setState({ copy_from_site: e.target.checked })} name="copy_from_site" /> <label htmlFor="check">copy site categories to new posts</label></div>}
 
                             </div>
                             <div className='guessRemote_div'>
                                 <h4>Guess remote category from url - enter the number of the path segment</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input name='GuessRemoteCategory' type="text" onChange={(e) => this.handleChange(e)} placeholder='' />}
+                                {!isIteditable && <p>{siteDetailsData?.guess_remote}</p>}
+                                {isIteditable && <input name='guess_remote' type="text" onChange={(e) => this.handleChange(e)} placeholder='' />}
 
                             </div>
                             <div className='indexTag_div'>
                                 <h4>Index of tag for mapping <br /> (1=first,2=seocnd,..)</h4>
-                                {!isIteditable && <p>1</p>}
-                                {isIteditable && <input name='IndexOfTag' type="text" onChange={(e) => this.handleChange(e)} placeholder='1' />}
+                                {!isIteditable && <p>{siteDetailsData?.tag_map}</p>}
+                                {isIteditable && <input name='tag_map' type="text" onChange={(e) => this.handleChange(e)} placeholder={siteDetailsData?.tag_map} />}
 
                             </div>
                         </div>
@@ -472,21 +559,25 @@ export class SiteDetails extends Component {
                     </div>
                 </div>}
 
-                {isIteditable && <div className='buttonsDiv'>
-                    <SaveButtonEdit labeltext={'Save changes'} colorization={'ScrapeClass'} customStyle={{ fontWeight: 'bold', height: '58px', width: "260px" }} />
-                    <SaveButtonEdit labeltext={'Cancel'} colorization={`ScrapeClass clicked`} customStyle={{ fontWeight: 'bold', height: '58px', width: "184px" }} />
-                </div>}
-            </div>
+                {
+                    isIteditable && <div className='buttonsDiv'>
+                        <SaveButtonEdit handleButtonActive={() => this.handleButtonActive('save')} labeltext={'Save changes'} colorization={'ScrapeClass'} customStyle={{ fontWeight: 'bold', height: '58px', width: "260px" }} />
+                        <SaveButtonEdit labeltext={'Cancel'} handleButtonActive={() => this.handleButtonActive('cancel')} colorization={`ScrapeClass clicked`} customStyle={{ fontWeight: 'bold', height: '58px', width: "184px" }} />
+                    </div>
+                }
+            </div >
         )
     }
 }
 
 const mapStateToProps = (state) => {
     const { SitesListReducer } = state;
-    const { getSiteDetails, deleteSite } = SitesListReducer
+    const { getSiteDetails, deleteSite, updateSiteDetails, createSite } = SitesListReducer
     return {
         getSiteDetails,
-        deleteSite
+        deleteSite,
+        updateSiteDetails,
+        createSite
 
     }
 }

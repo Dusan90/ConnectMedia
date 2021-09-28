@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import './NavWidget.scss'
 import edit from '../../assets/img/SiteDetails/Frame.svg'
@@ -11,10 +11,14 @@ import widgets from '../../assets/img/SiteDetails/Frame(3).svg'
 import widgetsBlack from '../../assets/img/SiteDetails/widgetsBlack.svg'
 import trash from '../../assets/img/SiteDetails/Icons9.svg'
 
-function NavWidget({ handleWhereEverNav, pageName, handleTrashClick }) {
-    const [whichIsActive, setWhichIsActive] = useState('siteDetails')
+function NavWidget({ handleWhereEverNav, pageName, handleTrashClick, isButtonNamepased }) {
+    const [whichIsActive, setWhichIsActive] = useState(isButtonNamepased ? isButtonNamepased : 'siteDetails')
 
     const history = useHistory()
+
+    useEffect(() => {
+        isButtonNamepased && handlePageChange(isButtonNamepased)
+    }, [])
 
     const handlePageChange = (page) => {
         setWhichIsActive(page)

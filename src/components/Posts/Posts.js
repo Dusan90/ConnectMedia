@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import SearchContainer from '../../containers/SearchContainer/SearchContainer'
+import { connect } from 'react-redux'
 import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
 import secondarrowDown from '../../assets/img/TableIcons/arrow.svg'
 import secondTrash from '../../assets/img/TableIcons/trash.svg'
@@ -11,6 +12,7 @@ import widgets from '../../assets/img/TableIcons/widgets.svg'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import history from '../../routes/History'
 import AddContainer from '../../containers/AddContainer/AddContainer'
+
 
 
 import '../Home/Home.scss'
@@ -50,9 +52,22 @@ export class Posts extends Component {
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
             countPerPage: '',
-            addButtonClicked: false
+            addButtonClicked: false,
+            selectedSiteSearch: '',
+            selectedCategorieSearch: ''
 
         }
+    }
+
+    componentDidMount() {
+        if (this.props.location?.data?.searchBy) {
+            this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
+        }
+
+    }
+
+    componentDidUpdate(prevProps) {
+
     }
 
     handlePageChange = (value) => {
@@ -154,11 +169,35 @@ export class Posts extends Component {
         this.setState({ addButtonClicked: !this.state.addButtonClicked })
     }
 
+    handleSearchOnMainPage = (el, secondElement) => {
+        if (this.props.location?.data?.searchBy) {
+            const newData = this.state.data.filter((el) => {
+                return el.site === el
+            })
+            this.setState({
+                filteredDate: newData,
+                selectedSiteSearch: el
+            })
+        } else {
+            if (secondElement === 'sites') {
+                const newData = this.state.data.filter((el) => {
+                    return el.site === el
+                })
+                this.setState({
+                    filteredDate: newData,
+                    selectedSiteSearch: el
+                })
+            } else if (secondElement === 'categories') {
+                this.setState({ selectedCategorieSearch: el })
+            }
+        }
+    }
+
     render() {
         console.log(this.state);
         return (
             <>
-                <SearchContainer page={this.state.page} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
                 {this.state.addButtonClicked && <AddContainer>
                     <input type="text" placeholder='Enter URL' />
                     <button><p>Create post</p></button>
@@ -529,4 +568,14 @@ export class Posts extends Component {
     }
 }
 
-export default Posts
+const mapStateToProps = (state) => {
+    const { CategoryReducer } = state;
+    const { getCategoryList } = CategoryReducer
+
+    return {
+        getCategoryList
+
+    }
+}
+
+export default connect(mapStateToProps, null)(Posts)

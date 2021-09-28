@@ -7,7 +7,10 @@ import ShortTableRowContainer from '../../containers/TableRowContainer/ShortTabl
 import SearchContainer from '../../containers/SearchContainer/SearchContainer'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import AddContainer from '../../containers/AddContainer/AddContainer'
-import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
+import { GetSitesListActionRequest, DeleteSiteActionRequest } from '../../store/actions/SitesListAction'
+import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
+import { NotificationManager } from 'react-notifications'
+
 
 
 // const test = [
@@ -39,7 +42,7 @@ export class Home extends Component {
         this.state = {
             page: 1,
             data: [],
-            filteredDate: [],
+            filteredDate: '',
             inputValue: '',
             checkboxList: [],
             hashesArrowDown: false,
@@ -47,22 +50,39 @@ export class Home extends Component {
             countPerPage: '',
             selectedUserSearch: '',
             selectedCategorieSearch: '',
-            addButtonClicked: false
+            addButtonClicked: false,
+            confirmMessage: false,
+            urlForCreate: '',
+            categoryList: ''
 
         }
     }
 
     componentDidMount() {
         this.props.dispatch(GetSitesListActionRequest())
+        this.props.dispatch(GetCategoryListActionRequest())
+
     }
 
     componentDidUpdate(prevProps) {
-        const { getSitesList } = this.props
+        const { getSitesList, deleteSite, getCategoryList } = this.props
         const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError, errorData: getSitesListErrorData } = getSitesList;
+        const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
+        const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData, errorData: getCategoryListErrorData } = getCategoryList
+
+
+        if (prevProps.getCategoryList !== getCategoryList && !getCategoryListLoading && !getCategoryListError && getCategoryListData) {
+            this.setState({ categoryList: getCategoryListData.data })
+        }
 
         if (prevProps.getSitesList !== getSitesList && !getSitesListError && !getSitesListLoading && getSitesListData) {
             console.log(getSitesListData, prevProps);
             this.setState({ data: getSitesListData.data })
+        }
+
+        if (prevProps.deleteSite !== deleteSite && !deleteSiteError && !deleteSiteLoading && deleteSiteData) {
+            NotificationManager.success("Site successfully deleted", "Success", 2000);
+            this.props.dispatch(GetSitesListActionRequest())
         }
     }
 
@@ -72,7 +92,7 @@ export class Home extends Component {
 
     handleSortByStatus = (value) => {
         const newData = this.state.data.filter(el => {
-            if (el.status === value) {
+            if (el.state === value) {
                 return el
             }
         })
@@ -104,13 +124,14 @@ export class Home extends Component {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            return el.owner.toLowerCase().includes(value)
+            return el.name.toLowerCase().includes(value)
         })
         this.setState({ filteredDate: newData })
     }
 
     handleSearchBar = (e) => {
         this.setState({ inputValue: e.target.value })
+
     }
 
     handleCheckbox = (e, item) => {
@@ -156,8 +177,19 @@ export class Home extends Component {
         this.setState({ addButtonClicked: !this.state.addButtonClicked })
     }
 
+    deletesiteFunction = () => {
+        this.props.dispatch(DeleteSiteActionRequest({
+            id: this.props.match.params.id
+        }))
+    }
+
+    handleTrashFunctionaliti = () => {
+        console.log('hello');
+        this.setState({ confirmMessage: true })
+    }
+
     render() {
-        const { selectedUserSearch } = this.state
+        const { selectedUserSearch, urlForCreate } = this.state
         return (
             <>
                 <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>
@@ -174,14 +206,22 @@ export class Home extends Component {
                 <SearchContainer handleAddSomeMore={this.handleAddSomeMore} page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} />
                 {this.state.addButtonClicked && <AddContainer>
                     {!selectedUserSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose owner.</p>}
-                    {selectedUserSearch && <input type="text" placeholder='Enter site name' />}
-                    {selectedUserSearch && <button><p>Create site</p></button>}
+                    {selectedUserSearch && <input type="text" onChange={(e) => this.setState({ urlForCreate: e.target.value })} placeholder='Enter Url' />}
+                    {selectedUserSearch && urlForCreate && <button onClick={() => this.props.history.push({
+                        pathname: '/sites/create',
+                        data: { url: urlForCreate, owner: selectedUserSearch, buttonClicked: 'editDiv', createNew: true }
+                    })}><p>Create site</p></button>}
                 </AddContainer>}
 
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
+                {this.state.confirmMessage && <div className='confurmTextOnMani'>
+                    <h4>Are you sure</h4>
+                    <button onClick={this.deletesiteFunction}>Yes</button>
+                    <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
+                </div>}
                 <div className='mainTableDiv'>
-                    <ShortTableRowContainer data={this.state.data} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} />
-                    <TableRowContainer data={this.state.data} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} handleArrowSort={this.handleArrowSort} />
+                    <ShortTableRowContainer data={this.state.data} handleTrashFunctionaliti={this.handleTrashFunctionaliti} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} />
+                    <TableRowContainer data={this.state.data} handleTrashFunctionaliti={this.handleTrashFunctionaliti} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} handleArrowSort={this.handleArrowSort} />
                 </div>
             </>
         )
@@ -189,10 +229,14 @@ export class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const { SitesListReducer } = state;
-    const { getSitesList } = SitesListReducer
+    const { SitesListReducer, CategoryReducer } = state;
+    const { getSitesList, deleteSite } = SitesListReducer
+    const { getCategoryList } = CategoryReducer
+
     return {
-        getSitesList
+        getSitesList,
+        deleteSite,
+        getCategoryList
 
     }
 }

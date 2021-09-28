@@ -68,6 +68,12 @@ export class Widgets extends Component {
         }
     }
 
+    componentDidMount() {
+        if (this.props.location?.data?.searchBy) {
+            this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
+        }
+    }
+
     handlePageChange = (value) => {
         this.setState({ page: value })
     }
@@ -144,10 +150,20 @@ export class Widgets extends Component {
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
-        if (secondElement === 'sites') {
-            this.setState({ selectedSiteSearch: el })
-        } else if (secondElement === 'categories') {
-            this.setState({ selectedCategorieSearch: el })
+        if (this.props.location?.data?.searchBy) {
+            const newData = this.state.data.filter((el) => {
+                return el.site === el
+            })
+            this.setState({
+                filteredDate: newData,
+                selectedSiteSearch: el
+            })
+        } else {
+            if (secondElement === 'sites') {
+                this.setState({ selectedSiteSearch: el })
+            } else if (secondElement === 'categories') {
+                this.setState({ selectedCategorieSearch: el })
+            }
         }
     }
 

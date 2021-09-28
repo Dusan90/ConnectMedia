@@ -12,3 +12,10 @@ export const GET_SITES_LIST = '/site';
 // Users
 
 export const GET_SELF_USER = '/user';
+
+// Category
+
+export const GET_CATEGORY = '/category';
+
+
+

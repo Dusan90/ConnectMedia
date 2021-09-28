@@ -28,6 +28,7 @@ export class Login extends Component {
 
         if (!prevProps.login !== login && !loading && !error && data) {
             sessionStorage.setItem('isLoged', 'true')
+            this.setState({ mail: '', password: '' })
             history.push('/sites')
         }
     }
