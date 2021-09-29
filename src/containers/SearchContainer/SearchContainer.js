@@ -9,6 +9,8 @@ import Pagination from "react-js-pagination";
 import DropDown from '../DropDown/DropDown'
 import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
 import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
+import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
+
 
 import '../../components/Home/Home.scss'
 
@@ -23,10 +25,10 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
     const [sites, setSites] = useState('all sites')
     const [showSitesOptions, setShowSitesOptions] = useState(false)
     const states = useSelector(state => state)
-    const { CategoryReducer, SitesListReducer } = states
+    const { CategoryReducer, SitesListReducer, UsersReducer } = states
     const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData } = CategoryReducer.getCategoryList
     const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData } = SitesListReducer.getSitesList
-
+    const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData } = UsersReducer.getUsersList
 
     useEffect(() => {
         if (!getCategoryListLoading && !getCategoryListError && !getCategoryListData) {
@@ -39,19 +41,26 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
             dispatch(GetSitesListActionRequest())
 
         }
-    }, [CategoryReducer.getSitesList])
+    }, [SitesListReducer.getSitesList])
+
+    useEffect(() => {
+        if (!getUsersListLoading && !getUsersListError && !getUsersListData) {
+            dispatch(GetUsersListActionRequest())
+
+        }
+    }, [UsersReducer.getUsersList])
 
 
     const handleChangeOptionsuser = (el) => {
         handleSearchOnMainPage(el, 'users')
         handleHomePageSort(el, 'users')
-        setUser(el)
+        setUser(el.name)
     }
 
     const handleChangeOptionscategorie = (el) => {
         handleSearchOnMainPage(el, 'categories')
         handleHomePageSort(el, 'categories')
-        setCategorie(el)
+        setCategorie(el.name)
     }
 
     const handleUsersShow = () => {
@@ -87,8 +96,6 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
 
     const dataToRender = state.filteredDate ? state.filteredDate : state.data
 
-    console.log(dataToRender, 'helloo');
-
     return (
         <div className='mainSecondHeaderDiv' style={secondHeaderCustomStyle && secondHeaderCustomStyle}>
             <div className={`secondHeaderDiv ${customStyleForlesTabs && 'customStyleForlesTabs'} ${secondHeaderCustomStyle && 'customStyleForTotals'} `}>
@@ -97,7 +104,7 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
                         <div className={`box-1 ${pageName === 'USERS' && 'userAloneBox'}`}><p style={{ marginRight: '30px' }}>{pageName}</p></div>
                         <div className='horizontal' />
                         {pageName === 'SITES' && <div className='box-2' onClick={handleUsersShow}>
-                            <DropDown label={user} isItOpen={showUserOptions} options={options} handleChangeOptions={handleChangeOptionsuser} />
+                            <DropDown label={user} isItOpen={showUserOptions} options={!getUsersListError && getUsersListData && getUsersListData.data} handleChangeOptions={handleChangeOptionsuser} />
                         </div>}
                         {(pageName === 'POSTS' || pageName === 'WIDGETS' || pageName === 'CATEGORIES' || pageName === 'TOTALS') && <div className='box-2' onClick={handleSitesShow}>
                             <DropDown label={sites} isItOpen={showSitesOptions} options={!getSitesListError && getSitesListData && getSitesListData.data} handleChangeOptions={handleChangeOptionssites} />

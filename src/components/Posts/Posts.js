@@ -12,41 +12,23 @@ import widgets from '../../assets/img/TableIcons/widgets.svg'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import history from '../../routes/History'
 import AddContainer from '../../containers/AddContainer/AddContainer'
+import { GetPostsListActionRequest, DeletePostActionRequest } from '../../store/actions/PostActions'
+import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
+import moment from 'moment'
+
+
 
 
 
 import '../Home/Home.scss'
-
-const test = [
-    {
-        status: 'PUBLISHED',
-        owner: 'nina.simone@gmail.com',
-        nazivKorisnika: 'B92.net',
-        hashes: ['test1', 'test2'],
-        in: '11212',
-        out: '2',
-        txr: '0.02%',
-        id: '1'
-    },
-    {
-        status: 'PUBLISHED',
-        owner: 'nina.simone@gmail.com',
-        nazivKorisnika: 'B92.net',
-        hashes: ['test1', 'test2'],
-        in: '11212',
-        out: '2',
-        txr: '0.02%',
-        id: '2'
-    },
-]
 
 export class Posts extends Component {
     constructor(props) {
         super(props);
         this.state = {
             page: 1,
-            data: test,
-            filteredDate: [],
+            data: [],
+            filteredDate: '',
             inputValue: '',
             checkboxList: [],
             hashesArrowDown: false,
@@ -54,7 +36,9 @@ export class Posts extends Component {
             countPerPage: '',
             addButtonClicked: false,
             selectedSiteSearch: '',
-            selectedCategorieSearch: ''
+            selectedCategorieSearch: '',
+            urlForCreatePost: '',
+            idForDelete: ''
 
         }
     }
@@ -63,10 +47,23 @@ export class Posts extends Component {
         if (this.props.location?.data?.searchBy) {
             this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
         }
+        if (!this.props.getSitesList.data?.data) {
+            this.props.dispatch(GetSitesListActionRequest())
+        }
+
+        this.props.dispatch(GetPostsListActionRequest())
 
     }
 
     componentDidUpdate(prevProps) {
+        const { getPostsList } = this.props
+        const { loading: getPostsListLoading, error: getPostsListError, data: getPostsListData, errorData: getPostsListErrorData } = getPostsList
+
+
+
+        if (prevProps.getPostsList !== getPostsList && !getPostsListLoading && !getPostsListError && getPostsListData) {
+            this.setState({ data: getPostsListData.data })
+        }
 
     }
 
@@ -108,7 +105,7 @@ export class Posts extends Component {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            return el.owner.toLowerCase().includes(value)
+            return el.name?.toLowerCase().includes(value)
         })
         this.setState({ filteredDate: newData })
 
@@ -193,25 +190,48 @@ export class Posts extends Component {
         }
     }
 
+    deletesiteFunction = () => {
+        this.props.dispatch(DeletePostActionRequest({
+            id: this.state.idForDelete
+        }))
+    }
+
+    handleTrashFunctionaliti = (id) => {
+        console.log(id);
+        this.setState({ confirmMessage: true, idForDelete: id })
+    }
+
+
+
     render() {
-        console.log(this.state);
+        const { data, filteredDate, urlForCreatePost, selectedSiteSearch } = this.state
+        const { getSitesList } = this.props
+        const dataToRender = filteredDate ? filteredDate : data
         return (
             <>
                 <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
                 {this.state.addButtonClicked && <AddContainer>
-                    <input type="text" placeholder='Enter URL' />
-                    <button><p>Create post</p></button>
+                    {!selectedSiteSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose site.</p>}
+                    {selectedSiteSearch && <input type="text" onChange={(e) => this.setState({ urlForCreatePost: e.target.value })} placeholder='Enter URL' />}
+                    {selectedSiteSearch && urlForCreatePost && <button onClick={() => this.props.history.push({
+                        pathname: '/posts/create',
+                        data: { urlpost: urlForCreatePost, site: selectedSiteSearch, buttonClicked: 'editDiv', createNew: true }
+                    })}><p>Create post</p></button>}
                 </AddContainer>}
 
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
-
+                {this.state.confirmMessage && <div className='confurmTextOnMani'>
+                    <h4>Are you sure</h4>
+                    <button onClick={this.deletesiteFunction}>Yes</button>
+                    <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
+                </div>}
                 <div className='mainTableDiv'>
                     <div className='shortScreenTableDiv'>
-                        {test.map((item, key) => {
+                        {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
                                 <div className='checkAndTrashDiv'>
                                     <input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} />
-                                    <img src={secondTrash} alt="trash" />
+                                    <img src={secondTrash} onClick={() => this.handleTrashFunctionaliti(item.id)} alt="trash" />
                                 </div>
                                 <div className='statusDiv'>
                                     <div>
@@ -221,8 +241,8 @@ export class Posts extends Component {
                                         </div>
                                         <p>STATUS</p>
                                     </div>
-                                    <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>
-                                        {item.status}
+                                    <div className='coloredDivStatus' style={{ background: item.status === 1 ? '#ABD996' : item.status === 0 ? '#dfe094' : item.status === 2 ? '#e09494' : item.status === 3 ? '#295265' : '' }}>
+                                        {item.status === 1 ? 'PUBLISHED' : item.status === 0 ? 'DRAFT' : item.status === 2 ? 'ERROR' : item.status === 3 ? 'TRASH' : ''}
                                     </div>
                                 </div>
 
@@ -235,7 +255,7 @@ export class Posts extends Component {
                                         <p>Site</p>
                                     </div>
                                     <div className='ownerClass'>
-                                        {item.owner}
+                                        {getSitesList?.data?.data.map(el => el.id === item.site ? el.name : '')}
                                     </div>
                                 </div>
                                 <div className='ownerDiv'>
@@ -247,7 +267,7 @@ export class Posts extends Component {
                                         <p>img</p>
                                     </div>
                                     <div className='ownerClass tdWithImgDiv'>
-                                        <img src={edit} alt="" />
+                                        <img src={item.image} alt="" />
                                     </div>
                                 </div>
                                 <div className='ownerDiv'>
@@ -259,7 +279,7 @@ export class Posts extends Component {
                                         <p>Date</p>
                                     </div>
                                     <div className='ownerClass'>
-                                        {item.owner}
+                                        {item?.timestamp && `${moment(new Date(item?.timestamp)).format("MM-DD-YYYY")}`}
                                     </div>
                                 </div>
 
@@ -273,7 +293,7 @@ export class Posts extends Component {
                                         <p>Name</p>
                                     </div>
                                     <div className='ownerClass'>
-                                        {item.owner}
+                                        {item.title}
                                     </div>
                                 </div>
                                 <div className='mainForIcons'>
@@ -294,7 +314,8 @@ export class Posts extends Component {
                                 <div className='mainDivHashes'>
                                     <>
                                         <div className="divWithHashes">
-                                            <p>Kuhinja ljubav moda</p>
+                                            <p>{this.props.getCategoryList?.data?.data.map(el => el.id === item.site ? el.name : '')}</p>
+
                                             <div className='box'>
                                                 <p>+<span>2</span></p>
                                                 <img src={secondarrowDown} alt="arrow" onClick={() => this.handleHashArrowClick(item)} />
@@ -504,19 +525,19 @@ export class Posts extends Component {
                         </thead>
 
                         <tbody>
-                            {test.map((item, key) => {
+                            {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                                 return <tr key={key} onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <td><input type="checkbox" id='noredirection' value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /></td>
-                                    <td><img src={secondTrash} alt="trash" id='noredirection' /></td>
-                                    <td> <div className='coloredDivStatus' style={{ background: item.status === 'PUBLISHED' && '#ABD996' }}>
-                                        {item.status}
+                                    <td><img src={secondTrash} onClick={() => this.handleTrashFunctionaliti(item.id)} alt="trash" id='noredirection' /></td>
+                                    <td> <div className='coloredDivStatus' style={{ background: item.status === 1 ? '#ABD996' : item.status === 0 ? '#dfe094' : item.status === 2 ? '#e09494' : item.status === 3 ? '#295265' : '' }}>
+                                        {item.status === 1 ? 'PUBLISHED' : item.status === 0 ? 'DRAFT' : item.status === 2 ? 'ERROR' : item.status === 3 ? 'TRASH' : ''}
                                     </div>
                                     </td>
                                     <td><div className='ownerClass'>
-                                        b92.rs
+                                        {getSitesList?.data?.data.map(el => el.id === item.site ? el.name : '')}
                                     </div></td>
                                     <td><div className='ownersNameClass tdWithImgDiv'>
-                                        <img src={edit} alt="" />
+                                        <img src={item.image} alt="" />
                                     </div></td>
                                     {/* <td><div className="divWithClicableIcons">
                                         <img src={visit} alt="visit" />
@@ -531,12 +552,14 @@ export class Posts extends Component {
                                         <p>widgets</p>
 
                                     </div></td> */}
-                                    <td>31.12.2001</td>
-                                    <td>Neki tamo je udario nekog tamo i od toga se napravila pometnja pa je taj neko pozvao nekoga pa se sve nastavilo</td>
+                                    <td>{item?.timestamp && `${moment(new Date(item?.timestamp)).format("MM-DD-YYYY")}`}</td>
+                                    <td>{
+                                        item.title
+                                    }</td>
                                     <td>
                                         <>
                                             <div className="divWithHashes">
-                                                <p>Kuhinja ljubav moda</p>
+                                                <p>{this.props.getCategoryList?.data?.data.map(el => el.id === item.site ? el.name : '')}</p>
                                                 <div className='box'>
                                                     <p>+<span>2</span></p>
                                                     <img src={secondarrowDown} id='noredirection' alt="arrow" onClick={() => this.handleHashArrowClick(item)} />
@@ -569,11 +592,16 @@ export class Posts extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const { CategoryReducer } = state;
+    const { CategoryReducer, PostsReducer, SitesListReducer } = state;
     const { getCategoryList } = CategoryReducer
+    const { getPostsList } = PostsReducer
+    const { getSitesList } = SitesListReducer
+
 
     return {
-        getCategoryList
+        getCategoryList,
+        getPostsList,
+        getSitesList
 
     }
 }

@@ -4,7 +4,7 @@ import '../SiteDetails/SiteDetails.scss'
 import { connect } from 'react-redux'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
 import Select from 'react-select'
-import { GetCategoryDetailsActionRequest, CreateCategoryActionRequest, UpdateCategoryDetailsActionRequest } from '../../store/actions/CategoryAction'
+import { GetCategoryDetailsActionRequest, CreateCategoryActionRequest, UpdateCategoryDetailsActionRequest, DeleteCategoryActionRequest } from '../../store/actions/CategoryAction'
 import { NotificationManager } from 'react-notifications'
 
 
@@ -30,6 +30,7 @@ export class CategoriesDetails extends Component {
         this.state = {
             isIteditable: false,
             whichisit: '',
+            confirmMessage: false,
             dataTest: 'PUBLISHED',
             name: null,
             description: null,
@@ -56,6 +57,10 @@ export class CategoriesDetails extends Component {
                 id: this.props.match.params.id
             }))
         }
+    }
+
+    handleTrashClick = () => {
+        this.setState({ confirmMessage: true })
     }
 
     componentDidUpdate(prevProps) {
@@ -164,12 +169,23 @@ export class CategoriesDetails extends Component {
         console.log(item);
         this.setState({ merge: item?.value })
     }
+
+    deleteuserFunction = () => {
+        this.props.dispatch(DeleteCategoryActionRequest({
+            id: this.props.match.params.id
+        }))
+    }
     render() {
         const { isIteditable, categoryDetailsData, adult } = this.state
 
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} handleWhereEverNav={this.handleWhereEverNav} pageName={'categories'} />
+                <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} handleTrashClick={this.handleTrashClick} handleWhereEverNav={this.handleWhereEverNav} pageName={'categories'} />
+                {this.state.confirmMessage && <div className='confurmText'>
+                    <h4>Are you sure</h4>
+                    <button onClick={this.deleteuserFunction}>Yes</button>
+                    <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
+                </div>}
                 <div className='mainSiteInfoDiv'>
                     <div className='leftSideDiv'>
                         <h1>{this.props?.location?.data?.name ? this.props?.location?.data?.name : categoryDetailsData?.name}</h1>

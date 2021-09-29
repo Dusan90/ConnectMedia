@@ -2,18 +2,16 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import NavWidget from '../../containers/NavWidget/NavWidget'
 import xButton from '../../assets/img/SiteDetails/xButton.svg'
+import { connect } from 'react-redux'
 import '../SiteDetails/SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
 import Chart from '../../containers/Chart/Chart'
 import VerticalChart from '../../containers/Chart/VerticalChart'
 import Select from 'react-select'
-import { Column } from 'rc-table'
+import { GetWidgetDetailsActionRequest, CreateWidgetActionRequest, UpdateWidgetDetailsActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
+import { GetSiteDetailsActionRequest } from '../../store/actions/SitesListAction'
 
-const optionss = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-]
+import { NotificationManager } from 'react-notifications'
 
 const customSelectStyles = {
     control: (base, state) => ({
@@ -58,9 +56,7 @@ const data = [
     },
 ]
 
-const test3 = [{ text: 'vesti' }, { text: 'zabava' }]
-
-const options = ["PUBLISHED", 'DRAFT', 'ERROR', 'TRASH']
+const options = [0, 1, 2, 3]
 
 export class WidgetsDetails extends Component {
     constructor(prosp) {
@@ -68,8 +64,30 @@ export class WidgetsDetails extends Component {
         this.state = {
             isIteditable: false,
             whichisit: '',
-            dataTest: 'PUBLISHED',
-            tabClicked: ''
+            WidgetDetailsData: '',
+            siteDetailsData: '',
+            tabClicked: '',
+            dataState: null,
+            name: null,
+            site: null,
+            status: null,
+            publicValue: null,
+            image: null,
+            description: null,
+            categories: null,
+            sites: null,
+            include: null,
+            minima: null,
+            direct: null,
+            append: null,
+            same_window: null,
+            ignore_impressions: null,
+            count: null,
+            width: null,
+            height: null,
+            encoding: null,
+            template: null,
+            siteOptions: []
 
         }
     }
@@ -94,19 +112,186 @@ export class WidgetsDetails extends Component {
         this.setState({ tabClicked: page })
     }
 
+    componentDidMount() {
+
+        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError, errorData: getSitesListErrorData } = this.props.getSitesList;
+        if (!getSitesListError && !getSitesListLoading && getSitesListData) {
+            const siteOptions = getSitesListData.data.map(el => {
+                return { value: el.id, label: el.name ? el.name : 'no name' }
+            })
+            this.setState({ siteOptions })
+        }
+
+        if (!this.props?.location?.data?.createNew) {
+            this.props.dispatch(GetWidgetDetailsActionRequest({
+                id: this.props.match.params.id
+            }))
+
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const { getWidgetDetails, getSiteDetails, deleteWidget, createWidget, updateWidgetDetails } = this.props
+        const { data: getWidgetDetailsData, loading: getWidgetDetailsLoading, error: getWidgetDetailsError, errorData: getWidgetDetailsErrorData } = getWidgetDetails;
+        const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError, errorData: getSiteDetailsErrorData } = getSiteDetails;
+        const { data: deleteWidgetData, loading: deleteWidgetLoading, error: deleteWidgetError, errorData: deleteWidgetErrorData } = deleteWidget;
+        const { data: createWidgetData, loading: createWidgetLoading, error: createWidgetError, errorData: createWidgetErrorData } = createWidget;
+        const { data: updateWidgetDetailsData, loading: updateWidgetDetailsLoading, error: updateWidgetDetailsError, errorData: updateWidgetDetailsErrorData } = updateWidgetDetails;
+
+
+        if (prevProps.getSiteDetails !== getSiteDetails && !getSiteDetailsError && !getSiteDetailsLoading && getSiteDetailsData) {
+            this.setState({
+                // dataState: getSiteDetails.data.state,
+                siteDetailsData: getSiteDetailsData.data,
+            })
+        }
+
+
+        if (prevProps.getWidgetDetails !== getWidgetDetails && !getWidgetDetailsError && !getWidgetDetailsLoading && getWidgetDetailsData) {
+            this.props.dispatch(GetSiteDetailsActionRequest({
+                id: getWidgetDetailsData.data?.site?.id
+            }))
+            this.setState({
+                dataState: getWidgetDetails.data.status,
+                WidgetDetailsData: getWidgetDetailsData.data,
+            })
+        }
+
+
+
+        if (prevProps.deleteWidget !== deleteWidget && !deleteWidgetError && !deleteWidgetLoading && deleteWidgetData) {
+            NotificationManager.success("Widget successfully deleted", "Success", 2000);
+            this.props.history.push('/widgets')
+        }
+
+        if (prevProps.createWidget !== createWidget && !createWidgetError && !createWidgetLoading && createWidgetData) {
+            NotificationManager.success("Widget successfully created", "Success", 2000);
+            this.props.history.push('/widgets')
+        } else if (prevProps.createWidget !== createWidget && createWidgetError && createWidgetErrorData) {
+            NotificationManager.error(`${createWidgetErrorData.data.message}`, "Failed", 2000);
+
+        }
+
+        if (prevProps.updateWidgetDetails !== updateWidgetDetails && !updateWidgetDetailsError && !updateWidgetDetailsLoading && updateWidgetDetailsData) {
+            NotificationManager.success("Widget successfully updated", "Success", 2000);
+            this.props.history.push('/widgets')
+        } else if (prevProps.updateWidgetDetails !== updateWidgetDetails && updateWidgetDetailsError && updateWidgetDetailsErrorData) {
+            NotificationManager.error(`${updateWidgetDetailsErrorData.data.message}`, "Failed", 2000);
+
+        }
+    }
+
+
     handleButtonActive = (page) => {
-        console.log(page);
-        this.setState({ whichisit: page })
+        if (page === 'save') {
+            const { name, site, status, dataState, image, description, categories, sites, include, minima, direct, append, same_window, ignore_impressions, count, width, height, encoding, template,
+                publicValue,
+            } = this.state
+            if (this.props.location.data?.createNew) {
+                this.props.dispatch(CreateWidgetActionRequest({
+                    name,
+                    site,
+                    status: dataState,
+                    'public': publicValue,
+                    image,
+                    description,
+                    categories,
+                    sites,
+                    include,
+                    minima,
+                    direct,
+                    append,
+                    same_window,
+                    ignore_impressions,
+                    count,
+                    width,
+                    height,
+                    encoding,
+                    template
+                }))
+            } else {
+                this.props.dispatch(UpdateWidgetDetailsActionRequest({
+                    id: this.props.match.params.id,
+                    name,
+                    site,
+                    status: dataState,
+                    'public': publicValue,
+                    image,
+                    description,
+                    categories,
+                    sites,
+                    include,
+                    minima,
+                    direct,
+                    append,
+                    same_window,
+                    ignore_impressions,
+                    count,
+                    width,
+                    height,
+                    encoding,
+                    template
+
+                }))
+            }
+        } else if (page === 'cancel') {
+            this.setState({ isIteditable: false })
+        } else {
+            this.setState({ whichisit: page })
+        }
     }
 
     handleStatusChange = (status) => {
-        this.setState({ dataTest: status })
+        this.setState({ dataState: status })
     }
+
+    handleTrashClick = () => {
+        this.setState({ confirmMessage: true })
+    }
+
+    deleteuserFunction = () => {
+        this.props.dispatch(DeleteWidgetActionRequest({
+            id: this.props.match.params.id
+        }))
+    }
+
+    handleSite = value => {
+        this.setState({ site: value.value })
+        this.props.dispatch(GetSiteDetailsActionRequest({
+            id: value.value
+        }))
+    }
+
+    handlewidgetInput = e => {
+        if (e.target.type === 'number') {
+            this.setState({ [e.target.name]: parseInt(e.target.value) })
+
+        } else {
+            this.setState({ [e.target.name]: e.target.value })
+        }
+    }
+
+    handlePostDetailsCategorie = value => {
+        console.log(value);
+        const saveData = value.length !== 0 ? value.map(el => el.value) : []
+        this.setState({ categories: saveData })
+    }
+
     render() {
-        const { isIteditable, dataTest, tabClicked } = this.state
+        const { isIteditable, dataState, site, siteDetailsData, tabClicked, WidgetDetailsData, publicValue, include, direct, same_window, ignore_impressions, siteOptions } = this.state
+
+        const categorialOption = siteDetailsData?.categories?.map(el => {
+            return { value: el.category.id, label: el.category.name }
+        })
+
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget handleWhereEverNav={this.handleWhereEverNav} pageName={'widgets'} />
+                <NavWidget handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} isButtonNamepased={this.props?.location?.data?.buttonClicked} pageName={'widgets'} />
+                {this.state.confirmMessage && <div className='confurmText'>
+                    <h4>Are you sure</h4>
+                    <button onClick={this.deleteuserFunction}>Yes</button>
+                    <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
+                </div>}
                 {tabClicked === 'statsDiv' && <> <div style={{ height: '500px', marginTop: '20px' }}>
                     <Chart customStyle={{ padding: '0' }} />
                 </div>
@@ -122,13 +307,14 @@ export class WidgetsDetails extends Component {
                             <h1>General</h1>
                             <div className='status_div'>
                                 <h4>Status</h4>
-                                {!isIteditable && <div className='coloredDivStatus' style={{ background: dataTest === 'PUBLISHED' ? '#ABD996' : dataTest === 'DRAFT' ? '#DFE094' : dataTest === 'ERROR' ? '#E09494' : '#295265' }}>
-                                    {dataTest}
+                                {!isIteditable && <div className='coloredDivStatus' style={{ background: WidgetDetailsData?.status === 1 ? '#ABD996' : WidgetDetailsData?.status === 0 ? '#DFE094' : WidgetDetailsData?.status === 2 ? '#E09494' : WidgetDetailsData?.status === 2 ? '#295265' : '' }}>
+                                    {WidgetDetailsData?.status === 1 ? 'PUBLISHED' : WidgetDetailsData?.status === 0 ? 'DRAFT' : WidgetDetailsData?.status === 2 ? 'ERROR' : WidgetDetailsData?.status === 3 ? 'TRASH' : ''}
+
                                 </div>}
                                 {isIteditable && <div className='mainOptionDiv'>
                                     {options.map((item, key) => {
-                                        return <div key={key} onClick={() => this.handleStatusChange(item)} className='coloredDivStatus' style={{ height: item === dataTest && '47px', background: item === 'PUBLISHED' ? '#ABD996' : item === 'DRAFT' ? '#DFE094' : item === 'ERROR' ? '#E09494' : '#295265' }}>
-                                            {item}
+                                        return <div key={key} onClick={() => this.handleStatusChange(item)} className='coloredDivStatus' style={{ height: item === dataState && '47px', background: item === 1 ? '#ABD996' : item === 0 ? '#DFE094' : item === 2 ? '#E09494' : item === 3 ? '#295265' : '' }}>
+                                            {item === 1 ? 'PUBLISHED' : item === 0 ? 'DRAFT' : item === 2 ? 'ERROR' : item === 3 ? 'TRASH' : ''}
                                         </div>
 
                                     })}
@@ -137,13 +323,13 @@ export class WidgetsDetails extends Component {
                             </div>
                             <div className='name_div'>
                                 <h4>Name</h4>
-                                {!isIteditable && <p>24Online.rs</p>}
-                                {isIteditable && <input type="text" placeholder='24Online.rs' />}
+                                {!isIteditable && <p>{WidgetDetailsData?.name}</p>}
+                                {isIteditable && <input type="text" name='name' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.name} />}
                             </div>
                             <div className='url_div'>
                                 <h4>Public</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" /></div>}
+                                {!isIteditable && <p>{WidgetDetailsData && WidgetDetailsData['public']}</p>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={publicValue ? publicValue : WidgetDetailsData['public']} checked={publicValue ? publicValue : WidgetDetailsData['public']} onChange={(e) => this.setState({ publicValue: e.target.checked })} /></div>}
 
                             </div>
                             <h1 style={{ margin: '20px 0' }}>Default content</h1>
@@ -151,62 +337,62 @@ export class WidgetsDetails extends Component {
 
                             <div className='owner_div'>
                                 <h4>Include site</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" /></div>}
+                                {!isIteditable && <p>{WidgetDetailsData?.include}</p>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={include ? include : WidgetDetailsData?.include} checked={include ? include : WidgetDetailsData?.include} onChange={(e) => this.setState({ include: e.target.checked })} /></div>}
                             </div>
                             <div className='owner_div'>
                                 <h4>Link direct</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" /></div>}
+                                {!isIteditable && <p>{WidgetDetailsData?.direct}</p>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={direct ? direct : WidgetDetailsData?.direct} checked={direct ? direct : WidgetDetailsData?.direct} onChange={(e) => this.setState({ direct: e.target.checked })} /></div>}
                             </div>
                             <div className='description_div'>
                                 <h4>Open site posts in the same window</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" /></div>}
+                                {!isIteditable && <p>{WidgetDetailsData?.same_window}</p>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={same_window ? same_window : WidgetDetailsData?.same_window} checked={same_window ? same_window : WidgetDetailsData?.same_window} onChange={(e) => this.setState({ same_window: e.target.checked })} /></div>}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Append to links</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{WidgetDetailsData?.append}</p>}
+                                {isIteditable && <input type="text" name='append' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.append} />}
 
                             </div>
                             <h1 style={{ margin: '20px 0' }}>Order</h1>
                             <div className='head_div'>
                                 <h4>Do not register impressions</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" /></div>}
+                                {!isIteditable && <p>{WidgetDetailsData?.ignore_impressions}</p>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={ignore_impressions ? ignore_impressions : WidgetDetailsData?.ignore_impressions} checked={ignore_impressions ? ignore_impressions : WidgetDetailsData?.ignore_impressions} onChange={(e) => this.setState({ ignore_impressions: e.target.checked })} /></div>}
 
                             </div>
                             <h1 style={{ margin: '20px 0' }}>Default content</h1>
                             <div className='description_div'>
                                 <h4>Count</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{WidgetDetailsData?.count}</p>}
+                                {isIteditable && <input type="number" name='count' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.count} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Encoding</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{WidgetDetailsData?.encoding}</p>}
+                                {isIteditable && <input type="text" name='encoding' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.encoding} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Image width</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{WidgetDetailsData?.width}</p>}
+                                {isIteditable && <input type="number" name='width' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.width} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Image height</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{WidgetDetailsData?.height}</p>}
+                                {isIteditable && <input type="number" name='height' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.height} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Template</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <textarea style={{ flex: '1', background: '#d6dbdc', marginRight: '20px', border: 'none', borderRadius: '5px' }} type="text" placeholder='' />}
+                                {!isIteditable && <p>{WidgetDetailsData?.template}</p>}
+                                {isIteditable && <textarea style={{ flex: '1', background: '#d6dbdc', marginRight: '20px', border: 'none', borderRadius: '5px' }} type="text" name='template' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.template} />}
 
                             </div>
                         </div>
@@ -221,36 +407,30 @@ export class WidgetsDetails extends Component {
                             <div className='categ_div'>
                                 <h4>Categories</h4>
                                 {!isIteditable && <div className='listOfCateg'>
-                                    {test3.map((item, key) => {
-                                        if (!isIteditable) {
-                                            return <p key={key}>{item.text}</p>
-                                        }
-                                        else {
-                                            return <div key={key}>
-                                                <img src={xButton} alt="x" />
-                                                <p>{item.text}</p>
-                                            </div>
-                                        }
-                                    })}
+                                    <p>{WidgetDetailsData?.categories?.map(el => el.name)}</p>
+
 
                                 </div>}
                                 {isIteditable && <Select
                                     className="basic-single"
                                     classNamePrefix="select"
+                                    defaultValue={WidgetDetailsData?.categories?.map(el => categorialOption[el.id])}
                                     // defaultValue={colourOptions[0]}
+                                    onChange={this.handlePostDetailsCategorie}
+
                                     // isLoading={true}
                                     isMulti
                                     styles={customSelectStyles}
-                                    isClearable={true}
+                                    // isClearable={true}
                                     isSearchable={true}
                                     name="merge"
-                                    options={optionss}
+                                    options={categorialOption}
                                 />}
                             </div>
 
                             <div className='categ_div selectable'>
                                 <h4 style={{ width: '100px' }}>Site</h4>
-                                {!isIteditable && <p></p>}
+                                {!isIteditable && <p>{site ? siteOptions.map(el => el.value === site ? el.label : '') : WidgetDetailsData?.site?.name}</p>}
                                 {/* {isIteditable && <select style={{ flex: '1', marginRight: '20px', border: 'none', background: '#d6dbdc', textIndent: '10px', borderRadius: '5px' }}>
                                     <option className='options' value="test">test</option>
                                     <option className='options' value="test">test</option>
@@ -260,22 +440,25 @@ export class WidgetsDetails extends Component {
                                     classNamePrefix="select"
                                     // defaultValue={colourOptions[0]}
                                     // isLoading={true}
+                                    onChange={this.handleSite}
+                                    placeholder={site ? siteOptions.map(el => el.value === site ? el.label : '') : WidgetDetailsData?.site?.name}
+
                                     styles={customSelectStyles}
                                     isClearable={true}
                                     isSearchable={true}
                                     name="merge"
-                                    options={optionss}
+                                    options={this.state.siteOptions}
                                 />}
                             </div>
                             <div className='categ_div'>
                                 <h4>Owner</h4>
-                                <Link to='nina.aralica@alo.rs'>nina.aralica@alo.rs</Link>
+                                <Link to={`${WidgetDetailsData?.owner?.email}`}>{WidgetDetailsData?.owner?.email}</Link>
                                 {/* {isIteditable && <input type="text" placeholder='nina.aralica@alo.rs' />} */}
                             </div>
                             <div className='categ_div'>
                                 <h4>Description</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{WidgetDetailsData?.description}</p>}
+                                {isIteditable && <input type="text" name='description' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.description} />}
 
                             </div>
 
@@ -286,12 +469,29 @@ export class WidgetsDetails extends Component {
                 </div>}
 
                 {isIteditable && <div className='buttonsDiv'>
-                    <SaveButtonEdit labeltext={'Save changes'} colorization={'ScrapeClass'} customStyle={{ fontWeight: 'bold', height: '58px', width: "260px" }} />
-                    <SaveButtonEdit labeltext={'Cancel'} colorization={`ScrapeClass clicked`} customStyle={{ fontWeight: 'bold', height: '58px', width: "184px" }} />
+                    <SaveButtonEdit labeltext={'Save changes'} handleButtonActive={() => this.handleButtonActive('save')} colorization={'ScrapeClass'} customStyle={{ fontWeight: 'bold', height: '58px', width: "260px" }} />
+                    <SaveButtonEdit labeltext={'Cancel'} handleButtonActive={() => this.handleButtonActive('cancel')} colorization={`ScrapeClass clicked`} customStyle={{ fontWeight: 'bold', height: '58px', width: "184px" }} />
                 </div>}
             </div>
         )
     }
 }
 
-export default WidgetsDetails
+const mapStateToProps = (state) => {
+    const { WidgetReducer, SitesListReducer, CategoryReducer } = state;
+    const { getWidgetDetails, deleteWidget, createWidget, updateWidgetDetails } = WidgetReducer
+    const { getCategoryList } = CategoryReducer
+    const { getSitesList, getSiteDetails } = SitesListReducer
+    return {
+        getWidgetDetails,
+        getSitesList,
+        getSiteDetails,
+        getCategoryList,
+        deleteWidget,
+        createWidget,
+        updateWidgetDetails
+
+    }
+}
+
+export default connect(mapStateToProps, null)(WidgetsDetails)

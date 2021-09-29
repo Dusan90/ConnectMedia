@@ -4,8 +4,10 @@ import ShortTableRowContainer from '../../containers/TableRowContainer/ShortTabl
 import SearchContainer from '../../containers/SearchContainer/SearchContainer'
 import AddContainer from '../../containers/AddContainer/AddContainer'
 import Select from 'react-select'
+import { connect } from 'react-redux'
 import '../Home/Home.scss'
 import EditableInline from '../../containers/EditableInline/EditableInline'
+import { GetWidgetsListActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
 
 const test = [{
     status: 'PUBLISHED',
@@ -55,15 +57,16 @@ export class Widgets extends Component {
         this.state = {
             page: 1,
             data: test,
-            filteredDate: [],
+            filteredDate: '',
             inputValue: '',
             checkboxList: [],
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
             countPerPage: '',
-            addButtonClicked: false,
             selectedSiteSearch: '',
-            selectedCategorieSearch: ''
+            selectedCategorieSearch: '',
+            confirmMessage: false,
+            idForDelete: ''
 
         }
     }
@@ -72,7 +75,24 @@ export class Widgets extends Component {
         if (this.props.location?.data?.searchBy) {
             this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
         }
+
+        this.props.dispatch(GetWidgetsListActionRequest())
+
     }
+
+    componentDidUpdate(prevProps) {
+        const { getWidgetsList } = this.props
+        const { loading: getWidgetsListLoading, error: getWidgetsListError, data: getWidgetsListData, errorData: getWidgetsListErrorData } = getWidgetsList
+
+
+
+        if (prevProps.getWidgetsList !== getWidgetsList && !getWidgetsListLoading && !getWidgetsListError && getWidgetsListData) {
+            this.setState({ data: getWidgetsListData.data })
+        }
+
+    }
+
+
 
     handlePageChange = (value) => {
         this.setState({ page: value })
@@ -104,7 +124,7 @@ export class Widgets extends Component {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            return el.owner.toLowerCase().includes(value)
+            return el.site.toLowerCase().includes(value)
         })
         this.setState({ filteredDate: newData })
 
@@ -146,7 +166,10 @@ export class Widgets extends Component {
     }
 
     handleAddSomeMore = () => {
-        this.setState({ addButtonClicked: !this.state.addButtonClicked })
+        this.props.history.push({
+            pathname: '/widgets/create',
+            data: { buttonClicked: 'editDiv', createNew: true }
+        })
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
@@ -167,14 +190,26 @@ export class Widgets extends Component {
         }
     }
 
+    deletesiteFunction = () => {
+        this.props.dispatch(DeleteWidgetActionRequest({
+            id: this.state.idForDelete
+        }))
+    }
+
+    handleTrashFunctionaliti = (id) => {
+        console.log(id);
+        this.setState({ confirmMessage: true, idForDelete: id })
+    }
+
     render() {
-        const { selectedSiteSearch } = this.state
+        const { selectedSiteSearch, data, filteredDate } = this.state
+
         return (
             <>
                 <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
-                {this.state.addButtonClicked && <AddContainer>
-                    {!selectedSiteSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose a site.</p>}
-                    {selectedSiteSearch && <Select
+                {/* {this.state.addButtonClicked && <AddContainer> */}
+                {/* {!selectedSiteSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose a site.</p>} */}
+                {/* <Select
                         className="basic-single"
                         classNamePrefix="select"
                         // defaultValue={colourOptions[0]}
@@ -185,18 +220,35 @@ export class Widgets extends Component {
                         isSearchable={true}
                         name="merge"
                         options={optionss}
-                    />}
-                    {selectedSiteSearch && <button><p>Create widget</p></button>}
-                </AddContainer>}
+                    />
+                    <button><p>Create widget</p></button> */}
+                {/* </AddContainer>} */}
 
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
+                {this.state.confirmMessage && <div className='confurmTextOnMani'>
+                    <h4>Are you sure</h4>
+                    <button onClick={this.deletesiteFunction}>Yes</button>
+                    <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
+                </div>}
                 <div className='mainTableDiv'>
-                    <ShortTableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
-                    <TableRowContainer data={test} state={this.state} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
+                    <ShortTableRowContainer data={data} state={this.state} handleTrashFunctionaliti={this.handleTrashFunctionaliti} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
+                    <TableRowContainer data={data} state={this.state} handleTrashFunctionaliti={this.handleTrashFunctionaliti} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
                 </div>
             </>
         )
     }
 }
 
-export default Widgets
+const mapStateToProps = (state) => {
+    const { WidgetReducer } = state;
+
+    const { getWidgetsList } = WidgetReducer
+
+
+    return {
+        getWidgetsList,
+
+    }
+}
+
+export default connect(mapStateToProps, null)(Widgets)

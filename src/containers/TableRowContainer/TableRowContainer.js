@@ -128,13 +128,22 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     return <tr key={key} onClick={(e) => handlePageRedirect(e, item)}>
                         <td><input type="checkbox" value={checkboxList} id='noredirection' checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td>
                         <td><img src={secondTrash} onClick={() => handleTrashFunctionaliti(item.id)} alt="trash" id='noredirection' /></td>
-                        <td> <div className='coloredDivStatus' style={{ background: item.state === 1 ? '#ABD996' : item.state === 0 ? '#dfe094' : item.state === 2 ? '#e09494' : item.state === 3 ? '#295265' : '' }}>
-                            {item.state === 1 ? 'PUBLISHED' : item.state === 0 ? 'DRAFT' : item.state === 2 ? 'ERROR' : item.state === 3 ? 'TRASH' : ''}
-                        </div>
+                        <td>
+                            {pageName !== 'widgets' && <div className='coloredDivStatus' style={{ background: item.state === 1 ? '#ABD996' : item.state === 0 ? '#dfe094' : item.state === 2 ? '#e09494' : item.state === 3 ? '#295265' : '' }}>
+                                {item.state === 1 ? 'PUBLISHED' : item.state === 0 ? 'DRAFT' : item.state === 2 ? 'ERROR' : item.state === 3 ? 'TRASH' : ''}
+                            </div>}
+                            {pageName === 'widgets' && <div className='coloredDivStatus' style={{ background: item.status === 1 ? '#ABD996' : item.status === 0 ? '#dfe094' : item.status === 2 ? '#e09494' : item.status === 3 ? '#295265' : '' }}>
+                                {item.status === 1 ? 'PUBLISHED' : item.status === 0 ? 'DRAFT' : item.status === 2 ? 'ERROR' : item.status === 3 ? 'TRASH' : ''}
+                            </div>}
                         </td>
-                        <td><div className='ownerClass' id='noredirection' onClick={() => history.push(`/users/${item.owner.id}`)}>
-                            {item.owner.email}
-                        </div></td>
+                        <td>
+                            {pageName !== 'widgets' && <div className='ownerClass' id='noredirection' onClick={() => history.push(`/users/${item.owner.id}`)}>
+                                {item.owner.email}
+                            </div>}
+                            {pageName === 'widgets' && <div className='ownerClass' id='noredirection' onClick={() => history.push(`/sites/${item.site?.id}`)}>
+                                {item.site?.name}
+                            </div>}
+                        </td>
                         <td><div className='ownersNameClass'>
                             {item.name}
                         </div></td>
@@ -159,7 +168,7 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                         <td>
                             <>
                                 <div className="divWithHashes">
-                                    <p>Kuhinja ljubav moda</p>
+                                    <p>{item?.categories?.map(el => el.name)}</p>
                                     <div className='box'>
                                         <p>+<span>2</span></p>
                                         <img src={secondarrowDown} onClick={() => handleHashArrowClick(item)} alt="arrow" id='noredirection' />

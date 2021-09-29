@@ -17,5 +17,15 @@ export const GET_SELF_USER = '/user';
 
 export const GET_CATEGORY = '/category';
 
+// Posts
+
+export const GET_POST = '/post';
+
+
+// widget
+
+export const GET_WIDGET = '/widget';
+
+
 
 

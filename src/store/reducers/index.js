@@ -4,7 +4,9 @@ import storage from 'redux-persist/lib/storage';
 import LoginReducer from './LoginReducer'
 import SitesListReducer from "./SitesListReducer";
 import UsersReducer from "./UsersReducer";
-import CategoryReducer from './CategoryReducer'
+import CategoryReducer from './CategoryReducer';
+import PostsReducer from "./PostsReducer";
+import WidgetReducer from "./WidgetReducer";
 
 const persistConfig = {
     key: 'root',
@@ -13,7 +15,9 @@ const persistConfig = {
         LoginReducer,
         SitesListReducer,
         UsersReducer,
-        CategoryReducer
+        CategoryReducer,
+        PostsReducer,
+        WidgetReducer
 
     ],
 }
@@ -22,7 +26,9 @@ const rootReducer = combineReducers({
     LoginReducer,
     SitesListReducer,
     UsersReducer,
-    CategoryReducer
+    CategoryReducer,
+    PostsReducer,
+    WidgetReducer
 
 });
 

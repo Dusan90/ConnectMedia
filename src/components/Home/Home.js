@@ -9,6 +9,7 @@ import EditableInline from '../../containers/EditableInline/EditableInline'
 import AddContainer from '../../containers/AddContainer/AddContainer'
 import { GetSitesListActionRequest, DeleteSiteActionRequest } from '../../store/actions/SitesListAction'
 import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
+import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
 import { NotificationManager } from 'react-notifications'
 
 
@@ -53,7 +54,8 @@ export class Home extends Component {
             addButtonClicked: false,
             confirmMessage: false,
             urlForCreate: '',
-            categoryList: ''
+            categoryList: '',
+            idForDelete: ''
 
         }
     }
@@ -61,6 +63,8 @@ export class Home extends Component {
     componentDidMount() {
         this.props.dispatch(GetSitesListActionRequest())
         this.props.dispatch(GetCategoryListActionRequest())
+        this.props.dispatch(GetUsersListActionRequest())
+
 
 
     }
@@ -187,13 +191,13 @@ export class Home extends Component {
 
     deletesiteFunction = () => {
         this.props.dispatch(DeleteSiteActionRequest({
-            id: this.props.match.params.id
+            id: this.state.idForDelete
         }))
     }
 
-    handleTrashFunctionaliti = () => {
-        console.log('hello');
-        this.setState({ confirmMessage: true })
+    handleTrashFunctionaliti = (id) => {
+        console.log(id);
+        this.setState({ confirmMessage: true, idForDelete: id })
     }
 
     render() {

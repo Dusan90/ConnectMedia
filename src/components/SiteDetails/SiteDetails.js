@@ -57,28 +57,30 @@ export class SiteDetails extends Component {
             tabClicked: '',
             confirmMessage: false,
             siteDetailsData: '',
-            name: '',
-            url: '',
-            description: '',
-            head: '',
-            encoding: '',
-            factor: '',
-            minimum: '',
-            tracking: '',
-            auto_publish: '',
-            better_images: '',
-            feed_definition: '',
-            post_definition: '',
-            refresh_interval: '',
-            copy_from_site: '',
-            guess_remote: '',
-            tag_map: '',
+            name: null,
+            url: null,
+            description: null,
+            head: null,
+            encoding: null,
+            factor: null,
+            minimum: null,
+            tracking: null,
+            auto_publish: null,
+            better_images: null,
+            feed_definition: null,
+            post_definition: null,
+            refresh_interval: null,
+            copy_from_site: null,
+            guess_remote: null,
+            tag_map: null,
             cateOptions: [],
             categories: [],
-            RSS: '',
+            RSS: null,
             feed_translations: '',
-            remote_translations: ''
+            remote_translations: '',
+            owner: ''
         }
+
     }
 
     componentDidMount() {
@@ -92,7 +94,7 @@ export class SiteDetails extends Component {
 
 
         if (this.props?.location?.data?.url) {
-            this.setState({ url: this.props.location.data?.url })
+            this.setState({ url: this.props.location.data?.url, owner: this.props.location.data?.owner })
         } else {
             this.props.dispatch(GetSiteDetailsActionRequest({
                 id: this.props.match.params.id
@@ -187,7 +189,7 @@ export class SiteDetails extends Component {
                     copy_from_site,
                     guess_remote,
                     tag_map,
-                    RSS
+                    feeds: RSS
                 }))
             } else {
                 this.props.dispatch(UpdateSiteDetailsActionRequest({
@@ -208,7 +210,7 @@ export class SiteDetails extends Component {
                     copy_from_site,
                     guess_remote,
                     tag_map,
-                    RSS
+                    feeds: RSS
                 }))
             }
         } else if (page === 'cancel') {
@@ -223,7 +225,11 @@ export class SiteDetails extends Component {
     }
 
     handleChange = (e) => {
-        this.setState({ [e.target.name]: e.target.value })
+        if (e.target.type === 'number') {
+            this.setState({ [e.target.name]: parseInt(e.target.value) })
+        } else {
+            this.setState({ [e.target.name]: e.target.value })
+        }
         console.log(e.target.value);
     }
 
@@ -313,19 +319,20 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='owner_div'>
                                 <h4>Owner</h4>
-                                {!isIteditable && <Link to={`/users/${siteDetailsData?.owner?.id}`}>{siteDetailsData?.owner?.email}</Link>}
+                                {<Link to={`/users/${siteDetailsData?.owner?.id}`}>{siteDetailsData?.owner?.email}</Link>}
                                 {/* {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Owner' placeholder='nina.aralica@alo.rs' />} */}
-                                {isIteditable && <Select
+                                {/* {isIteditable && <Select
                                     className="basic-single"
                                     classNamePrefix="select"
                                     // defaultValue={colourOptions[0]}
                                     // isLoading={true}
+                                    placeholder={this.state.owner.email}
                                     styles={customSelectStyles}
                                     isClearable={true}
                                     isSearchable={true}
                                     name="merge"
                                     options={optionss}
-                                />}
+                                />} */}
                             </div>
                             <div className='description_div'>
                                 <h4>Description</h4>
@@ -372,8 +379,8 @@ export class SiteDetails extends Component {
                             <h1>Feed</h1>
                             <div className='rss_div'>
                                 <h4>RSS</h4>
-                                {!isIteditable && <Link to={siteDetailsData?.feeds}>{siteDetailsData?.feeds}</Link>}
-                                {isIteditable && <input name='RSS' onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds} />}
+                                {!isIteditable && <Link to='#'>{siteDetailsData?.feeds?.map(el => `${el.url} `)}</Link>}
+                                {isIteditable && <input name='RSS' onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds?.map(el => `${el.url} `)} />}
 
                             </div>
                             <div className='images_div'>

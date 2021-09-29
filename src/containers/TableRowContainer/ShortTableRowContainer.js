@@ -16,12 +16,12 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
     const handlePageRedirect = (item) => {
         if (pageName === 'widgets') {
             history.push({
-                pathname: `/widgets/${item.id}`,
+                pathname: `/widgets/${item.site?.id}`,
                 state: item
             })
         } else {
             history.push({
-                pathname: `/sites/${item.id}`,
+                pathname: `/sites/${item.site?.id}`,
                 state: item
             })
         }
@@ -71,9 +71,12 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                             </div>
                             <p>STATUS</p>
                         </div>
-                        <div className='coloredDivStatus' style={{ background: item.state === 1 ? '#ABD996' : item.state === 0 ? '#dfe094' : item.state === 2 ? '#e09494' : item.state === 3 ? '#295265' : '' }}>
+                        {pageName !== 'widgets' && <div className='coloredDivStatus' style={{ background: item.state === 1 ? '#ABD996' : item.state === 0 ? '#dfe094' : item.state === 2 ? '#e09494' : item.state === 3 ? '#295265' : '' }}>
                             {item.state === 1 ? 'PUBLISHED' : item.state === 0 ? 'DRAFT' : item.state === 2 ? 'ERROR' : item.state === 3 ? 'TRASH' : ''}
-                        </div>
+                        </div>}
+                        {pageName === 'widgets' && <div className='coloredDivStatus' style={{ background: item.status === 1 ? '#ABD996' : item.status === 0 ? '#dfe094' : item.status === 2 ? '#e09494' : item.status === 3 ? '#295265' : '' }}>
+                            {item.status === 1 ? 'PUBLISHED' : item.status === 0 ? 'DRAFT' : item.status === 2 ? 'ERROR' : item.status === 3 ? 'TRASH' : ''}
+                        </div>}
                     </div>
                     <div className='ownerDiv' onClick={() => handlePageRedirect(item)}>
                         <div>
@@ -84,9 +87,12 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                             <p>{pageName === 'widgets' ? 'Name' : 'OWNER'}</p>
 
                         </div>
-                        <div className='ownerClass'>
+                        {pageName !== 'widgets' && <div className='ownerClass'>
                             {item.owner.email}
-                        </div>
+                        </div>}
+                        {pageName === 'widgets' && <div className='ownerClass'>
+                            {item.site?.name}
+                        </div>}
                     </div>
                     <div className='nazivDiv'>
                         <div>

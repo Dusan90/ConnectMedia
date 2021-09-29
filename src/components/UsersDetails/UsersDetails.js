@@ -139,7 +139,12 @@ export class UsersDetails extends Component {
     }
 
     handleUserChanges = (e) => {
-        this.setState({ [e.target.name]: e.target.value })
+        if (e.target.name === 'vat') {
+            this.setState({ [e.target.name]: parseInt(e.target.value) })
+
+        } else {
+            this.setState({ [e.target.name]: e.target.value })
+        }
     }
 
     handleRolesChange = (value) => {
