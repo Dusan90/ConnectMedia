@@ -47,6 +47,10 @@ export class Login extends Component {
         }
     }
 
+    handleInputLogin = e => {
+        this.setState({ [e.target.name]: e.target.value })
+    }
+
     render() {
         return (
             <>
@@ -57,8 +61,8 @@ export class Login extends Component {
                 <p className='underH1ptag'>to ContentExchange Back Office</p>
                 <div className='loginInfoDiv'>
                     <p className='mainPunchLine'>Login or sign up now.</p>
-                    <input type='email' placeholder='nina.aralica@alo.rs' onChange={(e) => this.setState({ email: e.target.value })} />
-                    <input type="password" placeholder='...........' onChange={(e) => this.setState({ password: e.target.value })} />
+                    <input type='email' name='email' placeholder='nina.aralica@alo.rs' onChange={(e) => this.handleInputLogin(e)} />
+                    <input type="password" name='password' placeholder='...........' onChange={(e) => this.handleInputLogin(e)} />
                     <div className='buttonAndATagDiv'>
                         <LogOutButton label={'Sing in'} handleClick={this.handleSubmit} colorization={'outOFBlure'} customStyles={{ width: '106px', height: "55px", background: '#7BEFFF' }} />
                         <a href="#">Forgot password</a>
