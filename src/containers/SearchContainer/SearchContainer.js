@@ -81,13 +81,13 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
     const handleChangeOptionssites = (el) => {
         handleSearchOnMainPage(el, 'sites')
         handleHomePageSort(el, 'sites')
-        setSites(el)
+        setSites(el.name)
     }
 
-    console.log(state);
 
     const dataToRender = state.filteredDate ? state.filteredDate : state.data
 
+    console.log(dataToRender, 'helloo');
 
     return (
         <div className='mainSecondHeaderDiv' style={secondHeaderCustomStyle && secondHeaderCustomStyle}>

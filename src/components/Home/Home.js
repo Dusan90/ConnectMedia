@@ -62,6 +62,7 @@ export class Home extends Component {
         this.props.dispatch(GetSitesListActionRequest())
         this.props.dispatch(GetCategoryListActionRequest())
 
+
     }
 
     componentDidUpdate(prevProps) {

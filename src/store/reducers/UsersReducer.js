@@ -2,6 +2,12 @@
 import * as types from "../types/UsersTypes";
 
 const INITIAL_STATE = {
+    getUsersList: {
+        error: false,
+        errorData: null,
+        data: null,
+        loading: false,
+    },
     getSelfUser: {
         error: false,
         errorData: null,
@@ -43,6 +49,42 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        case types.GET_USERS_LIST_REQUEST:
+            return {
+                ...state,
+                getUsersList: {
+                    error: false,
+                    errorData: null,
+                    data: null,
+                    loading: true,
+                },
+            };
+        case types.GET_USERS_LIST_ERROR:
+            return {
+                ...state,
+                getUsersList: {
+                    error: true,
+                    errorData: action.payload,
+                    data: null,
+                    loading: false,
+                },
+            };
+        case types.GET_USERS_LIST_RECEIVE:
+            return {
+                ...state,
+                getUsersList: {
+                    error: false,
+                    errorData: null,
+                    data: action.payload,
+                    loading: false,
+                },
+
+            };
+
+
+
+
+        //get self user
         case types.GET_SELF_USER_REQUEST:
             return {
                 ...state,

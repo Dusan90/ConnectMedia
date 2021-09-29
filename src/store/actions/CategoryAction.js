@@ -114,3 +114,49 @@ export const DeleteCategoryActionError = payload => {
         payload
     }
 };
+
+// bind category
+
+export const BindCategoryActionRequest = payload => {
+    return {
+        type: types.BIND_CATEGORY_REQUEST,
+        payload
+    }
+};
+
+export const BindCategoryActionReceive = payload => {
+    return {
+        type: types.BIND_CATEGORY_RECEIVE,
+        payload
+    };
+}
+
+export const BindCategoryActionError = payload => {
+    return {
+        type: types.BIND_CATEGORY_ERROR,
+        payload
+    }
+};
+
+// unbind category
+
+export const UnbindCategoryActionRequest = payload => {
+    return {
+        type: types.UNBIND_CATEGORY_REQUEST,
+        payload
+    }
+};
+
+export const UnbindCategoryActionReceive = payload => {
+    return {
+        type: types.UNBIND_CATEGORY_RECEIVE,
+        payload
+    };
+}
+
+export const UnbindCategoryActionError = payload => {
+    return {
+        type: types.UNBIND_CATEGORY_ERROR,
+        payload
+    }
+};

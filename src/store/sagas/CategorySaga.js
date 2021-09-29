@@ -49,6 +49,24 @@ export function* DeleteCategoryaga({ payload }) {
     }
 }
 
+export function* BindCategoryaga({ payload }) {
+    try {
+        const response = yield call(API.bindCategory, payload);
+        yield put(ACTIONS.BindCategoryActionReceive(response.data));
+    } catch (err) {
+        yield put(ACTIONS.BindCategoryActionError(err.response));
+    }
+}
+
+export function* UnbindCategoryaga({ payload }) {
+    try {
+        const response = yield call(API.unbindCategory, payload);
+        yield put(ACTIONS.UnbindCategoryActionReceive(response.data));
+    } catch (err) {
+        yield put(ACTIONS.UnbindCategoryActionError(err.response));
+    }
+}
+
 
 export function* categoryListSaga() {
     yield takeLatest(TYPES.GET_CATEGORY_LIST_REQUEST, GetCategoryListSaga);
@@ -56,4 +74,6 @@ export function* categoryListSaga() {
     yield takeLatest(TYPES.GET_CATEGORY_DETAILS_REQUEST, GetCategoryDetailsSaga);
     yield takeLatest(TYPES.UPDATE_CATEGORY_DETAILS_REQUEST, UpdateCategoryDetailsSaga);
     yield takeLatest(TYPES.DELETE_CATEGORY_REQUEST, DeleteCategoryaga);
+    yield takeLatest(TYPES.BIND_CATEGORY_REQUEST, BindCategoryaga);
+    yield takeLatest(TYPES.UNBIND_CATEGORY_REQUEST, UnbindCategoryaga);
 }

@@ -38,11 +38,13 @@ export class Categories extends Component {
         this.state = {
             page: 1,
             data: [],
-            filteredDate: [],
+            filteredDate: '',
             inputValue: '',
             countPerPage: '',
             addButtonClicked: false,
-            categoryNewName: ''
+            categoryNewName: '',
+            selectedSitesSearch: '',
+            selectedCategorieSearch: ''
         }
     }
 
@@ -105,7 +107,7 @@ export class Categories extends Component {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            return el.owner.toLowerCase().includes(value)
+            return el.name.toLowerCase().includes(value)
         })
         this.setState({ filteredDate: newData })
 
@@ -115,8 +117,28 @@ export class Categories extends Component {
         this.setState({ inputValue: e.target.value })
     }
 
-    haneldeRedirect = (value) => {
-        console.log(value);
+    haneldeRedirect = (value, tabClicked) => {
+        if (tabClicked === 'edit') {
+            history.push({
+                pathname: `/categories/${value.id}`,
+                data: { buttonClicked: 'editDiv' }
+            })
+        } else if (tabClicked === 'sites') {
+            history.push({
+                pathname: `/sites`,
+                data: { searchBy: value.name }
+            })
+        } else if (tabClicked === 'posts') {
+            history.push({
+                pathname: `/posts`,
+                data: { searchBy: value.name }
+            })
+        } else if (tabClicked === 'widgets') {
+            history.push({
+                pathname: `/widgets`,
+                data: { searchBy: value.name }
+            })
+        }
     }
 
     handleArrowSort = (value) => {
@@ -140,11 +162,20 @@ export class Categories extends Component {
         this.setState({ addButtonClicked: !this.state.addButtonClicked })
     }
 
+    handleSearchOnMainPage = (el, secondElement) => {
+        if (secondElement === 'sites') {
+            this.setState({ selectedSitesSearch: el })
+        } else if (secondElement === 'categories') {
+            this.setState({ selectedCategorieSearch: el })
+        }
+    }
+
     render() {
-        const { categoryNewName } = this.state
+        const { categoryNewName, data, filteredDate } = this.state
+        const dataToRender = filteredDate ? filteredDate : data
         return (
             <>
-                <SearchContainer page={this.state.page} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleHomePageSort={this.handleHomePageSort} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
+                <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleHomePageSort={this.handleHomePageSort} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
                 {this.state.addButtonClicked && <AddContainer>
                     <input type="text" onChange={(e) => this.setState({ categoryNewName: e.target.value })} placeholder='Enter new name' />
                     {categoryNewName && <button
@@ -155,7 +186,7 @@ export class Categories extends Component {
                 </AddContainer>}
                 <div className='mainTableDiv'>
                     <div className='shortScreenTableDiv'>
-                        {this.state.data?.map((item, key) => {
+                        {dataToRender.length !== 0 && dataToRender?.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
                                 <div className='nazivDiv' onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <div>
@@ -173,21 +204,21 @@ export class Categories extends Component {
                                 <div className='mainForIcons'>
                                     <div className="divWithClicableIcons">
                                         <img src={visit} alt="visit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>visit</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'visit')}>visit</p>
                                         <img src={edit} alt="edit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>edit</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'edit')}>edit</p>
                                         <img src={stats} alt="stats" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>stats</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'stats')}>stats</p>
                                     </div>
                                 </div>
                                 <div className='mainForIcons'>
                                     <div className="divWithClicableIcons">
                                         <img src={posts} alt="visit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>sites</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'sites')}>sites</p>
                                         <img src={posts} alt="stats" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>posts</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'posts')}>posts</p>
                                         <img src={widgets} alt="edit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>widgets</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'widgets')}>widgets</p>
 
 
                                     </div>
@@ -215,26 +246,26 @@ export class Categories extends Component {
                         </thead>
 
                         <tbody>
-                            {this.state.data?.map((item, key) => {
+                            {dataToRender.length !== 0 && dataToRender?.map((item, key) => {
                                 return <tr key={key} onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <td><div className='ownerClass'>
                                         {item.name}
                                     </div></td>
                                     <td><div className="divWithClicableIcons">
                                         <img src={visit} alt="visit" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>visit</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'visit')} id='noredirection'>visit</p>
                                         <img src={edit} alt="edit" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>edit</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'edit')} id='noredirection'>edit</p>
                                         <img src={stats} alt="stats" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>stats</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'stats')} id='noredirection'>stats</p>
                                     </div></td>
                                     <td><div className="divWithClicableIcons">
                                         <img src={posts} alt="widgets" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>sites</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'sites')} id='noredirection'>sites</p>
                                         <img src={posts} alt="posts" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>posts</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'posts')} id='noredirection'>posts</p>
                                         <img src={widgets} alt="widgets" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>widgets</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'widgets')} id='noredirection'>widgets</p>
 
                                     </div></td>
                                 </tr>

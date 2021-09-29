@@ -7,11 +7,7 @@ import Select from 'react-select'
 import { GetCategoryDetailsActionRequest, CreateCategoryActionRequest, UpdateCategoryDetailsActionRequest } from '../../store/actions/CategoryAction'
 import { NotificationManager } from 'react-notifications'
 
-const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-]
+
 
 const customSelectStyles = {
     control: (base, state) => ({
@@ -35,19 +31,25 @@ export class CategoriesDetails extends Component {
             isIteditable: false,
             whichisit: '',
             dataTest: 'PUBLISHED',
-            name: '',
-            description: '',
+            name: null,
+            description: null,
             rename: null,
             categoryDetailsData: '',
-            adult: false,
-            merge: null
+            adult: null,
+            merge: null,
+            mergeOptions: []
         }
     }
 
     componentDidMount() {
+        if (this.props.getCategoryList?.data?.data) {
+            const optionsData = this.props.getCategoryList?.data?.data?.map(el => {
+                return { value: el.id, label: el.name }
+            })
+            this.setState({ mergeOptions: optionsData })
+        }
 
         if (this.props?.location?.data?.name) {
-            console.log(this.props.location, 'helllloooooo');
             this.setState({ name: this.props.location.data?.name })
         } else {
             this.props.dispatch(GetCategoryDetailsActionRequest({
@@ -75,10 +77,18 @@ export class CategoriesDetails extends Component {
         }
 
         if (prevProps.createCategory !== createCategory && !createCategoryError && !createCategoryLoading && createCategoryData) {
-            NotificationManager.success("Site successfully created", "Success", 2000);
+            NotificationManager.success("Category successfully created", "Success", 2000);
             this.props.history.push('/categories')
         } else if (prevProps.createCategory !== createCategory && createCategoryError && createCategoryErrorData) {
             NotificationManager.error(`${createCategoryErrorData.data.message}`, "Failed", 2000);
+
+        }
+
+        if (prevProps.updateCategoryDetails !== updateCategoryDetails && !updateCategoryDetailsError && !updateCategoryDetailsLoading && updateCategoryDetailsData) {
+            NotificationManager.success("Category successfully created", "Success", 2000);
+            this.props.history.push('/categories')
+        } else if (prevProps.updateCategoryDetails !== updateCategoryDetails && updateCategoryDetailsError && updateCategoryDetailsErrorData) {
+            NotificationManager.error(`${updateCategoryDetailsErrorData.data.message}`, "Failed", 2000);
 
         }
     }
@@ -152,11 +162,11 @@ export class CategoriesDetails extends Component {
 
     handleMergeOption = (item) => {
         console.log(item);
-        this.setState({ merge: item.value })
+        this.setState({ merge: item?.value })
     }
     render() {
         const { isIteditable, categoryDetailsData, adult } = this.state
-        console.log(categoryDetailsData);
+
         return (
             <div className='mainSiteDetailsDiv'>
                 <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} handleWhereEverNav={this.handleWhereEverNav} pageName={'categories'} />
@@ -164,7 +174,11 @@ export class CategoriesDetails extends Component {
                     <div className='leftSideDiv'>
                         <h1>{this.props?.location?.data?.name ? this.props?.location?.data?.name : categoryDetailsData?.name}</h1>
                         <div className='generalDiv'>
-
+                            <div className='name_div'>
+                                <h4>Name</h4>
+                                {!isIteditable && <p>{categoryDetailsData?.name}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChangeCategory(e)} name='name' placeholder={categoryDetailsData?.name} />}
+                            </div>
 
                             <div className='name_div'>
                                 <h4>Description</h4>
@@ -174,7 +188,7 @@ export class CategoriesDetails extends Component {
                             <div className='name_div'>
                                 <h4>Adult</h4>
                                 {!isIteditable && <p>{categoryDetailsData?.adult}</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={adult} checked={adult} onChange={(e) => this.setState({ adult: e.target.checked })} /> <label htmlFor="check"></label></div>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={adult ? adult : categoryDetailsData?.adult} checked={adult ? adult : categoryDetailsData?.adult} onChange={(e) => this.setState({ adult: e.target.checked })} /> <label htmlFor="check"></label></div>}
                             </div>
                             {/* <div className='owner_div'>
                                 <h4>Site</h4>
@@ -191,19 +205,20 @@ export class CategoriesDetails extends Component {
                                     options={options}
                                 />}
                             </div> */}
-                            <div className='owner_div'>
+                            <div className='name_div'>
                                 <h4>Rename</h4>
                                 {!isIteditable && <p>{categoryDetailsData?.rename}</p>}
                                 {isIteditable && <input type="text" onChange={(e) => this.handleChangeCategory(e)} name='rename' placeholder={categoryDetailsData?.rename} />}
                             </div>
                             <div className='url_div selectable'>
                                 <h4>Merge</h4>
-                                {!isIteditable && <p>{categoryDetailsData?.merge}</p>}
+                                {!isIteditable && <p>{this.props.getCategoryList?.data?.data?.map(el => el.id === categoryDetailsData?.merge ? el.name : '')}</p>}
                                 {/* {isIteditable && <select style={{ flex: '1', marginRight: '20px', border: 'none', background: '#d6dbdc', textIndent: '10px', borderRadius: '5px' }}>
                                     <option className='options' value="test">test</option>
                                     <option className='options' value="test">test</option>
                                 </select>} */}
                                 {isIteditable && <Select
+                                    defaultValue={this.state.mergeOptions[categoryDetailsData?.merge]}
                                     className="basic-single"
                                     classNamePrefix="select"
                                     // defaultValue={colourOptions[0]}
@@ -212,7 +227,7 @@ export class CategoriesDetails extends Component {
                                     isClearable={true}
                                     isSearchable={true}
                                     name="merge"
-                                    options={options}
+                                    options={this.state.mergeOptions}
                                     onChange={this.handleMergeOption}
                                 />}
 
@@ -239,12 +254,13 @@ export class CategoriesDetails extends Component {
 
 const mapStateToProps = (state) => {
     const { CategoryReducer } = state;
-    const { createCategory, getCategoryDetails, updateCategoryDetails, deleteCategory } = CategoryReducer
+    const { createCategory, getCategoryDetails, updateCategoryDetails, deleteCategory, getCategoryList } = CategoryReducer
     return {
         createCategory,
         getCategoryDetails,
         updateCategoryDetails,
-        deleteCategory
+        deleteCategory,
+        getCategoryList
 
     }
 }

@@ -1,11 +1,36 @@
 import * as types from "../types/UsersTypes";
 
+// GET USERS LIST   
+
+export const GetUsersListActionRequest = payload => {
+    return {
+        type: types.GET_USERS_LIST_REQUEST,
+        payload
+    }
+};
+
+export const GetUsersListActionReceive = payload => {
+    return {
+        type: types.GET_USERS_LIST_RECEIVE,
+        payload
+    };
+}
+
+export const GetUsersListActionError = payload => {
+    return {
+        type: types.GET_USERS_LIST_ERROR,
+        payload
+    }
+};
+
 
 // GET SELF
-export const GetSelfUserActionRequest = payload => ({
-    type: types.GET_SELF_USER_REQUEST,
-    payload
-});
+export const GetSelfUserActionRequest = payload => {
+    return {
+        type: types.GET_SELF_USER_REQUEST,
+        payload
+    }
+};
 
 export const GetSelfUserActionReceive = payload => {
     return {
@@ -14,17 +39,21 @@ export const GetSelfUserActionReceive = payload => {
     };
 }
 
-export const GetSelfUserActionError = payload => ({
-    type: types.GET_SELF_USER_ERROR,
-    payload
-});
+export const GetSelfUserActionError = payload => {
+    return {
+        type: types.GET_SELF_USER_ERROR,
+        payload
+    }
+};
 
 // CREATE USER
 
-export const CreateUserActionRequest = payload => ({
-    type: types.CREATE_USER_REQUEST,
-    payload
-});
+export const CreateUserActionRequest = payload => {
+    return {
+        type: types.CREATE_USER_REQUEST,
+        payload
+    }
+};
 
 export const CreateUserActionReceive = payload => {
     return {
@@ -33,17 +62,21 @@ export const CreateUserActionReceive = payload => {
     };
 }
 
-export const CreateUserActionError = payload => ({
-    type: types.CREATE_USER_ERROR,
-    payload
-});
+export const CreateUserActionError = payload => {
+    return {
+        type: types.CREATE_USER_ERROR,
+        payload
+    }
+};
 
 // CHANGE SELF USER PASSWORD
 
-export const ChangeSelfUserPassActionRequest = payload => ({
-    type: types.CHANGE_SELF_USER_PASS_REQUEST,
-    payload
-});
+export const ChangeSelfUserPassActionRequest = payload => {
+    return {
+        type: types.CHANGE_SELF_USER_PASS_REQUEST,
+        payload
+    }
+};
 
 export const ChangeSelfUserPassActionReceive = payload => {
     return {
@@ -52,17 +85,21 @@ export const ChangeSelfUserPassActionReceive = payload => {
     };
 }
 
-export const ChangeSelfUserPassActionError = payload => ({
-    type: types.CHANGE_SELF_USER_PASS_ERROR,
-    payload
-});
+export const ChangeSelfUserPassActionError = payload => {
+    return {
+        type: types.CHANGE_SELF_USER_PASS_ERROR,
+        payload
+    }
+};
 
 // GET DETAILS OF SPEC USER
 
-export const GetSpecUserDetailsActionRequest = payload => ({
-    type: types.GET_SPEC_USER_DETAILS_REQUEST,
-    payload
-});
+export const GetSpecUserDetailsActionRequest = payload => {
+    return {
+        type: types.GET_SPEC_USER_DETAILS_REQUEST,
+        payload
+    }
+};
 
 export const GetSpecUserDetailsActionReceive = payload => {
     return {
@@ -71,18 +108,22 @@ export const GetSpecUserDetailsActionReceive = payload => {
     };
 }
 
-export const GetSpecUserDetailsActionError = payload => ({
-    type: types.GET_SPEC_USER_DETAILS_ERROR,
-    payload
-});
+export const GetSpecUserDetailsActionError = payload => {
+    return {
+        type: types.GET_SPEC_USER_DETAILS_ERROR,
+        payload
+    }
+};
 
 
 // UPDATE SPEC USER
 
-export const UpdateSpecUsersActionRequest = payload => ({
-    type: types.UPDATE_SPEC_USER_REQUEST,
-    payload
-});
+export const UpdateSpecUsersActionRequest = payload => {
+    return {
+        type: types.UPDATE_SPEC_USER_REQUEST,
+        payload
+    }
+};
 
 export const UpdateSpecUsersActionReceive = payload => {
     return {
@@ -91,18 +132,22 @@ export const UpdateSpecUsersActionReceive = payload => {
     };
 }
 
-export const UpdateSpecUsersActionError = payload => ({
-    type: types.UPDATE_SPEC_USER_ERROR,
-    payload
-});
+export const UpdateSpecUsersActionError = payload => {
+    return {
+        type: types.UPDATE_SPEC_USER_ERROR,
+        payload
+    }
+};
 
 
 // DELETE SPEC USER
 
-export const DeleteSpecUsersActionRequest = payload => ({
-    type: types.DELETE_SPEC_USER_REQUEST,
-    payload
-});
+export const DeleteSpecUsersActionRequest = payload => {
+    return {
+        type: types.DELETE_SPEC_USER_REQUEST,
+        payload
+    }
+};
 
 export const DeleteSpecUsersActionReceive = payload => {
     return {
@@ -111,7 +156,9 @@ export const DeleteSpecUsersActionReceive = payload => {
     };
 }
 
-export const DeleteSpecUsersActionError = payload => ({
-    type: types.DELETE_SPEC_USER_ERROR,
-    payload
-});
+export const DeleteSpecUsersActionError = payload => {
+    return {
+        type: types.DELETE_SPEC_USER_ERROR,
+        payload
+    }
+};

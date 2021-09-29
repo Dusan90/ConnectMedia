@@ -8,9 +8,9 @@ import { NotificationManager } from 'react-notifications'
 import Select from 'react-select'
 
 const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
+    { value: '0', label: 'Admin' },
+    { value: '1', label: 'Moderator' },
+    { value: '2', label: 'Editor' }
 ]
 
 const customSelectStyles = {
@@ -34,9 +34,19 @@ export class UsersDetails extends Component {
         this.state = {
             isIteditable: false,
             // whichisit: '',
-            dataTest: 'PUBLISHED',
             usersData: '',
-            confirmMessage: false
+            confirmMessage: false,
+            name: null,
+            email: null,
+            role: null,
+            company: null,
+            streetAddress: null,
+            country: null,
+            city: null,
+            contactperson: null,
+            phone: null,
+            vat: null
+
         }
     }
 
@@ -50,8 +60,17 @@ export class UsersDetails extends Component {
     componentDidUpdate(prevProps) {
         const { getSpecUserDetails, updateSpecUser, deleteSpecUser } = this.props
         const { loading: getSpecUserDetailsLoading, error: getSpecUserDetailsError, data: getSpecUserDetailsData } = getSpecUserDetails
-        const { loading: updateSpecUserLoading, error: updateSpecUserError, data: updateSpecUserData } = updateSpecUser
+        const { loading: updateSpecUserLoading, error: updateSpecUserError, data: updateSpecUserData, errorData: updateSpecUserErrorData } = updateSpecUser
         const { loading: deleteSpecUserLoading, error: deleteSpecUserError, data: deleteSpecUserData } = deleteSpecUser
+
+        if (prevProps.updateSpecUser !== updateSpecUser && !updateSpecUserLoading && !updateSpecUserError && updateSpecUserData) {
+            NotificationManager.success("User successfully updated", "Success", 2000);
+            this.props.history.push('/users')
+        } else if (prevProps.updateSpecUser !== updateSpecUser && updateSpecUserError && updateSpecUserErrorData) {
+            NotificationManager.error(`${updateSpecUserErrorData.data.message}`, "Failed", 2000);
+
+        }
+
 
         if (prevProps.getSpecUserDetails !== getSpecUserDetails && !getSpecUserDetailsLoading && !getSpecUserDetailsError && getSpecUserDetailsData) {
             this.setState({ usersData: getSpecUserDetailsData.data })
@@ -91,15 +110,22 @@ export class UsersDetails extends Component {
     }
 
     handleButtonActive = () => {
+        const { streetAddress, city, company, contactperson, country, email, name, vat, phone, role } = this.state
         this.props.dispatch(UpdateSpecUsersActionRequest({
             id: this.props.match.params.id,
-            value: 'nestotamo'
+            address: streetAddress,
+            city,
+            company,
+            contact: contactperson,
+            country,
+            email,
+            name,
+            vat,
+            phone,
+            roles: role,
+
         }))
         // this.setState({ whichisit: page })
-    }
-
-    handleStatusChange = (status) => {
-        this.setState({ dataTest: status })
     }
 
     handleTrashClick = () => {
@@ -111,12 +137,21 @@ export class UsersDetails extends Component {
             id: this.props.match.params.id
         }))
     }
+
+    handleUserChanges = (e) => {
+        this.setState({ [e.target.name]: e.target.value })
+    }
+
+    handleRolesChange = (value) => {
+        const arrayOfRoles = value.map(el => parseInt(el.value))
+        this.setState({ role: arrayOfRoles })
+    }
+
     render() {
         const { isIteditable, usersData } = this.state
-        console.log(usersData);
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} pageName={'users'} />
+                <NavWidget handleWhereEverNav={this.handleWhereEverNav} isButtonNamepased={this.props?.location?.data?.buttonClicked} handleTrashClick={this.handleTrashClick} pageName={'users'} />
                 {this.state.confirmMessage && <div className='confurmText'>
                     <h4>Are you sure</h4>
                     <button onClick={this.deleteuserFunction}>Yes</button>
@@ -126,21 +161,25 @@ export class UsersDetails extends Component {
                     <div className='leftSideDiv'>
                         <h1>General</h1>
                         <div className='generalDiv'>
-
-
+                            <div className='name_div'>
+                                <h4>Name</h4>
+                                {!isIteditable && <p>{usersData?.name}</p>}
+                                {isIteditable && <input name='name' type="text" onChange={(e) => this.handleUserChanges(e)} placeholder={usersData?.name} />}
+                            </div>
                             <div className='owner_div'>
                                 <h4>Email</h4>
                                 {!isIteditable && <p>{usersData?.email}</p>}
-                                {isIteditable && <input type="text" placeholder={usersData?.email} />}
+                                {isIteditable && <input name='email' type="text" onChange={(e) => this.handleUserChanges(e)} placeholder={usersData?.email} />}
                             </div>
                             <div className='url_div selectable'>
                                 <h4>Roles</h4>
-                                {!isIteditable && <p></p>}
+                                {!isIteditable && <p>{usersData?.roles?.length !== 0 && usersData?.roles?.map(el => el === 0 ? 'Admin ' : el === 1 ? 'Moderator ' : el === 2 ? 'Editor ' : '')}</p>}
                                 {/* {isIteditable && <select style={{ flex: '1', marginRight: '20px', border: 'none', background: '#d6dbdc', textIndent: '10px', borderRadius: '5px' }}>
                                     <option className='options' value="test">test</option>
                                     <option className='options' value="test">test</option>
                                 </select>} */}
                                 {isIteditable && <Select
+                                    defaultValue={usersData?.roles?.length !== 0 && usersData?.roles?.map(el => options[el])}
                                     className="basic-single"
                                     classNamePrefix="select"
                                     // defaultValue={colourOptions[0]}
@@ -149,49 +188,55 @@ export class UsersDetails extends Component {
                                     // isClearable={true}
                                     isMulti
                                     isSearchable={true}
-                                    name="merge"
                                     options={options}
+                                    onChange={this.handleRolesChange}
                                 />}
 
                             </div>
                             <div className='name_div'>
                                 <h4>Company/ Organisation</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{usersData?.company}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='company' placeholder={usersData?.company} />}
                             </div>
                             <div className='name_div'>
                                 <h4>Street address</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{usersData?.address}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='streetAddress' placeholder={usersData?.address} />}
                             </div>
-                            <div className='description_div'>
+                            {/* <div className='description_div'>
                                 <h4>ZIP + City</h4>
                                 {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {isIteditable && <input type="text" name='zip'  placeholder='' />}
+
+                            </div> */}
+                            <div className='description_div'>
+                                <h4>Country</h4>
+                                {!isIteditable && <p>{usersData?.country}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='country' placeholder={usersData?.country} />}
 
                             </div>
                             <div className='description_div'>
-                                <h4>Country</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                <h4>City</h4>
+                                {!isIteditable && <p>{usersData?.city}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='city' placeholder={usersData?.city} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Contact Person</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{usersData?.contact}</p>}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='contactperson' placeholder={usersData?.contact} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Contact Phone</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{usersData?.phone}</p>}
+                                {isIteditable && <input type="number" name='phone' onChange={(e) => this.handleUserChanges(e)} placeholder={usersData?.phone} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>VAT Number</h4>
-                                {!isIteditable && <p></p>}
-                                {isIteditable && <input type="text" placeholder='' />}
+                                {!isIteditable && <p>{usersData?.vat}</p>}
+                                {isIteditable && <input type="number" name='vat' onChange={(e) => this.handleUserChanges(e)} placeholder={usersData?.vat} />}
 
                             </div>
                         </div>

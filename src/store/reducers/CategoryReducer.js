@@ -32,6 +32,18 @@ const INITIAL_STATE = {
         data: null,
         loading: false,
     },
+    bindCategory: {
+        error: false,
+        errorData: null,
+        data: null,
+        loading: false,
+    },
+    unbindCategory: {
+        error: false,
+        errorData: null,
+        data: null,
+        loading: false,
+    },
 
 };
 
@@ -200,6 +212,77 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 deleteCategory: {
+                    error: false,
+                    errorData: null,
+                    data: action.payload,
+                    loading: false,
+                },
+
+            };
+
+
+
+        //bind category
+
+        case types.BIND_CATEGORY_REQUEST:
+            return {
+                ...state,
+                bindCategory: {
+                    error: false,
+                    errorData: null,
+                    data: null,
+                    loading: true,
+                },
+            };
+        case types.BIND_CATEGORY_ERROR:
+            return {
+                ...state,
+                bindCategory: {
+                    error: true,
+                    errorData: action.payload,
+                    data: null,
+                    loading: false,
+                },
+            };
+        case types.BIND_CATEGORY_RECEIVE:
+            return {
+                ...state,
+                bindCategory: {
+                    error: false,
+                    errorData: null,
+                    data: action.payload,
+                    loading: false,
+                },
+
+            };
+
+
+        // unbind category
+
+        case types.UNBIND_CATEGORY_REQUEST:
+            return {
+                ...state,
+                unbindCategory: {
+                    error: false,
+                    errorData: null,
+                    data: null,
+                    loading: true,
+                },
+            };
+        case types.UNBIND_CATEGORY_ERROR:
+            return {
+                ...state,
+                unbindCategory: {
+                    error: true,
+                    errorData: action.payload,
+                    data: null,
+                    loading: false,
+                },
+            };
+        case types.UNBIND_CATEGORY_RECEIVE:
+            return {
+                ...state,
+                unbindCategory: {
                     error: false,
                     errorData: null,
                     data: action.payload,

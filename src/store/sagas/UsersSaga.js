@@ -13,6 +13,15 @@ export function* GetSelfUserSaga({ payload }) {
     }
 }
 
+export function* GetUsersListSaga({ payload }) {
+    try {
+        const response = yield call(API.geUsersList, payload);
+        yield put(ACTIONS.GetUsersListActionReceive(response.data));
+    } catch (err) {
+        yield put(ACTIONS.GetUsersListActionError(err.response));
+    }
+}
+
 export function* CreateUserSaga({ payload }) {
     try {
         const response = yield call(API.createUser, payload);
@@ -61,6 +70,7 @@ export function* DeleteSpecUserSaga({ payload }) {
 
 export function* usersSaga() {
     yield takeLatest(TYPES.GET_SELF_USER_REQUEST, GetSelfUserSaga);
+    yield takeLatest(TYPES.GET_USERS_LIST_REQUEST, GetUsersListSaga);
     yield takeLatest(TYPES.CREATE_USER_REQUEST, CreateUserSaga);
     yield takeLatest(TYPES.CHANGE_SELF_USER_PASS_REQUEST, ChangeSelfUserPassSaga);
     yield takeLatest(TYPES.GET_SPEC_USER_DETAILS_REQUEST, GetSpecUserDetailsSaga);

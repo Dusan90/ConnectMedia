@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { LoginActionRequest } from '../../store/actions/LoginAction'
 import { v4 as uuidv4 } from 'uuid'
 import history from '../../routes/History'
+import { NotificationManager } from 'react-notifications'
 
 export class Login extends Component {
     constructor(props) {
@@ -30,6 +31,9 @@ export class Login extends Component {
             sessionStorage.setItem('isLoged', 'true')
             this.setState({ mail: '', password: '' })
             history.push('/sites')
+        } else if (!prevProps.login !== login && error && errorData) {
+            NotificationManager.error(`${errorData.data.message}`, "Failed", 2000)
+
         }
     }
 
@@ -44,7 +48,6 @@ export class Login extends Component {
     }
 
     render() {
-        const { error, errorData, data, loading } = this.props.login
         return (
             <>
                 <div className='loginHeader'>
@@ -54,7 +57,6 @@ export class Login extends Component {
                 <p className='underH1ptag'>to ContentExchange Back Office</p>
                 <div className='loginInfoDiv'>
                     <p className='mainPunchLine'>Login or sign up now.</p>
-                    {error && errorData && <p style={{ color: 'red' }}>{errorData.data.message}</p>}
                     <input type='email' placeholder='nina.aralica@alo.rs' onChange={(e) => this.setState({ email: e.target.value })} />
                     <input type="password" placeholder='...........' onChange={(e) => this.setState({ password: e.target.value })} />
                     <div className='buttonAndATagDiv'>

@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import './SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
 import { GetSiteDetailsActionRequest, DeleteSiteActionRequest, UpdateSiteDetailsActionRequest, CreateSiteActionRequest } from '../../store/actions/SitesListAction'
+import { BindCategoryActionRequest, UnbindCategoryActionRequest } from '../../store/actions/CategoryAction'
 import Chart from '../../containers/Chart/Chart'
 import Select from 'react-select'
 import { NotificationManager } from 'react-notifications'
@@ -71,11 +72,23 @@ export class SiteDetails extends Component {
             refresh_interval: '',
             copy_from_site: '',
             guess_remote: '',
-            tag_map: ''
+            tag_map: '',
+            cateOptions: [],
+            categories: [],
+            RSS: '',
+            feed_translations: '',
+            remote_translations: ''
         }
     }
 
     componentDidMount() {
+
+        if (this.props.getCategoryList?.data?.data) {
+            const optionsData = this.props.getCategoryList?.data?.data?.map(el => {
+                return { value: el.id, label: el.name }
+            })
+            this.setState({ cateOptions: optionsData })
+        }
 
 
         if (this.props?.location?.data?.url) {
@@ -155,7 +168,7 @@ export class SiteDetails extends Component {
     handleButtonActive = (page) => {
         console.log(page);
         if (page === 'save') {
-            const { name, url, description, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map } = this.state
+            const { name, url, description, head, RSS, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map } = this.state
             if (this.props.location.data?.createNew) {
                 this.props.dispatch(CreateSiteActionRequest({
                     name,
@@ -173,7 +186,8 @@ export class SiteDetails extends Component {
                     refresh_interval,
                     copy_from_site,
                     guess_remote,
-                    tag_map
+                    tag_map,
+                    RSS
                 }))
             } else {
                 this.props.dispatch(UpdateSiteDetailsActionRequest({
@@ -193,7 +207,8 @@ export class SiteDetails extends Component {
                     refresh_interval,
                     copy_from_site,
                     guess_remote,
-                    tag_map
+                    tag_map,
+                    RSS
                 }))
             }
         } else if (page === 'cancel') {
@@ -212,6 +227,11 @@ export class SiteDetails extends Component {
         console.log(e.target.value);
     }
 
+    handleChangeRSS = (e) => {
+        this.setState({ RSS: e.target.value.split("\n") })
+        console.log(e.target.value);
+    }
+
     arrowSort = (value) => {
         console.log(value);
     }
@@ -226,9 +246,29 @@ export class SiteDetails extends Component {
         }))
     }
 
+    handleOption = (item) => {
+        console.log(item, this.state.categories, 'compare');
+        if (item.length > this.state.categories.length) {
+            const intersection = item.filter(element => !this.state.categories.includes(element))
+            this.props.dispatch(BindCategoryActionRequest({
+                siteId: this.state.siteDetailsData?.id,
+                categoryId: intersection[0]['value']
+            }))
+
+        } else if (item.length < this.state.categories.length) {
+            const intersection = this.state.categories.filter(element => !item.includes(element))
+            this.props.dispatch(UnbindCategoryActionRequest({
+                siteId: this.state.siteDetailsData?.id,
+                categoryId: intersection[0]['value']
+            }))
+        }
+
+        this.setState({ categories: item })
+    }
+
     render() {
-        console.log(this.state);
         const { isIteditable, whichisit, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
+        const categorialOption = siteDetailsData?.categories?.map(el => el.category.id)
         return (
             <div className='mainSiteDetailsDiv'>
                 <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
@@ -310,13 +350,13 @@ export class SiteDetails extends Component {
                                 <div>
                                     <h4>Factor</h4>
                                     {!isIteditable && <p>{siteDetailsData?.factor}</p>}
-                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='factor' placeholder={siteDetailsData?.factor} style={{ width: '40px' }} />}
+                                    {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='factor' placeholder={siteDetailsData?.factor} style={{ width: '40px' }} />}
 
                                 </div>
                                 <div>
                                     <h4>Minimum</h4>
                                     {!isIteditable && <p>{siteDetailsData?.minimum}</p>}
-                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='minimum' placeholder={siteDetailsData?.minimum} style={{ width: '40px' }} />}
+                                    {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='minimum' placeholder={siteDetailsData?.minimum} style={{ width: '40px' }} />}
 
                                 </div>
                             </div>
@@ -332,8 +372,8 @@ export class SiteDetails extends Component {
                             <h1>Feed</h1>
                             <div className='rss_div'>
                                 <h4>RSS</h4>
-                                {!isIteditable && <Link to='https://24online.rs/feed/'>https://24online.rs/feed/</Link>}
-                                {isIteditable && <input name='RSS' onChange={(e) => this.handleChange(e)} type="text" placeholder='https://24online.rs/feed/' />}
+                                {!isIteditable && <Link to={siteDetailsData?.feeds}>{siteDetailsData?.feeds}</Link>}
+                                {isIteditable && <input name='RSS' onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds} />}
 
                             </div>
                             <div className='images_div'>
@@ -365,7 +405,7 @@ export class SiteDetails extends Component {
                             <div className='interval_div'>
                                 <h4>Refresh interval (min)</h4>
                                 {!isIteditable && <p>{siteDetailsData?.refresh_interval}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='refresh_interval' placeholder={siteDetailsData?.refresh_interval} />}
+                                {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='refresh_interval' placeholder={siteDetailsData?.refresh_interval} />}
 
                             </div>
                             <div className='autopublish_div'>
@@ -452,20 +492,10 @@ export class SiteDetails extends Component {
                             <div className='categ_div'>
                                 <h4>Categories</h4>
                                 {!isIteditable && <div className='listOfCateg'>
-                                    {siteDetailsData?.categories?.map((item, key) => {
-                                        if (!isIteditable) {
-                                            return <p key={key}>{item}</p>
-                                        }
-                                        else {
-                                            return <div key={key}>
-                                                <img src={xButton} alt="x" />
-                                                <p>{item}</p>
-                                            </div>
-                                        }
-                                    })}
-
+                                    <p>{this.state.cateOptions.length !== 0 && categorialOption?.map(el => `${this.state.cateOptions[el]['label']} `)}</p>
                                 </div>}
                                 {isIteditable && <Select
+                                    defaultValue={categorialOption?.map(el => this.state.cateOptions[el])}
                                     className="basic-single"
                                     classNamePrefix="select"
                                     // defaultValue={colourOptions[0]}
@@ -475,7 +505,9 @@ export class SiteDetails extends Component {
                                     isClearable={true}
                                     isSearchable={true}
                                     name="merge"
-                                    options={optionss}
+                                    options={this.state.cateOptions}
+                                    onChange={(e) => this.handleOption(e)}
+
                                 />}
                             </div>
                             <div className='copySite_div'>
@@ -487,13 +519,13 @@ export class SiteDetails extends Component {
                             <div className='guessRemote_div'>
                                 <h4>Guess remote category from url - enter the number of the path segment</h4>
                                 {!isIteditable && <p>{siteDetailsData?.guess_remote}</p>}
-                                {isIteditable && <input name='guess_remote' type="text" onChange={(e) => this.handleChange(e)} placeholder='' />}
+                                {isIteditable && <input name='guess_remote' type="number" onChange={(e) => this.handleChange(e)} placeholder='' />}
 
                             </div>
                             <div className='indexTag_div'>
                                 <h4>Index of tag for mapping <br /> (1=first,2=seocnd,..)</h4>
                                 {!isIteditable && <p>{siteDetailsData?.tag_map}</p>}
-                                {isIteditable && <input name='tag_map' type="text" onChange={(e) => this.handleChange(e)} placeholder={siteDetailsData?.tag_map} />}
+                                {isIteditable && <input name='tag_map' type="number" onChange={(e) => this.handleChange(e)} placeholder={siteDetailsData?.tag_map} />}
 
                             </div>
                         </div>
@@ -581,13 +613,16 @@ export class SiteDetails extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const { SitesListReducer } = state;
+    const { SitesListReducer, CategoryReducer } = state;
     const { getSiteDetails, deleteSite, updateSiteDetails, createSite } = SitesListReducer
+    const { getCategoryList } = CategoryReducer
+
     return {
         getSiteDetails,
         deleteSite,
         updateSiteDetails,
-        createSite
+        createSite,
+        getCategoryList
 
     }
 }

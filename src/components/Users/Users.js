@@ -10,7 +10,7 @@ import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import history from '../../routes/History'
 import AddContainer from '../../containers/AddContainer/AddContainer'
-import { CreateUserActionRequest } from '../../store/actions/UsersActions'
+import { CreateUserActionRequest, GetUsersListActionRequest } from '../../store/actions/UsersActions'
 import { NotificationManager } from 'react-notifications'
 import '../Home/Home.scss'
 
@@ -37,8 +37,8 @@ export class Users extends Component {
         super(props);
         this.state = {
             page: 1,
-            data: test,
-            filteredDate: [],
+            data: [],
+            filteredDate: '',
             inputValue: '',
             countPerPage: '',
             addButtonClicked: false,
@@ -49,18 +49,28 @@ export class Users extends Component {
         }
     }
 
+    componentDidMount() {
+        this.props.dispatch(GetUsersListActionRequest())
+    }
+
     componentDidUpdate(prevProps) {
-        const { createUser } = this.props
+        const { createUser, getUsersList } = this.props
         const { loading: createUserLoading, error: createUserError, data: createUserData, errorData: createUserErrorData } = createUser
+        const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData, errorData: getUsersListErrorData } = getUsersList
+
+        if (prevProps.getUsersList !== getUsersList && !getUsersListLoading && !getUsersListError && getUsersListData) {
+            this.setState({ data: getUsersListData.data })
+        }
+
 
         if (prevProps.createUser !== createUser && !createUserLoading && !createUserError && createUserData) {
-            console.log(createUserData);
             this.setState({
                 newUseremail: '',
                 newUserpassword: '',
                 newUsername: '',
                 addButtonClicked: false
             })
+            this.props.dispatch(GetUsersListActionRequest())
             NotificationManager.success("User successfully created", "Success", 2000);
 
         } else if (prevProps.createUser !== createUser && createUserError && createUserErrorData) {
@@ -76,19 +86,40 @@ export class Users extends Component {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            return el.owner.toLowerCase().includes(value)
+            return el.email.toLowerCase().includes(value)
         })
+
+        console.log(newData);
         this.setState({ filteredDate: newData })
 
-        console.log('hell0');
     }
 
     handleSearchBar = (e) => {
         this.setState({ inputValue: e.target.value })
     }
 
-    haneldeRedirect = (value) => {
-        console.log(value);
+    haneldeRedirect = (value, tabClicked) => {
+        if (tabClicked === 'edit') {
+            history.push({
+                pathname: `/users/${value.id}`,
+                data: { buttonClicked: 'editDiv' }
+            })
+        } else if (tabClicked === 'sites') {
+            history.push({
+                pathname: `/sites`,
+                data: { searchBy: value.name }
+            })
+        } else if (tabClicked === 'posts') {
+            history.push({
+                pathname: `/posts`,
+                data: { searchBy: value.name }
+            })
+        } else if (tabClicked === 'widgets') {
+            history.push({
+                pathname: `/widgets`,
+                data: { searchBy: value.name }
+            })
+        }
     }
 
     handleArrowSort = (value) => {
@@ -118,13 +149,15 @@ export class Users extends Component {
 
     handleClickCreateUser = () => {
         this.props.dispatch(CreateUserActionRequest({
-            mail: this.state.newUseremail,
+            email: this.state.newUseremail,
             password: this.state.newUserpassword,
             name: this.state.newUsername
         }))
     }
 
     render() {
+        const { data, filteredDate } = this.state
+        const dataToRender = filteredDate ? filteredDate : data
 
         return (
             <>
@@ -137,7 +170,7 @@ export class Users extends Component {
                 </AddContainer>}
                 <div className='mainTableDiv'>
                     <div className='shortScreenTableDiv'>
-                        {test.map((item, key) => {
+                        {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
                                 <div className='nazivDiv' onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <div>
@@ -154,16 +187,16 @@ export class Users extends Component {
                                 </div>
                                 <div className='mainForIcons'>
                                     <div className="divWithClicableIcons">
-                                        <img src={visit} alt="visit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>visit</p>
+                                        {/* <img src={visit} alt="visit" />
+                                        <p onClick={() => this.haneldeRedirect(item)}>visit</p> */}
                                         <img src={edit} alt="edit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>edit</p>
-                                        <img src={stats} alt="stats" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>stats</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'edit')}>edit</p>
+                                        <img src={stats} alt="sites" />
+                                        <p onClick={() => this.haneldeRedirect(item, 'sites')}>sites</p>
                                         <img src={posts} alt="posts" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>posts</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'posts')}>posts</p>
                                         <img src={widgets} alt="widgets" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>widgets</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'widgets')}>widgets</p>
 
                                     </div>
                                 </div>
@@ -209,27 +242,27 @@ export class Users extends Component {
                         </thead>
 
                         <tbody>
-                            {test.map((item, key) => {
+                            {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                                 return <tr key={key} onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <td><div className='ownerClass'>
-                                        {item.owner}
+                                        {item.email}
                                     </div></td>
                                     <td><div className="divWithClicableIcons">
-                                        <img src={visit} alt="visit" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>visit</p>
+                                        {/* <img src={visit} alt="visit" />
+                                        <p onClick={() => this.haneldeRedirect(item, 'visit')} id='noredirection'>visit</p> */}
                                         <img src={edit} alt="edit" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>edit</p>
-                                        <img src={stats} alt="stats" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>stats</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'edit')} id='noredirection'>edit</p>
+                                        <img src={stats} alt="sites" />
+                                        <p onClick={() => this.haneldeRedirect(item, 'sites')} id='noredirection'>sites</p>
                                         <img src={posts} alt="posts" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>posts</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'posts')} id='noredirection'>posts</p>
                                         <img src={widgets} alt="widgets" />
-                                        <p onClick={() => this.haneldeRedirect(item)} id='noredirection'>widgets</p>
+                                        <p onClick={() => this.haneldeRedirect(item, 'widgets')} id='noredirection'>widgets</p>
 
                                     </div></td>
                                     <td>
                                         <div className="divWithHashes">
-                                            <p>admin root moderator</p>
+                                            <p>{item?.roles?.length !== 0 && item?.roles?.map(el => el === 0 ? 'Admin ' : el === 1 ? 'Moderator ' : el === 2 ? 'Editor ' : '')}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -244,9 +277,10 @@ export class Users extends Component {
 
 const mapStateToProps = (state) => {
     const { UsersReducer } = state;
-    const { createUser } = UsersReducer
+    const { createUser, getUsersList } = UsersReducer
     return {
-        createUser
+        createUser,
+        getUsersList
 
     }
 }
