@@ -33,14 +33,32 @@ export class Posts extends Component {
             checkboxList: [],
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
-            countPerPage: '',
+            countPerPage: 10,
             addButtonClicked: false,
             selectedSiteSearch: '',
             selectedCategorieSearch: '',
             urlForCreatePost: '',
-            idForDelete: ''
+            idForDelete: '',
 
+            dataToRender: [],
+            mamxPages: '',
+            loading: true
         }
+    }
+
+    paginate = (page) => {
+        const { countPerPage, filteredDate, data } = this.state
+        const dataToRender = filteredDate ? filteredDate : data
+        let limit = countPerPage;
+        let pages = Math.ceil(dataToRender.length / countPerPage);
+        const offset = (page - 1) * limit;
+        const newArray = dataToRender.slice(offset, offset + limit);
+
+        this.setState({
+            dataToRender: newArray,
+            loading: false,
+            maxPages: pages,
+        });
     }
 
     componentDidMount() {
@@ -63,12 +81,16 @@ export class Posts extends Component {
 
         if (prevProps.getPostsList !== getPostsList && !getPostsListLoading && !getPostsListError && getPostsListData) {
             this.setState({ data: getPostsListData.data })
+            setTimeout(() => {
+                this.paginate(1)
+            });
         }
 
     }
 
     handlePageChange = (value) => {
         this.setState({ page: value })
+        this.paginate(value)
     }
 
     handleSortByStatus = (value) => {
@@ -78,39 +100,60 @@ export class Posts extends Component {
             }
         })
         this.setState({ filteredDate: newData })
+        setTimeout(() => {
+            this.paginate(1)
+        });
     }
 
+
     handleHomePageSort = (value, sortBy) => {
-        // const { filteredDate, data} = this.state
-        // const toTheFilter = filteredDate.length === 0 ? data : filteredDate
-        const newData = this.state.data.filter(el => {
-            if (sortBy === 'users') {
-                if (el.owner === value) {
-                    return el
-                }
-            } else if (sortBy === 'categories') {
-                if (el.categories === value) {
-                    return el
-                }
-            } else if (sortBy === 'sites') {
-                if (el.sites === value) {
-                    return el
-                }
+        if (!this.state.addButtonClicked) {
+            if (sortBy === 'categories') {
+                console.log(value, 'ovo su kategorije');
+                const newData = this.state.data.filter(a => {
+                    console.log(a, 'ovo je a');
+                    // a.categories.find((el) => el === value.id)
+                })
+                this.setState({ filteredDate: newData })
+                setTimeout(() => {
+                    this.paginate(1)
+                });
+            } else {
+                const newData = this.state.data.filter(el => {
+                    if (sortBy === 'users') {
+                        if (el.owner.id === value.id) {
+                            return el
+                        }
+                    } else if (sortBy === 'sites') {
+                        if (el.site === value.id) {
+                            return el
+                        }
+                    }
+                })
+
+                this.setState({ filteredDate: newData })
+                setTimeout(() => {
+                    this.paginate(1)
+                });
             }
-        })
-        this.setState({ filteredDate: newData })
+
+        }
+
+
     }
 
     handleSubtmit = (e) => {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            return el.name?.toLowerCase().includes(value)
+            return el.title?.toLowerCase().includes(value)
         })
         this.setState({ filteredDate: newData })
-
-        console.log('hell0');
+        setTimeout(() => {
+            this.paginate(1)
+        });
     }
+
 
     handleSearchBar = (e) => {
         this.setState({ inputValue: e.target.value })
@@ -139,8 +182,54 @@ export class Posts extends Component {
         console.log(value);
     }
 
-    handleArrowSort = (value) => {
-        console.log(value);
+
+    handleArrowSort = (sortByClicked, value) => {
+        // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
+        console.log(sortByClicked, value);
+        if (value === 'Up') {
+            const sorted = this.state.data.sort((a, b) => {
+                console.log(typeof a[sortByClicked], a, b[sortByClicked]);
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    return b[sortByClicked]?.localeCompare(a[sortByClicked])
+                } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
+                    if (sortByClicked === 'timestamp') {
+                        return b[sortByClicked] - a[sortByClicked]
+
+                    } else {
+                        return b[sortByClicked]['name']?.localeCompare(a[sortByClicked]['name'])
+
+                    }
+
+                } else {
+                    return b[sortByClicked] - a[sortByClicked]
+                }
+            })
+            this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        } else if (value === 'Down') {
+            const sorted = this.state.data.sort((a, b) => {
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    return a[sortByClicked]?.localeCompare(b[sortByClicked])
+
+                } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
+                    if (sortByClicked === 'timestamp') {
+                        return a[sortByClicked] - b[sortByClicked]
+                    } else {
+                        return a[sortByClicked]['name'].localeCompare(b[sortByClicked]['name'])
+                    }
+                }
+                else {
+                    return a[sortByClicked] - b[sortByClicked]
+                }
+
+            })
+            this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        }
     }
 
     handlePageRedirect = (e, item) => {
@@ -159,7 +248,18 @@ export class Posts extends Component {
     }
 
     handleCountPerPage = (e) => {
-        this.setState({ countPerPage: e.target.value })
+        console.log(e.target.value);
+        if (e.target.value === '' || e.target.value === '0') {
+            this.setState({ countPerPage: 10 })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        } else {
+            this.setState({ countPerPage: e.target.value })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        }
     }
 
     handleAddSomeMore = () => {
@@ -175,6 +275,9 @@ export class Posts extends Component {
                 filteredDate: newData,
                 selectedSiteSearch: el
             })
+            setTimeout(() => {
+                this.paginate(1)
+            });
         } else {
             if (secondElement === 'sites') {
                 const newData = this.state.data.filter((el) => {
@@ -184,6 +287,9 @@ export class Posts extends Component {
                     filteredDate: newData,
                     selectedSiteSearch: el
                 })
+                setTimeout(() => {
+                    this.paginate(1)
+                });
             } else if (secondElement === 'categories') {
                 this.setState({ selectedCategorieSearch: el })
             }
@@ -201,12 +307,19 @@ export class Posts extends Component {
         this.setState({ confirmMessage: true, idForDelete: id })
     }
 
+    findcategory = item => {
+        const mapcategorynames = this.props.getCategoryList?.data?.data.filter(el => item.categories.includes(el.id))
+        let getNames = mapcategorynames?.map((element, i) => {
+            return <p key={i}>{`${element.name}, `}</p>
+        });
+        return getNames
+    }
+
 
 
     render() {
-        const { data, filteredDate, urlForCreatePost, selectedSiteSearch } = this.state
+        const { urlForCreatePost, dataToRender, selectedSiteSearch, loading } = this.state
         const { getSitesList } = this.props
-        const dataToRender = filteredDate ? filteredDate : data
         return (
             <>
                 <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
@@ -226,7 +339,7 @@ export class Posts extends Component {
                     <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
                 </div>}
                 <div className='mainTableDiv'>
-                    <div className='shortScreenTableDiv'>
+                    {!loading && this.state.dataToRender.length !== 0 ? <div className='shortScreenTableDiv'>
                         {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
                                 <div className='checkAndTrashDiv'>
@@ -236,8 +349,8 @@ export class Posts extends Component {
                                 <div className='statusDiv'>
                                     <div>
                                         <div className='arrowDiv'>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('statusUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('statusDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('status', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('status', 'Down')} alt="arrow" />
                                         </div>
                                         <p>STATUS</p>
                                     </div>
@@ -249,8 +362,8 @@ export class Posts extends Component {
                                 <div className='ownerDiv' onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <div>
                                         <div className='arrowDiv'>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('siteUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('siteDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('site', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('site', 'Down')} alt="arrow" />
                                         </div>
                                         <p>Site</p>
                                     </div>
@@ -261,8 +374,8 @@ export class Posts extends Component {
                                 <div className='ownerDiv'>
                                     <div>
                                         <div className='arrowDiv'>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('imgUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('imgDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('image', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('img', 'Down')} alt="arrow" />
                                         </div>
                                         <p>img</p>
                                     </div>
@@ -273,8 +386,8 @@ export class Posts extends Component {
                                 <div className='ownerDiv'>
                                     <div>
                                         <div className='arrowDiv'>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('dateUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('dateDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('timestamp', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('timestamp', 'Down')} alt="arrow" />
                                         </div>
                                         <p>Date</p>
                                     </div>
@@ -287,8 +400,8 @@ export class Posts extends Component {
                                 <div className='ownerDiv'>
                                     <div>
                                         <div className='arrowDiv'>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('nameUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('nameDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('title', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('title', 'Down')} alt="arrow" />
                                         </div>
                                         <p>Name</p>
                                     </div>
@@ -314,7 +427,10 @@ export class Posts extends Component {
                                 <div className='mainDivHashes'>
                                     <>
                                         <div className="divWithHashes">
-                                            <p>{this.props.getCategoryList?.data?.data.map(el => el.id === item.site ? el.name : '')}</p>
+                                            <p>{this.props.getCategoryList?.data?.data.map((el, index) => el.id === item.site ? el.name : '')}</p>
+                                            {/* <p>{this.props.getCategoryList?.data?.data.filter(el => item.categories.includes(el.id) ? el.name : '')}</p> */}
+                                            {/* <p>{this.findcategory(item)}</p> */}
+
 
                                             <div className='box'>
                                                 <p>+<span>2</span></p>
@@ -334,8 +450,8 @@ export class Posts extends Component {
                                     <div className='statistic'>
                                         <div>
                                             <div className='arrowDiv'>
-                                                <img src={arrowUp} onClick={() => this.handleArrowSort('impUp')} alt="arrow" />
-                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('impDown')} alt="arrow" />
+                                                <img src={arrowUp} onClick={() => this.handleArrowSort('imp', 'Up')} alt="arrow" />
+                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('imp', 'Down')} alt="arrow" />
                                             </div>
                                             <p>imp</p>
                                         </div>
@@ -345,8 +461,8 @@ export class Posts extends Component {
 
                                         <div>
                                             <div className='arrowDiv'>
-                                                <img src={arrowUp} onClick={() => this.handleArrowSort('clkUp')} alt="arrow" />
-                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('clkDown')} alt="arrow" />
+                                                <img src={arrowUp} onClick={() => this.handleArrowSort('clk', 'Up')} alt="arrow" />
+                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('clk', 'Down')} alt="arrow" />
                                             </div>
                                             <p>clk</p>
                                         </div>
@@ -355,8 +471,8 @@ export class Posts extends Component {
                                     <div className='statistic'>
                                         <div>
                                             <div className='arrowDiv'>
-                                                <img src={arrowUp} onClick={() => this.handleArrowSort('ctrUp')} alt="arrow" />
-                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('ctrDown')} alt="arrow" />
+                                                <img src={arrowUp} onClick={() => this.handleArrowSort('ctr', 'Up')} alt="arrow" />
+                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('ctr', 'Down')} alt="arrow" />
                                             </div>
                                             <p>ctr</p>
                                         </div>
@@ -365,8 +481,8 @@ export class Posts extends Component {
                                     <div className='statistic'>
                                         <div>
                                             <div className='arrowDiv'>
-                                                <img src={arrowUp} onClick={() => this.handleArrowSort('wimpUp')} alt="arrow" />
-                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('wimpDown')} alt="arrow" />
+                                                <img src={arrowUp} onClick={() => this.handleArrowSort('wimp', 'Up')} alt="arrow" />
+                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('wimp', 'Down')} alt="arrow" />
                                             </div>
                                             <p>wimp</p>
                                         </div>
@@ -375,8 +491,8 @@ export class Posts extends Component {
                                     <div className='statistic'>
                                         <div>
                                             <div className='arrowDiv'>
-                                                <img src={arrowUp} onClick={() => this.handleArrowSort('wclkUp')} alt="arrow" />
-                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('wclkDown')} alt="arrow" />
+                                                <img src={arrowUp} onClick={() => this.handleArrowSort('wclk', 'Up')} alt="arrow" />
+                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('wclk', 'Down')} alt="arrow" />
                                             </div>
                                             <p>wclk</p>
                                         </div>
@@ -385,8 +501,8 @@ export class Posts extends Component {
                                     <div className='statistic'>
                                         <div>
                                             <div className='arrowDiv'>
-                                                <img src={arrowUp} onClick={() => this.handleArrowSort('wctrUp')} alt="arrow" />
-                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('wctrDown')} alt="arrow" />
+                                                <img src={arrowUp} onClick={() => this.handleArrowSort('wctr', 'Up')} alt="arrow" />
+                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('wctr', 'Down')} alt="arrow" />
                                             </div>
                                             <p>wctr</p>
                                         </div>
@@ -395,8 +511,8 @@ export class Posts extends Component {
                                     <div className='statistic'>
                                         <div>
                                             <div className='arrowDiv'>
-                                                <img src={arrowUp} onClick={() => this.handleArrowSort('pimpUp')} alt="arrow" />
-                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('pimpDown')} alt="arrow" />
+                                                <img src={arrowUp} onClick={() => this.handleArrowSort('pimp', 'Up')} alt="arrow" />
+                                                <img src={secondarrowDown} onClick={() => this.handleArrowSort('pimp', 'Down')} alt="arrow" />
                                             </div>
                                             <p>pimp</p>
                                         </div>
@@ -405,8 +521,8 @@ export class Posts extends Component {
                                 </div>
                             </div>
                         })}
-                    </div>
-                    <table>
+                    </div> : loading ? <p style={{ textAlign: 'center' }} className="loadingOnShort">Loading...</p> : this.state.dataToRender.length === 0 && <p style={{ textAlign: 'center' }} className="loadingOnShort" >No data</p>}
+                    {!loading && this.state.dataToRender.length !== 0 ? <table>
                         <thead>
                             <tr>
                                 <th></th>
@@ -414,8 +530,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('statusUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('statusDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('status', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('status', 'Down')} alt="arrow" />
                                         </div>
                                         <p>STATUS</p>
                                     </div>
@@ -423,8 +539,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('siteUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('siteDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('site', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('site', 'Down')} alt="arrow" />
                                         </div>
                                         <p>Site</p>
                                     </div>
@@ -432,8 +548,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('imgUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('imgDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('image', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('img', 'Down')} alt="arrow" />
                                         </div>
                                         <p>Img</p>
                                     </div>
@@ -441,8 +557,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('dateUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('dateDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('timestamp', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('timestamp', 'Down')} alt="arrow" />
                                         </div>
                                         <p>Date</p>
                                     </div>
@@ -450,8 +566,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('nameUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('nameDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('title', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('title', 'Down')} alt="arrow" />
                                         </div>
                                         <p>Name</p>
                                     </div>
@@ -461,8 +577,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('impUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('impDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('imp', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('imp', 'Down')} alt="arrow" />
                                         </div>
                                         <p>imp</p>
                                     </div>
@@ -470,8 +586,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('clkUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('clkDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('clk', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('clk', 'Down')} alt="arrow" />
                                         </div>
                                         <p>clk</p>
                                     </div>
@@ -479,8 +595,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('ctrUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('ctrDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('ctr', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('ctr', 'Down')} alt="arrow" />
                                         </div>
                                         <p>ctr</p>
                                     </div>
@@ -488,8 +604,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('wimpUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('wimpDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('wimp', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('wimp', 'Down')} alt="arrow" />
                                         </div>
                                         <p>wimp</p>
                                     </div>
@@ -497,8 +613,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('wclkUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('wclkDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('wclk', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('wclk', 'Down')} alt="arrow" />
                                         </div>
                                         <p>wclk</p>
                                     </div>
@@ -506,8 +622,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('wctrUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('wctrDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('wctr', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('wctr', 'Down')} alt="arrow" />
                                         </div>
                                         <p>wctr</p>
                                     </div>
@@ -515,8 +631,8 @@ export class Posts extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('pimpUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('pimpDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('pimp', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('pimp', 'Down')} alt="arrow" />
                                         </div>
                                         <p>pimp</p>
                                     </div>
@@ -537,7 +653,7 @@ export class Posts extends Component {
                                         {getSitesList?.data?.data.map(el => el.id === item.site ? el.name : '')}
                                     </div></td>
                                     <td><div className='ownersNameClass tdWithImgDiv'>
-                                        <img src={item.image} alt="" />
+                                        <img src={item.image && URL.revokeObjectURL(item.image)} alt="" />
                                     </div></td>
                                     {/* <td><div className="divWithClicableIcons">
                                         <img src={visit} alt="visit" />
@@ -559,7 +675,10 @@ export class Posts extends Component {
                                     <td>
                                         <>
                                             <div className="divWithHashes">
-                                                <p>{this.props.getCategoryList?.data?.data.map(el => el.id === item.site ? el.name : '')}</p>
+                                                {/* <p>{this.props.getCategoryList?.data?.data.map(el => el.id === item.site ? el.name : '')}</p> */}
+                                                {/* <p>{this.props.getCategoryList?.data?.data.filter(el => item.categories.includes(el.id) && el)}</p> */}
+                                                {this.findcategory(item)}
+
                                                 <div className='box'>
                                                     <p>+<span>2</span></p>
                                                     <img src={secondarrowDown} id='noredirection' alt="arrow" onClick={() => this.handleHashArrowClick(item)} />
@@ -584,7 +703,7 @@ export class Posts extends Component {
                                 </tr>
                             })}
                         </tbody>
-                    </table>
+                    </table> : loading ? <p className='loadingOnBig' style={{ textAlign: 'center' }}>Loading...</p> : this.state.dataToRender.length === 0 && <p className='loadingOnBig' style={{ textAlign: 'center' }}>No data</p>}
                 </div>
             </>
         )

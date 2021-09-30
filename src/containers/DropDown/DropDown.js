@@ -8,10 +8,9 @@ function DropDown({ options, handleChangeOptions, label, isItOpen }) {
 
     return (
         <>
-            <p >{label} </p><img src={arrowDown} alt="arrow down" />
+            <p className='mainInfoPtag' >{label} </p><img src={arrowDown} alt="arrow down" />
             {isItOpen && <div className='options'>
                 {options?.map((el, i) => {
-                    console.log(el);
                     return <div key={i} onClick={() => handleChangeOptions(el)}><p>{el?.name ? el.name : 'No name'}</p></div>
                 })}
             </div>}

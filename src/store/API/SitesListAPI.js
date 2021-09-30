@@ -43,8 +43,8 @@ const getSitesList = async () => {
 //     });
 // }
 
-const createSite = async ({ name, feeds, url, description, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map }) => {
-    const objective = { name, url, feeds, description, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map }
+const createSite = async ({ name, feeds, url, state, description, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map }) => {
+    const objective = { name, url, feeds, description, state, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map }
     let dataforSend = Object.fromEntries(Object.entries(objective).filter(([_, v]) => v != null));
     return await axiosInstance.post(`${API_URL}${GET_SITES_LIST}`, dataforSend)
 }
@@ -55,8 +55,8 @@ const getSiteDetails = async ({ id }) => {
     return await axiosInstance.get(`${url(GET_SITES_LIST)}/${id}`)
 }
 
-const updateSiteDetails = async ({ id, name, feeds, url, description, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map }) => {
-    const objective = { name, url, feeds, description, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map }
+const updateSiteDetails = async ({ id, name, feeds, url, state, description, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map }) => {
+    const objective = { name, url, feeds, description, state, head, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map }
     let dataforSend = Object.fromEntries(Object.entries(objective).filter(([_, v]) => v != null));
     return await axiosInstance.put(`${API_URL}${GET_SITES_LIST}/${id}`, dataforSend)
 }

@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import './SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
 import { GetSiteDetailsActionRequest, DeleteSiteActionRequest, UpdateSiteDetailsActionRequest, CreateSiteActionRequest } from '../../store/actions/SitesListAction'
-import { BindCategoryActionRequest, UnbindCategoryActionRequest } from '../../store/actions/CategoryAction'
+import { BindCategoryActionRequest, UnbindCategoryActionRequest, GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
 import Chart from '../../containers/Chart/Chart'
 import Select from 'react-select'
 import { NotificationManager } from 'react-notifications'
@@ -78,7 +78,7 @@ export class SiteDetails extends Component {
             RSS: null,
             feed_translations: '',
             remote_translations: '',
-            owner: ''
+            // owner: ''
         }
 
     }
@@ -90,11 +90,13 @@ export class SiteDetails extends Component {
                 return { value: el.id, label: el.name }
             })
             this.setState({ cateOptions: optionsData })
+        } else {
+            this.props.dispatch(GetCategoryListActionRequest())
         }
 
 
         if (this.props?.location?.data?.url) {
-            this.setState({ url: this.props.location.data?.url, owner: this.props.location.data?.owner })
+            this.setState({ url: this.props.location.data?.url })
         } else {
             this.props.dispatch(GetSiteDetailsActionRequest({
                 id: this.props.match.params.id
@@ -104,20 +106,61 @@ export class SiteDetails extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { getSiteDetails, deleteSite, createSite, updateSiteDetails } = this.props
+        const { getSiteDetails, deleteSite, createSite, updateSiteDetails, getCategoryList, unbindCategory, bindCategory } = this.props
         const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError, errorData: getSiteDetailsErrorData } = getSiteDetails;
+        const { data: getCategoryListData, loading: getCategoryListLoading, error: getCategoryListError, errorData: getCategoryListErrorData } = getCategoryList;
         const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
         const { data: createSiteData, loading: createSiteLoading, error: createSiteError, errorData: createSiteErrorData } = createSite;
         const { data: updateSiteDetailsData, loading: updateSiteDetailsLoading, error: updateSiteDetailsError, errorData: updateSiteDetailsErrorData } = updateSiteDetails;
+        const { data: unbindCategoryData, loading: unbindCategoryLoading, error: unbindCategoryError, errorData: unbindCategoryErrorData } = unbindCategory;
+        const { data: bindCategoryData, loading: bindCategoryLoading, error: bindCategoryError, errorData: bindCategoryErrorData } = bindCategory;
 
+
+        if (prevProps.bindCategory !== bindCategory && !bindCategoryError && !bindCategoryLoading && bindCategoryData) {
+            NotificationManager.success("Category successfully bind", "Success", 2000);
+            if (
+                !this.props?.location?.data?.url
+            ) {
+                this.props.dispatch(GetSiteDetailsActionRequest({
+                    id: this.props.match.params.id
+                }))
+            }
+        }
+
+        if (prevProps.unbindCategory !== unbindCategory && !unbindCategoryError && !unbindCategoryLoading && unbindCategoryData) {
+            NotificationManager.success("Category successfully unbind", "Success", 2000);
+            if (
+                !this.props?.location?.data?.url
+            ) {
+                this.props.dispatch(GetSiteDetailsActionRequest({
+                    id: this.props.match.params.id
+                }))
+            }
+        }
 
 
         if (prevProps.getSiteDetails !== getSiteDetails && !getSiteDetailsError && !getSiteDetailsLoading && getSiteDetailsData) {
-            console.log(getSiteDetailsData);
             this.setState({
                 dataState: getSiteDetails.data.state,
                 siteDetailsData: getSiteDetailsData.data,
             })
+            if (getSiteDetailsData?.data?.categories !== 0) {
+                const newData = getSiteDetailsData?.data?.categories.map(el => {
+                    return {
+                        'category': el.category.id, 'expire': el.expire, 'keep': el.keep, "max_age": el.max_age,
+                        'min_ctr': el.min_ctr, 'min_imp': el.min_imp
+                    }
+                })
+
+                this.setState({ categories: newData })
+            }
+        }
+
+        if (prevProps.getCategoryList !== getCategoryList && !getCategoryListError && !getCategoryListLoading && getCategoryListData) {
+            const optionsData = getCategoryListData?.data?.map(el => {
+                return { value: el.id, label: el.name }
+            })
+            this.setState({ cateOptions: optionsData })
         }
 
         if (prevProps.deleteSite !== deleteSite && !deleteSiteError && !deleteSiteLoading && deleteSiteData) {
@@ -143,7 +186,6 @@ export class SiteDetails extends Component {
     }
 
     handleWhereEverNav = (page) => {
-        console.log(page);
         if (page === 'editDiv') {
             this.setState({ isIteditable: true })
         } else if (page === 'statsDiv') {
@@ -168,9 +210,8 @@ export class SiteDetails extends Component {
 
 
     handleButtonActive = (page) => {
-        console.log(page);
         if (page === 'save') {
-            const { name, url, description, head, RSS, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map } = this.state
+            const { name, url, description, categories, dataState, head, RSS, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map } = this.state
             if (this.props.location.data?.createNew) {
                 this.props.dispatch(CreateSiteActionRequest({
                     name,
@@ -189,7 +230,9 @@ export class SiteDetails extends Component {
                     copy_from_site,
                     guess_remote,
                     tag_map,
-                    feeds: RSS
+                    state: dataState,
+                    feeds: RSS,
+                    categories
                 }))
             } else {
                 this.props.dispatch(UpdateSiteDetailsActionRequest({
@@ -210,7 +253,9 @@ export class SiteDetails extends Component {
                     copy_from_site,
                     guess_remote,
                     tag_map,
-                    feeds: RSS
+                    state: dataState,
+                    feeds: RSS,
+                    categories
                 }))
             }
         } else if (page === 'cancel') {
@@ -230,12 +275,10 @@ export class SiteDetails extends Component {
         } else {
             this.setState({ [e.target.name]: e.target.value })
         }
-        console.log(e.target.value);
     }
 
     handleChangeRSS = (e) => {
-        this.setState({ RSS: e.target.value.split("\n") })
-        console.log(e.target.value);
+        this.setState({ RSS: e.target.value.split(" ") })
     }
 
     arrowSort = (value) => {
@@ -253,28 +296,58 @@ export class SiteDetails extends Component {
     }
 
     handleOption = (item) => {
-        console.log(item, this.state.categories, 'compare');
-        if (item.length > this.state.categories.length) {
-            const intersection = item.filter(element => !this.state.categories.includes(element))
+        const categorialOption = this.state.siteDetailsData?.categories?.map(el => {
+            return { value: el.category.id, label: el.category.name }
+        })
+        if (item.length > categorialOption.length) {
+            const intersection = item.filter((entry1) => {
+                return categorialOption.some((entry2) => { return entry1.value !== entry2.value; });
+            });
             this.props.dispatch(BindCategoryActionRequest({
                 siteId: this.state.siteDetailsData?.id,
                 categoryId: intersection[0]['value']
             }))
 
-        } else if (item.length < this.state.categories.length) {
-            const intersection = this.state.categories.filter(element => !item.includes(element))
+        } else if (item.length < categorialOption.length) {
+            const intersection = categorialOption.filter((entry1) => {
+                return item.some((entry2) => { return entry1.value !== entry2.value; });
+            });
             this.props.dispatch(UnbindCategoryActionRequest({
                 siteId: this.state.siteDetailsData?.id,
                 categoryId: intersection[0]['value']
             }))
         }
+    }
 
-        this.setState({ categories: item })
+    handleChangeCategory = (e, item) => {
+        const { categories } = this.state
+
+        let newData = categories
+
+        if (newData.length !== 0) {
+            for (let index = 0; index < newData.length; index++) {
+                const element = newData[index];
+                console.log(element, 'ovo je element');
+                if (element.category.id === item.category.id) {
+                    element[e.target.name] = e.target.value
+                }
+            }
+        } else {
+            // newData.push({
+            //     'category': item.category.id, e.target.name: e.target.value, 'keep': item.keep, "max_age": item.max_age,
+            //     'min_ctr': item.min_ctr, 'min_imp': item.min_imp
+            // })
+            console.log('nest0');
+        }
+
+        console.log(newData, 'za uspricavanjeeeeeeeee');
+
     }
 
     render() {
-        const { isIteditable, whichisit, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
+        const { isIteditable, whichisit, categories, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
         const categorialOption = siteDetailsData?.categories?.map(el => el.category.id)
+        console.log(categories, 'ovo su kategorije');
         return (
             <div className='mainSiteDetailsDiv'>
                 <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
@@ -370,7 +443,7 @@ export class SiteDetails extends Component {
                             <div className='tracking_div'>
                                 <h4>Tracking</h4>
                                 {!isIteditable && <p>{siteDetailsData?.tracking}</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='tracking' value={tracking} checked={tracking} onChange={(e) => this.setState({ tracking: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">enable user tracking (sets cookie)</label></div>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='tracking' value={tracking !== null ? tracking : siteDetailsData?.tracking} checked={tracking !== null ? tracking : siteDetailsData?.tracking} onChange={(e) => this.setState({ tracking: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">enable user tracking (sets cookie)</label></div>}
                             </div>
                         </div>
 
@@ -386,7 +459,7 @@ export class SiteDetails extends Component {
                             <div className='images_div'>
                                 <h4>Look for better images</h4>
                                 {!isIteditable && <p>{siteDetailsData?.better_images}</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='betterImage' value={better_images} checked={better_images} onChange={(e) => this.setState({ better_images: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">scrape individual pages for images (insert only)</label></div>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='betterImage' value={better_images !== null ? better_images : siteDetailsData?.better_images} checked={better_images !== null ? better_images : siteDetailsData?.better_images} onChange={(e) => this.setState({ better_images: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">scrape individual pages for images (insert only)</label></div>}
 
 
                             </div>
@@ -418,11 +491,11 @@ export class SiteDetails extends Component {
                             <div className='autopublish_div'>
                                 <h4>Autopublish</h4>
                                 {!isIteditable && <p>{siteDetailsData?.auto_publish}</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='auto_publish' value={auto_publish} checked={auto_publish} onChange={(e) => this.setState({ auto_publish: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">limit to feed</label></div>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='auto_publish' value={auto_publish !== null ? auto_publish : siteDetailsData?.auto_publish} checked={auto_publish !== null ? auto_publish : siteDetailsData?.auto_publish} onChange={(e) => this.setState({ auto_publish: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">limit to feed</label></div>}
 
 
                             </div>
-                            <div className='table_div'>
+                            {siteDetailsData?.categories?.length !== 0 && !siteDetailsData?.auto_publish && <div className='table_div'>
                                 <div className='leftTable'>
                                     <table>
                                         <thead>
@@ -433,21 +506,21 @@ export class SiteDetails extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {test.map((item, key) => {
+                                            {siteDetailsData?.categories?.map((item, key) => {
                                                 return <tr key={key}>
                                                     <td>
-                                                        {!isIteditable && <p>{item.title}</p>}
-                                                        {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='CagegoryLimit' placeholder={item.title} />}
+                                                        {!isIteditable && <p>{item.category?.name}</p>}
+                                                        {isIteditable && <input type="text" disabled placeholder={item.category.name} />}
 
                                                     </td>
                                                     <td>
                                                         {!isIteditable && <p> {item.keep}</p>}
-                                                        {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='KeepAtMost' placeholder={item.keep} />}
+                                                        {isIteditable && <input type="number" onChange={(e) => this.handleChangeCategory(e, item)} name='keep' placeholder={item.keep} />}
 
                                                     </td>
                                                     <td>
-                                                        {!isIteditable && <p>  {item.maxAge}</p>}
-                                                        {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='ExpireAfter' placeholder={item.maxAge} />}
+                                                        {!isIteditable && <p>  {item.expire}</p>}
+                                                        {isIteditable && <input type="number" onChange={(e) => this.handleChangeCategory(e, item)} name='expire' placeholder={item.expire} />}
 
 
                                                     </td>
@@ -466,21 +539,21 @@ export class SiteDetails extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {test.map((item, key) => {
+                                            {siteDetailsData?.categories?.map((item, key) => {
                                                 return <tr key={key}>
                                                     <td>
-                                                        {!isIteditable && <p>{item.text}</p>}
-                                                        {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='MinImpressions' placeholder={item.text} />}
+                                                        {!isIteditable && <p>{item.min_imp}</p>}
+                                                        {isIteditable && <input type="number" onChange={(e) => this.handleChangeCategory(e, item)} name='min_imp' placeholder={item.min_imp} />}
 
                                                     </td>
                                                     <td>
-                                                        {!isIteditable && <p> {item.text}</p>}
-                                                        {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='MinCTR' placeholder={item.text} />}
+                                                        {!isIteditable && <p> {item.min_ctr}</p>}
+                                                        {isIteditable && <input type="number" onChange={(e) => this.handleChangeCategory(e, item)} name='min_ctr' placeholder={item.min_ctr} />}
 
                                                     </td>
                                                     <td>
-                                                        {!isIteditable && <p>  {item.expire}</p>}
-                                                        {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='MaxAge' placeholder={item.expire} />}
+                                                        {!isIteditable && <p>  {item.max_age}</p>}
+                                                        {isIteditable && <input type="number" onChange={(e) => this.handleChangeCategory(e, item)} name='max_age' placeholder={item.max_age} />}
 
 
                                                     </td>
@@ -490,7 +563,7 @@ export class SiteDetails extends Component {
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            </div>}
                         </div>
                     </div>
                     <div className='rightSideDiv'>
@@ -520,13 +593,13 @@ export class SiteDetails extends Component {
                             <div className='copySite_div'>
                                 <h4>Copy from site</h4>
                                 {!isIteditable && < p > {siteDetailsData?.copy_from_site}</p>}
-                                {isIteditable && <div><input type="checkbox" value={copy_from_site} checked={copy_from_site} onChange={(e) => this.setState({ copy_from_site: e.target.checked })} name="copy_from_site" /> <label htmlFor="check">copy site categories to new posts</label></div>}
+                                {isIteditable && <div><input type="checkbox" value={copy_from_site !== null ? copy_from_site : siteDetailsData?.copy_from_site} checked={copy_from_site !== null ? copy_from_site : siteDetailsData?.copy_from_site} onChange={(e) => this.setState({ copy_from_site: e.target.checked })} name="copy_from_site" /> <label htmlFor="check">copy site categories to new posts</label></div>}
 
                             </div>
                             <div className='guessRemote_div'>
                                 <h4>Guess remote category from url - enter the number of the path segment</h4>
                                 {!isIteditable && <p>{siteDetailsData?.guess_remote}</p>}
-                                {isIteditable && <input name='guess_remote' type="number" onChange={(e) => this.handleChange(e)} placeholder='' />}
+                                {isIteditable && <input name='guess_remote' type="number" onChange={(e) => this.handleChange(e)} placeholder={siteDetailsData?.guess_remote} />}
 
                             </div>
                             <div className='indexTag_div'>
@@ -622,14 +695,16 @@ export class SiteDetails extends Component {
 const mapStateToProps = (state) => {
     const { SitesListReducer, CategoryReducer } = state;
     const { getSiteDetails, deleteSite, updateSiteDetails, createSite } = SitesListReducer
-    const { getCategoryList } = CategoryReducer
+    const { getCategoryList, bindCategory, unbindCategory } = CategoryReducer
 
     return {
         getSiteDetails,
         deleteSite,
         updateSiteDetails,
         createSite,
-        getCategoryList
+        getCategoryList,
+        unbindCategory,
+        bindCategory
 
     }
 }

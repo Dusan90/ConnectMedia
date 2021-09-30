@@ -39,7 +39,6 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
     }
 
     const handlePageRedirect = (e, item) => {
-        console.log(e.target);
         if (!e.target.id || e.target.id !== 'noredirection') {
             if (pageName === 'widgets') {
                 history.push({
@@ -56,7 +55,6 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
         }
     }
 
-    const dataToRender = state.filteredDate ? state.filteredDate : data
 
     return (
         <table>
@@ -67,8 +65,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort('state', 'Up')} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort('state', 'Down')} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'status' : 'state', 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'status' : 'state', 'Down')} alt="arrow" />
                             </div>
                             <p>STATUS</p>
                         </div>
@@ -76,8 +74,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'name' : 'owner', 'Up')} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'name' : 'owner', 'Down')} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'site' : 'owner', 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'site' : 'owner', 'Down')} alt="arrow" />
                             </div>
                             <p>{pageName === 'widgets' ? 'Name' : 'OWNER'}</p>
                         </div>
@@ -85,8 +83,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                     <th>
                         <div>
                             <div>
-                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'site' : "name", 'Up')} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'site' : "name", 'Down')} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort("name", 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort("name", 'Down')} alt="arrow" />
                             </div>
                             <p>{pageName === 'widgets' ? 'Site' : "Name"}</p>
                         </div>
@@ -124,7 +122,7 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
             </thead>
 
             <tbody>
-                {dataToRender.length !== 0 && dataToRender.map((item, key) => {
+                {data.length !== 0 && data.map((item, key) => {
                     return <tr key={key} onClick={(e) => handlePageRedirect(e, item)}>
                         <td><input type="checkbox" value={checkboxList} id='noredirection' checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td>
                         <td><img src={secondTrash} onClick={() => handleTrashFunctionaliti(item.id)} alt="trash" id='noredirection' /></td>
@@ -168,7 +166,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                         <td>
                             <>
                                 <div className="divWithHashes">
-                                    <p>{item?.categories?.map(el => el.name)}</p>
+                                    {pageName !== 'widgets' && <p>{item?.categories?.map(el => `${el.category.name}, `)}</p>}
+                                    {pageName === 'widgets' && <p>{item?.categories?.map(el => `${el.name}, `)}</p>}
                                     <div className='box'>
                                         <p>+<span>2</span></p>
                                         <img src={secondarrowDown} onClick={() => handleHashArrowClick(item)} alt="arrow" id='noredirection' />

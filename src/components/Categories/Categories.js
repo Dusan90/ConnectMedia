@@ -40,12 +40,31 @@ export class Categories extends Component {
             data: [],
             filteredDate: '',
             inputValue: '',
-            countPerPage: '',
+            countPerPage: 10,
             addButtonClicked: false,
             categoryNewName: '',
             selectedSitesSearch: '',
-            selectedCategorieSearch: ''
+            selectedCategorieSearch: '',
+
+            dataToRender: [],
+            mamxPages: '',
+            loading: true
         }
+    }
+
+    paginate = (page) => {
+        const { countPerPage, filteredDate, data } = this.state
+        const dataToRender = filteredDate ? filteredDate : data
+        let limit = countPerPage;
+        let pages = Math.ceil(dataToRender.length / countPerPage);
+        const offset = (page - 1) * limit;
+        const newArray = dataToRender.slice(offset, offset + limit);
+
+        this.setState({
+            dataToRender: newArray,
+            loading: false,
+            maxPages: pages,
+        });
     }
 
     componentDidMount() {
@@ -61,6 +80,9 @@ export class Categories extends Component {
 
         if (prevProps.getCategoryList !== getCategoryList && !getCategoryListLoading && !getCategoryListError && getCategoryListData) {
             this.setState({ data: getCategoryListData.data })
+            setTimeout(() => {
+                this.paginate(1)
+            });
         }
 
         if (prevProps.createCategory !== createCategory && !createCategoryLoading && !createCategoryError && createCategoryData) {
@@ -79,28 +101,30 @@ export class Categories extends Component {
     }
 
     handleHomePageSort = (value, sortBy) => {
-        // const { filteredDate, data} = this.state
-        // const toTheFilter = filteredDate.length === 0 ? data : filteredDate
-        const newData = this.state.data.filter(el => {
-            if (sortBy === 'users') {
-                if (el.owner === value) {
-                    return el
-                }
-            } else if (sortBy === 'categories') {
-                if (el.categories === value) {
-                    return el
-                }
-            } else if (sortBy === 'sites') {
-                if (el.sites === value) {
-                    return el
-                }
-            }
+        // const newData = this.state.data.filter(el => {
+        // if (sortBy === 'users') {
+        //     if (el.owner === value) {
+        //         return el
+        //     }
+        // } else if (sortBy === 'categories') {
+        //     if (el.categories === value) {
+        //         return el
+        //     }
+        // } else if (sortBy === 'sites') {
+        //     console.log(el, value, 'ovo su podaci');
+        //     if (el.sites === value) {
+        //         return el
+        //     }
+        // }
+        // })
+
+        const newData = value.categories.map(el => {
+            return el.category
         })
         this.setState({ filteredDate: newData })
-    }
-
-    handlePageChange = (value) => {
-        this.setState({ page: value })
+        setTimeout(() => {
+            this.paginate(1)
+        });
     }
 
     handleSubtmit = (e) => {
@@ -110,6 +134,9 @@ export class Categories extends Component {
             return el.name.toLowerCase().includes(value)
         })
         this.setState({ filteredDate: newData })
+        setTimeout(() => {
+            this.paginate(1)
+        });
 
     }
 
@@ -141,8 +168,32 @@ export class Categories extends Component {
         }
     }
 
-    handleArrowSort = (value) => {
-        console.log(value);
+
+    handleArrowSort = (sortByClicked, value) => {
+        // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
+        console.log(sortByClicked, value);
+        if (value === 'Up') {
+            const sorted = this.state.data.sort((a, b) => {
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    console.log('pokrece se');
+                    return b[sortByClicked]?.localeCompare(a[sortByClicked])
+                }
+            })
+            this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        } else if (value === 'Down') {
+            const sorted = this.state.data.sort((a, b) => {
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    return a[sortByClicked]?.localeCompare(b[sortByClicked])
+                }
+            })
+            this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        }
     }
 
     handlePageRedirect = (e, item) => {
@@ -154,8 +205,26 @@ export class Categories extends Component {
         }
     }
 
+    handlePageChange = (value) => {
+        this.setState({ page: value })
+        this.paginate(value)
+    }
+
+
+
     handleCountPerPage = (e) => {
-        this.setState({ countPerPage: e.target.value })
+        console.log(e.target.value);
+        if (e.target.value === '' || e.target.value === '0') {
+            this.setState({ countPerPage: 10 })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        } else {
+            this.setState({ countPerPage: e.target.value })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        }
     }
 
     handleAddSomeMore = () => {
@@ -171,8 +240,7 @@ export class Categories extends Component {
     }
 
     render() {
-        const { categoryNewName, data, filteredDate } = this.state
-        const dataToRender = filteredDate ? filteredDate : data
+        const { categoryNewName, dataToRender } = this.state
         return (
             <>
                 <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleHomePageSort={this.handleHomePageSort} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
@@ -191,8 +259,8 @@ export class Categories extends Component {
                                 <div className='nazivDiv' onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <div>
                                         <div className='arrowDiv'>
-                                            <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('nameUp')} />
-                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('nameDown')} />
+                                            <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('name', 'Up')} />
+                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('name', 'Down')} />
                                         </div>
                                         <p>{"Name"}</p>
 
@@ -233,8 +301,8 @@ export class Categories extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('nameUp')} />
-                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('nameDown')} />
+                                            <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('name', 'Up')} />
+                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('name', 'Down')} />
                                         </div>
                                         <p>Name</p>
                                     </div>

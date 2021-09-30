@@ -98,7 +98,6 @@ export class WidgetsDetails extends Component {
         } else if (page === 'statsDiv') {
             this.setState({ isIteditable: false })
         } else if (page === 'viewDiv') {
-            console.log('nesto');
             this.props.history.push({
                 pathname: '/sites',
                 state: { whichToFilter: 'test' }
@@ -272,7 +271,6 @@ export class WidgetsDetails extends Component {
     }
 
     handlePostDetailsCategorie = value => {
-        console.log(value);
         const saveData = value.length !== 0 ? value.map(el => el.value) : []
         this.setState({ categories: saveData })
     }
@@ -329,7 +327,7 @@ export class WidgetsDetails extends Component {
                             <div className='url_div'>
                                 <h4>Public</h4>
                                 {!isIteditable && <p>{WidgetDetailsData && WidgetDetailsData['public']}</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={publicValue ? publicValue : WidgetDetailsData['public']} checked={publicValue ? publicValue : WidgetDetailsData['public']} onChange={(e) => this.setState({ publicValue: e.target.checked })} /></div>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={publicValue !== null ? publicValue : WidgetDetailsData['public']} checked={publicValue !== null ? publicValue : WidgetDetailsData['public']} onChange={(e) => this.setState({ publicValue: e.target.checked })} /></div>}
 
                             </div>
                             <h1 style={{ margin: '20px 0' }}>Default content</h1>
@@ -338,17 +336,17 @@ export class WidgetsDetails extends Component {
                             <div className='owner_div'>
                                 <h4>Include site</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.include}</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={include ? include : WidgetDetailsData?.include} checked={include ? include : WidgetDetailsData?.include} onChange={(e) => this.setState({ include: e.target.checked })} /></div>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={include !== null ? include : WidgetDetailsData?.include} checked={include !== null ? include : WidgetDetailsData?.include} onChange={(e) => this.setState({ include: e.target.checked })} /></div>}
                             </div>
                             <div className='owner_div'>
                                 <h4>Link direct</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.direct}</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={direct ? direct : WidgetDetailsData?.direct} checked={direct ? direct : WidgetDetailsData?.direct} onChange={(e) => this.setState({ direct: e.target.checked })} /></div>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={direct !== null ? direct : WidgetDetailsData?.direct} checked={direct !== null ? direct : WidgetDetailsData?.direct} onChange={(e) => this.setState({ direct: e.target.checked })} /></div>}
                             </div>
                             <div className='description_div'>
                                 <h4>Open site posts in the same window</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.same_window}</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={same_window ? same_window : WidgetDetailsData?.same_window} checked={same_window ? same_window : WidgetDetailsData?.same_window} onChange={(e) => this.setState({ same_window: e.target.checked })} /></div>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={same_window !== null ? same_window : WidgetDetailsData?.same_window} checked={same_window !== null ? same_window : WidgetDetailsData?.same_window} onChange={(e) => this.setState({ same_window: e.target.checked })} /></div>}
 
                             </div>
                             <div className='description_div'>
@@ -361,7 +359,7 @@ export class WidgetsDetails extends Component {
                             <div className='head_div'>
                                 <h4>Do not register impressions</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.ignore_impressions}</p>}
-                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={ignore_impressions ? ignore_impressions : WidgetDetailsData?.ignore_impressions} checked={ignore_impressions ? ignore_impressions : WidgetDetailsData?.ignore_impressions} onChange={(e) => this.setState({ ignore_impressions: e.target.checked })} /></div>}
+                                {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={ignore_impressions !== null ? ignore_impressions : WidgetDetailsData?.ignore_impressions} checked={ignore_impressions !== null ? ignore_impressions : WidgetDetailsData?.ignore_impressions} onChange={(e) => this.setState({ ignore_impressions: e.target.checked })} /></div>}
 
                             </div>
                             <h1 style={{ margin: '20px 0' }}>Default content</h1>

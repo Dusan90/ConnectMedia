@@ -40,13 +40,32 @@ export class Users extends Component {
             data: [],
             filteredDate: '',
             inputValue: '',
-            countPerPage: '',
+            countPerPage: 10,
             addButtonClicked: false,
             newUseremail: '',
             newUserpassword: '',
-            newUsername: ''
+            newUsername: '',
+
+            dataToRender: [],
+            mamxPages: '',
+            loading: true
 
         }
+    }
+
+    paginate = (page) => {
+        const { countPerPage, filteredDate, data } = this.state
+        const dataToRender = filteredDate ? filteredDate : data
+        let limit = countPerPage;
+        let pages = Math.ceil(dataToRender.length / countPerPage);
+        const offset = (page - 1) * limit;
+        const newArray = dataToRender.slice(offset, offset + limit);
+
+        this.setState({
+            dataToRender: newArray,
+            loading: false,
+            maxPages: pages,
+        });
     }
 
     componentDidMount() {
@@ -60,6 +79,9 @@ export class Users extends Component {
 
         if (prevProps.getUsersList !== getUsersList && !getUsersListLoading && !getUsersListError && getUsersListData) {
             this.setState({ data: getUsersListData.data })
+            setTimeout(() => {
+                this.paginate(1)
+            });
         }
 
 
@@ -91,6 +113,9 @@ export class Users extends Component {
 
         console.log(newData);
         this.setState({ filteredDate: newData })
+        setTimeout(() => {
+            this.paginate(1)
+        });
 
     }
 
@@ -122,8 +147,37 @@ export class Users extends Component {
         }
     }
 
-    handleArrowSort = (value) => {
-        console.log(value);
+
+    handleArrowSort = (sortByClicked, value) => {
+        // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
+        console.log(sortByClicked, value);
+        if (value === 'Up') {
+            const sorted = this.state.data.sort((a, b) => {
+                console.log(typeof a[sortByClicked], a, b[sortByClicked]);
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    return b[sortByClicked]?.localeCompare(a[sortByClicked])
+                } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
+                    return b[sortByClicked]['name']?.localeCompare(a[sortByClicked]['name'])
+                }
+            })
+            this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        } else if (value === 'Down') {
+            const sorted = this.state.data.sort((a, b) => {
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    return a[sortByClicked]?.localeCompare(b[sortByClicked])
+
+                } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
+                    return a[sortByClicked]['name']?.localeCompare(b[sortByClicked]['name'])
+                }
+            })
+            this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        }
     }
 
     handlePageRedirect = (e, item) => {
@@ -135,8 +189,20 @@ export class Users extends Component {
         }
     }
 
+
     handleCountPerPage = (e) => {
-        this.setState({ countPerPage: e.target.value })
+        console.log(e.target.value);
+        if (e.target.value === '' || e.target.value === '0') {
+            this.setState({ countPerPage: 10 })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        } else {
+            this.setState({ countPerPage: e.target.value })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        }
     }
 
     handleAddSomeMore = () => {
@@ -156,8 +222,7 @@ export class Users extends Component {
     }
 
     render() {
-        const { data, filteredDate } = this.state
-        const dataToRender = filteredDate ? filteredDate : data
+        const { dataToRender } = this.state
 
         return (
             <>
@@ -175,8 +240,8 @@ export class Users extends Component {
                                 <div className='nazivDiv' onClick={(e) => this.handlePageRedirect(e, item)}>
                                     <div>
                                         <div className='arrowDiv'>
-                                            <img src={arrowUp} onClick={() => this.handleArrowSort('emailUp')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('emailDown')} alt="arrow" />
+                                            <img src={arrowUp} onClick={() => this.handleArrowSort('email', 'Up')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('email', 'Down')} alt="arrow" />
                                         </div>
                                         <p>{"Email"}</p>
 
@@ -203,8 +268,8 @@ export class Users extends Component {
                                 <div className='nazivDiv'>
                                     <div>
                                         <div className='arrowDiv'>
-                                            <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('rolesUp')} />
-                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('rolesDown')} />
+                                            {/* <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('roles', 'Up')} />
+                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('roles', 'Down')} /> */}
                                         </div>
                                         <p>{"Roles"}</p>
 
@@ -222,8 +287,8 @@ export class Users extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('emailUp')} />
-                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('emailDown')} />
+                                            <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('email', 'Up')} />
+                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('email', 'Down')} />
                                         </div>
                                         <p>Email</p>
                                     </div>
@@ -232,8 +297,8 @@ export class Users extends Component {
                                 <th>
                                     <div>
                                         <div>
-                                            <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('rolesUp')} />
-                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('rolesDown')} />
+                                            {/* <img src={arrowUp} alt="arrow" onClick={() => this.handleArrowSort('roles', 'Up')} />
+                                            <img src={secondarrowDown} alt="arrow" onClick={() => this.handleArrowSort('roles', 'Down')} /> */}
                                         </div>
                                         <p>Roles</p>
                                     </div>

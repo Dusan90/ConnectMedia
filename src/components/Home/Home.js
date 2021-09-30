@@ -48,17 +48,36 @@ export class Home extends Component {
             checkboxList: [],
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
-            countPerPage: '',
+            countPerPage: 10,
             selectedUserSearch: '',
             selectedCategorieSearch: '',
             addButtonClicked: false,
             confirmMessage: false,
             urlForCreate: '',
             categoryList: '',
-            idForDelete: ''
+            idForDelete: '',
 
+            dataToRender: [],
+            mamxPages: '',
+            loading: true
         }
     }
+
+    paginate = (page) => {
+        const { countPerPage, filteredDate, data } = this.state
+        const dataToRender = filteredDate ? filteredDate : data
+        let limit = countPerPage;
+        let pages = Math.ceil(dataToRender.length / countPerPage);
+        const offset = (page - 1) * limit;
+        const newArray = dataToRender.slice(offset, offset + limit);
+
+        this.setState({
+            dataToRender: newArray,
+            loading: false,
+            maxPages: pages,
+        });
+    }
+
 
     componentDidMount() {
         this.props.dispatch(GetSitesListActionRequest())
@@ -81,8 +100,10 @@ export class Home extends Component {
         }
 
         if (prevProps.getSitesList !== getSitesList && !getSitesListError && !getSitesListLoading && getSitesListData) {
-            console.log(getSitesListData, prevProps);
             this.setState({ data: getSitesListData.data })
+            setTimeout(() => {
+                this.paginate(1)
+            });
         }
 
         if (prevProps.deleteSite !== deleteSite && !deleteSiteError && !deleteSiteLoading && deleteSiteData) {
@@ -93,7 +114,9 @@ export class Home extends Component {
 
     handlePageChange = (value) => {
         this.setState({ page: value })
+        this.paginate(value)
     }
+
 
     handleSortByStatus = (value) => {
         const newData = this.state.data.filter(el => {
@@ -102,36 +125,54 @@ export class Home extends Component {
             }
         })
         this.setState({ filteredDate: newData })
+        setTimeout(() => {
+            this.paginate(1)
+        });
     }
 
     handleHomePageSort = (value, sortBy) => {
-        // const { filteredDate, data} = this.state
-        // const toTheFilter = filteredDate.length === 0 ? data : filteredDate
-        const newData = this.state.data.filter(el => {
-            if (sortBy === 'users') {
-                if (el.owner === value) {
-                    return el
-                }
-            } else if (sortBy === 'categories') {
-                if (el.categories === value) {
-                    return el
-                }
-            } else if (sortBy === 'sites') {
-                if (el.sites === value) {
-                    return el
-                }
+        if (!this.state.addButtonClicked) {
+            if (sortBy === 'categories') {
+                const newData = this.state.data.filter(a => a.categories.find(({ category }) => category.id === value.id))
+
+                this.setState({ filteredDate: newData })
+                setTimeout(() => {
+                    this.paginate(1)
+                });
+            } else {
+                const newData = this.state.data.filter(el => {
+                    if (sortBy === 'users') {
+                        if (el.owner.id === value.id) {
+                            return el
+                        }
+                    } else if (sortBy === 'sites') {
+                        if (el.sites === value) {
+                            return el
+                        }
+                    }
+                })
+
+                this.setState({ filteredDate: newData })
+                setTimeout(() => {
+                    this.paginate(1)
+                });
             }
-        })
-        this.setState({ filteredDate: newData })
+
+        }
+
+
     }
 
     handleSubtmit = (e) => {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            return el.name.toLowerCase().includes(value)
+            return el.name?.toLowerCase().includes(value)
         })
         this.setState({ filteredDate: newData })
+        setTimeout(() => {
+            this.paginate(1)
+        });
     }
 
     handleSearchBar = (e) => {
@@ -159,13 +200,33 @@ export class Home extends Component {
 
     handleArrowSort = (sortByClicked, value) => {
         // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
-
         if (value === 'Up') {
-            const sorted = this.state.data.sort((a, b) => { return b[sortByClicked] - a[sortByClicked] })
+            const sorted = this.state.data.sort((a, b) => {
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    console.log('pokrece se');
+                    return b[sortByClicked]?.localeCompare(a[sortByClicked])
+                } else {
+                    return b[sortByClicked] - a[sortByClicked]
+                }
+            })
             this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
         } else if (value === 'Down') {
-            const sorted = this.state.data.sort((a, b) => { return a[sortByClicked] - b[sortByClicked] })
+            const sorted = this.state.data.sort((a, b) => {
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    return a[sortByClicked]?.localeCompare(b[sortByClicked])
+
+                } else {
+                    return a[sortByClicked] - b[sortByClicked]
+                }
+
+            })
             this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
         }
     }
 
@@ -174,7 +235,18 @@ export class Home extends Component {
     }
 
     handleCountPerPage = (e) => {
-        this.setState({ countPerPage: e.target.value })
+        console.log(e.target.value);
+        if (e.target.value === '' || e.target.value === '0') {
+            this.setState({ countPerPage: 10 })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        } else {
+            this.setState({ countPerPage: e.target.value })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        }
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
@@ -196,13 +268,11 @@ export class Home extends Component {
     }
 
     handleTrashFunctionaliti = (id) => {
-        console.log(id);
         this.setState({ confirmMessage: true, idForDelete: id })
     }
 
     render() {
-        console.log(this.state.data, 'ovde bi trebalo da ga sortira');
-        const { selectedUserSearch, urlForCreate } = this.state
+        const { selectedUserSearch, urlForCreate, loading } = this.state
         return (
             <>
                 <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>
@@ -233,8 +303,8 @@ export class Home extends Component {
                     <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
                 </div>}
                 <div className='mainTableDiv'>
-                    <ShortTableRowContainer data={this.state.data} handleTrashFunctionaliti={this.handleTrashFunctionaliti} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} />
-                    <TableRowContainer data={this.state.data} handleTrashFunctionaliti={this.handleTrashFunctionaliti} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} handleArrowSort={this.handleArrowSort} />
+                    {!loading && this.state.dataToRender.length !== 0 ? <ShortTableRowContainer data={this.state.dataToRender} handleTrashFunctionaliti={this.handleTrashFunctionaliti} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} handleArrowSort={this.handleArrowSort} checkboxList={this.state.checkboxList} /> : loading ? <p className='loadingOnShort' style={{ textAlign: 'center' }}>Loading...</p> : this.state.dataToRender.length === 0 && <p className='loadingOnShort' style={{ textAlign: 'center' }}>No data</p>}
+                    {!loading && this.state.dataToRender.length !== 0 ? <TableRowContainer data={this.state.dataToRender} handleTrashFunctionaliti={this.handleTrashFunctionaliti} state={this.state} handleHashArrowClick={this.handleHashArrowClick} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} handleArrowSort={this.handleArrowSort} /> : loading ? <p className='loadingOnBig' style={{ textAlign: 'center' }}>Loading...</p> : this.state.dataToRender.length === 0 && <p className='loadingOnBig' style={{ textAlign: 'center' }}>No data</p>}
                 </div>
             </>
         )

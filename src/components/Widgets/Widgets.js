@@ -62,13 +62,32 @@ export class Widgets extends Component {
             checkboxList: [],
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
-            countPerPage: '',
+            countPerPage: 10,
             selectedSiteSearch: '',
             selectedCategorieSearch: '',
             confirmMessage: false,
-            idForDelete: ''
+            idForDelete: '',
+
+            dataToRender: [],
+            mamxPages: '',
+            loading: true
 
         }
+    }
+
+    paginate = (page) => {
+        const { countPerPage, filteredDate, data } = this.state
+        const dataToRender = filteredDate ? filteredDate : data
+        let limit = countPerPage;
+        let pages = Math.ceil(dataToRender.length / countPerPage);
+        const offset = (page - 1) * limit;
+        const newArray = dataToRender.slice(offset, offset + limit);
+
+        this.setState({
+            dataToRender: newArray,
+            loading: false,
+            maxPages: pages,
+        });
     }
 
     componentDidMount() {
@@ -88,47 +107,69 @@ export class Widgets extends Component {
 
         if (prevProps.getWidgetsList !== getWidgetsList && !getWidgetsListLoading && !getWidgetsListError && getWidgetsListData) {
             this.setState({ data: getWidgetsListData.data })
+            setTimeout(() => {
+                this.paginate(1)
+            });
         }
 
     }
 
-
-
-    handlePageChange = (value) => {
-        this.setState({ page: value })
-    }
-
     handleSortByStatus = (value) => {
         const newData = this.state.data.filter(el => {
-            return el.status === value
-        })
-        this.setState({ filteredDate: newData })
-    }
-
-    handleHomePageSort = (value, sortBy) => {
-        // const { filteredDate, data} = this.state
-        // const toTheFilter = filteredDate.length === 0 ? data : filteredDate
-        const newData = this.state.data.filter(el => {
-            if (sortBy === 'users') {
-                return el.owner === value
-            } else if (sortBy === 'categories') {
-                return el.categories === value
-            } else if (sortBy === 'sites') {
-                return el.sites === value
+            if (el.status === value) {
+                return el
             }
         })
         this.setState({ filteredDate: newData })
+        setTimeout(() => {
+            this.paginate(1)
+        });
+    }
+
+    handleHomePageSort = (value, sortBy) => {
+        if (!this.state.addButtonClicked) {
+            if (sortBy === 'categories') {
+                const newData = this.state.data.filter(a => a.categories.find((el) => el.id === value.id))
+                this.setState({ filteredDate: newData })
+                setTimeout(() => {
+                    this.paginate(1)
+                });
+            } else {
+                const newData = this.state.data.filter(el => {
+                    if (sortBy === 'users') {
+                        if (el.owner.id === value.id) {
+                            return el
+                        }
+                    } else if (sortBy === 'sites') {
+                        console.log(value);
+                        if (el.site.id === value.id) {
+                            return el
+                        }
+                    }
+                })
+
+                this.setState({ filteredDate: newData })
+                setTimeout(() => {
+                    this.paginate(1)
+                });
+            }
+
+        }
+
+
     }
 
     handleSubtmit = (e) => {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            return el.site.toLowerCase().includes(value)
+            return el.site.name.toLowerCase().includes(value)
         })
         this.setState({ filteredDate: newData })
 
-        console.log('hell0');
+        setTimeout(() => {
+            this.paginate(1)
+        });
     }
 
     handleSearchBar = (e) => {
@@ -153,8 +194,51 @@ export class Widgets extends Component {
         console.log(value);
     }
 
-    handleArrowSort = (value) => {
-        console.log(value);
+    handlePageChange = (value) => {
+        this.setState({ page: value })
+        this.paginate(value)
+    }
+
+
+    handleArrowSort = (sortByClicked, value) => {
+        // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
+        console.log(sortByClicked, value);
+        if (value === 'Up') {
+            const sorted = this.state.data.sort((a, b) => {
+                console.log(typeof a[sortByClicked], a, b[sortByClicked]);
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    console.log('pokrece se');
+                    return b[sortByClicked]?.localeCompare(a[sortByClicked])
+                } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
+                    return b[sortByClicked]['name']?.localeCompare(a[sortByClicked]['name'])
+
+                } else {
+                    return b[sortByClicked] - a[sortByClicked]
+                }
+            })
+            this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        } else if (value === 'Down') {
+            const sorted = this.state.data.sort((a, b) => {
+                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                    return a[sortByClicked]?.localeCompare(b[sortByClicked])
+
+                } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
+                    return a[sortByClicked]['name']?.localeCompare(b[sortByClicked]['name'])
+
+                }
+                else {
+                    return a[sortByClicked] - b[sortByClicked]
+                }
+
+            })
+            this.setState({ data: sorted })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        }
     }
 
     handleHashArrowClick = (item) => {
@@ -162,8 +246,20 @@ export class Widgets extends Component {
     }
 
     handleCountPerPage = (e) => {
-        this.setState({ countPerPage: e.target.value })
+        console.log(e.target.value);
+        if (e.target.value === '' || e.target.value === '0') {
+            this.setState({ countPerPage: 10 })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        } else {
+            this.setState({ countPerPage: e.target.value })
+            setTimeout(() => {
+                this.paginate(1)
+            });
+        }
     }
+
 
     handleAddSomeMore = () => {
         this.props.history.push({
@@ -181,6 +277,9 @@ export class Widgets extends Component {
                 filteredDate: newData,
                 selectedSiteSearch: el
             })
+            setTimeout(() => {
+                this.paginate(1)
+            });
         } else {
             if (secondElement === 'sites') {
                 this.setState({ selectedSiteSearch: el })
@@ -202,7 +301,7 @@ export class Widgets extends Component {
     }
 
     render() {
-        const { selectedSiteSearch, data, filteredDate } = this.state
+        const { selectedSiteSearch, data, filteredDate, loading } = this.state
 
         return (
             <>
@@ -231,8 +330,8 @@ export class Widgets extends Component {
                     <button className="nobutton" onClick={() => this.setState({ confirmMessage: false })}>No</button>
                 </div>}
                 <div className='mainTableDiv'>
-                    <ShortTableRowContainer data={data} state={this.state} handleTrashFunctionaliti={this.handleTrashFunctionaliti} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
-                    <TableRowContainer data={data} state={this.state} handleTrashFunctionaliti={this.handleTrashFunctionaliti} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} />
+                    {!loading && this.state.dataToRender.length !== 0 ? <ShortTableRowContainer data={this.state.dataToRender} state={this.state} handleTrashFunctionaliti={this.handleTrashFunctionaliti} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} /> : loading ? <p className='loadingOnShort' style={{ textAlign: 'center' }}>Loading...</p> : this.state.dataToRender.length === 0 && <p className='loadingOnShort' style={{ textAlign: 'center' }}>No data</p>}
+                    {!loading && this.state.dataToRender.length !== 0 ? <TableRowContainer data={this.state.dataToRender} state={this.state} handleTrashFunctionaliti={this.handleTrashFunctionaliti} handleHashArrowClick={this.handleHashArrowClick} pageName={'widgets'} handleArrowSort={this.handleArrowSort} handleCheckbox={this.handleCheckbox} checkboxList={this.state.checkboxList} /> : loading ? <p className='loadingOnBig' style={{ textAlign: 'center' }}>Loading...</p> : this.state.dataToRender.length === 0 && <p className='loadingOnBig' style={{ textAlign: 'center' }}>No data</p>}
                 </div>
             </>
         )

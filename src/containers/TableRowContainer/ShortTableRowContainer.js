@@ -51,13 +51,11 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
         }
     }
 
-    const dataToRender = state.filteredDate ? state.filteredDate : data
-
 
     return (
         <div className='shortScreenTableDiv'>
-            {dataToRender.length !== 0 && dataToRender.map((item, key) => {
-                console.log(item);
+            {data.length !== 0 && data.map((item, key) => {
+
                 return <div key={key} className='mainDivShotScreen'>
                     <div className='checkAndTrashDiv'>
                         <input type="checkbox" value={checkboxList} checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} />
@@ -66,8 +64,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                     <div className='statusDiv'>
                         <div>
                             <div className='arrowDiv'>
-                                <img src={arrowUp} onClick={() => handleArrowSort('state', 'Up')} alt="arrow" />
-                                <img src={secondarrowDown} onClick={() => handleArrowSort('state', 'Down')} alt="arrow" />
+                                <img src={arrowUp} onClick={() => handleArrowSort(pageName === 'widgets' ? 'status' : 'state', 'Up')} alt="arrow" />
+                                <img src={secondarrowDown} onClick={() => handleArrowSort(pageName === 'widgets' ? 'status' : 'state', 'Down')} alt="arrow" />
                             </div>
                             <p>STATUS</p>
                         </div>
@@ -130,7 +128,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                     <div className='mainDivHashes'>
                         <>
                             <div className="divWithHashes">
-                                <p>Kuhinja ljubav moda</p>
+                                {pageName !== 'widgets' && <p>{item?.categories?.map(el => `${el.category.name}, `)}</p>}
+                                {pageName === 'widgets' && <p>{item?.categories?.map(el => `${el.name}, `)}</p>}
                                 <div className='box'>
                                     <p>+<span>2</span></p>
                                     <img src={secondarrowDown} alt="arrow" onClick={() => handleHashArrowClick(item)} />

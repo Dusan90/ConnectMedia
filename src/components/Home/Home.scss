@@ -347,6 +347,9 @@
   padding: 0 35px;
   font-family: "Calibri";
   margin: 15px 0 0 0;
+  .loadingOnShort {
+    display: none;
+  }
   .shortScreenTableDiv {
     display: none;
   }
@@ -676,11 +679,15 @@
     table {
       display: none;
     }
+    .loadingOnBig {
+      display: none;
+    }
     .shortScreenTableDiv {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(315px, 1fr));
       justify-content: center;
       gap: 20px;
+
       .mainDivShotScreen {
         width: 315px;
         margin: 0 auto;
@@ -830,6 +837,9 @@
           }
         }
       }
+    }
+    .loadingOnShort {
+      display: block;
     }
   }
 }
