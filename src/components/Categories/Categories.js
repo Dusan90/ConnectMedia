@@ -239,11 +239,18 @@ export class Categories extends Component {
         }
     }
 
+    handleAllOptionsOnMain = () => {
+        this.setState({ filteredDate: '' })
+        setTimeout(() => {
+            this.paginate(1)
+        });
+    }
+
     render() {
-        const { categoryNewName, dataToRender } = this.state
+        const { categoryNewName, dataToRender, loading } = this.state
         return (
             <>
-                <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleHomePageSort={this.handleHomePageSort} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
+                <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleHomePageSort={this.handleHomePageSort} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
                 {this.state.addButtonClicked && <AddContainer>
                     <input type="text" onChange={(e) => this.setState({ categoryNewName: e.target.value })} placeholder='Enter new name' />
                     {categoryNewName && <button
@@ -253,7 +260,7 @@ export class Categories extends Component {
                         })}><p>Create category</p></button>}
                 </AddContainer>}
                 <div className='mainTableDiv'>
-                    <div className='shortScreenTableDiv'>
+                    {!loading && this.state.dataToRender.length !== 0 ? <div className='shortScreenTableDiv'>
                         {dataToRender.length !== 0 && dataToRender?.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
                                 <div className='nazivDiv' onClick={(e) => this.handlePageRedirect(e, item)}>
@@ -294,8 +301,8 @@ export class Categories extends Component {
 
                             </div>
                         })}
-                    </div>
-                    <table>
+                    </div> : loading ? <p style={{ textAlign: 'center' }} className="loadingOnShort">Loading...</p> : this.state.dataToRender.length === 0 && <p style={{ textAlign: 'center' }} className="loadingOnShort" >No data</p>}
+                    {!loading && this.state.dataToRender.length !== 0 ? <table>
                         <thead>
                             <tr>
                                 <th>
@@ -339,7 +346,7 @@ export class Categories extends Component {
                                 </tr>
                             })}
                         </tbody>
-                    </table>
+                    </table> : loading ? <p className='loadingOnBig' style={{ textAlign: 'center' }}>Loading...</p> : this.state.dataToRender.length === 0 && <p className='loadingOnBig' style={{ textAlign: 'center' }}>No data</p>}
                 </div>
             </>
         )

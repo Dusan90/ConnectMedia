@@ -12,9 +12,10 @@ import widgets from '../../assets/img/TableIcons/widgets.svg'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import history from '../../routes/History'
 import AddContainer from '../../containers/AddContainer/AddContainer'
-import { GetPostsListActionRequest, DeletePostActionRequest } from '../../store/actions/PostActions'
+import { GetPostsListActionRequest, DeletePostActionRequest, UpdatePostDetailsActionRequest } from '../../store/actions/PostActions'
 import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
 import moment from 'moment'
+import { NotificationManager } from 'react-notifications'
 
 
 
@@ -39,6 +40,7 @@ export class Posts extends Component {
             selectedCategorieSearch: '',
             urlForCreatePost: '',
             idForDelete: '',
+            sitesList: [],
 
             dataToRender: [],
             mamxPages: '',
@@ -65,18 +67,33 @@ export class Posts extends Component {
         if (this.props.location?.data?.searchBy) {
             this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
         }
-        if (!this.props.getSitesList.data?.data) {
-            this.props.dispatch(GetSitesListActionRequest())
-        }
 
+        this.props.dispatch(GetSitesListActionRequest())
         this.props.dispatch(GetPostsListActionRequest())
 
     }
 
     componentDidUpdate(prevProps) {
-        const { getPostsList } = this.props
+        const { getPostsList, deletePost, getSitesList, updatePostDetails } = this.props
         const { loading: getPostsListLoading, error: getPostsListError, data: getPostsListData, errorData: getPostsListErrorData } = getPostsList
+        const { loading: deletePostLoading, error: deletePostError, data: deletePostData, errorData: deletePostErrorData } = deletePost
+        const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData, errorData: getSitesListErrorData } = getSitesList
+        const { data: updatePostDetailsData, loading: updatePostDetailsLoading, error: updatePostDetailsError, errorData: updatePostDetailsErrorData } = updatePostDetails;
 
+        if (prevProps.updatePostDetails !== updatePostDetails && !updatePostDetailsError && !updatePostDetailsLoading && updatePostDetailsData) {
+            NotificationManager.success("Post successfully updated", "Success", 2000);
+            this.props.dispatch(GetPostsListActionRequest())
+        } else if (prevProps.updatePostDetails !== updatePostDetails && updatePostDetailsError && updatePostDetailsErrorData) {
+            NotificationManager.error(`${updatePostDetailsErrorData.data.message}`, "Failed", 2000);
+
+        }
+
+
+        if (prevProps.deletePost !== deletePost && !deletePostError && !deletePostLoading && deletePostData) {
+            NotificationManager.success("Post successfully deleted", "Success", 2000);
+            this.setState({ confirmMessage: false })
+            this.props.dispatch(GetPostsListActionRequest())
+        }
 
 
         if (prevProps.getPostsList !== getPostsList && !getPostsListLoading && !getPostsListError && getPostsListData) {
@@ -84,6 +101,12 @@ export class Posts extends Component {
             setTimeout(() => {
                 this.paginate(1)
             });
+        }
+
+        if (prevProps.getSitesList !== getSitesList && !getSitesListLoading && !getSitesListError && getSitesListData) {
+            const allCategoryesOfAllSites = getSitesListData?.data?.map(el => el.categories)
+            const merged = [].concat.apply([], allCategoryesOfAllSites);
+            this.setState({ sitesList: merged })
         }
 
     }
@@ -105,14 +128,21 @@ export class Posts extends Component {
         });
     }
 
+    handleAllOptionsOnMain = () => {
+        this.setState({ filteredDate: '' })
+        setTimeout(() => {
+            this.paginate(1)
+        });
+    }
+
 
     handleHomePageSort = (value, sortBy) => {
         if (!this.state.addButtonClicked) {
             if (sortBy === 'categories') {
-                console.log(value, 'ovo su kategorije');
-                const newData = this.state.data.filter(a => {
-                    console.log(a, 'ovo je a');
-                    // a.categories.find((el) => el === value.id)
+                const newData = this.state.data.filter((a) => {
+                    if (a.categories.includes(value.id)) {
+                        return a
+                    }
                 })
                 this.setState({ filteredDate: newData })
                 setTimeout(() => {
@@ -318,11 +348,12 @@ export class Posts extends Component {
 
 
     render() {
-        const { urlForCreatePost, dataToRender, selectedSiteSearch, loading } = this.state
+        const { urlForCreatePost, dataToRender, selectedSiteSearch, loading, sitesList } = this.state
         const { getSitesList } = this.props
+
         return (
             <>
-                <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
                 {this.state.addButtonClicked && <AddContainer>
                     {!selectedSiteSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose site.</p>}
                     {selectedSiteSearch && <input type="text" onChange={(e) => this.setState({ urlForCreatePost: e.target.value })} placeholder='Enter URL' />}
@@ -368,14 +399,14 @@ export class Posts extends Component {
                                         <p>Site</p>
                                     </div>
                                     <div className='ownerClass'>
-                                        {getSitesList?.data?.data.map(el => el.id === item.site ? el.name : '')}
+                                        <p id='noredirection' onClick={() => history.push(`/sites/${item.site}`)}>{getSitesList?.data?.data.map(el => el.id === item.site ? el.name : '')}</p>
                                     </div>
                                 </div>
                                 <div className='ownerDiv'>
                                     <div>
                                         <div className='arrowDiv'>
                                             <img src={arrowUp} onClick={() => this.handleArrowSort('image', 'Up')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('img', 'Down')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('image', 'Down')} alt="arrow" />
                                         </div>
                                         <p>img</p>
                                     </div>
@@ -433,15 +464,35 @@ export class Posts extends Component {
 
 
                                             <div className='box'>
-                                                <p>+<span>2</span></p>
-                                                <img src={secondarrowDown} alt="arrow" onClick={() => this.handleHashArrowClick(item)} />
+                                                {item?.categories.length > 2 && <p>+<span>{item?.categories.length - 2}</span></p>}
+
+                                                <img src={secondarrowDown} alt="arrow" style={{ marginLeft: '5px' }} onClick={() => this.handleHashArrowClick(item)} />
                                             </div>
                                         </div>
-                                        {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div className='offeredHashes' >
-                                            {this.state.hashesArrowWitchIsOn.hashes.map((item, i) => {
-                                                return <div key={i} id='noredirection'>
-                                                    <p id='noredirection'>{item}</p>
-                                                </div>
+                                        {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div id='noredirection' className='offeredHashes' >
+                                            {sitesList.map((el, i) => {
+                                                console.log(item, i, el, 'elementi');
+                                                if (el.site === item.site) {
+                                                    return <div onClick={() => {
+                                                        if (!item.categories.includes(el.category.id)) {
+                                                            const pushData = item.categories.concat(el.category.id)
+                                                            this.props.dispatch(UpdatePostDetailsActionRequest({
+                                                                id: item.id,
+                                                                categories: pushData
+                                                            }))
+                                                            this.handleHashArrowClick(item)
+                                                        } else {
+                                                            const popData = item.categories.filter(elm => elm !== el.category.id)
+                                                            this.props.dispatch(UpdatePostDetailsActionRequest({
+                                                                id: item.id,
+                                                                categories: popData
+                                                            }))
+                                                            this.handleHashArrowClick(item)
+                                                        }
+                                                    }} style={{ background: item.categories.includes(el.category.id) ? '#e09494' : '' }} key={i} id='noredirection'>
+                                                        <p id='noredirection'>{el.category.name}</p>
+                                                    </div>
+                                                }
                                             })}
                                         </div>}
                                     </>
@@ -549,7 +600,7 @@ export class Posts extends Component {
                                     <div>
                                         <div>
                                             <img src={arrowUp} onClick={() => this.handleArrowSort('image', 'Up')} alt="arrow" />
-                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('img', 'Down')} alt="arrow" />
+                                            <img src={secondarrowDown} onClick={() => this.handleArrowSort('image', 'Down')} alt="arrow" />
                                         </div>
                                         <p>Img</p>
                                     </div>
@@ -650,10 +701,10 @@ export class Posts extends Component {
                                     </div>
                                     </td>
                                     <td><div className='ownerClass'>
-                                        {getSitesList?.data?.data.map(el => el.id === item.site ? el.name : '')}
+                                        <p id='noredirection' onClick={() => history.push(`/sites/${item.site}`)}>{getSitesList?.data?.data.map(el => el.id === item.site ? el.name : '')}</p>
                                     </div></td>
                                     <td><div className='ownersNameClass tdWithImgDiv'>
-                                        <img src={item.image && URL.revokeObjectURL(item.image)} alt="" />
+                                        <img src={item.image} alt="" />
                                     </div></td>
                                     {/* <td><div className="divWithClicableIcons">
                                         <img src={visit} alt="visit" />
@@ -680,15 +731,34 @@ export class Posts extends Component {
                                                 {this.findcategory(item)}
 
                                                 <div className='box'>
-                                                    <p>+<span>2</span></p>
-                                                    <img src={secondarrowDown} id='noredirection' alt="arrow" onClick={() => this.handleHashArrowClick(item)} />
+                                                    {item?.categories.length > 2 && <p>+<span>{item?.categories.length - 2}</span></p>}
+                                                    <img src={secondarrowDown} style={{ marginLeft: '5px' }} id='noredirection' alt="arrow" onClick={() => this.handleHashArrowClick(item)} />
                                                 </div>
                                             </div>
-                                            {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div className='offeredHashes' >
-                                                {this.state.hashesArrowWitchIsOn.hashes.map((item, i) => {
-                                                    return <div key={i} id='noredirection'>
-                                                        <p id='noredirection'>{item}</p>
-                                                    </div>
+                                            {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div id='noredirection' className='offeredHashes' >
+                                                {sitesList.map((el, i) => {
+                                                    console.log(item, i, el, 'elementi');
+                                                    if (el.site === item.site) {
+                                                        return <div onClick={() => {
+                                                            if (!item.categories.includes(el.category.id)) {
+                                                                const pushData = item.categories.concat(el.category.id)
+                                                                this.props.dispatch(UpdatePostDetailsActionRequest({
+                                                                    id: item.id,
+                                                                    categories: pushData
+                                                                }))
+                                                                this.handleHashArrowClick(item)
+                                                            } else {
+                                                                const popData = item.categories.filter(elm => elm !== el.category.id)
+                                                                this.props.dispatch(UpdatePostDetailsActionRequest({
+                                                                    id: item.id,
+                                                                    categories: popData
+                                                                }))
+                                                                this.handleHashArrowClick(item)
+                                                            }
+                                                        }} style={{ background: item.categories.includes(el.category.id) ? '#e09494' : '' }} key={i} id='noredirection'>
+                                                            <p id='noredirection'>{el.category.name}</p>
+                                                        </div>
+                                                    }
                                                 })}
                                             </div>}
                                         </>
@@ -713,14 +783,16 @@ export class Posts extends Component {
 const mapStateToProps = (state) => {
     const { CategoryReducer, PostsReducer, SitesListReducer } = state;
     const { getCategoryList } = CategoryReducer
-    const { getPostsList } = PostsReducer
+    const { getPostsList, deletePost, updatePostDetails } = PostsReducer
     const { getSitesList } = SitesListReducer
 
 
     return {
         getCategoryList,
         getPostsList,
-        getSitesList
+        getSitesList,
+        deletePost,
+        updatePostDetails
 
     }
 }

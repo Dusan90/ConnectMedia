@@ -390,7 +390,7 @@ export class WidgetsDetails extends Component {
                             <div className='description_div'>
                                 <h4>Template</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.template}</p>}
-                                {isIteditable && <textarea style={{ flex: '1', background: '#d6dbdc', marginRight: '20px', border: 'none', borderRadius: '5px' }} type="text" name='template' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.template} />}
+                                {isIteditable && <textarea style={{ flex: '1', padding: '10px', background: '#d6dbdc', marginRight: '20px', border: 'none', borderRadius: '5px' }} type="text" name='template' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.template} />}
 
                             </div>
                         </div>

@@ -16,7 +16,7 @@ import '../../components/Home/Home.scss'
 
 const options = ['test', 'test2', 'test3']
 
-function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
+function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
     const [user, setUser] = useState('all users')
     const dispatch = useDispatch()
     const [showUserOptions, setShowUserOptions] = useState(false)
@@ -93,6 +93,20 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
         setSites(el.name)
     }
 
+    const handleAllOptionsUser = (el) => {
+        setUser(el)
+        handleAllOptionsOnMain(el, 'users')
+    }
+    const handleAllOptionsSite = (el) => {
+        setSites(el)
+        handleAllOptionsOnMain(el, 'sites')
+
+    }
+    const handleAllOptionsCateg = (el) => {
+        setCategorie(el)
+        handleAllOptionsOnMain(el, 'categories')
+    }
+
 
     return (
         <div className='mainSecondHeaderDiv' style={secondHeaderCustomStyle && secondHeaderCustomStyle}>
@@ -102,14 +116,14 @@ function SearchContainer({ page, handlePageChange, handleSearchOnMainPage, pageN
                         <div className={`box-1 ${pageName === 'USERS' && 'userAloneBox'}`}><p style={{ marginRight: '30px' }}>{pageName}</p></div>
                         <div className='horizontal' />
                         {pageName === 'SITES' && <div className='box-2' onClick={handleUsersShow}>
-                            <DropDown label={user} isItOpen={showUserOptions} options={!getUsersListError && getUsersListData && getUsersListData.data} handleChangeOptions={handleChangeOptionsuser} />
+                            <DropDown label={user} isItOpen={showUserOptions} handleAllOptions={handleAllOptionsUser} options={!getUsersListError && getUsersListData && getUsersListData.data} handleChangeOptions={handleChangeOptionsuser} />
                         </div>}
                         {(pageName === 'POSTS' || pageName === 'WIDGETS' || pageName === 'CATEGORIES' || pageName === 'TOTALS') && <div className='box-2' onClick={handleSitesShow}>
-                            <DropDown label={sites} isItOpen={showSitesOptions} options={!getSitesListError && getSitesListData && getSitesListData.data} handleChangeOptions={handleChangeOptionssites} />
+                            <DropDown label={sites} isItOpen={showSitesOptions} handleAllOptions={handleAllOptionsSite} options={!getSitesListError && getSitesListData && getSitesListData.data} handleChangeOptions={handleChangeOptionssites} />
                         </div>}
                         {pageName !== 'USERS' && <div className='horizontal' />}
                         {pageName !== 'USERS' && pageName !== 'CATEGORIES' && <div className='box-3' onClick={handleCategorieShow}>
-                            <DropDown label={categorie} isItOpen={showCategorieOptions} options={!getCategoryListError && getCategoryListData && getCategoryListData.data} handleChangeOptions={handleChangeOptionscategorie} />
+                            <DropDown label={categorie} isItOpen={showCategorieOptions} handleAllOptions={handleAllOptionsCateg} options={!getCategoryListError && getCategoryListData && getCategoryListData.data} handleChangeOptions={handleChangeOptionscategorie} />
 
                         </div>}
                         {pageName !== 'USERS' && pageName !== 'CATEGORIES' && <div className='horizontal' />}

@@ -12,6 +12,7 @@ import { BindCategoryActionRequest, UnbindCategoryActionRequest, GetCategoryList
 import Chart from '../../containers/Chart/Chart'
 import Select from 'react-select'
 import { NotificationManager } from 'react-notifications'
+import { placeholder, tSThisType } from '@babel/types'
 
 const test = [{
     title: 'vesti',
@@ -44,6 +45,7 @@ const customSelectStyles = {
     }),
     placeholder: () => ({
         color: 'black'
+
     })
 };
 
@@ -53,6 +55,7 @@ export class SiteDetails extends Component {
         this.state = {
             isIteditable: false,
             whichisit: '',
+            treeButtonsMotivation: '',
             dataState: '',
             tabClicked: '',
             confirmMessage: false,
@@ -76,8 +79,8 @@ export class SiteDetails extends Component {
             cateOptions: [],
             categories: [],
             RSS: null,
-            feed_translations: '',
-            remote_translations: '',
+            feed_translations: [],
+            remote_translations: [],
             // owner: ''
         }
 
@@ -144,12 +147,23 @@ export class SiteDetails extends Component {
                 dataState: getSiteDetails.data.state,
                 siteDetailsData: getSiteDetailsData.data,
             })
+            if (getSiteDetailsData?.data?.translations?.feed.length !== 0) {
+                this.setState({
+                    feed_translations: getSiteDetailsData?.data?.translations?.feed?.map(el => {
+                        return { feed: el.feed.id, category: el.category.id }
+                    })
+                })
+
+            }
+            if (getSiteDetailsData?.data?.feeds.length !== 0) {
+                this.setState({ RSS: getSiteDetailsData?.data?.feeds?.map(el => `${el.url} `) })
+            }
             if (getSiteDetailsData?.data?.categories !== 0) {
                 const newData = getSiteDetailsData?.data?.categories.map(el => {
-                    return {
-                        'category': el.category.id, 'expire': el.expire, 'keep': el.keep, "max_age": el.max_age,
-                        'min_ctr': el.min_ctr, 'min_imp': el.min_imp
-                    }
+                    return el
+                    // 'category': el.category.id, 'expire': el.expire, 'keep': el.keep, "max_age": el.max_age,
+                    // 'min_ctr': el.min_ctr, 'min_imp': el.min_imp
+
                 })
 
                 this.setState({ categories: newData })
@@ -208,10 +222,17 @@ export class SiteDetails extends Component {
         this.setState({ tabClicked: page })
     }
 
+    handleTreeButtons = item => {
+        this.setState({ treeButtonsMotivation: item })
+    }
+
 
     handleButtonActive = (page) => {
         if (page === 'save') {
-            const { name, url, description, categories, dataState, head, RSS, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map } = this.state
+            const { name, url, description, feed_translations, categories, dataState, head, RSS, encoding, factor, minimum, tracking, auto_publish, better_images, feed_definition, post_definition, refresh_interval, copy_from_site, guess_remote, tag_map } = this.state
+            const categorieFormating = categories.map(el => {
+                return { category: el.category.id, expire: el.expire, keep: el.keep, max_age: el.max_age, min_ctr: el.min_ctr, min_imp: el.min_imp }
+            })
             if (this.props.location.data?.createNew) {
                 this.props.dispatch(CreateSiteActionRequest({
                     name,
@@ -231,8 +252,9 @@ export class SiteDetails extends Component {
                     guess_remote,
                     tag_map,
                     state: dataState,
-                    feeds: RSS,
-                    categories
+                    feeds: typeof RSS === 'array' ? RSS.split(" ") : null,
+                    categories: categorieFormating,
+                    feed_translations
                 }))
             } else {
                 this.props.dispatch(UpdateSiteDetailsActionRequest({
@@ -254,8 +276,9 @@ export class SiteDetails extends Component {
                     guess_remote,
                     tag_map,
                     state: dataState,
-                    feeds: RSS,
-                    categories
+                    feeds: typeof RSS === 'array' ? RSS.split(" ") : null,
+                    categories: categorieFormating,
+                    feed_translations
                 }))
             }
         } else if (page === 'cancel') {
@@ -278,11 +301,11 @@ export class SiteDetails extends Component {
     }
 
     handleChangeRSS = (e) => {
-        this.setState({ RSS: e.target.value.split(" ") })
+        this.setState({ RSS: e.target.value })
     }
 
-    arrowSort = (value) => {
-        console.log(value);
+    arrowSort = (value, sortBy) => {
+        console.log(value, sortBy);
     }
 
     handleTrashClick = () => {
@@ -299,55 +322,74 @@ export class SiteDetails extends Component {
         const categorialOption = this.state.siteDetailsData?.categories?.map(el => {
             return { value: el.category.id, label: el.category.name }
         })
+
         if (item.length > categorialOption.length) {
-            const intersection = item.filter((entry1) => {
-                return categorialOption.some((entry2) => { return entry1.value !== entry2.value; });
-            });
-            this.props.dispatch(BindCategoryActionRequest({
-                siteId: this.state.siteDetailsData?.id,
-                categoryId: intersection[0]['value']
-            }))
+            if (categorialOption.length === 0) {
+                this.props.dispatch(BindCategoryActionRequest({
+                    siteId: this.state.siteDetailsData?.id,
+                    categoryId: item[0]['value']
+                }))
+            } else {
+                const intersection = item.filter((entry1) => {
+                    return categorialOption.some((entry2) => { return entry1.value !== entry2.value; });
+                });
+                this.props.dispatch(BindCategoryActionRequest({
+                    siteId: this.state.siteDetailsData?.id,
+                    categoryId: intersection[0]['value']
+                }))
+            }
 
         } else if (item.length < categorialOption.length) {
-            const intersection = categorialOption.filter((entry1) => {
-                return item.some((entry2) => { return entry1.value !== entry2.value; });
-            });
-            this.props.dispatch(UnbindCategoryActionRequest({
-                siteId: this.state.siteDetailsData?.id,
-                categoryId: intersection[0]['value']
-            }))
+            if (item.length === 0) {
+                this.props.dispatch(UnbindCategoryActionRequest({
+                    siteId: this.state.siteDetailsData?.id,
+                    categoryId: categorialOption[0]['value']
+                }))
+            } else {
+                const intersection = categorialOption.filter((entry1) => {
+                    return item.some((entry2) => { return entry1.value !== entry2.value; });
+                });
+                this.props.dispatch(UnbindCategoryActionRequest({
+                    siteId: this.state.siteDetailsData?.id,
+                    categoryId: intersection[0]['value']
+                }))
+            }
         }
+    }
+
+    handleFeedTraslation = (e, item) => {
+        console.log(e, item);
+
+        if (this.state.feed_translations.length === 0) {
+            this.setState({ feed_translations: [{ feed: item, category: e.value },] })
+        } else {
+            let copyFeed = this.state.feed_translations.filter(el => el.feed !== item)
+            if (copyFeed.length !== 0) {
+                this.setState({ feed_translations: [...this.state.feed_translations, { feed: item, category: e.value }] })
+            } else {
+                copyFeed.push({ feed: item, category: e.value })
+                this.setState({ feed_translations: copyFeed })
+            }
+        }
+
     }
 
     handleChangeCategory = (e, item) => {
         const { categories } = this.state
 
-        let newData = categories
+        // const editeditem = item
 
-        if (newData.length !== 0) {
-            for (let index = 0; index < newData.length; index++) {
-                const element = newData[index];
-                console.log(element, 'ovo je element');
-                if (element.category.id === item.category.id) {
-                    element[e.target.name] = e.target.value
-                }
-            }
-        } else {
-            // newData.push({
-            //     'category': item.category.id, e.target.name: e.target.value, 'keep': item.keep, "max_age": item.max_age,
-            //     'min_ctr': item.min_ctr, 'min_imp': item.min_imp
-            // })
-            console.log('nest0');
-        }
-
-        console.log(newData, 'za uspricavanjeeeeeeeee');
+        item[e.target.name] = parseInt(e.target.value)
+        console.log(categories, 'this is item', item);
 
     }
 
     render() {
-        const { isIteditable, whichisit, categories, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
+        const { isIteditable, whichisit, treeButtonsMotivation, categories, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
         const categorialOption = siteDetailsData?.categories?.map(el => el.category.id)
-        console.log(categories, 'ovo su kategorije');
+
+
+        console.log(this.state.feed_translations, 'feed_translation');
         return (
             <div className='mainSiteDetailsDiv'>
                 <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
@@ -387,7 +429,7 @@ export class SiteDetails extends Component {
                                 <h4>Url</h4>
                                 {!isIteditable && <Link to={siteDetailsData?.url}>{siteDetailsData?.url}</Link>}
                                 {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} placeholder={this.state.url ? this.state.url : siteDetailsData?.url} name='url' />}
-                                {isIteditable && <SaveButtonEdit labeltext={'Scrape'} colorization={'ScrapeClass'} customStyle={{ width: '135px', marginRight: '20px' }} />}
+                                {/* {isIteditable && <SaveButtonEdit labeltext={'Scrape'} colorization={'ScrapeClass'} customStyle={{ width: '135px', marginRight: '20px' }} />} */}
 
                             </div>
                             <div className='owner_div'>
@@ -413,27 +455,27 @@ export class SiteDetails extends Component {
                                 {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='description' placeholder={siteDetailsData?.description} />}
 
                             </div>
-                            <div className='head_div'>
+                            <div className='description_div'>
                                 <h4>Head</h4>
-                                {!isIteditable && <Link to={siteDetailsData?.head}>{siteDetailsData?.head}</Link>}
+                                {!isIteditable && <p>{siteDetailsData?.head}</p>}
                                 {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='head' placeholder={siteDetailsData?.head} />}
 
                             </div>
                             <div className='info_div'>
-                                <div>
+                                <div className="endcFactMini">
                                     <h4>Encoding</h4>
                                     {!isIteditable && <p>{siteDetailsData?.encoding}</p>}
                                     {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='encoding' placeholder={siteDetailsData?.encoding} style={{ width: '40px' }} />}
 
                                 </div>
 
-                                <div>
+                                <div className="endcFactMini">
                                     <h4>Factor</h4>
                                     {!isIteditable && <p>{siteDetailsData?.factor}</p>}
                                     {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='factor' placeholder={siteDetailsData?.factor} style={{ width: '40px' }} />}
 
                                 </div>
-                                <div>
+                                <div className="endcFactMini">
                                     <h4>Minimum</h4>
                                     {!isIteditable && <p>{siteDetailsData?.minimum}</p>}
                                     {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='minimum' placeholder={siteDetailsData?.minimum} style={{ width: '40px' }} />}
@@ -453,7 +495,7 @@ export class SiteDetails extends Component {
                             <div className='rss_div'>
                                 <h4>RSS</h4>
                                 {!isIteditable && <Link to='#'>{siteDetailsData?.feeds?.map(el => `${el.url} `)}</Link>}
-                                {isIteditable && <input name='RSS' onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds?.map(el => `${el.url} `)} />}
+                                {isIteditable && <input name='RSS' value={this.state.RSS} onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds?.map(el => `${el.url} `)} />}
 
                             </div>
                             <div className='images_div'>
@@ -582,7 +624,7 @@ export class SiteDetails extends Component {
                                     // isLoading={true}
                                     isMulti
                                     styles={customSelectStyles}
-                                    isClearable={true}
+                                    isClearable={false}
                                     isSearchable={true}
                                     name="merge"
                                     options={this.state.cateOptions}
@@ -611,25 +653,44 @@ export class SiteDetails extends Component {
                         </div>
                         <div className='feedCategoriesDiv'>
                             <h1>Feed -<span>{`>`}</span> Category</h1>
-                            <div className='feedCat_div'>
-                                <Link to='https://24online.rs/feed/'>https://24online.rs/feed/</Link>
-                                {isIteditable && <div>
-                                    <select>
+                            {siteDetailsData?.feeds?.length !== 0 && siteDetailsData?.feeds?.map(el => {
+                                return <div key={el.id} className='feedCat_div'>
+                                    <Link to={el.url}>{el.url}</Link>
+                                    {!isIteditable && <p>{siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}</p>}
+                                    {isIteditable && <div className='selectAndX'>
+                                        <Select
+                                            // defaultValue={siteDetailsData?.translations.feed?.map(el => el.category.name && `${el.category.id}`)}
+                                            className="basic-single"
+                                            classNamePrefix="select"
+                                            // defaultValue={colourOptions[0]}
+                                            // isLoading={true}
+                                            placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}
+                                            styles={customSelectStyles}
+                                            isClearable={true}
+                                            isSearchable={true}
+                                            name={`feed${el.id}`}
+                                            options={this.state.cateOptions}
+                                            onChange={(e) => this.handleFeedTraslation(e, el.id)}
+
+                                        />
+                                        {/* <select>
                                         <option className='options' value="">none selected</option>
-                                    </select>
-                                    <img src={xButton} alt="x" />
+                                    </select> */}
+                                        {/* <img src={xButton} onClick={() => handleDelete} alt="x" /> */}
+                                    </div>
+                                    }
                                 </div>
-                                }
-                            </div>
+
+                            })}
                         </div>
 
                         <div className='remoteCategoriesDiv'>
-                            <div>
+                            <div className='divButtonsmaping'>
                                 <h1>Remote Category -<span>{`>`}</span> Category</h1>
                                 {isIteditable && <div>
-                                    <SaveButtonEdit labeltext={'Add default'} handleButtonActive={() => this.handleButtonActive('AddDefault')} colorization={`ScrapeClass ${whichisit === 'AddDefault' && 'clicked'}`} customStyle={{ minWidth: '100px' }} />
-                                    <SaveButtonEdit labeltext={'Clear map'} handleButtonActive={() => this.handleButtonActive('clearMap')} colorization={`ScrapeClass ${whichisit === 'clearMap' && 'clicked'}`} />
-                                    <SaveButtonEdit labeltext={'Sunc map'} handleButtonActive={() => this.handleButtonActive('syncMap')} colorization={`ScrapeClass ${whichisit === 'syncMap' && 'clicked'}`} />
+                                    <SaveButtonEdit labeltext={'Add default'} handleButtonActive={() => this.handleTreeButtons('AddDefault')} colorization={`ScrapeClass ${whichisit === 'AddDefault' && 'clicked'}`} customStyle={{ minWidth: '100px' }} />
+                                    <SaveButtonEdit labeltext={'Clear map'} handleButtonActive={() => this.handleTreeButtons('clear')} colorization={`ScrapeClass ${whichisit === 'clearMap' && 'clicked'}`} />
+                                    <SaveButtonEdit labeltext={'Sunc map'} handleButtonActive={() => this.handleTreeButtons('syncMap')} colorization={`ScrapeClass ${whichisit === 'syncMap' && 'clicked'}`} />
                                 </div>
                                 }
                             </div>
@@ -639,8 +700,8 @@ export class SiteDetails extends Component {
                                         <th>
                                             <div>
                                                 <div>
-                                                    <img src={arrowUp} alt="arrow" onClick={() => this.arrowSort('fromUp')} />
-                                                    <img src={secondarrowDown} alt="arrow" onClick={() => this.arrowSort('fromDown')} />
+                                                    <img src={arrowUp} alt="arrow" onClick={() => this.arrowSort('from', 'Up')} />
+                                                    <img src={secondarrowDown} alt="arrow" onClick={() => this.arrowSort('from', 'Down')} />
                                                 </div>
                                                 <p>from</p>
                                             </div>
@@ -648,8 +709,8 @@ export class SiteDetails extends Component {
                                         <th>
                                             <div>
                                                 <div>
-                                                    <img src={arrowUp} alt="arrow" onClick={() => this.arrowSort('toUp')} />
-                                                    <img src={secondarrowDown} alt="arrow" onClick={() => this.arrowSort('toDown')} />
+                                                    <img src={arrowUp} alt="arrow" onClick={() => this.arrowSort('to', 'Up')} />
+                                                    <img src={secondarrowDown} alt="arrow" onClick={() => this.arrowSort('to', 'Down')} />
                                                 </div>
                                                 <p>to</p>
                                             </div>
@@ -657,18 +718,29 @@ export class SiteDetails extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {test2.map((items, key) => {
+                                    {treeButtonsMotivation !== 'clear' && test2.map((el, key) => {
                                         return <tr key={key} style={{ background: isIteditable && 'white' }}>
-                                            <td><p className='mainTitleName'>{items.mesto}</p></td>
-                                            {!isIteditable && <td><p>{items.title}</p></td>}
-                                            {isIteditable && <td><div className='selectableDivMain'>
-                                                <select>
-                                                    {test2.map((item, key) => {
-                                                        return <option className='options' key={key} defaultValue={items.title === item.title && true} value={item.title}>{item.title}</option>
-                                                    })}
-                                                </select>
-                                                <img src={xButton} alt="x" />
-                                            </div>
+                                            <td><p className='mainTitleName'>{el.mesto}</p></td>
+                                            {!isIteditable && <td><p>{el.title}</p></td>}
+                                            {isIteditable && <td>
+                                                <div className='selectAndXx'>
+                                                    <Select
+                                                        // defaultValue={siteDetailsData?.translations.feed?.map(el => el.category.name && `${el.category.id}`)}
+                                                        className="basic"
+                                                        classNamePrefix="select"
+                                                        // defaultValue={colourOptions[0]}
+                                                        // isLoading={true}
+                                                        // placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}
+                                                        styles={customSelectStyles}
+                                                        isClearable={true}
+                                                        isSearchable={true}
+                                                        name={`feed${el.id}`}
+                                                        // options={this.state.cateOptions}
+                                                        onChange={(e) => this.handleFeedTraslation(e, el.id)}
+
+                                                    />
+                                                    {/* <img src={xButton} onClick={() => handleDelete} alt="x" /> */}
+                                                </div>
                                             </td>
                                             }
                                         </tr>

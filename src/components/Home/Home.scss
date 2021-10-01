@@ -409,6 +409,11 @@
           .ownerClass {
             font-size: 15px;
             line-height: 32px;
+            #noredirection {
+              &:hover {
+                text-decoration: underline;
+              }
+            }
           }
           .ownersNameClass {
             font-size: 15px;
@@ -463,12 +468,15 @@
             div {
               height: 30px;
               width: 100%;
+              display: flex;
               p {
+                align-self: center;
                 margin: 0;
                 color: black;
                 line-height: 22px;
                 font-size: 18px;
                 font-weight: normal;
+                text-indent: 5px;
               }
               &:hover {
                 background: #d6dbdc;
@@ -790,13 +798,17 @@
             div {
               height: 30px;
               width: 100%;
+              display: flex;
               p {
+                align-self: center;
                 margin: 0;
                 color: black;
                 line-height: 22px;
                 font-size: 18px;
                 font-weight: normal;
+                text-indent: 5px;
               }
+
               &:hover {
                 background: #d6dbdc;
                 cursor: pointer;

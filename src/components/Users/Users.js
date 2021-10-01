@@ -222,7 +222,7 @@ export class Users extends Component {
     }
 
     render() {
-        const { dataToRender } = this.state
+        const { dataToRender, loading } = this.state
 
         return (
             <>
@@ -234,7 +234,7 @@ export class Users extends Component {
                     <button onClick={this.handleClickCreateUser}><p>Create user</p></button>
                 </AddContainer>}
                 <div className='mainTableDiv'>
-                    <div className='shortScreenTableDiv'>
+                    {!loading && this.state.dataToRender.length !== 0 ? <div className='shortScreenTableDiv'>
                         {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
                                 <div className='nazivDiv' onClick={(e) => this.handlePageRedirect(e, item)}>
@@ -280,8 +280,8 @@ export class Users extends Component {
                                 </div>
                             </div>
                         })}
-                    </div>
-                    <table>
+                    </div> : loading ? <p style={{ textAlign: 'center' }} className="loadingOnShort">Loading...</p> : this.state.dataToRender.length === 0 && <p style={{ textAlign: 'center' }} className="loadingOnShort" >No data</p>}
+                    {!loading && this.state.dataToRender.length !== 0 ? <table>
                         <thead>
                             <tr>
                                 <th>
@@ -333,7 +333,7 @@ export class Users extends Component {
                                 </tr>
                             })}
                         </tbody>
-                    </table>
+                    </table> : loading ? <p className='loadingOnBig' style={{ textAlign: 'center' }}>Loading...</p> : this.state.dataToRender.length === 0 && <p className='loadingOnBig' style={{ textAlign: 'center' }}>No data</p>}
                 </div>
             </>
         )

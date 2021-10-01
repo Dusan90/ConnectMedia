@@ -1,16 +1,31 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
 import secondarrowDown from '../../assets/img/TableIcons/arrow.svg'
 import secondTrash from '../../assets/img/TableIcons/trash.svg'
+import { useSelector, useDispatch } from 'react-redux'
 import visit from '../../assets/img/TableIcons/visit.svg'
 import edit from '../../assets/img/TableIcons/edit.svg'
 import posts from '../../assets/img/TableIcons/posts.svg'
 import stats from '../../assets/img/TableIcons/stats.svg'
 import widgets from '../../assets/img/TableIcons/widgets.svg'
 import history from '../../routes/History'
+import { BindCategoryActionRequest, UnbindCategoryActionRequest, GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
+import { UpdateWidgetDetailsActionRequest } from '../../store/actions/WidgetActions'
+
 
 function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFunctionaliti, checkboxList, handleArrowSort, handleHashArrowClick, state }) {
+    const statee = useSelector(state => state)
+    const dispatch = useDispatch()
+    const { CategoryReducer } = statee
+    const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData, errorData: getCategoryListErrorData } = CategoryReducer.getCategoryList
+    const [categoryList, setCategoryList] = useState([])
 
+
+    useEffect(() => {
+        if (!getCategoryListLoading && !getCategoryListError && getCategoryListData) {
+            setCategoryList(getCategoryListData.data)
+        }
+    }, [CategoryReducer.getCategoryList])
 
 
     const handlePageRedirect = (item) => {
@@ -51,6 +66,15 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
         }
     }
 
+    const hashesmaping = state?.hashesArrowWitchIsOn?.categories?.length !== 0 ? state?.hashesArrowWitchIsOn?.categories?.map(el => {
+        if (pageName !== 'widgets') {
+            return el.category.id
+        } else {
+            return el.id
+        }
+    }) : []
+
+
 
     return (
         <div className='shortScreenTableDiv'>
@@ -86,10 +110,12 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
 
                         </div>
                         {pageName !== 'widgets' && <div className='ownerClass'>
-                            {item.owner.email}
+                            <p id='noredirection' onClick={() => history.push(`/users/${item.owner.id}`)}>
+                                {item.owner.email}
+                            </p>
                         </div>}
                         {pageName === 'widgets' && <div className='ownerClass'>
-                            {item.site?.name}
+                            <p id='noredirection' onClick={() => history.push(`/sites/${item.site?.id}`)}>{item.site?.name}</p>
                         </div>}
                     </div>
                     <div className='nazivDiv'>
@@ -128,17 +154,55 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                     <div className='mainDivHashes'>
                         <>
                             <div className="divWithHashes">
-                                {pageName !== 'widgets' && <p>{item?.categories?.map(el => `${el.category.name}, `)}</p>}
-                                {pageName === 'widgets' && <p>{item?.categories?.map(el => `${el.name}, `)}</p>}
+                                {pageName !== 'widgets' && <p id='noredirection'>{item?.categories?.slice(0, 2).map((el, i) => <a key={i} id='noredirection' onClick={() => {
+                                    dispatch(UnbindCategoryActionRequest({
+                                        siteId: item.id,
+                                        categoryId: el.category.id
+                                    }))
+                                }}>{`${el.category.name}, `}</a>)}</p>}
+                                {pageName === 'widgets' && <p>{item?.categories?.slice(0, 2).map((el, i) => <a key={i}>{`${el.name}, `}</a>)}</p>}
                                 <div className='box'>
-                                    <p>+<span>2</span></p>
-                                    <img src={secondarrowDown} alt="arrow" onClick={() => handleHashArrowClick(item)} />
+                                    {item?.categories.length > 2 && <p>+<span>{item?.categories.length - 2}</span></p>}
+                                    <img src={secondarrowDown} style={{ marginLeft: '5px' }} onClick={() => handleHashArrowClick(item)} alt="arrow" id='noredirection' />
+
                                 </div>
                             </div>
-                            {state.hashesArrowDown && item.id === state.hashesArrowWitchIsOn.id && <div className='offeredHashes'>
-                                {state.hashesArrowWitchIsOn.hashes.map((item, i) => {
-                                    return <div key={i} id='noredirection'>
-                                        <p id='noredirection'>{item}</p>
+                            {state.hashesArrowDown && item.id === state.hashesArrowWitchIsOn.id && <div id='noredirection' className='offeredHashes' >
+                                {categoryList.map((el, i) => {
+                                    return <div key={i} id='noredirection' onClick={() => {
+                                        if (pageName === 'widgets') {
+                                            let newArray = hashesmaping.concat(el.id)
+                                            if (!hashesmaping.includes(el.id)) {
+                                                dispatch(UpdateWidgetDetailsActionRequest({
+                                                    id: item.id,
+                                                    categories: newArray
+                                                }))
+                                                handleHashArrowClick(item)
+                                            } else {
+                                                let newArray = hashesmaping.filter(elm => elm !== el.id)
+                                                dispatch(UpdateWidgetDetailsActionRequest({
+                                                    id: item.id,
+                                                    categories: newArray
+                                                }))
+                                                handleHashArrowClick(item)
+                                            }
+                                        } else {
+                                            if (!hashesmaping.includes(el.id)) {
+                                                dispatch(BindCategoryActionRequest({
+                                                    siteId: item.id,
+                                                    categoryId: el.id
+                                                }))
+                                                handleHashArrowClick(item)
+                                            } else {
+                                                dispatch(UnbindCategoryActionRequest({
+                                                    siteId: item.id,
+                                                    categoryId: el.id
+                                                }))
+                                                handleHashArrowClick(item)
+                                            }
+                                        }
+                                    }} style={{ background: hashesmaping?.includes(el.id) ? '#e09494' : '' }}>
+                                        <p id='noredirection'>{el.name}</p>
                                     </div>
                                 })}
                             </div>}

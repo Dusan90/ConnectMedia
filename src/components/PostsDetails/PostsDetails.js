@@ -169,7 +169,7 @@ export class PostsDetails extends Component {
 
     handleChangeFile = (event) => {
         this.setState({
-            file: URL.createObjectURL(event.target.files[0])
+            file: event.target.value
         })
     }
 
@@ -250,8 +250,6 @@ export class PostsDetails extends Component {
         const categorialOption = siteDetailsData?.categories?.map(el => {
             return { value: el.category.id, label: el.category.name }
         })
-
-        console.log(categorialOption, 'ovo su kategorije', postDetailsData);
 
         return (
             <div className='mainSiteDetailsDiv'>
@@ -385,8 +383,7 @@ export class PostsDetails extends Component {
                             </div>
                             <div className='categ_div'>
                                 <h4>Image</h4>
-                                {isIteditable && <input type="file" id='file' onChange={this.handleChangeFile} placeholder='' />}
-                                {isIteditable && <label className='labelForInputImage' htmlFor="file">Select file</label>}
+                                {isIteditable && <input type="text" id='file' onChange={this.handleChangeFile} placeholder='Enter image url' />}
                             </div>
                             {this.state.file ? <div className='categ_div'>
                                 <img style={{ width: '300px' }} src={this.state.file} alt='uploaded' />

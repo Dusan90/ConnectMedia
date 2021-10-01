@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import '../Home/Home.scss'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import { GetWidgetsListActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
+import { NotificationManager } from 'react-notifications'
 
 const test = [{
     status: 'PUBLISHED',
@@ -100,8 +101,17 @@ export class Widgets extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { getWidgetsList } = this.props
+        const { getWidgetsList, deleteWidget, updateWidgetDetails } = this.props
         const { loading: getWidgetsListLoading, error: getWidgetsListError, data: getWidgetsListData, errorData: getWidgetsListErrorData } = getWidgetsList
+        const { loading: deleteWidgetLoading, error: deleteWidgetError, data: deleteWidgetData, errorData: deleteWidgetErrorData } = getWidgetsList
+        const { data: updateWidgetDetailsData, loading: updateWidgetDetailsLoading, error: updateWidgetDetailsError, errorData: updateWidgetDetailsErrorData } = updateWidgetDetails;
+
+
+        if (prevProps.deleteWidget !== deleteWidget && !deleteWidgetError && !deleteWidgetLoading && deleteWidgetData) {
+            NotificationManager.success("Widget successfully deleted", "Success", 2000);
+            this.setState({ confirmMessage: false })
+            this.props.dispatch(GetWidgetsListActionRequest())
+        }
 
 
 
@@ -110,6 +120,16 @@ export class Widgets extends Component {
             setTimeout(() => {
                 this.paginate(1)
             });
+        }
+
+        if (prevProps.updateWidgetDetails !== updateWidgetDetails && !updateWidgetDetailsError && !updateWidgetDetailsLoading && updateWidgetDetailsData) {
+            NotificationManager.success("Widget successfully updated", "Success", 2000);
+            this.props.history.push('/widgets')
+            this.props.dispatch(GetWidgetsListActionRequest())
+
+        } else if (prevProps.updateWidgetDetails !== updateWidgetDetails && updateWidgetDetailsError && updateWidgetDetailsErrorData) {
+            NotificationManager.error(`${updateWidgetDetailsErrorData.data.message}`, "Failed", 2000);
+
         }
 
     }
@@ -300,12 +320,19 @@ export class Widgets extends Component {
         this.setState({ confirmMessage: true, idForDelete: id })
     }
 
+    handleAllOptionsOnMain = () => {
+        this.setState({ filteredDate: '' })
+        setTimeout(() => {
+            this.paginate(1)
+        });
+    }
+
     render() {
         const { selectedSiteSearch, data, filteredDate, loading } = this.state
 
         return (
             <>
-                <SearchContainer page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
                 {/* {this.state.addButtonClicked && <AddContainer> */}
                 {/* {!selectedSiteSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose a site.</p>} */}
                 {/* <Select
@@ -341,11 +368,14 @@ export class Widgets extends Component {
 const mapStateToProps = (state) => {
     const { WidgetReducer } = state;
 
-    const { getWidgetsList } = WidgetReducer
+    const { getWidgetsList, deletePost, updateWidgetDetails } = WidgetReducer
 
 
     return {
         getWidgetsList,
+        deletePost,
+        updateWidgetDetails
+
 
     }
 }

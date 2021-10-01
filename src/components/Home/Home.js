@@ -89,11 +89,24 @@ export class Home extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { getSitesList, deleteSite, getCategoryList } = this.props
+        const { getSitesList, deleteSite, getCategoryList, bindCategory, unbindCategory } = this.props
         const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError, errorData: getSitesListErrorData } = getSitesList;
         const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
         const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData, errorData: getCategoryListErrorData } = getCategoryList
+        const { data: unbindCategoryData, loading: unbindCategoryLoading, error: unbindCategoryError, errorData: unbindCategoryErrorData } = unbindCategory;
+        const { data: bindCategoryData, loading: bindCategoryLoading, error: bindCategoryError, errorData: bindCategoryErrorData } = bindCategory;
 
+        if (prevProps.bindCategory !== bindCategory && !bindCategoryError && !bindCategoryLoading && bindCategoryData) {
+            NotificationManager.success("Category successfully bind", "Success", 2000);
+            this.props.dispatch(GetSitesListActionRequest())
+
+        }
+
+        if (prevProps.unbindCategory !== unbindCategory && !unbindCategoryError && !unbindCategoryLoading && unbindCategoryData) {
+            NotificationManager.success("Category successfully unbind", "Success", 2000);
+            this.props.dispatch(GetSitesListActionRequest())
+
+        }
 
         if (prevProps.getCategoryList !== getCategoryList && !getCategoryListLoading && !getCategoryListError && getCategoryListData) {
             this.setState({ categoryList: getCategoryListData.data })
@@ -108,6 +121,7 @@ export class Home extends Component {
 
         if (prevProps.deleteSite !== deleteSite && !deleteSiteError && !deleteSiteLoading && deleteSiteData) {
             NotificationManager.success("Site successfully deleted", "Success", 2000);
+            this.setState({ confirmMessage: false })
             this.props.dispatch(GetSitesListActionRequest())
         }
     }
@@ -271,6 +285,13 @@ export class Home extends Component {
         this.setState({ confirmMessage: true, idForDelete: id })
     }
 
+    handleAllOptionsOnMain = () => {
+        this.setState({ filteredDate: '' })
+        setTimeout(() => {
+            this.paginate(1)
+        });
+    }
+
     render() {
         const { selectedUserSearch, urlForCreate, loading } = this.state
         return (
@@ -286,7 +307,7 @@ export class Home extends Component {
                         <ViewSectionCard label={'<p><span>Error categories </span> <br> on site <span>Novosti.rs</span></p>'} description={'<p>Following categories were disabled: <span> sport, vesti, zabava </span> <br> They were disabled because they have less than 2 posts.</p>'} customDescriptionStyle={{ backgroundColor: '#F0D2AE' }} customStyle={{ backgroundColor: '#E0B494' }} />
                     </div>
                 </div>
-                <SearchContainer handleAddSomeMore={this.handleAddSomeMore} page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} />
+                <SearchContainer handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleAddSomeMore={this.handleAddSomeMore} page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} />
                 {this.state.addButtonClicked && <AddContainer>
                     {!selectedUserSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose owner.</p>}
                     {selectedUserSearch && <input type="text" onChange={(e) => this.setState({ urlForCreate: e.target.value })} placeholder='Enter Url' />}
@@ -314,12 +335,14 @@ export class Home extends Component {
 const mapStateToProps = (state) => {
     const { SitesListReducer, CategoryReducer } = state;
     const { getSitesList, deleteSite } = SitesListReducer
-    const { getCategoryList } = CategoryReducer
+    const { getCategoryList, bindCategory, unbindCategory } = CategoryReducer
 
     return {
         getSitesList,
         deleteSite,
-        getCategoryList
+        getCategoryList,
+        bindCategory,
+        unbindCategory
 
     }
 }

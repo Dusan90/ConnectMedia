@@ -125,6 +125,9 @@
               }
             }
           }
+          @media only screen and (max-width: 1000px) {
+            flex-direction: column;
+          }
           @media only screen and (max-width: 540px) {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -140,11 +143,15 @@
         .info_div {
           border: none;
           justify-content: space-between;
-          div {
+          .endcFactMini {
+            h4 {
+              min-width: 50px;
+            }
             padding: 2px 0;
             border-bottom: 1px solid #bbbbbb;
             width: 142px;
             display: flex;
+            justify-content: space-between;
             p {
               font-weight: bold;
             }
@@ -418,27 +425,6 @@
               }
             }
           }
-          #file {
-            opacity: 0;
-            width: 0.1px;
-            height: 0.1px;
-            position: absolute;
-          }
-          .labelForInputImage {
-            background: #d6dbdc;
-            border-radius: 5px;
-            border: none;
-            outline: none;
-            width: 100%;
-            text-indent: 10px;
-            margin-right: 20px;
-            font-size: 14px;
-            line-height: 37px;
-            padding: 3px 10px 0 10px;
-            &:hover {
-              cursor: pointer;
-            }
-          }
         }
         .indexTag_div {
           p {
@@ -457,6 +443,9 @@
             margin: 0 20px 0 auto;
             width: 100%;
           }
+          @media only screen and (max-width: 1000px) {
+            flex-direction: column;
+          }
           @media only screen and (max-width: 400px) {
             h4 {
               width: 180px;
@@ -473,51 +462,52 @@
         }
         .feedCat_div {
           display: flex;
+          gap: 10px;
+          margin-top: 10px;
           a {
             display: flex;
             align-items: center;
             color: #00a3ff;
             padding-left: 10px;
-            width: 270px;
-            min-width: 270px;
+            width: 250px;
+            min-width: 250px;
+            overflow: hidden;
           }
-          div {
+          .selectAndX {
+            width: 100%;
             display: flex;
-            max-width: 390px !important;
-            width: 390px;
-            select,
+            gap: 10px;
+            margin-right: 20px;
             .basic-single {
-              background: #d6dbdc;
-              border-radius: 5px;
-              border: none;
-              outline: none;
-              height: 42px;
-              width: 100%;
-              padding: 0 10px;
-              margin-right: 20px;
-              font-size: 14px;
-              line-height: 37px;
-              &::placeholder {
-                font-size: 14px;
-                line-height: 37px;
-              }
-              .options {
-                background: white !important;
-                font-size: 18px;
+              flex: 1;
+              .select__menu {
+                div {
+                  background: white !important;
+                  color: black;
+                  :hover {
+                    cursor: pointer;
+                    background: #00a3ff !important;
+                  }
+                }
               }
             }
+
             img {
+              width: 10px;
               &:hover {
                 cursor: pointer;
               }
             }
           }
+          @media only screen and (max-width: 1000px) {
+            flex-direction: column;
+          }
           @media only screen and (max-width: 400px) {
             flex-direction: column;
             gap: 10px;
-            div {
-              width: 100%;
-            }
+            // div {
+            //   width: 100%;
+            // }
             a {
               width: 180px;
               min-width: 180px;
@@ -527,7 +517,7 @@
       }
       .remoteCategoriesDiv {
         margin: 60px 0 0 0;
-        div {
+        .divButtonsmaping {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 
@@ -536,9 +526,9 @@
             border: none;
           }
           div {
-            width: 50%;
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: space-evenly;
           }
         }
         table {
@@ -579,7 +569,7 @@
                 background: #d6dbdc;
               }
               td {
-                height: 35px;
+                // height: 35px;
                 border-bottom: 1px solid #bbbbbb;
                 .mainTitleName {
                   font-weight: normal;
@@ -593,34 +583,10 @@
                   line-height: 32px;
                   text-indent: 20px;
                 }
-                .selectableDivMain {
+                .selectAndXx {
                   width: 100%;
-                  display: flex;
-
-                  select,
-                  .basic-single {
-                    background: #d6dbdc;
-                    border-radius: 3px;
-                    border: none;
-                    outline: none;
-                    height: 29px;
-                    width: 100%;
-                    padding: 0 10px;
-                    font-size: 14px;
-                    line-height: 37px;
-                    &::placeholder {
-                      font-size: 14px;
-                      line-height: 37px;
-                    }
-                    .options {
-                      background: white !important;
-                      font-size: 18px;
-                    }
-                  }
-                  img {
-                    &:hover {
-                      cursor: pointer;
-                    }
+                  .basic {
+                    padding: 2px 0;
                     margin-right: 20px;
                   }
                 }
