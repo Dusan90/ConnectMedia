@@ -71,6 +71,8 @@ export class Home extends Component {
         const offset = (page - 1) * limit;
         const newArray = dataToRender.slice(offset, offset + limit);
 
+
+
         this.setState({
             dataToRender: newArray,
             loading: false,
@@ -115,7 +117,16 @@ export class Home extends Component {
         if (prevProps.getSitesList !== getSitesList && !getSitesListError && !getSitesListLoading && getSitesListData) {
             this.setState({ data: getSitesListData.data })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
+            });
+            setTimeout(() => {
+                if (this.props.location?.data?.searchByuser && getSitesListData.data) {
+                    this.handleSearchOnMainPage(this.props.location?.data?.searchByuser)
+                } else if (this.props.location?.data?.searchBycategory && getSitesListData.data) {
+                    this.handleSearchOnMainPage(this.props.location?.data?.searchBycategory)
+                }
+
             });
         }
 
@@ -140,6 +151,7 @@ export class Home extends Component {
         })
         this.setState({ filteredDate: newData })
         setTimeout(() => {
+            this.setState({ page: 1 })
             this.paginate(1)
         });
     }
@@ -151,6 +163,7 @@ export class Home extends Component {
 
                 this.setState({ filteredDate: newData })
                 setTimeout(() => {
+                    this.setState({ page: 1 })
                     this.paginate(1)
                 });
             } else {
@@ -168,6 +181,8 @@ export class Home extends Component {
 
                 this.setState({ filteredDate: newData })
                 setTimeout(() => {
+                    this.setState({ page: 1 })
+
                     this.paginate(1)
                 });
             }
@@ -185,6 +200,8 @@ export class Home extends Component {
         })
         this.setState({ filteredDate: newData })
         setTimeout(() => {
+            this.setState({ page: 1 })
+
             this.paginate(1)
         });
     }
@@ -217,7 +234,6 @@ export class Home extends Component {
         if (value === 'Up') {
             const sorted = this.state.data.sort((a, b) => {
                 if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
-                    console.log('pokrece se');
                     return b[sortByClicked]?.localeCompare(a[sortByClicked])
                 } else {
                     return b[sortByClicked] - a[sortByClicked]
@@ -225,6 +241,8 @@ export class Home extends Component {
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         } else if (value === 'Down') {
@@ -239,6 +257,8 @@ export class Home extends Component {
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         }
@@ -249,21 +269,47 @@ export class Home extends Component {
     }
 
     handleCountPerPage = (e) => {
-        console.log(e.target.value);
         if (e.target.value === '' || e.target.value === '0') {
             this.setState({ countPerPage: 10 })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         } else {
-            this.setState({ countPerPage: e.target.value })
+            this.setState({ countPerPage: parseInt(e.target.value) })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         }
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
+        if (this.props.location?.data?.searchByuser) {
+
+            const newData = this.state.data.filter((elm) => {
+                return elm.owner.id === el.id
+            })
+            this.setState({
+                filteredDate: newData,
+                selectedSiteSearch: el.id
+            })
+            setTimeout(() => {
+                this.setState({ page: 1 })
+
+                this.paginate(1)
+            });
+        } else if (this.props.location?.data?.searchBycategory) {
+            const newData = this.state.data.filter(a => a.categories.find(({ category }) => category.id === el.id))
+
+            this.setState({ filteredDate: newData })
+            setTimeout(() => {
+                this.setState({ page: 1 })
+                this.paginate(1)
+            });
+        }
         if (secondElement === 'users') {
             this.setState({ selectedUserSearch: el })
         } else if (secondElement === 'categories') {
@@ -288,6 +334,8 @@ export class Home extends Component {
     handleAllOptionsOnMain = () => {
         this.setState({ filteredDate: '' })
         setTimeout(() => {
+            this.setState({ page: 1 })
+
             this.paginate(1)
         });
     }
@@ -309,11 +357,15 @@ export class Home extends Component {
                 </div>
                 <SearchContainer handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleAddSomeMore={this.handleAddSomeMore} page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} />
                 {this.state.addButtonClicked && <AddContainer>
-                    {!selectedUserSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose owner.</p>}
-                    {selectedUserSearch && <input type="text" onChange={(e) => this.setState({ urlForCreate: e.target.value })} placeholder='Enter Url' />}
-                    {selectedUserSearch && urlForCreate && <button onClick={() => this.props.history.push({
+                    {/* {!selectedUserSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose owner.</p>} */}
+                    {<input type="text" onChange={(e) => this.setState({ urlForCreate: e.target.value })} placeholder='Enter Url' />}
+                    {urlForCreate && <button onClick={() => this.props.history.push({
                         pathname: '/sites/create',
-                        data: { url: urlForCreate, owner: selectedUserSearch, buttonClicked: 'editDiv', createNew: true }
+                        data: {
+                            url: urlForCreate,
+                            //  owner: selectedUserSearch,
+                            buttonClicked: 'editDiv', createNew: true
+                        }
                     })}><p>Create site</p></button>}
                 </AddContainer>}
 

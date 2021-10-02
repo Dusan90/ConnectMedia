@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import trash from '../../assets/img/SecondHeader/Icons3.svg'
 import { useSelector, useDispatch } from 'react-redux'
+import { useLocation } from 'react-router'
 import search from '../../assets/img/SecondHeader/Frame.svg'
 import plas from '../../assets/img/SecondHeader/Group5361.svg'
 import arrowLeft from '../../assets/img/SecondHeader/Vector.svg'
@@ -16,9 +17,10 @@ import '../../components/Home/Home.scss'
 
 const options = ['test', 'test2', 'test3']
 
-function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
+function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selectedSiteSearch, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
     const [user, setUser] = useState('all users')
     const dispatch = useDispatch()
+    const location = useLocation()
     const [showUserOptions, setShowUserOptions] = useState(false)
     const [categorie, setCategorie] = useState('all categories')
     const [showCategorieOptions, setShowCategorieOptions] = useState(false)
@@ -107,6 +109,18 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, handl
         handleAllOptionsOnMain(el, 'categories')
     }
 
+
+    useEffect(() => {
+        if (location?.data?.searchBy && location?.data?.prevPath) {
+            const pasedDataSearch = location?.data?.searchBy
+            const prePath = location?.data?.prevPath
+            prePath === '/sites' && setSites(pasedDataSearch.name)
+        } else if (location?.data?.searchBycategory && location?.data?.prevPath) {
+            const pasedDataSearch = location?.data?.searchBycategory
+            const prePath = location?.data?.prevPath
+            prePath === '/categories' && setCategorie(pasedDataSearch.name)
+        }
+    }, [])
 
     return (
         <div className='mainSecondHeaderDiv' style={secondHeaderCustomStyle && secondHeaderCustomStyle}>

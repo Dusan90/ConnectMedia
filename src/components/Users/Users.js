@@ -80,6 +80,7 @@ export class Users extends Component {
         if (prevProps.getUsersList !== getUsersList && !getUsersListLoading && !getUsersListError && getUsersListData) {
             this.setState({ data: getUsersListData.data })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         }
@@ -102,6 +103,7 @@ export class Users extends Component {
 
     handlePageChange = (value) => {
         this.setState({ page: value })
+        this.paginate(value)
     }
 
     handleSubtmit = (e) => {
@@ -111,9 +113,9 @@ export class Users extends Component {
             return el.email.toLowerCase().includes(value)
         })
 
-        console.log(newData);
         this.setState({ filteredDate: newData })
         setTimeout(() => {
+            this.setState({ page: 1 })
             this.paginate(1)
         });
 
@@ -129,20 +131,21 @@ export class Users extends Component {
                 pathname: `/users/${value.id}`,
                 data: { buttonClicked: 'editDiv' }
             })
-        } else if (tabClicked === 'sites') {
+        }
+        else if (tabClicked === 'sites') {
             history.push({
                 pathname: `/sites`,
-                data: { searchBy: value.name }
+                data: { searchByuser: value }
             })
         } else if (tabClicked === 'posts') {
             history.push({
                 pathname: `/posts`,
-                data: { searchBy: value.name }
+                data: { searchByuser: value }
             })
         } else if (tabClicked === 'widgets') {
             history.push({
                 pathname: `/widgets`,
-                data: { searchBy: value.name }
+                data: { searchByuser: value }
             })
         }
     }
@@ -150,10 +153,8 @@ export class Users extends Component {
 
     handleArrowSort = (sortByClicked, value) => {
         // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
-        console.log(sortByClicked, value);
         if (value === 'Up') {
             const sorted = this.state.data.sort((a, b) => {
-                console.log(typeof a[sortByClicked], a, b[sortByClicked]);
                 if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
                     return b[sortByClicked]?.localeCompare(a[sortByClicked])
                 } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
@@ -162,6 +163,7 @@ export class Users extends Component {
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         } else if (value === 'Down') {
@@ -175,6 +177,7 @@ export class Users extends Component {
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         }
@@ -191,15 +194,16 @@ export class Users extends Component {
 
 
     handleCountPerPage = (e) => {
-        console.log(e.target.value);
         if (e.target.value === '' || e.target.value === '0') {
             this.setState({ countPerPage: 10 })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         } else {
-            this.setState({ countPerPage: e.target.value })
+            this.setState({ countPerPage: parseInt(e.target.value) })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         }

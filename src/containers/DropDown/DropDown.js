@@ -6,6 +6,8 @@ import './DropDown.scss'
 
 function DropDown({ options, handleChangeOptions, handleAllOptions, label, isItOpen }) {
 
+
+
     return (
         <>
             <p className='mainInfoPtag' >{label} </p><img src={arrowDown} alt="arrow down" />

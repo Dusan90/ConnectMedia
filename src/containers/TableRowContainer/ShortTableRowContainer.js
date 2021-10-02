@@ -56,12 +56,12 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
         } else if (tabClicked === 'posts') {
             history.push({
                 pathname: `/posts`,
-                data: { searchBy: value.name }
+                data: { searchBy: value, prevPath: window.location.pathname }
             })
         } else if (tabClicked === 'widgets') {
             history.push({
                 pathname: `/widgets`,
-                data: { searchBy: value.name }
+                data: { searchBy: value, prevPath: window.location.pathname }
             })
         }
     }
@@ -160,7 +160,13 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                                         categoryId: el.category.id
                                     }))
                                 }}>{`${el.category.name}, `}</a>)}</p>}
-                                {pageName === 'widgets' && <p>{item?.categories?.slice(0, 2).map((el, i) => <a key={i}>{`${el.name}, `}</a>)}</p>}
+                                {pageName === 'widgets' && <p>{item?.categories?.slice(0, 2).map((el, i) => <a id='noredirection' onClick={() => {
+                                    const newData = item.categories.filter(elm => elm !== el.id)
+                                    dispatch(UpdateWidgetDetailsActionRequest({
+                                        id: item.id,
+                                        categories: newData
+                                    }))
+                                }} key={i}>{`${el.name}, `}</a>)}</p>}
                                 <div className='box'>
                                     {item?.categories.length > 2 && <p>+<span>{item?.categories.length - 2}</span></p>}
                                     <img src={secondarrowDown} style={{ marginLeft: '5px' }} onClick={() => handleHashArrowClick(item)} alt="arrow" id='noredirection' />

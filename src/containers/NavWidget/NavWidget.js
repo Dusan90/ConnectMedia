@@ -11,13 +11,16 @@ import widgets from '../../assets/img/SiteDetails/Frame(3).svg'
 import widgetsBlack from '../../assets/img/SiteDetails/widgetsBlack.svg'
 import trash from '../../assets/img/SiteDetails/Icons9.svg'
 
-function NavWidget({ handleWhereEverNav, pageName, handleTrashClick, isButtonNamepased }) {
+function NavWidget({ handleWhereEverNav, pageName, handleTrashClick, isButtonNamepased, wordToPass }) {
     const [whichIsActive, setWhichIsActive] = useState(isButtonNamepased ? isButtonNamepased : 'siteDetails')
 
     const history = useHistory()
 
     useEffect(() => {
-        isButtonNamepased && handlePageChange(isButtonNamepased)
+        if (isButtonNamepased) {
+            handlePageChange(isButtonNamepased)
+        }
+
     }, [])
 
     const handlePageChange = (page) => {
@@ -25,13 +28,15 @@ function NavWidget({ handleWhereEverNav, pageName, handleTrashClick, isButtonNam
         handleWhereEverNav(page)
     }
 
+
+
     return (
         <div className='mainSiteDetailsNavigation'>
             <div className='siteDetailsNavigate'>
                 <div onClick={() => { return handlePageChange('goback'), history.goBack() }} className={`goback ${whichIsActive === 'goback' && 'active'}`}><p>GO BACK</p></div>
                 <div onClick={() => handlePageChange('siteDetails')} className={`siteDetails ${whichIsActive === 'siteDetails' && 'active'}`}><p>Site details</p></div>
-                <div onClick={() => handlePageChange('editDiv')} className={`editDiv ${whichIsActive === 'editDiv' && 'active'}`}>
-                    <img src={whichIsActive === 'editDiv' ? editBlack : edit} alt="edit" />
+                <div onClick={() => handlePageChange('editDiv')} className={`editDiv ${whichIsActive === 'editDiv' && wordToPass !== 'canceled' && 'active'}`}>
+                    <img src={whichIsActive === 'editDiv' && wordToPass !== 'canceled' ? editBlack : edit} alt="edit" />
                     <p>edit</p>
                 </div>
                 {pageName !== 'users' && pageName !== 'categories' && <div onClick={() => handlePageChange('statsDiv')} className={`statsDiv ${whichIsActive === 'statsDiv' && 'active'}`}>

@@ -81,7 +81,7 @@ export class SiteDetails extends Component {
             RSS: null,
             feed_translations: [],
             remote_translations: [],
-            // owner: ''
+            wordToPass: ''
         }
 
     }
@@ -155,7 +155,7 @@ export class SiteDetails extends Component {
                 })
 
             }
-            if (getSiteDetailsData?.data?.feeds.length !== 0) {
+            if (getSiteDetailsData?.data?.feeds?.length !== 0) {
                 this.setState({ RSS: getSiteDetailsData?.data?.feeds?.map(el => `${el.url} `) })
             }
             if (getSiteDetailsData?.data?.categories !== 0) {
@@ -219,7 +219,7 @@ export class SiteDetails extends Component {
         else {
             this.setState({ isIteditable: false })
         }
-        this.setState({ tabClicked: page })
+        this.setState({ tabClicked: page, wordToPass: '' })
     }
 
     handleTreeButtons = item => {
@@ -282,7 +282,7 @@ export class SiteDetails extends Component {
                 }))
             }
         } else if (page === 'cancel') {
-            this.setState({ isIteditable: false })
+            this.setState({ isIteditable: false, wordToPass: 'canceled' })
         } else {
             this.setState({ whichisit: page })
         }
@@ -358,7 +358,6 @@ export class SiteDetails extends Component {
     }
 
     handleFeedTraslation = (e, item) => {
-        console.log(e, item);
 
         if (this.state.feed_translations.length === 0) {
             this.setState({ feed_translations: [{ feed: item, category: e.value },] })
@@ -380,19 +379,16 @@ export class SiteDetails extends Component {
         // const editeditem = item
 
         item[e.target.name] = parseInt(e.target.value)
-        console.log(categories, 'this is item', item);
 
     }
 
     render() {
-        const { isIteditable, whichisit, treeButtonsMotivation, categories, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
+        const { isIteditable, whichisit, wordToPass, treeButtonsMotivation, categories, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
         const categorialOption = siteDetailsData?.categories?.map(el => el.category.id)
 
-
-        console.log(this.state.feed_translations, 'feed_translation');
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
+                <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} wordToPass={wordToPass} handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
                 {this.state.confirmMessage && <div className='confurmText'>
                     <h4>Are you sure</h4>
                     <button onClick={this.deletesiteFunction}>Yes</button>
@@ -427,7 +423,7 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='url_div'>
                                 <h4>Url</h4>
-                                {!isIteditable && <Link to={siteDetailsData?.url}>{siteDetailsData?.url}</Link>}
+                                {!isIteditable && <Link to={siteDetailsData?.url ? siteDetailsData.url : '#'}>{siteDetailsData?.url}</Link>}
                                 {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} placeholder={this.state.url ? this.state.url : siteDetailsData?.url} name='url' />}
                                 {/* {isIteditable && <SaveButtonEdit labeltext={'Scrape'} colorization={'ScrapeClass'} customStyle={{ width: '135px', marginRight: '20px' }} />} */}
 
@@ -495,7 +491,7 @@ export class SiteDetails extends Component {
                             <div className='rss_div'>
                                 <h4>RSS</h4>
                                 {!isIteditable && <Link to='#'>{siteDetailsData?.feeds?.map(el => `${el.url} `)}</Link>}
-                                {isIteditable && <input name='RSS' value={this.state.RSS} onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds?.map(el => `${el.url} `)} />}
+                                {isIteditable && <input name='RSS' value={this.state.RSS !== null ? this.state.RSS : ''} onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds?.map(el => `${el.url} `)} />}
 
                             </div>
                             <div className='images_div'>
@@ -511,7 +507,7 @@ export class SiteDetails extends Component {
                                 {isIteditable && <input name='feed_definition' onChange={(e) => this.handleChange(e)} type="text" placeholder={siteDetailsData?.feed_definition} />}
 
                             </div>
-                            <div className='postDefinition_div'>
+                            <div className='definition_div'>
                                 <h4>Single post definition</h4>
                                 {!isIteditable && <p>{siteDetailsData?.post_definition}</p>}
                                 {isIteditable && <input name='post_definition' onChange={(e) => this.handleChange(e)} type="text" placeholder={siteDetailsData?.post_definition} />}
@@ -655,7 +651,7 @@ export class SiteDetails extends Component {
                             <h1>Feed -<span>{`>`}</span> Category</h1>
                             {siteDetailsData?.feeds?.length !== 0 && siteDetailsData?.feeds?.map(el => {
                                 return <div key={el.id} className='feedCat_div'>
-                                    <Link to={el.url}>{el.url}</Link>
+                                    <Link to={el.url ? el.url : '#'}>{el.url}</Link>
                                     {!isIteditable && <p>{siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}</p>}
                                     {isIteditable && <div className='selectAndX'>
                                         <Select

@@ -64,9 +64,7 @@ export class Posts extends Component {
     }
 
     componentDidMount() {
-        if (this.props.location?.data?.searchBy) {
-            this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
-        }
+
 
         this.props.dispatch(GetSitesListActionRequest())
         this.props.dispatch(GetPostsListActionRequest())
@@ -99,7 +97,19 @@ export class Posts extends Component {
         if (prevProps.getPostsList !== getPostsList && !getPostsListLoading && !getPostsListError && getPostsListData) {
             this.setState({ data: getPostsListData.data })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
+            });
+            setTimeout(() => {
+                if (this.props.location?.data?.searchBy && getPostsListData.data) {
+                    this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
+                }
+                else if (this.props.location?.data?.searchByuser && getPostsListData.data) {
+                    this.handleSearchOnMainPage(this.props.location?.data?.searchByuser)
+                } else if (this.props.location?.data?.searchBycategory && getPostsListData.data) {
+                    this.handleSearchOnMainPage(this.props.location?.data?.searchBycategory)
+                }
             });
         }
 
@@ -124,6 +134,8 @@ export class Posts extends Component {
         })
         this.setState({ filteredDate: newData })
         setTimeout(() => {
+            this.setState({ page: 1 })
+
             this.paginate(1)
         });
     }
@@ -131,6 +143,8 @@ export class Posts extends Component {
     handleAllOptionsOnMain = () => {
         this.setState({ filteredDate: '' })
         setTimeout(() => {
+            this.setState({ page: 1 })
+
             this.paginate(1)
         });
     }
@@ -146,6 +160,8 @@ export class Posts extends Component {
                 })
                 this.setState({ filteredDate: newData })
                 setTimeout(() => {
+                    this.setState({ page: 1 })
+
                     this.paginate(1)
                 });
             } else {
@@ -163,6 +179,8 @@ export class Posts extends Component {
 
                 this.setState({ filteredDate: newData })
                 setTimeout(() => {
+                    this.setState({ page: 1 })
+
                     this.paginate(1)
                 });
             }
@@ -180,6 +198,8 @@ export class Posts extends Component {
         })
         this.setState({ filteredDate: newData })
         setTimeout(() => {
+            this.setState({ page: 1 })
+
             this.paginate(1)
         });
     }
@@ -208,26 +228,48 @@ export class Posts extends Component {
         console.log(value);
     }
 
-    haneldeRedirect = (value) => {
-        console.log(value);
+
+
+    haneldeRedirect = (value, tabClicked) => {
+        if (tabClicked === 'edit') {
+            history.push({
+                pathname: `/posts/${value.id}`,
+                data: { buttonClicked: 'editDiv' }
+            })
+        } else if (tabClicked === 'stats') {
+            history.push({
+                pathname: `/posts/${value.id}`,
+                data: { buttonClicked: 'statsDiv' }
+            })
+        }
+        // else if (tabClicked === 'portal') {
+        //     history.push({
+        //         pathname: `/posts`,
+        //         data: { searchBy: value, prevPath: window.location.pathname }
+        //     })
+        // } else if (tabClicked === 'visit') {
+        //     history.push({
+        //         pathname: `/widgets`,
+        //         data: { searchBy: value, prevPath: window.location.pathname }
+        //     })
+        // }
     }
 
 
     handleArrowSort = (sortByClicked, value) => {
         // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
-        console.log(sortByClicked, value);
         if (value === 'Up') {
             const sorted = this.state.data.sort((a, b) => {
-                console.log(typeof a[sortByClicked], a, b[sortByClicked]);
                 if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
                     return b[sortByClicked]?.localeCompare(a[sortByClicked])
                 } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
                     if (sortByClicked === 'timestamp') {
                         return b[sortByClicked] - a[sortByClicked]
+                    } else if (sortByClicked === 'image') {
+                        return b[sortByClicked] - a[sortByClicked]
 
                     } else {
                         return b[sortByClicked]['name']?.localeCompare(a[sortByClicked]['name'])
-
                     }
 
                 } else {
@@ -236,6 +278,8 @@ export class Posts extends Component {
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         } else if (value === 'Down') {
@@ -244,8 +288,12 @@ export class Posts extends Component {
                     return a[sortByClicked]?.localeCompare(b[sortByClicked])
 
                 } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
+
                     if (sortByClicked === 'timestamp') {
                         return a[sortByClicked] - b[sortByClicked]
+                    } else if (sortByClicked === 'image') {
+                        return a[sortByClicked] - b[sortByClicked]
+
                     } else {
                         return a[sortByClicked]['name'].localeCompare(b[sortByClicked]['name'])
                     }
@@ -257,13 +305,14 @@ export class Posts extends Component {
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         }
     }
 
     handlePageRedirect = (e, item) => {
-        console.log(e.target);
         if (!e.target.id || e.target.id !== 'noredirection') {
             history.push({
                 pathname: `/posts/${item.id}`,
@@ -278,15 +327,18 @@ export class Posts extends Component {
     }
 
     handleCountPerPage = (e) => {
-        console.log(e.target.value);
         if (e.target.value === '' || e.target.value === '0') {
             this.setState({ countPerPage: 10 })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         } else {
-            this.setState({ countPerPage: e.target.value })
+            this.setState({ countPerPage: parseInt(e.target.value) })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         }
@@ -297,31 +349,70 @@ export class Posts extends Component {
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
-        if (this.props.location?.data?.searchBy) {
-            const newData = this.state.data.filter((el) => {
-                return el.site === el
-            })
-            this.setState({
-                filteredDate: newData,
-                selectedSiteSearch: el
-            })
-            setTimeout(() => {
-                this.paginate(1)
-            });
-        } else {
-            if (secondElement === 'sites') {
-                const newData = this.state.data.filter((el) => {
-                    return el.site === el
+        if (!this.state.addButtonClicked) {
+
+            if (this.props.location?.data?.searchByuser) {
+                const newData = this.state.data.filter((elm) => {
+                    return elm.owner === el.id
                 })
                 this.setState({
                     filteredDate: newData,
-                    selectedSiteSearch: el
+                    selectedSiteSearch: el.id
                 })
                 setTimeout(() => {
+                    this.setState({ page: 1 })
+
                     this.paginate(1)
                 });
-            } else if (secondElement === 'categories') {
-                this.setState({ selectedCategorieSearch: el })
+            } else if (this.props.location?.data?.searchBycategory) {
+                const newData = this.state.data.filter((a) => {
+                    if (a.categories.includes(el.id)) {
+                        return a
+                    }
+                })
+                this.setState({ filteredDate: newData })
+                setTimeout(() => {
+                    this.setState({ page: 1 })
+
+                    this.paginate(1)
+                });
+            }
+            else if (this.props.location?.data?.searchBy) {
+                const newData = this.state.data.filter((elm) => {
+                    return elm.site === el.id
+                })
+                this.setState({
+                    filteredDate: newData,
+                    selectedSiteSearch: el.id
+                })
+                setTimeout(() => {
+                    this.setState({ page: 1 })
+
+                    this.paginate(1)
+                });
+            } else {
+                if (secondElement === 'sites') {
+                    const newData = this.state.data.filter((el) => {
+                        return el.site === el
+                    })
+                    this.setState({
+                        filteredDate: newData,
+                        selectedSiteSearch: el
+                    })
+                    setTimeout(() => {
+                        this.setState({ page: 1 })
+
+                        this.paginate(1)
+                    });
+                } else if (secondElement === 'categories') {
+                    this.setState({ selectedCategorieSearch: el })
+                }
+            }
+        } else {
+            if (secondElement === 'sites' && el !== 'All') {
+                this.setState({
+                    selectedSiteSearch: el
+                })
             }
         }
     }
@@ -333,14 +424,19 @@ export class Posts extends Component {
     }
 
     handleTrashFunctionaliti = (id) => {
-        console.log(id);
         this.setState({ confirmMessage: true, idForDelete: id })
     }
 
     findcategory = item => {
-        const mapcategorynames = this.props.getCategoryList?.data?.data.filter(el => item.categories.includes(el.id))
+        const mapcategorynames = this.props.getCategoryList?.data?.data.slice(0, 2).filter(el => item.categories.includes(el.id))
         let getNames = mapcategorynames?.map((element, i) => {
-            return <p key={i}>{`${element.name}, `}</p>
+            return <p id='noredirection' key={i}><a id='noredirection' onClick={() => {
+                const newData = item.categories.filter(elm => elm !== element.id)
+                this.props.dispatch(UpdatePostDetailsActionRequest({
+                    id: item.id,
+                    categories: newData
+                }))
+            }}>{`${element.name}, `}</a></p>
         });
         return getNames
     }
@@ -442,17 +538,14 @@ export class Posts extends Component {
                                 </div>
                                 <div className='mainForIcons'>
                                     <div className="divWithClicableIcons">
-                                        <img src={visit} alt="visit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>visit</p>
-                                        <img src={edit} alt="edit" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>edit</p>
-                                        <img src={stats} alt="stats" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>stats</p>
                                         <img src={posts} alt="posts" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>posts</p>
-                                        <img src={widgets} alt="widgets" />
-                                        <p onClick={() => this.haneldeRedirect(item)}>widgets</p>
-
+                                        <p onClick={() => this.haneldeRedirect(item, 'portal')}>portal</p>
+                                        <img src={visit} alt="visit" />
+                                        <p onClick={() => this.haneldeRedirect(item, 'visit')}>visit</p>
+                                        <img src={edit} alt="edit" />
+                                        <p onClick={() => this.haneldeRedirect(item, 'edit')}>edit</p>
+                                        <img src={stats} alt="stats" />
+                                        <p onClick={() => this.haneldeRedirect(item, 'stats')}>stats</p>
                                     </div>
                                 </div>
                                 <div className='mainDivHashes'>
@@ -471,7 +564,6 @@ export class Posts extends Component {
                                         </div>
                                         {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div id='noredirection' className='offeredHashes' >
                                             {sitesList.map((el, i) => {
-                                                console.log(item, i, el, 'elementi');
                                                 if (el.site === item.site) {
                                                     return <div onClick={() => {
                                                         if (!item.categories.includes(el.category.id)) {
@@ -706,19 +798,19 @@ export class Posts extends Component {
                                     <td><div className='ownersNameClass tdWithImgDiv'>
                                         <img src={item.image} alt="" />
                                     </div></td>
-                                    {/* <td><div className="divWithClicableIcons">
-                                        <img src={visit} alt="visit" />
-                                        <p>visit</p>
-                                        <img src={edit} alt="edit" />
-                                        <p>edit</p>
-                                        <img src={stats} alt="stats" />
-                                        <p>stats</p>
+                                    {/* <td>
+                                     <div className="divWithClicableIcons">
                                         <img src={posts} alt="posts" />
-                                        <p>posts</p>
-                                        <img src={widgets} alt="widgets" />
-                                        <p>widgets</p>
+                                        <p onClick={() => this.haneldeRedirect(item)}>portal</p>
+                                        <img src={visit} alt="visit" />
+                                        <p onClick={() => this.haneldeRedirect(item)}>visit</p>
+                                        <img src={edit} alt="edit" />
+                                        <p onClick={() => this.haneldeRedirect(item)}>edit</p>
+                                        <img src={stats} alt="stats" />
+                                        <p onClick={() => this.haneldeRedirect(item)}>stats</p>
+                                    </div>
+                                    </td> */}
 
-                                    </div></td> */}
                                     <td>{item?.timestamp && `${moment(new Date(item?.timestamp)).format("MM-DD-YYYY")}`}</td>
                                     <td>{
                                         item.title
@@ -737,7 +829,6 @@ export class Posts extends Component {
                                             </div>
                                             {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div id='noredirection' className='offeredHashes' >
                                                 {sitesList.map((el, i) => {
-                                                    console.log(item, i, el, 'elementi');
                                                     if (el.site === item.site) {
                                                         return <div onClick={() => {
                                                             if (!item.categories.includes(el.category.id)) {
@@ -756,7 +847,7 @@ export class Posts extends Component {
                                                                 this.handleHashArrowClick(item)
                                                             }
                                                         }} style={{ background: item.categories.includes(el.category.id) ? '#e09494' : '' }} key={i} id='noredirection'>
-                                                            <p id='noredirection'>{el.category.name}</p>
+                                                            <p id='noredirection'>{el.category?.name}</p>
                                                         </div>
                                                     }
                                                 })}

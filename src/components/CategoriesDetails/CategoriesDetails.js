@@ -72,7 +72,6 @@ export class CategoriesDetails extends Component {
 
 
         if (prevProps.getCategoryDetails !== getCategoryDetails && !getCategoryDetailsError && !getCategoryDetailsLoading && getCategoryDetailsData) {
-            console.log(getCategoryDetailsData);
             this.setState({ categoryDetailsData: getCategoryDetailsData.data })
         }
 
@@ -132,11 +131,9 @@ export class CategoriesDetails extends Component {
     }
 
     handleButtonActive = (page) => {
-        console.log(page);
         if (page === 'save') {
             const { name, description, adult, rename, merge } = this.state
             if (this.props.location.data?.createNew) {
-                console.log('this is create new ');
                 this.props.dispatch(CreateCategoryActionRequest({
                     name,
                     description,
@@ -166,7 +163,6 @@ export class CategoriesDetails extends Component {
     }
 
     handleMergeOption = (item) => {
-        console.log(item);
         this.setState({ merge: item?.value })
     }
 

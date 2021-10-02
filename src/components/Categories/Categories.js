@@ -68,7 +68,6 @@ export class Categories extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
         this.props.dispatch(GetCategoryListActionRequest())
     }
 
@@ -81,12 +80,12 @@ export class Categories extends Component {
         if (prevProps.getCategoryList !== getCategoryList && !getCategoryListLoading && !getCategoryListError && getCategoryListData) {
             this.setState({ data: getCategoryListData.data })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         }
 
         if (prevProps.createCategory !== createCategory && !createCategoryLoading && !createCategoryError && createCategoryData) {
-            console.log(createCategoryData);
             this.setState({
                 newUseremail: '',
                 newUserpassword: '',
@@ -123,6 +122,7 @@ export class Categories extends Component {
         })
         this.setState({ filteredDate: newData })
         setTimeout(() => {
+            this.setState({ page: 1 })
             this.paginate(1)
         });
     }
@@ -135,6 +135,7 @@ export class Categories extends Component {
         })
         this.setState({ filteredDate: newData })
         setTimeout(() => {
+            this.setState({ page: 1 })
             this.paginate(1)
         });
 
@@ -144,26 +145,34 @@ export class Categories extends Component {
         this.setState({ inputValue: e.target.value })
     }
 
+
     haneldeRedirect = (value, tabClicked) => {
         if (tabClicked === 'edit') {
             history.push({
                 pathname: `/categories/${value.id}`,
                 data: { buttonClicked: 'editDiv' }
             })
-        } else if (tabClicked === 'sites') {
+        } else if (tabClicked === 'stats') {
             history.push({
-                pathname: `/sites`,
-                data: { searchBy: value.name }
+                pathname: `/categories/${value.id}`,
+                data: { buttonClicked: 'statsDiv' }
             })
-        } else if (tabClicked === 'posts') {
+        }
+        else if (tabClicked === 'posts') {
             history.push({
                 pathname: `/posts`,
-                data: { searchBy: value.name }
+                data: { searchBycategory: value, prevPath: window.location.pathname }
             })
         } else if (tabClicked === 'widgets') {
             history.push({
                 pathname: `/widgets`,
-                data: { searchBy: value.name }
+                data: { searchBycategory: value, prevPath: window.location.pathname }
+            })
+        }
+        else if (tabClicked === 'sites') {
+            history.push({
+                pathname: `/sites`,
+                data: { searchBycategory: value, prevPath: window.location.pathname }
             })
         }
     }
@@ -171,16 +180,15 @@ export class Categories extends Component {
 
     handleArrowSort = (sortByClicked, value) => {
         // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
-        console.log(sortByClicked, value);
         if (value === 'Up') {
             const sorted = this.state.data.sort((a, b) => {
                 if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
-                    console.log('pokrece se');
                     return b[sortByClicked]?.localeCompare(a[sortByClicked])
                 }
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         } else if (value === 'Down') {
@@ -191,6 +199,7 @@ export class Categories extends Component {
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         }
@@ -213,15 +222,16 @@ export class Categories extends Component {
 
 
     handleCountPerPage = (e) => {
-        console.log(e.target.value);
         if (e.target.value === '' || e.target.value === '0') {
             this.setState({ countPerPage: 10 })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         } else {
-            this.setState({ countPerPage: e.target.value })
+            this.setState({ countPerPage: parseInt(e.target.value) })
             setTimeout(() => {
+                this.setState({ page: 1 })
                 this.paginate(1)
             });
         }
@@ -242,6 +252,7 @@ export class Categories extends Component {
     handleAllOptionsOnMain = () => {
         this.setState({ filteredDate: '' })
         setTimeout(() => {
+            this.setState({ page: 1 })
             this.paginate(1)
         });
     }

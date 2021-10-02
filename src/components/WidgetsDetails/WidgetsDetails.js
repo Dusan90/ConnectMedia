@@ -9,7 +9,7 @@ import Chart from '../../containers/Chart/Chart'
 import VerticalChart from '../../containers/Chart/VerticalChart'
 import Select from 'react-select'
 import { GetWidgetDetailsActionRequest, CreateWidgetActionRequest, UpdateWidgetDetailsActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
-import { GetSiteDetailsActionRequest } from '../../store/actions/SitesListAction'
+import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
 
 import { NotificationManager } from 'react-notifications'
 
@@ -87,7 +87,8 @@ export class WidgetsDetails extends Component {
             height: null,
             encoding: null,
             template: null,
-            siteOptions: []
+            siteOptions: [],
+            wordToPass: ''
 
         }
     }
@@ -108,10 +109,11 @@ export class WidgetsDetails extends Component {
         else {
             this.setState({ isIteditable: false })
         }
-        this.setState({ tabClicked: page })
+        this.setState({ tabClicked: page, wordToPass: '' })
     }
 
     componentDidMount() {
+        this.props.dispatch(GetCategoryListActionRequest())
 
         const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError, errorData: getSitesListErrorData } = this.props.getSitesList;
         if (!getSitesListError && !getSitesListLoading && getSitesListData) {
@@ -130,26 +132,23 @@ export class WidgetsDetails extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { getWidgetDetails, getSiteDetails, deleteWidget, createWidget, updateWidgetDetails } = this.props
+        const { getWidgetDetails, getCategoryList, deleteWidget, createWidget, updateWidgetDetails } = this.props
         const { data: getWidgetDetailsData, loading: getWidgetDetailsLoading, error: getWidgetDetailsError, errorData: getWidgetDetailsErrorData } = getWidgetDetails;
-        const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError, errorData: getSiteDetailsErrorData } = getSiteDetails;
+        const { data: getCategoryListData, loading: getCategoryListLoading, error: getCategoryListError, errorData: getCategoryListErrorData } = getCategoryList;
         const { data: deleteWidgetData, loading: deleteWidgetLoading, error: deleteWidgetError, errorData: deleteWidgetErrorData } = deleteWidget;
         const { data: createWidgetData, loading: createWidgetLoading, error: createWidgetError, errorData: createWidgetErrorData } = createWidget;
         const { data: updateWidgetDetailsData, loading: updateWidgetDetailsLoading, error: updateWidgetDetailsError, errorData: updateWidgetDetailsErrorData } = updateWidgetDetails;
 
 
-        if (prevProps.getSiteDetails !== getSiteDetails && !getSiteDetailsError && !getSiteDetailsLoading && getSiteDetailsData) {
+        if (prevProps.getCategoryList !== getCategoryList && !getCategoryListError && !getCategoryListLoading && getCategoryListData) {
             this.setState({
-                // dataState: getSiteDetails.data.state,
-                siteDetailsData: getSiteDetailsData.data,
+                categoryList: getCategoryListData.data,
             })
         }
 
 
         if (prevProps.getWidgetDetails !== getWidgetDetails && !getWidgetDetailsError && !getWidgetDetailsLoading && getWidgetDetailsData) {
-            this.props.dispatch(GetSiteDetailsActionRequest({
-                id: getWidgetDetailsData.data?.site?.id
-            }))
+
             this.setState({
                 dataState: getWidgetDetails.data.status,
                 WidgetDetailsData: getWidgetDetailsData.data,
@@ -234,7 +233,7 @@ export class WidgetsDetails extends Component {
                 }))
             }
         } else if (page === 'cancel') {
-            this.setState({ isIteditable: false })
+            this.setState({ isIteditable: false, wordToPass: 'canceled' })
         } else {
             this.setState({ whichisit: page })
         }
@@ -256,9 +255,6 @@ export class WidgetsDetails extends Component {
 
     handleSite = value => {
         this.setState({ site: value.value })
-        this.props.dispatch(GetSiteDetailsActionRequest({
-            id: value.value
-        }))
     }
 
     handlewidgetInput = e => {
@@ -276,15 +272,16 @@ export class WidgetsDetails extends Component {
     }
 
     render() {
-        const { isIteditable, dataState, site, siteDetailsData, tabClicked, WidgetDetailsData, publicValue, include, direct, same_window, ignore_impressions, siteOptions } = this.state
+        const { isIteditable, dataState, site, categoryList, wordToPass, siteDetailsData, tabClicked, WidgetDetailsData, publicValue, include, direct, same_window, ignore_impressions, siteOptions } = this.state
 
-        const categorialOption = siteDetailsData?.categories?.map(el => {
-            return { value: el.category.id, label: el.category.name }
+        const categorialOption = categoryList?.map(el => {
+            return { value: el.id, label: el.name }
         })
+
 
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} isButtonNamepased={this.props?.location?.data?.buttonClicked} pageName={'widgets'} />
+                <NavWidget handleWhereEverNav={this.handleWhereEverNav} wordToPass={wordToPass} handleTrashClick={this.handleTrashClick} isButtonNamepased={this.props?.location?.data?.buttonClicked} pageName={'widgets'} />
                 {this.state.confirmMessage && <div className='confurmText'>
                     <h4>Are you sure</h4>
                     <button onClick={this.deleteuserFunction}>Yes</button>

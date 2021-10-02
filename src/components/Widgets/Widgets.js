@@ -92,10 +92,6 @@ export class Widgets extends Component {
     }
 
     componentDidMount() {
-        if (this.props.location?.data?.searchBy) {
-            this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
-        }
-
         this.props.dispatch(GetWidgetsListActionRequest())
 
     }
@@ -103,7 +99,7 @@ export class Widgets extends Component {
     componentDidUpdate(prevProps) {
         const { getWidgetsList, deleteWidget, updateWidgetDetails } = this.props
         const { loading: getWidgetsListLoading, error: getWidgetsListError, data: getWidgetsListData, errorData: getWidgetsListErrorData } = getWidgetsList
-        const { loading: deleteWidgetLoading, error: deleteWidgetError, data: deleteWidgetData, errorData: deleteWidgetErrorData } = getWidgetsList
+        const { loading: deleteWidgetLoading, error: deleteWidgetError, data: deleteWidgetData, errorData: deleteWidgetErrorData } = deleteWidget
         const { data: updateWidgetDetailsData, loading: updateWidgetDetailsLoading, error: updateWidgetDetailsError, errorData: updateWidgetDetailsErrorData } = updateWidgetDetails;
 
 
@@ -118,7 +114,19 @@ export class Widgets extends Component {
         if (prevProps.getWidgetsList !== getWidgetsList && !getWidgetsListLoading && !getWidgetsListError && getWidgetsListData) {
             this.setState({ data: getWidgetsListData.data })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
+            });
+            setTimeout(() => {
+                if (this.props.location?.data?.searchBy && getWidgetsListData.data) {
+                    this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
+                }
+                else if (this.props.location?.data?.searchByuser && getWidgetsListData.data) {
+                    this.handleSearchOnMainPage(this.props.location?.data?.searchByuser)
+                } else if (this.props.location?.data?.searchBycategory && getWidgetsListData.data) {
+                    this.handleSearchOnMainPage(this.props.location?.data?.searchBycategory)
+                }
             });
         }
 
@@ -142,6 +150,8 @@ export class Widgets extends Component {
         })
         this.setState({ filteredDate: newData })
         setTimeout(() => {
+            this.setState({ page: 1 })
+
             this.paginate(1)
         });
     }
@@ -152,6 +162,8 @@ export class Widgets extends Component {
                 const newData = this.state.data.filter(a => a.categories.find((el) => el.id === value.id))
                 this.setState({ filteredDate: newData })
                 setTimeout(() => {
+                    this.setState({ page: 1 })
+
                     this.paginate(1)
                 });
             } else {
@@ -161,7 +173,6 @@ export class Widgets extends Component {
                             return el
                         }
                     } else if (sortBy === 'sites') {
-                        console.log(value);
                         if (el.site.id === value.id) {
                             return el
                         }
@@ -170,6 +181,8 @@ export class Widgets extends Component {
 
                 this.setState({ filteredDate: newData })
                 setTimeout(() => {
+                    this.setState({ page: 1 })
+
                     this.paginate(1)
                 });
             }
@@ -188,6 +201,8 @@ export class Widgets extends Component {
         this.setState({ filteredDate: newData })
 
         setTimeout(() => {
+            this.setState({ page: 1 })
+
             this.paginate(1)
         });
     }
@@ -222,12 +237,9 @@ export class Widgets extends Component {
 
     handleArrowSort = (sortByClicked, value) => {
         // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
-        console.log(sortByClicked, value);
         if (value === 'Up') {
             const sorted = this.state.data.sort((a, b) => {
-                console.log(typeof a[sortByClicked], a, b[sortByClicked]);
                 if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
-                    console.log('pokrece se');
                     return b[sortByClicked]?.localeCompare(a[sortByClicked])
                 } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
                     return b[sortByClicked]['name']?.localeCompare(a[sortByClicked]['name'])
@@ -238,6 +250,8 @@ export class Widgets extends Component {
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         } else if (value === 'Down') {
@@ -256,6 +270,8 @@ export class Widgets extends Component {
             })
             this.setState({ data: sorted })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         }
@@ -266,15 +282,18 @@ export class Widgets extends Component {
     }
 
     handleCountPerPage = (e) => {
-        console.log(e.target.value);
         if (e.target.value === '' || e.target.value === '0') {
             this.setState({ countPerPage: 10 })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         } else {
-            this.setState({ countPerPage: e.target.value })
+            this.setState({ countPerPage: parseInt(e.target.value) })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         }
@@ -289,15 +308,41 @@ export class Widgets extends Component {
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
-        if (this.props.location?.data?.searchBy) {
-            const newData = this.state.data.filter((el) => {
-                return el.site === el
+        if (this.props.location?.data?.searchByuser) {
+
+            const newData = this.state.data.filter((elm) => {
+                return elm.owner.id === el.id
             })
             this.setState({
                 filteredDate: newData,
-                selectedSiteSearch: el
+                selectedSiteSearch: el.id
             })
             setTimeout(() => {
+                this.setState({ page: 1 })
+
+                this.paginate(1)
+            });
+        } else if (this.props.location?.data?.searchBycategory) {
+            const newData = this.state.data.filter(a => a.categories.find((elm) => elm.id === el.id))
+            this.setState({ filteredDate: newData })
+            setTimeout(() => {
+                this.setState({ page: 1 })
+
+                this.paginate(1)
+            });
+        }
+        else if (this.props.location?.data?.searchBy) {
+
+            const newData = this.state.data.filter((elm) => {
+                return elm.site.id === el.id
+            })
+            this.setState({
+                filteredDate: newData,
+                selectedSiteSearch: el.id
+            })
+            setTimeout(() => {
+                this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         } else {
@@ -316,13 +361,14 @@ export class Widgets extends Component {
     }
 
     handleTrashFunctionaliti = (id) => {
-        console.log(id);
         this.setState({ confirmMessage: true, idForDelete: id })
     }
 
     handleAllOptionsOnMain = () => {
         this.setState({ filteredDate: '' })
         setTimeout(() => {
+            this.setState({ page: 1 })
+
             this.paginate(1)
         });
     }
@@ -368,12 +414,12 @@ export class Widgets extends Component {
 const mapStateToProps = (state) => {
     const { WidgetReducer } = state;
 
-    const { getWidgetsList, deletePost, updateWidgetDetails } = WidgetReducer
+    const { getWidgetsList, deleteWidget, updateWidgetDetails } = WidgetReducer
 
 
     return {
         getWidgetsList,
-        deletePost,
+        deleteWidget,
         updateWidgetDetails
 
 

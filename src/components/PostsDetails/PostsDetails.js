@@ -70,7 +70,8 @@ export class PostsDetails extends Component {
             content: null,
             date: null,
             site: null,
-            categories: null
+            categories: null,
+            wordToPass: ''
 
         }
     }
@@ -155,7 +156,7 @@ export class PostsDetails extends Component {
         } else {
             this.setState({ isIteditable: false })
         }
-        this.setState({ tabClicked: page })
+        this.setState({ tabClicked: page, wordToPass: '' })
 
     }
 
@@ -184,7 +185,7 @@ export class PostsDetails extends Component {
                     description,
                     author,
                     content,
-                    timestamp: date,
+                    timestamp: date ? date : new Date().getTime(),
                     site,
                     status: dataState,
                     categories
@@ -206,7 +207,7 @@ export class PostsDetails extends Component {
                 }))
             }
         } else if (page === 'cancel') {
-            this.setState({ isIteditable: false })
+            this.setState({ isIteditable: false, wordToPass: 'canceled' })
         } else {
             this.setState({ whichisit: page })
         }
@@ -237,7 +238,6 @@ export class PostsDetails extends Component {
     }
 
     handlePostDetailsCategorie = value => {
-        console.log(value);
         const saveData = value.length !== 0 ? value.map(el => el.value) : []
         this.setState({ categories: saveData })
     }
@@ -246,14 +246,16 @@ export class PostsDetails extends Component {
         this.setState({ confirmMessage: true })
     }
     render() {
-        const { isIteditable, dataState, tabClicked, postDetailsData, site, siteOptions, siteDetailsData } = this.state
+        const { isIteditable, dataState, tabClicked, wordToPass, postDetailsData, site, siteOptions, siteDetailsData } = this.state
         const categorialOption = siteDetailsData?.categories?.map(el => {
             return { value: el.category.id, label: el.category.name }
         })
 
+
+
         return (
             <div className='mainSiteDetailsDiv'>
-                <NavWidget handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} isButtonNamepased={this.props?.location?.data?.buttonClicked} pageName={'posts'} />
+                <NavWidget handleWhereEverNav={this.handleWhereEverNav} wordToPass={wordToPass} handleTrashClick={this.handleTrashClick} isButtonNamepased={this.props?.location?.data?.buttonClicked} pageName={'posts'} />
                 {this.state.confirmMessage && <div className='confurmText'>
                     <h4>Are you sure</h4>
                     <button onClick={this.deleteuserFunction}>Yes</button>
@@ -297,7 +299,7 @@ export class PostsDetails extends Component {
                                 <h4>Url</h4>
                                 {!isIteditable && <Link to='#'>{postDetailsData['link']}</Link>}
                                 {isIteditable && <input type="text" name='url' onChange={(e) => this.handleChangeInputs(e)} placeholder={this.state.url ? this.state.url : postDetailsData['link']} />}
-                                {isIteditable && <SaveButtonEdit labeltext={'Scrape'} colorization={'ScrapeClass'} customStyle={{ width: '135px', marginRight: '20px' }} />}
+                                {/* {isIteditable && <SaveButtonEdit labeltext={'Scrape'} colorization={'ScrapeClass'} customStyle={{ width: '135px', marginRight: '20px' }} />} */}
 
                             </div>
                             <h1 style={{ margin: '20px 0' }}>Canonical</h1>
@@ -312,7 +314,7 @@ export class PostsDetails extends Component {
                                 {isIteditable && <Select
                                     className="basic-single"
                                     classNamePrefix="select"
-                                    // defaultValue={this.state.siteOptions[site]}
+                                    defaultValue={this.state.siteOptions[site]}
                                     onChange={this.handleSite}
                                     // isLoading={true}
                                     placeholder={site ? siteOptions.map(el => el.value === site ? el.label : '') : postDetailsData?.site?.name}
@@ -325,7 +327,7 @@ export class PostsDetails extends Component {
                             </div>
                             <div className='owner_div'>
                                 <h4>Owner</h4>
-                                <Link to={postDetailsData?.owner?.email}>{postDetailsData?.owner?.email}</Link>
+                                <Link to='#'>{postDetailsData?.owner?.email}</Link>
                                 {/* {isIteditable && <input type="text" placeholder='nina.aralica@alo.rs' />} */}
                             </div>
                             <div className='description_div'>
