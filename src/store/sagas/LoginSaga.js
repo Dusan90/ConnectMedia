@@ -12,6 +12,8 @@ import * as TYPES from "../types/LoginTypes";
 export function* LoginSaga({ payload }) {
     try {
         const response = yield call(API.login, payload);
+
+        sessionStorage.setItem('isLoged', 'true');
         yield put(ACTIONS.LoginActionReceive(response.data));
     } catch (err) {
         yield put(ACTIONS.LoginActionError(err.response));
@@ -21,6 +23,8 @@ export function* LoginSaga({ payload }) {
 export function* LogOutSaga({ payload }) {
     try {
         const response = yield call(API.logOut, payload);
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('isLoged');
         yield put(ACTIONS.LogoutActionReceive(response.data));
     } catch (err) {
         yield put(ACTIONS.LogoutActionError(err.response));

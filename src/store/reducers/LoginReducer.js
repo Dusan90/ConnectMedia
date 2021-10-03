@@ -50,7 +50,12 @@ export default (state = INITIAL_STATE, action) => {
                     data: action.payload,
                     loading: false,
                 },
-
+                logOut: {
+                    error: false,
+                    errorData: null,
+                    data: null,
+                    loading: false,
+                },
             };
 
         //logout
@@ -85,7 +90,13 @@ export default (state = INITIAL_STATE, action) => {
                     errorData: null,
                     data: action.payload,
                     loading: false,
-                }
+                },
+                login: {
+                    error: false,
+                    errorData: null,
+                    data: null,
+                    loading: false,
+                },
             }
 
 
