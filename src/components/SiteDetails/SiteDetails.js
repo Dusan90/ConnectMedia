@@ -12,7 +12,7 @@ import { BindCategoryActionRequest, UnbindCategoryActionRequest, GetCategoryList
 import Chart from '../../containers/Chart/Chart'
 import Select from 'react-select'
 import { NotificationManager } from 'react-notifications'
-import { placeholder, tSThisType } from '@babel/types'
+import { placeholder, thisExpression, tSThisType } from '@babel/types'
 
 const test = [{
     title: 'vesti',
@@ -56,7 +56,7 @@ export class SiteDetails extends Component {
             isIteditable: false,
             whichisit: '',
             treeButtonsMotivation: '',
-            dataState: '',
+            dataState: null,
             tabClicked: '',
             confirmMessage: false,
             siteDetailsData: '',
@@ -113,7 +113,7 @@ export class SiteDetails extends Component {
         const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError, errorData: getSiteDetailsErrorData } = getSiteDetails;
         const { data: getCategoryListData, loading: getCategoryListLoading, error: getCategoryListError, errorData: getCategoryListErrorData } = getCategoryList;
         const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
-        const { data: createSiteData, loading: createSiteLoading, error: createSiteError, errorData: createSiteErrorData } = createSite;
+        // const { data: createSiteData, loading: createSiteLoading, error: createSiteError, errorData: createSiteErrorData } = createSite;
         const { data: updateSiteDetailsData, loading: updateSiteDetailsLoading, error: updateSiteDetailsError, errorData: updateSiteDetailsErrorData } = updateSiteDetails;
         const { data: unbindCategoryData, loading: unbindCategoryLoading, error: unbindCategoryError, errorData: unbindCategoryErrorData } = unbindCategory;
         const { data: bindCategoryData, loading: bindCategoryLoading, error: bindCategoryError, errorData: bindCategoryErrorData } = bindCategory;
@@ -182,13 +182,13 @@ export class SiteDetails extends Component {
             this.props.history.push('/sites')
         }
 
-        if (prevProps.createSite !== createSite && !createSiteError && !createSiteLoading && createSiteData) {
-            NotificationManager.success("Site successfully created", "Success", 2000);
-            this.props.history.push('/sites')
-        } else if (prevProps.createSite !== createSite && createSiteError && createSiteErrorData) {
-            NotificationManager.error(`${createSiteErrorData.data.message}`, "Failed", 2000);
+        // if (prevProps.createSite !== createSite && !createSiteError && !createSiteLoading && createSiteData) {
+        //     NotificationManager.success("Site successfully created", "Success", 2000);
+        //     this.props.history.push('/sites')
+        // } else if (prevProps.createSite !== createSite && createSiteError && createSiteErrorData) {
+        //     NotificationManager.error(`${createSiteErrorData.data.message}`, "Failed", 2000);
 
-        }
+        // }
 
         if (prevProps.updateSiteDetails !== updateSiteDetails && !updateSiteDetailsError && !updateSiteDetailsLoading && updateSiteDetailsData) {
             NotificationManager.success("Site successfully updated", "Success", 2000);
@@ -322,17 +322,25 @@ export class SiteDetails extends Component {
         const categorialOption = this.state.siteDetailsData?.categories?.map(el => {
             return { value: el.category.id, label: el.category.name }
         })
-
         if (item.length > categorialOption?.length) {
             if (categorialOption?.length === 0) {
+
                 this.props.dispatch(BindCategoryActionRequest({
                     siteId: this.state.siteDetailsData?.id,
                     categoryId: item[0]['value']
                 }))
             } else {
-                const intersection = item.filter((entry1) => {
-                    return categorialOption.some((entry2) => { return entry1.value !== entry2.value; });
+                const element = categorialOption.map(el => {
+                    return el.value
+                })
+                const intersection = item.filter(itemm => {
+                    if (
+                        !element.includes(itemm.value)
+                    ) { return itemm }
                 });
+                // const intersection = item.filter((entry1) => {
+                //     return categorialOption.some((entry2) => { return entry1.value !== entry2.value });
+                // });
                 this.props.dispatch(BindCategoryActionRequest({
                     siteId: this.state.siteDetailsData?.id,
                     categoryId: intersection[0]['value']

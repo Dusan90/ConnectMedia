@@ -7,7 +7,7 @@ import ShortTableRowContainer from '../../containers/TableRowContainer/ShortTabl
 import SearchContainer from '../../containers/SearchContainer/SearchContainer'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import AddContainer from '../../containers/AddContainer/AddContainer'
-import { GetSitesListActionRequest, DeleteSiteActionRequest } from '../../store/actions/SitesListAction'
+import { GetSitesListActionRequest, DeleteSiteActionRequest, CreateSiteActionRequest } from '../../store/actions/SitesListAction'
 import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
 import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
 import { NotificationManager } from 'react-notifications'
@@ -92,7 +92,9 @@ export class Home extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { getSitesList, deleteSite, getCategoryList, bindCategory, unbindCategory } = this.props
+        const { getSitesList, deleteSite, getCategoryList, bindCategory, unbindCategory, createSite } = this.props
+        const { data: createSiteData, loading: createSiteLoading, error: createSiteError, errorData: createSiteErrorData } = createSite;
+
         const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError, errorData: getSitesListErrorData } = getSitesList;
         const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
         const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData, errorData: getCategoryListErrorData } = getCategoryList
@@ -102,6 +104,14 @@ export class Home extends Component {
         if (prevProps.bindCategory !== bindCategory && !bindCategoryError && !bindCategoryLoading && bindCategoryData) {
             NotificationManager.success("Category successfully bind", "Success", 2000);
             this.props.dispatch(GetSitesListActionRequest())
+
+        }
+
+        if (prevProps.createSite !== createSite && !createSiteError && !createSiteLoading && createSiteData) {
+            NotificationManager.success("Site successfully created", "Success", 2000);
+            this.props.history.push(`/sites/${createSiteData?.data?.id}`)
+        } else if (prevProps.createSite !== createSite && createSiteError && createSiteErrorData) {
+            NotificationManager.error(`${createSiteErrorData.data.message}`, "Failed", 2000);
 
         }
 
@@ -368,14 +378,19 @@ export class Home extends Component {
                 {this.state.addButtonClicked && <AddContainer>
                     {/* {!selectedUserSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose owner.</p>} */}
                     {<input type="text" onChange={(e) => this.setState({ urlForCreate: e.target.value })} placeholder='Enter Url' />}
-                    {urlForCreate && <button onClick={() => this.props.history.push({
-                        pathname: '/sites/create',
-                        data: {
+                    {urlForCreate && <button onClick={() => {
+                        //     this.props.history.push({
+                        //     pathname: '/sites/create',
+                        //     data: {
+                        //         url: urlForCreate,
+                        //         //  owner: selectedUserSearch,
+                        //         buttonClicked: 'editDiv', createNew: true
+                        //     }
+                        // })
+                        this.props.dispatch(CreateSiteActionRequest({
                             url: urlForCreate,
-                            //  owner: selectedUserSearch,
-                            buttonClicked: 'editDiv', createNew: true
-                        }
-                    })}><p>Create site</p></button>}
+                        }))
+                    }}><p>Create site</p></button>}
                 </AddContainer>}
 
                 {this.state.checkboxList.length !== 0 && <EditableInline state={this.state} handleEditableInlineStatus={this.handleEditableInlineStatus} handleEditableInlineDropDown={this.handleEditableInlineDropDown} />}
@@ -395,7 +410,7 @@ export class Home extends Component {
 
 const mapStateToProps = (state) => {
     const { SitesListReducer, CategoryReducer } = state;
-    const { getSitesList, deleteSite } = SitesListReducer
+    const { getSitesList, deleteSite, createSite } = SitesListReducer
     const { getCategoryList, bindCategory, unbindCategory } = CategoryReducer
 
     return {
@@ -403,7 +418,8 @@ const mapStateToProps = (state) => {
         deleteSite,
         getCategoryList,
         bindCategory,
-        unbindCategory
+        unbindCategory,
+        createSite
 
     }
 }

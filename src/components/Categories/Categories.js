@@ -137,7 +137,6 @@ export class Categories extends Component {
         e && e.preventDefault()
         const { filteredDate, data } = this.state
         const whitchToFilter = filteredDate ? filteredDate : data
-        console.log(whitchToFilter, 'koji filtrira');
         const value = this.state.inputValue.toLowerCase()
         const newData = whitchToFilter.filter(el => {
             return el.name.toLowerCase().includes(value)

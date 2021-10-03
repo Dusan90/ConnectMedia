@@ -9,6 +9,7 @@ import '../Home/Home.scss'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import { GetWidgetsListActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
 import { NotificationManager } from 'react-notifications'
+import { tSThisType } from '@babel/types'
 
 
 const customSelectStyles = {
@@ -40,6 +41,7 @@ export class Widgets extends Component {
             countPerPage: 10,
             selectedSiteSearch: '',
             selectedCategorieSearch: '',
+            selectedStatusSearch: '',
             confirmMessage: false,
             idForDelete: '',
 
@@ -124,7 +126,7 @@ export class Widgets extends Component {
                 return el
             }
         })
-        this.setState({ filteredDate: newData })
+        this.setState({ filteredDate: newData, selectedStatusSearch: value })
         setTimeout(() => {
             this.setState({ page: 1 })
 
@@ -149,7 +151,7 @@ export class Widgets extends Component {
                             return el
                         }
                     } else if (sortBy === 'sites') {
-                        if (el.site.id === value.id) {
+                        if (el.site?.id === value.id) {
                             return el
                         }
                     }
@@ -174,7 +176,7 @@ export class Widgets extends Component {
         const whitchToFilter = filteredDate ? filteredDate : data
         const value = this.state.inputValue.toLowerCase()
         const newData = whitchToFilter.filter(el => {
-            return el.site.name.toLowerCase().includes(value)
+            return el.site?.name?.toLowerCase().includes(value)
         })
         if (value) {
             this.setState({ tipeSearch: newData })
@@ -346,7 +348,15 @@ export class Widgets extends Component {
         this.setState({ confirmMessage: true, idForDelete: id })
     }
 
-    handleAllOptionsOnMain = () => {
+    handleAllOptionsOnMain = (el, sortBy) => {
+        const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch } = this.state
+        if (sortBy === 'sites') {
+            this.setState({ selectedSiteSearch: '' })
+            // if (selectedCategorieSearch){}
+        }
+        if (sortBy === 'categories') {
+            this.setState({ selectedCategorieSearch: '' })
+        }
         this.setState({ filteredDate: '' })
         setTimeout(() => {
             this.setState({ page: 1 })

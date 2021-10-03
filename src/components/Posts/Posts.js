@@ -117,7 +117,12 @@ export class Posts extends Component {
         if (prevProps.getSitesList !== getSitesList && !getSitesListLoading && !getSitesListError && getSitesListData) {
             const allCategoryesOfAllSites = getSitesListData?.data?.map(el => el.categories)
             const merged = [].concat.apply([], allCategoryesOfAllSites);
-            this.setState({ sitesList: merged })
+            const uniqueChars = merged.filter((thing, index, self) =>
+                index === self.findIndex((t) => (
+                    t.id === thing.id
+                ))
+            )
+            this.setState({ sitesList: uniqueChars })
         }
 
     }
@@ -455,7 +460,6 @@ export class Posts extends Component {
     render() {
         const { urlForCreatePost, dataToRender, selectedSiteSearch, loading, sitesList } = this.state
         const { getSitesList } = this.props
-
         return (
             <>
                 <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
@@ -573,7 +577,7 @@ export class Posts extends Component {
                                         </div>
                                         {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div id='noredirection' className='offeredHashes' >
                                             {sitesList.map((el, i) => {
-                                                if (el.site === item.site) {
+                                                if (el.id === item.site) {
                                                     return <div onClick={() => {
                                                         if (!item.categories.includes(el.category.id)) {
                                                             const pushData = item.categories.concat(el.category.id)
@@ -838,7 +842,9 @@ export class Posts extends Component {
                                             </div>
                                             {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div id='noredirection' className='offeredHashes' >
                                                 {sitesList.map((el, i) => {
-                                                    if (el.site === item.site) {
+
+                                                    if (el.id === item.site) {
+
                                                         return <div onClick={() => {
                                                             if (!item.categories.includes(el.category.id)) {
                                                                 const pushData = item.categories.concat(el.category.id)
