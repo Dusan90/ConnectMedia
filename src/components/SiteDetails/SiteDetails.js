@@ -323,8 +323,8 @@ export class SiteDetails extends Component {
             return { value: el.category.id, label: el.category.name }
         })
 
-        if (item.length > categorialOption.length) {
-            if (categorialOption.length === 0) {
+        if (item.length > categorialOption?.length) {
+            if (categorialOption?.length === 0) {
                 this.props.dispatch(BindCategoryActionRequest({
                     siteId: this.state.siteDetailsData?.id,
                     categoryId: item[0]['value']
@@ -339,14 +339,14 @@ export class SiteDetails extends Component {
                 }))
             }
 
-        } else if (item.length < categorialOption.length) {
+        } else if (item.length < categorialOption?.length) {
             if (item.length === 0) {
                 this.props.dispatch(UnbindCategoryActionRequest({
                     siteId: this.state.siteDetailsData?.id,
                     categoryId: categorialOption[0]['value']
                 }))
             } else {
-                const intersection = categorialOption.filter((entry1) => {
+                const intersection = categorialOption?.filter((entry1) => {
                     return item.some((entry2) => { return entry1.value !== entry2.value; });
                 });
                 this.props.dispatch(UnbindCategoryActionRequest({

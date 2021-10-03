@@ -30,6 +30,7 @@ export class Posts extends Component {
             page: 1,
             data: [],
             filteredDate: '',
+            tipeSearch: '',
             inputValue: '',
             checkboxList: [],
             hashesArrowDown: false,
@@ -49,8 +50,8 @@ export class Posts extends Component {
     }
 
     paginate = (page) => {
-        const { countPerPage, filteredDate, data } = this.state
-        const dataToRender = filteredDate ? filteredDate : data
+        const { countPerPage, filteredDate, data, tipeSearch, inputValue } = this.state
+        const dataToRender = (tipeSearch && inputValue) ? tipeSearch : filteredDate ? filteredDate : data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
         const offset = (page - 1) * limit;
@@ -127,7 +128,9 @@ export class Posts extends Component {
     }
 
     handleSortByStatus = (value) => {
-        const newData = this.state.data.filter(el => {
+        const { filteredDate, data } = this.state
+        const whitchToFilter = filteredDate ? filteredDate : data
+        const newData = whitchToFilter.filter(el => {
             if (el.status === value) {
                 return el
             }
@@ -192,11 +195,17 @@ export class Posts extends Component {
 
     handleSubtmit = (e) => {
         e.preventDefault()
+        const { filteredDate, data } = this.state
+        const whitchToFilter = filteredDate ? filteredDate : data
         const value = this.state.inputValue.toLowerCase()
-        const newData = this.state.data.filter(el => {
+        const newData = whitchToFilter.filter(el => {
             return el.title?.toLowerCase().includes(value)
         })
-        this.setState({ filteredDate: newData })
+        if (value) {
+            this.setState({ tipeSearch: newData })
+        } else {
+            this.setState({ filteredDate: newData })
+        }
         setTimeout(() => {
             this.setState({ page: 1 })
 

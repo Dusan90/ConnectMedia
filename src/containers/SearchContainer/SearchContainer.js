@@ -15,7 +15,6 @@ import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
 
 import '../../components/Home/Home.scss'
 
-const options = ['test', 'test2', 'test3']
 
 function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selectedSiteSearch, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
     const [user, setUser] = useState('all users')

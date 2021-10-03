@@ -250,9 +250,12 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                                 </div>}
                             </>
                         </td>
-                        <td>{item.in}</td>
-                        <td>{item.out}</td>
-                        <td>{item.txr}</td>
+                        {pageName === 'widgets' && <td>{item.stats.imp}</td>}
+                        {pageName === 'widgets' && <td>{item.stats.clk}</td>}
+                        {pageName === 'widgets' && <td>{item.stats.ctr}</td>}
+                        {pageName !== 'widgets' && <td>{item.stats.in}</td>}
+                        {pageName !== 'widgets' && <td>{item.stats.out}</td>}
+                        {pageName !== 'widgets' && <td>{item.stats.txr}</td>}
                     </tr>
                 })}
             </tbody>

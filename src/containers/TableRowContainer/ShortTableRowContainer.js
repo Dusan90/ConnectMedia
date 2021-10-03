@@ -224,7 +224,10 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                                 <p>{pageName === 'widgets' ? "imp" : "in"}</p>
 
                             </div>
-                            <p>{item.in}</p>
+                            {pageName !== 'widgets' && <p>{item.stats.in}</p>}
+                            {pageName === 'widgets' && <p>{item.stats.imp}</p>}
+
+
                         </div>
                         <div className='statistic'>
 
@@ -236,7 +239,10 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                                 <p>{pageName === 'widgets' ? "clk" : "out"}</p>
 
                             </div>
-                            <p>{item.out}</p>
+                            {pageName === 'widgets' && <p>{item.stats.clk}</p>}
+                            {pageName !== 'widgets' && <p>{item.stats.out}</p>}
+
+
                         </div>
                         <div className='statistic'>
                             <div>
@@ -246,7 +252,8 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                                 </div>
                                 <p>{pageName === 'widgets' ? "ctr" : "txr"}</p>
                             </div>
-                            <p>{item.txr}</p>
+                            {pageName === 'widgets' && <p>{item.stats.ctr}</p>}
+                            {pageName !== 'widgets' && <p>{item.stats.txr}</p>}
                         </div>
                     </div>
                 </div>

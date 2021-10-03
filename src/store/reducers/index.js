@@ -7,6 +7,7 @@ import UsersReducer from "./UsersReducer";
 import CategoryReducer from './CategoryReducer';
 import PostsReducer from "./PostsReducer";
 import WidgetReducer from "./WidgetReducer";
+import StatsReducer from "./StatsReducer";
 
 const persistConfig = {
     key: 'root',
@@ -17,7 +18,8 @@ const persistConfig = {
         UsersReducer,
         CategoryReducer,
         PostsReducer,
-        WidgetReducer
+        WidgetReducer,
+        StatsReducer
 
     ],
 }
@@ -28,7 +30,8 @@ const rootReducer = combineReducers({
     UsersReducer,
     CategoryReducer,
     PostsReducer,
-    WidgetReducer
+    WidgetReducer,
+    StatsReducer
 
 });
 

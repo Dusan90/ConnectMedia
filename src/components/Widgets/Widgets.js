@@ -10,33 +10,6 @@ import EditableInline from '../../containers/EditableInline/EditableInline'
 import { GetWidgetsListActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
 import { NotificationManager } from 'react-notifications'
 
-const test = [{
-    status: 'PUBLISHED',
-    owner: 'nina.simone@gmail.com',
-    nazivKorisnika: 'B92.net',
-    hashes: ['test1', 'test2'],
-    in: '11212',
-    out: '2',
-    txr: '0.02%',
-    id: '1'
-},
-{
-    status: 'PUBLISHED',
-    owner: 'nina.simone@gmail.com',
-    nazivKorisnika: 'B92.net',
-    hashes: ['test1', 'test2'],
-    in: '11212',
-    out: '2',
-    txr: '0.02%',
-    id: '2'
-},
-]
-
-const optionss = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-]
 
 const customSelectStyles = {
     control: (base, state) => ({
@@ -57,8 +30,9 @@ export class Widgets extends Component {
         super(props);
         this.state = {
             page: 1,
-            data: test,
+            data: [],
             filteredDate: '',
+            tipeSearch: '',
             inputValue: '',
             checkboxList: [],
             hashesArrowDown: false,
@@ -77,8 +51,8 @@ export class Widgets extends Component {
     }
 
     paginate = (page) => {
-        const { countPerPage, filteredDate, data } = this.state
-        const dataToRender = filteredDate ? filteredDate : data
+        const { countPerPage, filteredDate, data, tipeSearch, inputValue } = this.state
+        const dataToRender = (tipeSearch && inputValue) ? tipeSearch : filteredDate ? filteredDate : data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
         const offset = (page - 1) * limit;
@@ -143,7 +117,9 @@ export class Widgets extends Component {
     }
 
     handleSortByStatus = (value) => {
-        const newData = this.state.data.filter(el => {
+        const { filteredDate, data } = this.state
+        const whitchToFilter = filteredDate ? filteredDate : data
+        const newData = whitchToFilter.filter(el => {
             if (el.status === value) {
                 return el
             }
@@ -194,11 +170,17 @@ export class Widgets extends Component {
 
     handleSubtmit = (e) => {
         e.preventDefault()
+        const { filteredDate, data } = this.state
+        const whitchToFilter = filteredDate ? filteredDate : data
         const value = this.state.inputValue.toLowerCase()
-        const newData = this.state.data.filter(el => {
+        const newData = whitchToFilter.filter(el => {
             return el.site.name.toLowerCase().includes(value)
         })
-        this.setState({ filteredDate: newData })
+        if (value) {
+            this.setState({ tipeSearch: newData })
+        } else {
+            this.setState({ filteredDate: newData })
+        }
 
         setTimeout(() => {
             this.setState({ page: 1 })

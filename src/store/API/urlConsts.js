@@ -26,6 +26,8 @@ export const GET_POST = '/post';
 
 export const GET_WIDGET = '/widget';
 
+// stats
 
+export const GET_STATS = '/stats'
 
 

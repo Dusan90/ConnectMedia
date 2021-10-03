@@ -10,8 +10,15 @@
         height: 51px;
         font-size: 15px;
         line-height: 32px;
-        &.creamColor {
-          background: rgba(223, 224, 148, 0.75);
+
+        &.draft {
+          background: #dfe094;
+        }
+        &.error {
+          background: #e09494;
+        }
+        &.trash {
+          background: #295265;
         }
         td {
           text-indent: 10px;
@@ -21,6 +28,24 @@
             justify-content: space-around;
             .span2 {
               color: #896300;
+              &.underskoredSpan {
+                &:hover {
+                  text-decoration: underline;
+                  cursor: pointer;
+                }
+              }
+            }
+            .underskoredSpan {
+              &:hover {
+                text-decoration: underline;
+                cursor: pointer;
+              }
+            }
+          }
+          .underskoredP {
+            &:hover {
+              text-decoration: underline;
+              cursor: pointer;
             }
           }
         }

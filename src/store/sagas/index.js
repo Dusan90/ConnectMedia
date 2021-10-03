@@ -4,6 +4,7 @@ import { usersSaga } from './UsersSaga';
 import { categoryListSaga } from './CategorySaga'
 import { postsListSaga } from './PostSaga';
 import { widgetsListSaga } from './WidgetSaga';
+import { statsSaga } from './StatsSaga'
 
 import { all } from "redux-saga/effects";
 
@@ -15,7 +16,8 @@ export function* watchSagas() {
         usersSaga(),
         categoryListSaga(),
         postsListSaga(),
-        widgetsListSaga()
+        widgetsListSaga(),
+        statsSaga()
     ]);
 
 }

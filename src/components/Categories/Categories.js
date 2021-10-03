@@ -39,6 +39,7 @@ export class Categories extends Component {
             page: 1,
             data: [],
             filteredDate: '',
+            tipeSearch: '',
             inputValue: '',
             countPerPage: 10,
             addButtonClicked: false,
@@ -53,8 +54,8 @@ export class Categories extends Component {
     }
 
     paginate = (page) => {
-        const { countPerPage, filteredDate, data } = this.state
-        const dataToRender = filteredDate ? filteredDate : data
+        const { countPerPage, filteredDate, data, tipeSearch, inputValue } = this.state
+        const dataToRender = (tipeSearch && inputValue) ? tipeSearch : filteredDate ? filteredDate : data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
         const offset = (page - 1) * limit;
@@ -125,15 +126,27 @@ export class Categories extends Component {
             this.setState({ page: 1 })
             this.paginate(1)
         });
+        setTimeout(() => {
+            if (this.state.inputValue) {
+                this.handleSubtmit()
+            }
+        });
     }
 
     handleSubtmit = (e) => {
-        e.preventDefault()
+        e && e.preventDefault()
+        const { filteredDate, data } = this.state
+        const whitchToFilter = filteredDate ? filteredDate : data
+        console.log(whitchToFilter, 'koji filtrira');
         const value = this.state.inputValue.toLowerCase()
-        const newData = this.state.data.filter(el => {
+        const newData = whitchToFilter.filter(el => {
             return el.name.toLowerCase().includes(value)
         })
-        this.setState({ filteredDate: newData })
+        if (value) {
+            this.setState({ tipeSearch: newData })
+        } else {
+            this.setState({ filteredDate: newData })
+        }
         setTimeout(() => {
             this.setState({ page: 1 })
             this.paginate(1)
@@ -259,6 +272,9 @@ export class Categories extends Component {
 
     render() {
         const { categoryNewName, dataToRender, loading } = this.state
+
+        console.log(this.state.filteredDate, 'levo je filtered', this.state.tipeSearch);
+
         return (
             <>
                 <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleHomePageSort={this.handleHomePageSort} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
