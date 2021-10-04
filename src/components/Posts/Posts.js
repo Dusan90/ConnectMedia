@@ -16,6 +16,7 @@ import { GetPostsListActionRequest, DeletePostActionRequest, UpdatePostDetailsAc
 import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
 import moment from 'moment'
 import { NotificationManager } from 'react-notifications'
+import { filtering } from './Filtering'
 
 
 
@@ -31,14 +32,15 @@ export class Posts extends Component {
             data: [],
             filteredDate: '',
             tipeSearch: '',
-            inputValue: '',
+            inputValue: null,
             checkboxList: [],
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
             countPerPage: 10,
             addButtonClicked: false,
-            selectedSiteSearch: '',
-            selectedCategorieSearch: '',
+            selectedSiteSearch: null,
+            selectedCategorieSearch: null,
+            selectedStatusSearch: null,
             urlForCreatePost: '',
             idForDelete: '',
             sitesList: [],
@@ -51,7 +53,8 @@ export class Posts extends Component {
 
     paginate = (page) => {
         const { countPerPage, filteredDate, data, tipeSearch, inputValue } = this.state
-        const dataToRender = (tipeSearch && inputValue) ? tipeSearch : filteredDate ? filteredDate : data
+        // const dataToRender = (tipeSearch && inputValue) ? tipeSearch : filteredDate ? filteredDate : data
+        const dataToRender = data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
         const offset = (page - 1) * limit;
@@ -73,6 +76,7 @@ export class Posts extends Component {
     }
 
     componentDidUpdate(prevProps) {
+        const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch, inputValue } = this.state
         const { getPostsList, deletePost, getSitesList, updatePostDetails } = this.props
         const { loading: getPostsListLoading, error: getPostsListError, data: getPostsListData, errorData: getPostsListErrorData } = getPostsList
         const { loading: deletePostLoading, error: deletePostError, data: deletePostData, errorData: deletePostErrorData } = deletePost
@@ -96,21 +100,29 @@ export class Posts extends Component {
 
 
         if (prevProps.getPostsList !== getPostsList && !getPostsListLoading && !getPostsListError && getPostsListData) {
-            this.setState({ data: getPostsListData.data })
+            if (selectedStatusSearch || selectedCategorieSearch || selectedSiteSearch || inputValue) {
+                this.setState({ data: filtering(getPostsListData.data, selectedStatusSearch, selectedCategorieSearch, selectedSiteSearch, inputValue) ? filtering(getPostsListData.data, selectedStatusSearch, selectedCategorieSearch, selectedSiteSearch, inputValue) : getPostsListData.data })
+            } else {
+                this.setState({ data: getPostsListData.data })
+
+            }
+
+            setTimeout(() => {
+                if (selectedSiteSearch === null && selectedCategorieSearch === null && inputValue === null && selectedStatusSearch === null) {
+                    if (this.props.location?.data?.searchBy && getPostsListData.data) {
+                        this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
+                    }
+                    else if (this.props.location?.data?.searchByuser && getPostsListData.data) {
+                        this.handleSearchOnMainPage(this.props.location?.data?.searchByuser)
+                    } else if (this.props.location?.data?.searchBycategory && getPostsListData.data) {
+                        this.handleSearchOnMainPage(this.props.location?.data?.searchBycategory)
+                    }
+                }
+            });
             setTimeout(() => {
                 this.setState({ page: 1 })
 
                 this.paginate(1)
-            });
-            setTimeout(() => {
-                if (this.props.location?.data?.searchBy && getPostsListData.data) {
-                    this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
-                }
-                else if (this.props.location?.data?.searchByuser && getPostsListData.data) {
-                    this.handleSearchOnMainPage(this.props.location?.data?.searchByuser)
-                } else if (this.props.location?.data?.searchBycategory && getPostsListData.data) {
-                    this.handleSearchOnMainPage(this.props.location?.data?.searchBycategory)
-                }
             });
         }
 
@@ -133,95 +145,48 @@ export class Posts extends Component {
         this.paginate(value)
     }
 
+
     handleSortByStatus = (value) => {
-        const { filteredDate, data } = this.state
-        const whitchToFilter = filteredDate ? filteredDate : data
-        const newData = whitchToFilter.filter(el => {
-            if (el.status === value) {
-                return el
-            }
-        })
-        this.setState({ filteredDate: newData })
-        setTimeout(() => {
-            this.setState({ page: 1 })
+        if (this.state.selectedStatusSearch?.id === value) {
+            this.setState({ selectedStatusSearch: '' })
 
-            this.paginate(1)
-        });
-    }
-
-    handleAllOptionsOnMain = () => {
-        this.setState({ filteredDate: '' })
-        setTimeout(() => {
-            this.setState({ page: 1 })
-
-            this.paginate(1)
-        });
-    }
-
-
-    handleHomePageSort = (value, sortBy) => {
-        if (!this.state.addButtonClicked) {
-            if (sortBy === 'categories') {
-                const newData = this.state.data.filter((a) => {
-                    if (a.categories.includes(value.id)) {
-                        return a
-                    }
-                })
-                this.setState({ filteredDate: newData })
-                setTimeout(() => {
-                    this.setState({ page: 1 })
-
-                    this.paginate(1)
-                });
-            } else {
-                const newData = this.state.data.filter(el => {
-                    if (sortBy === 'users') {
-                        if (el.owner.id === value.id) {
-                            return el
-                        }
-                    } else if (sortBy === 'sites') {
-                        if (el.site === value.id) {
-                            return el
-                        }
-                    }
-                })
-
-                this.setState({ filteredDate: newData })
-                setTimeout(() => {
-                    this.setState({ page: 1 })
-
-                    this.paginate(1)
-                });
-            }
-
+        } else {
+            this.setState({ selectedStatusSearch: { id: value } })
         }
 
+        setTimeout(() => {
+            this.props.dispatch(GetPostsListActionRequest())
+        });
+    }
+
+    handleAllOptionsOnMain = (el, sortBy) => {
+        if (sortBy === "categories") {
+            this.setState({ selectedCategorieSearch: '' })
+        } else if (sortBy === 'sites') {
+            this.setState({ selectedSiteSearch: '' })
+        }
+        setTimeout(() => {
+            this.props.dispatch(GetPostsListActionRequest())
+        });
 
     }
+
+
+
 
     handleSubtmit = (e) => {
         e.preventDefault()
-        const { filteredDate, data } = this.state
-        const whitchToFilter = filteredDate ? filteredDate : data
-        const value = this.state.inputValue.toLowerCase()
-        const newData = whitchToFilter.filter(el => {
-            return el.title?.toLowerCase().includes(value)
-        })
-        if (value) {
-            this.setState({ tipeSearch: newData })
-        } else {
-            this.setState({ filteredDate: newData })
-        }
-        setTimeout(() => {
-            this.setState({ page: 1 })
 
-            this.paginate(1)
+        setTimeout(() => {
+            this.props.dispatch(GetPostsListActionRequest())
         });
+
     }
 
 
     handleSearchBar = (e) => {
-        this.setState({ inputValue: e.target.value })
+        const value = e.target.value.toLowerCase()
+        this.setState({ inputValue: value })
     }
 
 
@@ -364,73 +329,44 @@ export class Posts extends Component {
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
+        if (this.props.location?.data?.searchByuser) {
+            this.setState({ selectedUserSearch: el })
+            setTimeout(() => {
+                this.props.dispatch(GetPostsListActionRequest())
+            });
+        }
+        else if (this.props.location?.data?.searchBycategory) {
+            this.setState({ selectedCategorieSearch: el })
+            setTimeout(() => {
+                this.props.dispatch(GetPostsListActionRequest())
+            });
+        }
+        else if (this.props.location?.data?.searchBy) {
+            this.setState({ selectedSiteSearch: el })
+            setTimeout(() => {
+                this.props.dispatch(GetPostsListActionRequest())
+            });
+        }
+
+
         if (!this.state.addButtonClicked) {
 
-            if (this.props.location?.data?.searchByuser) {
-                const newData = this.state.data.filter((elm) => {
-                    return elm.owner === el.id
-                })
-                this.setState({
-                    filteredDate: newData,
-                    selectedSiteSearch: el.id
-                })
+            if (secondElement === 'sites') {
+                this.setState({ selectedSiteSearch: el })
                 setTimeout(() => {
-                    this.setState({ page: 1 })
-
-                    this.paginate(1)
+                    this.props.dispatch(GetPostsListActionRequest())
                 });
-            } else if (this.props.location?.data?.searchBycategory) {
-                const newData = this.state.data.filter((a) => {
-                    if (a.categories.includes(el.id)) {
-                        return a
-                    }
-                })
-                this.setState({ filteredDate: newData })
+            } else if (secondElement === 'categories') {
+                this.setState({ selectedCategorieSearch: el })
                 setTimeout(() => {
-                    this.setState({ page: 1 })
-
-                    this.paginate(1)
+                    this.props.dispatch(GetPostsListActionRequest())
                 });
             }
-            else if (this.props.location?.data?.searchBy) {
-                const newData = this.state.data.filter((elm) => {
-                    return elm.site === el.id
-                })
-                this.setState({
-                    filteredDate: newData,
-                    selectedSiteSearch: el.id
-                })
-                setTimeout(() => {
-                    this.setState({ page: 1 })
 
-                    this.paginate(1)
-                });
-            } else {
-                if (secondElement === 'sites') {
-                    const newData = this.state.data.filter((el) => {
-                        return el.site === el
-                    })
-                    this.setState({
-                        filteredDate: newData,
-                        selectedSiteSearch: el
-                    })
-                    setTimeout(() => {
-                        this.setState({ page: 1 })
-
-                        this.paginate(1)
-                    });
-                } else if (secondElement === 'categories') {
-                    this.setState({ selectedCategorieSearch: el })
-                }
-            }
-        } else {
-            if (secondElement === 'sites' && el !== 'All') {
-                this.setState({
-                    selectedSiteSearch: el
-                })
-            }
         }
     }
+
+
 
     deletesiteFunction = () => {
         this.props.dispatch(DeletePostActionRequest({

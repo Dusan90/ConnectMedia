@@ -10,6 +10,7 @@ import EditableInline from '../../containers/EditableInline/EditableInline'
 import { GetWidgetsListActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
 import { NotificationManager } from 'react-notifications'
 import { tSThisType } from '@babel/types'
+import { filtering } from './Filtering'
 
 
 const customSelectStyles = {
@@ -34,14 +35,14 @@ export class Widgets extends Component {
             data: [],
             filteredDate: '',
             tipeSearch: '',
-            inputValue: '',
+            inputValue: null,
             checkboxList: [],
             hashesArrowDown: false,
             hashesArrowWitchIsOn: '',
             countPerPage: 10,
-            selectedSiteSearch: '',
-            selectedCategorieSearch: '',
-            selectedStatusSearch: '',
+            selectedSiteSearch: null,
+            selectedCategorieSearch: null,
+            selectedStatusSearch: null,
             confirmMessage: false,
             idForDelete: '',
 
@@ -53,8 +54,9 @@ export class Widgets extends Component {
     }
 
     paginate = (page) => {
-        const { countPerPage, filteredDate, data, tipeSearch, inputValue } = this.state
-        const dataToRender = (tipeSearch && inputValue) ? tipeSearch : filteredDate ? filteredDate : data
+        const { countPerPage, data, tipeSearch, inputValue } = this.state
+        // const dataToRender = (tipeSearch && inputValue) ? tipeSearch : data
+        const dataToRender = data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
         const offset = (page - 1) * limit;
@@ -73,6 +75,8 @@ export class Widgets extends Component {
     }
 
     componentDidUpdate(prevProps) {
+
+        const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch, inputValue } = this.state
         const { getWidgetsList, deleteWidget, updateWidgetDetails } = this.props
         const { loading: getWidgetsListLoading, error: getWidgetsListError, data: getWidgetsListData, errorData: getWidgetsListErrorData } = getWidgetsList
         const { loading: deleteWidgetLoading, error: deleteWidgetError, data: deleteWidgetData, errorData: deleteWidgetErrorData } = deleteWidget
@@ -88,23 +92,35 @@ export class Widgets extends Component {
 
 
         if (prevProps.getWidgetsList !== getWidgetsList && !getWidgetsListLoading && !getWidgetsListError && getWidgetsListData) {
-            this.setState({ data: getWidgetsListData.data })
+
+            if (selectedStatusSearch === null && selectedCategorieSearch === null && inputValue === null && selectedSiteSearch === null) {
+                setTimeout(() => {
+                    if (this.props.location?.data?.searchBy && getWidgetsListData.data) {
+                        this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
+                    }
+                    else if (this.props.location?.data?.searchByuser && getWidgetsListData.data) {
+                        this.handleSearchOnMainPage(this.props.location?.data?.searchByuser)
+                    } else if (this.props.location?.data?.searchBycategory && getWidgetsListData.data) {
+                        this.handleSearchOnMainPage(this.props.location?.data?.searchBycategory)
+                    }
+                });
+            }
+            if (selectedStatusSearch || selectedCategorieSearch || selectedSiteSearch || inputValue) {
+                this.setState({ data: filtering(getWidgetsListData.data, selectedStatusSearch, selectedCategorieSearch, selectedSiteSearch, inputValue) ? filtering(getWidgetsListData.data, selectedStatusSearch, selectedCategorieSearch, selectedSiteSearch, inputValue) : getWidgetsListData.data })
+            } else {
+                this.setState({ data: getWidgetsListData.data })
+
+            }
+
             setTimeout(() => {
                 this.setState({ page: 1 })
 
                 this.paginate(1)
             });
-            setTimeout(() => {
-                if (this.props.location?.data?.searchBy && getWidgetsListData.data) {
-                    this.handleSearchOnMainPage(this.props.location?.data?.searchBy)
-                }
-                else if (this.props.location?.data?.searchByuser && getWidgetsListData.data) {
-                    this.handleSearchOnMainPage(this.props.location?.data?.searchByuser)
-                } else if (this.props.location?.data?.searchBycategory && getWidgetsListData.data) {
-                    this.handleSearchOnMainPage(this.props.location?.data?.searchBycategory)
-                }
-            });
         }
+
+
+
 
         if (prevProps.updateWidgetDetails !== updateWidgetDetails && !updateWidgetDetailsError && !updateWidgetDetailsLoading && updateWidgetDetailsData) {
             NotificationManager.success("Widget successfully updated", "Success", 2000);
@@ -116,83 +132,34 @@ export class Widgets extends Component {
 
         }
 
+
     }
 
     handleSortByStatus = (value) => {
-        const { filteredDate, data } = this.state
-        const whitchToFilter = filteredDate ? filteredDate : data
-        const newData = whitchToFilter.filter(el => {
-            if (el.status === value) {
-                return el
-            }
-        })
-        this.setState({ filteredDate: newData, selectedStatusSearch: value })
-        setTimeout(() => {
-            this.setState({ page: 1 })
+        if (this.state.selectedStatusSearch?.id === value) {
+            this.setState({ selectedStatusSearch: '' })
 
-            this.paginate(1)
-        });
-    }
-
-    handleHomePageSort = (value, sortBy) => {
-        if (!this.state.addButtonClicked) {
-            if (sortBy === 'categories') {
-                const newData = this.state.data.filter(a => a.categories.find((el) => el.id === value.id))
-                this.setState({ filteredDate: newData })
-                setTimeout(() => {
-                    this.setState({ page: 1 })
-
-                    this.paginate(1)
-                });
-            } else {
-                const newData = this.state.data.filter(el => {
-                    if (sortBy === 'users') {
-                        if (el.owner.id === value.id) {
-                            return el
-                        }
-                    } else if (sortBy === 'sites') {
-                        if (el.site?.id === value.id) {
-                            return el
-                        }
-                    }
-                })
-
-                this.setState({ filteredDate: newData })
-                setTimeout(() => {
-                    this.setState({ page: 1 })
-
-                    this.paginate(1)
-                });
-            }
-
+        } else {
+            this.setState({ selectedStatusSearch: { id: value } })
         }
 
-
+        setTimeout(() => {
+            this.props.dispatch(GetWidgetsListActionRequest())
+        });
     }
 
     handleSubtmit = (e) => {
         e.preventDefault()
-        const { filteredDate, data } = this.state
-        const whitchToFilter = filteredDate ? filteredDate : data
-        const value = this.state.inputValue.toLowerCase()
-        const newData = whitchToFilter.filter(el => {
-            return el.site?.name?.toLowerCase().includes(value)
-        })
-        if (value) {
-            this.setState({ tipeSearch: newData })
-        } else {
-            this.setState({ filteredDate: newData })
-        }
 
         setTimeout(() => {
-            this.setState({ page: 1 })
-
-            this.paginate(1)
+            this.props.dispatch(GetWidgetsListActionRequest())
         });
+
     }
 
     handleSearchBar = (e) => {
-        this.setState({ inputValue: e.target.value })
+        const value = e.target.value.toLowerCase()
+        this.setState({ inputValue: value })
     }
 
     handleCheckbox = (e, item) => {
@@ -303,47 +270,33 @@ export class Widgets extends Component {
 
     handleSearchOnMainPage = (el, secondElement) => {
         if (this.props.location?.data?.searchByuser) {
-
-            const newData = this.state.data.filter((elm) => {
-                return elm.owner.id === el.id
-            })
-            this.setState({
-                filteredDate: newData,
-                selectedSiteSearch: el.id
-            })
+            this.setState({ selectedUserSearch: el })
             setTimeout(() => {
-                this.setState({ page: 1 })
-
-                this.paginate(1)
+                this.props.dispatch(GetWidgetsListActionRequest())
             });
-        } else if (this.props.location?.data?.searchBycategory) {
-            const newData = this.state.data.filter(a => a.categories.find((elm) => elm.id === el.id))
-            this.setState({ filteredDate: newData })
+        }
+        else if (this.props.location?.data?.searchBycategory) {
+            this.setState({ selectedCategorieSearch: el })
             setTimeout(() => {
-                this.setState({ page: 1 })
-
-                this.paginate(1)
+                this.props.dispatch(GetWidgetsListActionRequest())
             });
         }
         else if (this.props.location?.data?.searchBy) {
-
-            const newData = this.state.data.filter((elm) => {
-                return elm.site?.id === el.id
-            })
-            this.setState({
-                filteredDate: newData,
-                selectedSiteSearch: el.id
-            })
+            this.setState({ selectedSiteSearch: el })
             setTimeout(() => {
-                this.setState({ page: 1 })
-
-                this.paginate(1)
+                this.props.dispatch(GetWidgetsListActionRequest())
             });
         } else {
             if (secondElement === 'sites') {
                 this.setState({ selectedSiteSearch: el })
+                setTimeout(() => {
+                    this.props.dispatch(GetWidgetsListActionRequest())
+                });
             } else if (secondElement === 'categories') {
                 this.setState({ selectedCategorieSearch: el })
+                setTimeout(() => {
+                    this.props.dispatch(GetWidgetsListActionRequest())
+                });
             }
         }
     }
@@ -359,43 +312,23 @@ export class Widgets extends Component {
     }
 
     handleAllOptionsOnMain = (el, sortBy) => {
-        // const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch } = this.state
-        // if (sortBy === 'sites') {
-        //     this.setState({ selectedSiteSearch: '' })
-        //     if (selectedCategorieSearch) {
-        //         console.log('true', selectedCategorieSearch, selectedStatusSearch);
-        //         const newData = this.state.data.filter(a => a.categories.find((elm) => (elm.id === selectedCategorieSearch.id)))
-
-        //         this.setState({ filteredDate: newData })
-        //         setTimeout(() => {
-        //             this.setState({ page: 1 })
-
-        //             this.paginate(1)
-        //         });
-        //     } if(selectedStatusSearch){
-        //         const newData = this.state.data.filter(a => a.categories.find((elm) => {
-        //             console.log(el);
-        //         }))
-
-        //     }
-        // }
-        // if (sortBy === 'categories') {
-        //     this.setState({ selectedCategorieSearch: '' })
-        // }
-        this.setState({ filteredDate: '' })
+        if (sortBy === "categories") {
+            this.setState({ selectedCategorieSearch: '' })
+        } else if (sortBy === 'sites') {
+            this.setState({ selectedSiteSearch: '' })
+        }
         setTimeout(() => {
-            this.setState({ page: 1 })
-
-            this.paginate(1)
+            this.props.dispatch(GetWidgetsListActionRequest())
         });
+
     }
 
     render() {
-        const { selectedSiteSearch, data, filteredDate, loading } = this.state
+        const { selectedSiteSearch, data, loading } = this.state
 
         return (
             <>
-                <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
+                <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"WIDGETS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handlePageChange={this.handlePageChange} />
                 {/* {this.state.addButtonClicked && <AddContainer> */}
                 {/* {!selectedSiteSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose a site.</p>} */}
                 {/* <Select

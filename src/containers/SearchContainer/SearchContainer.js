@@ -16,7 +16,7 @@ import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
 import '../../components/Home/Home.scss'
 
 
-function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selectedSiteSearch, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleHomePageSort, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
+function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selectedSiteSearch, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
     const [user, setUser] = useState('all users')
     const dispatch = useDispatch()
     const location = useLocation()
@@ -54,13 +54,11 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
 
     const handleChangeOptionsuser = (el) => {
         handleSearchOnMainPage(el, 'users')
-        handleHomePageSort(el, 'users')
         setUser(el.name)
     }
 
     const handleChangeOptionscategorie = (el) => {
         handleSearchOnMainPage(el, 'categories')
-        handleHomePageSort(el, 'categories')
         setCategorie(el.name)
     }
 
@@ -90,7 +88,7 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
 
     const handleChangeOptionssites = (el) => {
         handleSearchOnMainPage(el, 'sites')
-        handleHomePageSort(el, 'sites')
+
         setSites(el.name)
     }
 
@@ -174,7 +172,7 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
                 <div className='divWithInfoText'>LEGEND: <span>in:</span> clicks coming from site X, <span>out:</span> clicks sent to site X <span>txr:</span> out / in</div>
                 <div className='pageInfoDiv'>
                     <div>
-                        <p>{`1 - ${state.countPerPage ? `${state.countPerPage}` : `10`} of ${state.data.length}`}</p>
+                        <p>{`1 - ${state.countPerPage ? `${state.countPerPage}` : `10`} of ${state.data?.length}`}</p>
                     </div>
 
                     <input type="number" onChange={(e) => handleCountPerPage(e)} />
@@ -182,7 +180,7 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
                     <Pagination
                         activePage={page}
                         itemsCountPerPage={state.countPerPage ? parseInt(state.countPerPage) : 10}
-                        totalItemsCount={state.data.length}
+                        totalItemsCount={state.data?.length}
                         pageRangeDisplayed={2}
                         onChange={handlePageChange}
                         hideFirstLastPages={true}
