@@ -178,12 +178,12 @@ function Header() {
                 <div className='cont'><p onClick={() => handleTabChange('/categories')} style={{ opacity: pathname === '/categories' ? '1' : '0.6' }}>Categories</p><Bars active={pathname === '/categories'} /></div>
                 <div className='cont'><p onClick={() => handleTabChange('/totals')} style={{ opacity: pathname === '/totals' ? '1' : '0.6' }}>Totals</p><Bars active={pathname === '/totals'} /></div>
             </div>
-            {isNotificationOpen && <div className='NavBarDivNotifications'>
-                <div className='notification' onClick={handleBellNotifications}>
-                    <h1>Neki tamo tekst koji bi trebalo da bude informacija</h1>
-                    <p>jos neke informacije u vezi notifikacija</p>
-                </div>
-            </div>}
+            {/*{isNotificationOpen && <div className='NavBarDivNotifications'>*/}
+            {/*    <div className='notification' onClick={handleBellNotifications}>*/}
+            {/*        <h1>Neki tamo tekst koji bi trebalo da bude informacija</h1>*/}
+            {/*        <p>jos neke informacije u vezi notifikacija</p>*/}
+            {/*    </div>*/}
+            {/*</div>}*/}
         </div>
     )
 }
