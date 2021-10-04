@@ -46,7 +46,20 @@ const createUser = async ({ name, email, password, roles, company, address, city
     { contact && formData.append('contact', contact) }
     { phone && formData.append('phone', phone) }
     { vat && formData.append('vat', vat) }
-    return await axios.post(`${API_URL}${GET_SELF_USER}`, formData, {
+    const data = {
+        name,
+        email,
+        password,
+        roles,
+        company,
+        address,
+        city,
+        country,
+        contact,
+        phone,
+        vat,
+    }
+    return await axios.post(`${API_URL}${GET_SELF_USER}`, data, {
         headers: {
             Authorization: sessionStorage.getItem('token'),
             "Content-Type": "application/json",

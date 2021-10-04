@@ -141,7 +141,7 @@ function Header() {
             <div className='UserDetailDiv'>
                 <div className='col-1'>
                     <img className='bell' src={Bell} alt="bell" onClick={handleBellNotifications} />
-                    <div className='redDot'></div>
+                    {/*<div className='redDot'></div>*/}
                     <div>
                         <p>{currentUserData?.email}</p>
                         <img src={User} alt="User" />
@@ -178,12 +178,12 @@ function Header() {
                 <div className='cont'><p onClick={() => handleTabChange('/categories')} style={{ opacity: pathname === '/categories' ? '1' : '0.6' }}>Categories</p><Bars active={pathname === '/categories'} /></div>
                 <div className='cont'><p onClick={() => handleTabChange('/totals')} style={{ opacity: pathname === '/totals' ? '1' : '0.6' }}>Totals</p><Bars active={pathname === '/totals'} /></div>
             </div>
-            {isNotificationOpen && <div className='NavBarDivNotifications'>
-                <div className='notification' onClick={handleBellNotifications}>
-                    <h1>Neki tamo tekst koji bi trebalo da bude informacija</h1>
-                    <p>jos neke informacije u vezi notifikacija</p>
-                </div>
-            </div>}
+            {/*{isNotificationOpen && <div className='NavBarDivNotifications'>*/}
+            {/*    <div className='notification' onClick={handleBellNotifications}>*/}
+            {/*        <h1>Neki tamo tekst koji bi trebalo da bude informacija</h1>*/}
+            {/*        <p>jos neke informacije u vezi notifikacija</p>*/}
+            {/*    </div>*/}
+            {/*</div>}*/}
         </div>
     )
 }

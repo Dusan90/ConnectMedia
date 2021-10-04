@@ -13,6 +13,8 @@ import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction
 
 import { NotificationManager } from 'react-notifications'
 
+import './WidgetsDetails.scss';
+
 const customSelectStyles = {
     control: (base, state) => ({
         ...base,
@@ -468,6 +470,17 @@ export class WidgetsDetails extends Component {
                 {isIteditable && <div className='buttonsDiv'>
                     <SaveButtonEdit labeltext={'Save changes'} handleButtonActive={() => this.handleButtonActive('save')} colorization={'ScrapeClass'} customStyle={{ fontWeight: 'bold', height: '58px', width: "260px" }} />
                     <SaveButtonEdit labeltext={'Cancel'} handleButtonActive={() => this.handleButtonActive('cancel')} colorization={`ScrapeClass clicked`} customStyle={{ fontWeight: 'bold', height: '58px', width: "184px" }} />
+                </div>}
+
+                {this.state.tabClicked === 'embedDiv' && <div>
+                    Sync:
+                    <textarea className={'widget-embed-scripts'} value={`<script src="https://ayu.luciascipher.com/api/v1/embed/${WidgetDetailsData?.id}.js"></script>`} disabled={true} />
+
+                    Async Div:
+                    <textarea className={'widget-embed-scripts'} value={`<div data-ayu-widget="${WidgetDetailsData?.id}"></div>`} disabled={true} />
+
+                    Async Js.
+                    <textarea className={'widget-embed-scripts'} value={`<script src="https://ayu.luciascipher.com/api/v1/embed/tracker.js" async></script>`} disabled={true} />
                 </div>}
             </div>
         )
