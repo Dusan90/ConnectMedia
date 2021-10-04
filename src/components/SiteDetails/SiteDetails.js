@@ -259,6 +259,7 @@ export class SiteDetails extends Component {
                     feed_translations
                 }))
             } else {
+                console.log(RSS, 'RSS');
                 this.props.dispatch(UpdateSiteDetailsActionRequest({
                     id: this.props.match.params.id,
                     name,
@@ -278,7 +279,7 @@ export class SiteDetails extends Component {
                     guess_remote,
                     tag_map,
                     state: dataState,
-                    feeds: RSS ? RSS.split(" ") : null,
+                    feeds: typeof RSS === 'string' ? RSS.split(" ") : null,
                     categories: categorieFormating,
                     feed_translations
                 }))
@@ -303,7 +304,8 @@ export class SiteDetails extends Component {
     }
 
     handleChangeRSS = (e) => {
-        this.setState({ RSS: e.target.value })
+        console.log('-->', e.target.value);
+        this.setState({ RSS: e.target.value });
     }
 
     arrowSort = (value, sortBy) => {
@@ -506,7 +508,7 @@ export class SiteDetails extends Component {
                             <div className='rss_div'>
                                 <h4>RSS</h4>
                                 {!isIteditable && <Link to='#'>{siteDetailsData?.feeds?.map(el => `${el.url} `)}</Link>}
-                                {isIteditable && <textarea name='RSS' value={this.state.RSS !== null ? this.state.RSS : ''} onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds?.map(el => `${el.url} `)} />}
+                                {isIteditable && <textarea name='RSS' value={this.state.RSS !== null ? this.state.RSS : ''} onChange={(e) => this.handleChangeRSS(e)} placeholder={siteDetailsData?.feeds?.map(el => `${el.url} `)} />}
 
                             </div>
                             <div className='images_div'>

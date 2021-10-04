@@ -141,7 +141,7 @@ function Header() {
             <div className='UserDetailDiv'>
                 <div className='col-1'>
                     <img className='bell' src={Bell} alt="bell" onClick={handleBellNotifications} />
-                    <div className='redDot'></div>
+                    {/*<div className='redDot'></div>*/}
                     <div>
                         <p>{currentUserData?.email}</p>
                         <img src={User} alt="User" />
