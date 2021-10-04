@@ -122,6 +122,7 @@ export class Posts extends Component {
                     t.id === thing.id
                 ))
             )
+            console.log(uniqueChars, 'unique');
             this.setState({ sitesList: uniqueChars })
         }
 
@@ -442,8 +443,8 @@ export class Posts extends Component {
     }
 
     findcategory = item => {
-        const mapcategorynames = this.props.getCategoryList?.data?.data.slice(0, 2).filter(el => item.categories.includes(el.id))
-        let getNames = mapcategorynames?.map((element, i) => {
+        const mapcategorynames = this.props.getCategoryList?.data?.data.filter(el => item.categories.includes(el.id))
+        let getNames = mapcategorynames?.slice(0, 2).map((element, i) => {
             return <p id='noredirection' key={i}><a id='noredirection' onClick={() => {
                 const newData = item.categories.filter(elm => elm !== element.id)
                 this.props.dispatch(UpdatePostDetailsActionRequest({
@@ -460,6 +461,7 @@ export class Posts extends Component {
     render() {
         const { urlForCreatePost, dataToRender, selectedSiteSearch, loading, sitesList } = this.state
         const { getSitesList } = this.props
+
         return (
             <>
                 <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
@@ -566,7 +568,7 @@ export class Posts extends Component {
                                         <div className="divWithHashes">
                                             <p>{this.props.getCategoryList?.data?.data.map((el, index) => el.id === item.site ? el.name : '')}</p>
                                             {/* <p>{this.props.getCategoryList?.data?.data.filter(el => item.categories.includes(el.id) ? el.name : '')}</p> */}
-                                            {/* <p>{this.findcategory(item)}</p> */}
+                                            <p>{this.findcategory(item)}</p>
 
 
                                             <div className='box'>
@@ -835,35 +837,38 @@ export class Posts extends Component {
                                                 {/* <p>{this.props.getCategoryList?.data?.data.filter(el => item.categories.includes(el.id) && el)}</p> */}
                                                 {this.findcategory(item)}
 
+
                                                 <div className='box'>
                                                     {item?.categories.length > 2 && <p>+<span>{item?.categories.length - 2}</span></p>}
                                                     <img src={secondarrowDown} style={{ marginLeft: '5px' }} id='noredirection' alt="arrow" onClick={() => this.handleHashArrowClick(item)} />
                                                 </div>
                                             </div>
                                             {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div id='noredirection' className='offeredHashes' >
-                                                {sitesList.map((el, i) => {
+                                                {getSitesList.data?.data?.map((el, i) => {
 
                                                     if (el.id === item.site) {
+                                                        return el.categories.map((el, i) => {
 
-                                                        return <div onClick={() => {
-                                                            if (!item.categories.includes(el.category.id)) {
-                                                                const pushData = item.categories.concat(el.category.id)
-                                                                this.props.dispatch(UpdatePostDetailsActionRequest({
-                                                                    id: item.id,
-                                                                    categories: pushData
-                                                                }))
-                                                                this.handleHashArrowClick(item)
-                                                            } else {
-                                                                const popData = item.categories.filter(elm => elm !== el.category.id)
-                                                                this.props.dispatch(UpdatePostDetailsActionRequest({
-                                                                    id: item.id,
-                                                                    categories: popData
-                                                                }))
-                                                                this.handleHashArrowClick(item)
-                                                            }
-                                                        }} style={{ background: item.categories.includes(el.category.id) ? '#e09494' : '' }} key={i} id='noredirection'>
-                                                            <p id='noredirection'>{el.category?.name}</p>
-                                                        </div>
+                                                            return <div onClick={() => {
+                                                                if (!item.categories.includes(el.category.id)) {
+                                                                    const pushData = item.categories.concat(el.category.id)
+                                                                    this.props.dispatch(UpdatePostDetailsActionRequest({
+                                                                        id: item.id,
+                                                                        categories: pushData
+                                                                    }))
+                                                                    this.handleHashArrowClick(item)
+                                                                } else {
+                                                                    const popData = item.categories.filter(elm => elm !== el.category.id)
+                                                                    this.props.dispatch(UpdatePostDetailsActionRequest({
+                                                                        id: item.id,
+                                                                        categories: popData
+                                                                    }))
+                                                                    this.handleHashArrowClick(item)
+                                                                }
+                                                            }} style={{ background: item.categories.includes(el.category?.id) ? '#e09494' : '' }} key={i} id='noredirection'>
+                                                                <p id='noredirection'>{el.category?.name}</p>
+                                                            </div>
+                                                        })
                                                     }
                                                 })}
                                             </div>}

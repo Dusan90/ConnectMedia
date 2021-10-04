@@ -226,7 +226,12 @@ export class Widgets extends Component {
                 if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
                     return b[sortByClicked]?.localeCompare(a[sortByClicked])
                 } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
-                    return b[sortByClicked]['name']?.localeCompare(a[sortByClicked]['name'])
+                    if (a.site && b.site) {
+                        return b.site[sortByClicked]?.localeCompare(a.site[sortByClicked])
+                    } else {
+                        return -1
+                    }
+                    // return b?.site[sortByClicked]?.localeCompare(a?.site[sortByClicked])
 
                 } else {
                     return b[sortByClicked] - a[sortByClicked]
@@ -240,11 +245,16 @@ export class Widgets extends Component {
             });
         } else if (value === 'Down') {
             const sorted = this.state.data.sort((a, b) => {
+                console.log(typeof a[sortByClicked], a, b);
                 if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
                     return a[sortByClicked]?.localeCompare(b[sortByClicked])
 
                 } else if (typeof a[sortByClicked] === "object" || typeof b[sortByClicked] === "object") {
-                    return a[sortByClicked]['name']?.localeCompare(b[sortByClicked]['name'])
+                    if (a.site && b.site) {
+                        return a.site[sortByClicked]?.localeCompare(b.site[sortByClicked])
+                    } else {
+                        return -1
+                    }
 
                 }
                 else {
@@ -318,7 +328,7 @@ export class Widgets extends Component {
         else if (this.props.location?.data?.searchBy) {
 
             const newData = this.state.data.filter((elm) => {
-                return elm.site.id === el.id
+                return elm.site?.id === el.id
             })
             this.setState({
                 filteredDate: newData,

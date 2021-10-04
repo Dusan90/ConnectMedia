@@ -359,13 +359,18 @@ export class PostsDetails extends Component {
                             <div className='categ_div'>
                                 <h4>Categories</h4>
                                 {!isIteditable && <div className='listOfCateg'>
-                                    <p>{postDetailsData?.categories?.map(el => el.name)}</p>
+                                    <p>{postDetailsData?.categories?.map(el => `${el.name} `)}</p>
 
                                 </div>}
                                 {isIteditable && <Select
                                     className="basic-single"
                                     classNamePrefix="select"
-                                    defaultValue={postDetailsData?.categories?.map(el => categorialOption[el.id])}
+                                    defaultValue={postDetailsData?.categories?.map(el => {
+
+
+                                        return { value: el.id, label: el.name }
+
+                                    })}
                                     // isLoading={true}
                                     onChange={this.handlePostDetailsCategorie}
                                     isMulti

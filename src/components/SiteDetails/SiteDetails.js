@@ -278,7 +278,7 @@ export class SiteDetails extends Component {
                     guess_remote,
                     tag_map,
                     state: dataState,
-                    feeds: typeof RSS === 'array' ? RSS.split(" ") : null,
+                    feeds: RSS ? RSS.split(" ") : null,
                     categories: categorieFormating,
                     feed_translations
                 }))
@@ -400,7 +400,7 @@ export class SiteDetails extends Component {
         const { isIteditable, whichisit, wordToPass, treeButtonsMotivation, categories, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
         const categorialOption = siteDetailsData?.categories?.map(el => el.category.id)
 
-        console.log(categorialOption);
+        console.log(this.state.RSS);
         return (
             <div className='mainSiteDetailsDiv'>
                 <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} wordToPass={wordToPass} handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />

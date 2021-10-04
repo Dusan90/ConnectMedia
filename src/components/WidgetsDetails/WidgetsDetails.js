@@ -402,14 +402,16 @@ export class WidgetsDetails extends Component {
                             <div className='categ_div'>
                                 <h4>Categories</h4>
                                 {!isIteditable && <div className='listOfCateg'>
-                                    <p>{WidgetDetailsData?.categories?.map(el => el.name)}</p>
+                                    <p>{WidgetDetailsData?.categories?.map(el => `${el.name} `)}</p>
 
 
                                 </div>}
                                 {isIteditable && <Select
                                     className="basic-single"
                                     classNamePrefix="select"
-                                    defaultValue={WidgetDetailsData?.categories?.map(el => categorialOption[el.id])}
+                                    defaultValue={WidgetDetailsData?.categories?.map(el => {
+                                        return { value: el.id, label: el.name }
+                                    })}
                                     // defaultValue={colourOptions[0]}
                                     onChange={this.handlePostDetailsCategorie}
 
