@@ -19,7 +19,8 @@ export class Login extends Component {
 
     componentDidMount() {
         if (!sessionStorage.getItem('token')) {
-            sessionStorage.setItem('token', uuidv4())
+            sessionStorage.setItem('token', uuidv4());
+            window.location.reload();
         }
     }
 
