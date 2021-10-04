@@ -349,14 +349,29 @@ export class Widgets extends Component {
     }
 
     handleAllOptionsOnMain = (el, sortBy) => {
-        const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch } = this.state
-        if (sortBy === 'sites') {
-            this.setState({ selectedSiteSearch: '' })
-            // if (selectedCategorieSearch){}
-        }
-        if (sortBy === 'categories') {
-            this.setState({ selectedCategorieSearch: '' })
-        }
+        // const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch } = this.state
+        // if (sortBy === 'sites') {
+        //     this.setState({ selectedSiteSearch: '' })
+        //     if (selectedCategorieSearch) {
+        //         console.log('true', selectedCategorieSearch, selectedStatusSearch);
+        //         const newData = this.state.data.filter(a => a.categories.find((elm) => (elm.id === selectedCategorieSearch.id)))
+
+        //         this.setState({ filteredDate: newData })
+        //         setTimeout(() => {
+        //             this.setState({ page: 1 })
+
+        //             this.paginate(1)
+        //         });
+        //     } if(selectedStatusSearch){
+        //         const newData = this.state.data.filter(a => a.categories.find((elm) => {
+        //             console.log(el);
+        //         }))
+
+        //     }
+        // }
+        // if (sortBy === 'categories') {
+        //     this.setState({ selectedCategorieSearch: '' })
+        // }
         this.setState({ filteredDate: '' })
         setTimeout(() => {
             this.setState({ page: 1 })

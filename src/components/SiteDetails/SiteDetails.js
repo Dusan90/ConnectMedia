@@ -233,6 +233,8 @@ export class SiteDetails extends Component {
             const categorieFormating = categories.map(el => {
                 return { category: el.category.id, expire: el.expire, keep: el.keep, max_age: el.max_age, min_ctr: el.min_ctr, min_imp: el.min_imp }
             })
+
+            console.log(categorieFormating);
             if (this.props.location.data?.createNew) {
                 this.props.dispatch(CreateSiteActionRequest({
                     name,
@@ -388,12 +390,17 @@ export class SiteDetails extends Component {
 
         item[e.target.name] = parseInt(e.target.value)
 
+        // console.log(item);
+
+        // console.log(categories);
+
     }
 
     render() {
         const { isIteditable, whichisit, wordToPass, treeButtonsMotivation, categories, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
         const categorialOption = siteDetailsData?.categories?.map(el => el.category.id)
 
+        console.log(categorialOption);
         return (
             <div className='mainSiteDetailsDiv'>
                 <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} wordToPass={wordToPass} handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
@@ -618,7 +625,9 @@ export class SiteDetails extends Component {
                             <div className='categ_div'>
                                 <h4>Categories</h4>
                                 {!isIteditable && <div className='listOfCateg'>
-                                    <p>{this.state.cateOptions.length !== 0 && categorialOption?.map(el => `${this.state.cateOptions[el]['label']} `)}</p>
+                                    <p>
+                                        {siteDetailsData?.categories?.map(el => `${el.category.name} `)}
+                                    </p>
                                 </div>}
                                 {isIteditable && <Select
                                     defaultValue={categorialOption?.map(el => this.state.cateOptions[el])}
