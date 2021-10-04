@@ -506,7 +506,7 @@ export class SiteDetails extends Component {
                             <div className='rss_div'>
                                 <h4>RSS</h4>
                                 {!isIteditable && <Link to='#'>{siteDetailsData?.feeds?.map(el => `${el.url} `)}</Link>}
-                                {isIteditable && <input name='RSS' value={this.state.RSS !== null ? this.state.RSS : ''} onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds?.map(el => `${el.url} `)} />}
+                                {isIteditable && <textarea name='RSS' value={this.state.RSS !== null ? this.state.RSS : ''} onChange={(e) => this.handleChangeRSS(e)} type="text" placeholder={siteDetailsData?.feeds?.map(el => `${el.url} `)} />}
 
                             </div>
                             <div className='images_div'>
