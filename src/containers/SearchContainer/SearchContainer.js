@@ -194,7 +194,7 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
                 <div className='divWithInfoText'>LEGEND: <span>in:</span> clicks coming from site X, <span>out:</span> clicks sent to site X <span>txr:</span> out / in</div>
                 <div className='pageInfoDiv'>
                     <div>
-                        <p>{`1 - ${state.countPerPage ? `${state.countPerPage}` : `10`} of ${state.data?.length}`}</p>
+                        <p>{`${page * state.countPerPage - state.countPerPage} - ${state.countPerPage * page} of ${state.data?.length}`}</p>
                     </div>
 
                     <input type="number" onChange={(e) => handleCountPerPage(e)} />

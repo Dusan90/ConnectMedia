@@ -361,7 +361,7 @@ export class WidgetsDetails extends Component {
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={ignore_impressions !== null ? ignore_impressions : WidgetDetailsData?.ignore_impressions} checked={ignore_impressions !== null ? ignore_impressions : WidgetDetailsData?.ignore_impressions} onChange={(e) => this.setState({ ignore_impressions: e.target.checked })} /></div>}
 
                             </div>
-                            <h1 style={{ margin: '20px 0' }}>Default content</h1>
+                            <h1 style={{ margin: '20px 0' }}>Template data</h1>
                             <div className='description_div'>
                                 <h4>Count</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.count}</p>}
