@@ -14,24 +14,6 @@ import { CreateUserActionRequest, GetUsersListActionRequest } from '../../store/
 import { NotificationManager } from 'react-notifications'
 import '../Home/Home.scss'
 
-const test = [{
-    status: 'PUBLISHED',
-    owner: 'nina.simone@gmail.com',
-    nazivKorisnika: 'B92.net',
-    in: '11212',
-    out: '2',
-    txr: '0.02%'
-},
-{
-    status: 'PUBLISHED',
-    owner: 'nina.simone@gmail.com',
-    nazivKorisnika: 'B92.net',
-    in: '11212',
-    out: '2',
-    txr: '0.02%'
-},
-]
-
 export class Users extends Component {
     constructor(props) {
         super(props);
@@ -110,7 +92,8 @@ export class Users extends Component {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            return el.email.toLowerCase().includes(value)
+            console.log(el);
+            return el.email?.toLowerCase().includes(value)
         })
 
         this.setState({ filteredDate: newData })
@@ -135,17 +118,17 @@ export class Users extends Component {
         else if (tabClicked === 'sites') {
             history.push({
                 pathname: `/sites`,
-                data: { searchByuser: value }
+                data: { searchByuser: value, prevPath: window.location.pathname }
             })
         } else if (tabClicked === 'posts') {
             history.push({
                 pathname: `/posts`,
-                data: { searchByuser: value }
+                data: { searchByuser: value, prevPath: window.location.pathname }
             })
         } else if (tabClicked === 'widgets') {
             history.push({
                 pathname: `/widgets`,
-                data: { searchByuser: value }
+                data: { searchByuser: value, prevPath: window.location.pathname }
             })
         }
     }

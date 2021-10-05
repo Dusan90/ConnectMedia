@@ -116,6 +116,8 @@ export class Posts extends Component {
                         this.handleSearchOnMainPage(this.props.location?.data?.searchByuser)
                     } else if (this.props.location?.data?.searchBycategory && getPostsListData.data) {
                         this.handleSearchOnMainPage(this.props.location?.data?.searchBycategory)
+                    } else if (this.props.location?.dataFromStats?.searchBycategory && getPostsListData.data) {
+                        this.handleStatsSearch(this.props.location?.dataFromStats)
                     }
                 }
             });
@@ -134,7 +136,6 @@ export class Posts extends Component {
                     t.id === thing.id
                 ))
             )
-            console.log(uniqueChars, 'unique');
             this.setState({ sitesList: uniqueChars })
         }
 
@@ -145,9 +146,22 @@ export class Posts extends Component {
         this.paginate(value)
     }
 
+    handleStatsSearch = (el) => {
+        if (this.props.location?.dataFromStats?.searchBycategory && !this.state.selectedCategorieSearch && !this.state.selectedStatusSearch && !this.state.selectedSiteSearch) {
+            this.setState({
+                selectedCategorieSearch: el.searchBycategory,
+                selectedStatusSearch: { id: el.status },
+                selectedSiteSearch: el.searchByuser
+            })
+            setTimeout(() => {
+                this.props.dispatch(GetPostsListActionRequest())
+            });
+        }
+    }
+
 
     handleSortByStatus = (value) => {
-        if (this.state.selectedStatusSearch?.id === value) {
+        if (this.state.selectedStatusSearch?.id === value || value === 'NOTRASH') {
             this.setState({ selectedStatusSearch: '' })
 
         } else {
@@ -398,6 +412,7 @@ export class Posts extends Component {
         const { urlForCreatePost, dataToRender, selectedSiteSearch, loading, sitesList } = this.state
         const { getSitesList } = this.props
 
+        console.log(this.props.location);
         return (
             <>
                 <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
@@ -502,7 +517,7 @@ export class Posts extends Component {
                                 <div className='mainDivHashes'>
                                     <>
                                         <div className="divWithHashes">
-                                            <p>{this.props.getCategoryList?.data?.data.map((el, index) => el.id === item.site ? el.name : '')}</p>
+                                            {/* <p>{this.props.getCategoryList?.data?.data.map((el, index) => el.id === item.site ? el.name : '')}</p> */}
                                             {/* <p>{this.props.getCategoryList?.data?.data.filter(el => item.categories.includes(el.id) ? el.name : '')}</p> */}
                                             <p>{this.findcategory(item)}</p>
 

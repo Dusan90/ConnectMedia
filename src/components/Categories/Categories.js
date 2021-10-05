@@ -13,24 +13,7 @@ import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction
 import '../Home/Home.scss'
 import AddContainer from '../../containers/AddContainer/AddContainer'
 import { NotificationManager } from 'react-notifications'
-
-const test = [{
-    status: 'PUBLISHED',
-    owner: 'B92',
-    nazivKorisnika: 'B92.net',
-    in: '11212',
-    out: '2',
-    txr: '0.02%'
-},
-{
-    status: 'PUBLISHED',
-    owner: 'Novosti',
-    nazivKorisnika: 'B92.net',
-    in: '11212',
-    out: '2',
-    txr: '0.02%'
-},
-]
+import { filtering } from './Filtering'
 
 export class Categories extends Component {
     constructor(props) {
@@ -40,11 +23,11 @@ export class Categories extends Component {
             data: [],
             filteredDate: '',
             tipeSearch: '',
-            inputValue: '',
+            inputValue: null,
             countPerPage: 10,
             addButtonClicked: false,
             categoryNewName: '',
-            selectedSitesSearch: '',
+            selectedSitesSearch: null,
             selectedCategorieSearch: '',
 
             dataToRender: [],
@@ -55,7 +38,7 @@ export class Categories extends Component {
 
     paginate = (page) => {
         const { countPerPage, filteredDate, data, tipeSearch, inputValue } = this.state
-        const dataToRender = (tipeSearch && inputValue) ? tipeSearch : filteredDate ? filteredDate : data
+        const dataToRender = data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
         const offset = (page - 1) * limit;
@@ -73,15 +56,23 @@ export class Categories extends Component {
     }
 
     componentDidUpdate(prevProps) {
+        const { inputValue, selectedSitesSearch } = this.state
         const { getCategoryList, createCategory } = this.props
         const { loading: createCategoryLoading, error: createCategoryError, data: createCategoryData, errorData: createCategoryErrorData } = createCategory
         const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData, errorData: getCategoryListErrorData } = getCategoryList
 
 
         if (prevProps.getCategoryList !== getCategoryList && !getCategoryListLoading && !getCategoryListError && getCategoryListData) {
-            this.setState({ data: getCategoryListData.data })
+            if (selectedSitesSearch || inputValue) {
+                this.setState({ data: filtering(getCategoryListData.data, selectedSitesSearch, inputValue) ? filtering(getCategoryListData.data, selectedSitesSearch, inputValue) : getCategoryListData.data })
+            } else {
+                this.setState({ data: getCategoryListData.data })
+
+            }
+
             setTimeout(() => {
                 this.setState({ page: 1 })
+
                 this.paginate(1)
             });
         }
@@ -100,61 +91,20 @@ export class Categories extends Component {
         }
     }
 
-    handleHomePageSort = (value, sortBy) => {
-        // const newData = this.state.data.filter(el => {
-        // if (sortBy === 'users') {
-        //     if (el.owner === value) {
-        //         return el
-        //     }
-        // } else if (sortBy === 'categories') {
-        //     if (el.categories === value) {
-        //         return el
-        //     }
-        // } else if (sortBy === 'sites') {
-        //     console.log(el, value, 'ovo su podaci');
-        //     if (el.sites === value) {
-        //         return el
-        //     }
-        // }
-        // })
 
-        const newData = value.categories.map(el => {
-            return el.category
-        })
-        this.setState({ filteredDate: newData })
-        setTimeout(() => {
-            this.setState({ page: 1 })
-            this.paginate(1)
-        });
-        setTimeout(() => {
-            if (this.state.inputValue) {
-                this.handleSubtmit()
-            }
-        });
-    }
 
     handleSubtmit = (e) => {
-        e && e.preventDefault()
-        const { filteredDate, data } = this.state
-        const whitchToFilter = filteredDate ? filteredDate : data
-        const value = this.state.inputValue.toLowerCase()
-        const newData = whitchToFilter.filter(el => {
-            return el.name.toLowerCase().includes(value)
-        })
-        if (value) {
-            this.setState({ tipeSearch: newData })
-        } else {
-            this.setState({ filteredDate: newData })
-        }
+        e.preventDefault()
+
         setTimeout(() => {
-            this.setState({ page: 1 })
-            this.paginate(1)
+            this.props.dispatch(GetCategoryListActionRequest())
         });
 
     }
 
     handleSearchBar = (e) => {
-        this.setState({ inputValue: e.target.value })
+        const value = e.target.value.toLowerCase()
+        this.setState({ inputValue: value })
     }
 
 
@@ -254,29 +204,38 @@ export class Categories extends Component {
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
-        if (secondElement === 'sites') {
-            this.setState({ selectedSitesSearch: el })
-        } else if (secondElement === 'categories') {
-            this.setState({ selectedCategorieSearch: el })
+        if (!this.state.addButtonClicked) {
+            if (secondElement === 'sites') {
+                this.setState({ selectedSitesSearch: el })
+                setTimeout(() => {
+                    this.props.dispatch(GetCategoryListActionRequest())
+                });
+            } else if (secondElement === 'categories') {
+                this.setState({ selectedCategorieSearch: el })
+                setTimeout(() => {
+                    this.props.dispatch(GetCategoryListActionRequest())
+                });
+            }
         }
     }
 
+
     handleAllOptionsOnMain = () => {
-        this.setState({ filteredDate: '' })
+        this.setState({ selectedSitesSearch: '' })
         setTimeout(() => {
-            this.setState({ page: 1 })
-            this.paginate(1)
+            this.props.dispatch(GetCategoryListActionRequest())
         });
+
     }
 
     render() {
         const { categoryNewName, dataToRender, loading } = this.state
 
-        console.log(this.state.filteredDate, 'levo je filtered', this.state.tipeSearch);
+        console.log(dataToRender);
 
         return (
             <>
-                <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleHomePageSort={this.handleHomePageSort} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
+                <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"CATEGORIES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} customStyleForlesTabs={true} />
                 {this.state.addButtonClicked && <AddContainer>
                     <input type="text" onChange={(e) => this.setState({ categoryNewName: e.target.value })} placeholder='Enter new name' />
                     {categoryNewName && <button

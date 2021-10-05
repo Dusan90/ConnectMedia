@@ -37,7 +37,7 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
             })
         } else if (tabClicked === 'stats') {
             history.push({
-                pathname: `/sites/${value.id}`,
+                pathname: `/widgets/${value.id}`,
                 data: { buttonClicked: 'statsDiv' }
             })
         } else if (tabClicked === 'posts') {
@@ -49,6 +49,11 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
             history.push({
                 pathname: `/widgets`,
                 data: { searchBy: value, prevPath: window.location.pathname }
+            })
+        } else if (tabClicked === 'embed') {
+            history.push({
+                pathname: `/widgets/${value.id}`,
+                data: { buttonClicked: 'embedDiv' }
             })
         }
     }
@@ -186,7 +191,8 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                             {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'posts')} id='noredirection'>posts</p>}
                             {pageName !== 'widgets' && <img src={widgets} alt="widgets" />}
                             {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'widgets')} id='noredirection'>widgets</p>}
-
+                            {pageName === 'widgets' && <img src={visit} alt="visit" />}
+                            {pageName === 'widgets' && <p onClick={() => haneldeRedirect(item, 'embed')} id='noredirection'>embed</p>}
                         </div></td>
                         <td>
                             <>

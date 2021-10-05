@@ -136,7 +136,8 @@ export class Widgets extends Component {
     }
 
     handleSortByStatus = (value) => {
-        if (this.state.selectedStatusSearch?.id === value) {
+
+        if (this.state.selectedStatusSearch?.id === value || value === 'NOTRASH') {
             this.setState({ selectedStatusSearch: '' })
 
         } else {

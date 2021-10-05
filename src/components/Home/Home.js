@@ -144,7 +144,7 @@ export class Home extends Component {
 
 
     handleSortByStatus = (value) => {
-        if (this.state.selectedStatusSearch?.id === value) {
+        if (this.state.selectedStatusSearch?.id === value || value === 'NOTRASH') {
             this.setState({ selectedStatusSearch: '' })
 
         } else {
@@ -310,6 +310,8 @@ export class Home extends Component {
 
     render() {
         const { selectedUserSearch, urlForCreate, loading } = this.state
+
+        console.log(this.props.location);
         return (
             <>
                 <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>

@@ -89,18 +89,18 @@ export class UsersDetails extends Component {
         } else if (page === 'sitesDiv') {
             this.props.history.push({
                 pathname: '/sites',
-                state: { whichToFilter: 'test' }
+                data: { searchBycategory: this.state.usersData, prevPath: '/users' }
             })
             this.setState({ isIteditable: false })
         } else if (page === 'postsDiv') {
             this.props.history.push({
                 pathname: '/posts',
-                state: { whichToFilter: 'test' }
+                data: { searchBycategory: this.state.usersData, prevPath: '/users' }
             })
         } else if (page === 'widgetsDiv') {
             this.props.history.push({
                 pathname: '/widgets',
-                state: { whichToFilter: 'test' }
+                data: { searchBycategory: this.state.usersData, prevPath: '/users' }
             })
         }
         else {

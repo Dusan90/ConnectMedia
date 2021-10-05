@@ -33,6 +33,23 @@ export class Stats extends Component {
     }
 
 
+    handleRedirect = (el, secondArg, elm) => {
+        console.log(el, elm);
+        if (secondArg === 'published') {
+            this.props.history.push({
+                pathname: `/posts`,
+                dataFromStats: { searchBycategory: el.stats[elm], searchByuser: el, status: 1, pageName: 'stats' }
+            })
+        } else {
+            this.props.history.push({
+                pathname: `/posts`,
+                dataFromStats: { searchBycategory: el.stats[elm], searchByuser: el, status: 0, pageName: 'stats' }
+            })
+        }
+
+    }
+
+
     componentDidUpdate(prevProps) {
         const { getStats, getCategoryList } = this.props
         const { loading: getStatsLoading, error: getStatsError, data: getStatsData, errorData: getStatsErrorData } = getStats
@@ -52,7 +69,7 @@ export class Stats extends Component {
             const dataToShow = getStatsData?.data?.stats?.map(el => {
                 const elem = Object.keys(el.stats)
                 const newasdf = elem.length !== 0 && elem.map(elm => {
-                    return { [`${elm.toLowerCase()}`]: [<p><span className='underskoredSpan' onClick={() => console.log(el.id, el.state)}>{el.stats[elm]['stats']['published']}</span> <span onClick={() => console.log(el.id, el.state)} className="span2 underskoredSpan">{el.stats[elm]['stats']['draft']}</span></p>] }
+                    return { [`${elm.toLowerCase()}`]: [<p><span className='underskoredSpan' onClick={() => this.handleRedirect(el, 'published', elm)}>{el.stats[elm]['stats']['published']}</span> <span onClick={() => this.handleRedirect(el, 'draft', elm)} className="span2 underskoredSpan">{el.stats[elm]['stats']['draft']}</span></p>] }
                 })
                 let arrayoFObj = newasdf.reduce(((r, c) => Object.assign(r, c)), {})
                 return {
@@ -60,13 +77,13 @@ export class Stats extends Component {
                     key: el.id,
                     site: [<p className='underskoredP' onClick={() => this.props.history.push(`/sites/${el.id}`)}>{el.name}</p>],
                     ...arrayoFObj,
-                    total: [<p><span className='underskoredSpan' onClick={() => console.log(el.id, el.state)}>{el.total.published}</span> <span onClick={() => console.log(el.id, el.state)} className="span2 underskoredSpan">{el.total.draft}</span></p>]
+                    total: [<p><span className='underskoredSpan'>{el.total.published}</span> <span className="span2 underskoredSpan">{el.total.draft}</span></p>]
                 }
             })
 
             const totals = getStatsData?.data?.total?.map(el => {
                 return {
-                    [`${el.name.toLowerCase()}`]: [<p><span onClick={() => console.log(el.id, el.state)}>{el.stats.published}</span> <span onClick={() => console.log(el.id, el.state)} className="span2">{el.stats.draft}</span></p>],
+                    [`${el.name.toLowerCase()}`]: [<p><span>{el.stats.published}</span> <span className="span2">{el.stats.draft}</span></p>],
                 }
             })
 
@@ -102,20 +119,11 @@ export class Stats extends Component {
                 />
                 <div className='StatsMainShortTable'>
                     {this.state.data.map((item, key) => {
-                        console.log(item, 'hello');
                         return <div key={key} className='mainDivShotScreenStats'>
 
-                            {/* &.draft {
-          background: #dfe094;
-        }
-        &.error {
-          background: #e09494;
-        }
-        &.trash {
-          background: #295265;
-        } */}
 
-                            <div className='mainDivInOutStats' style={{ background: item.statusState === 2 && 'rgba(223, 224, 148, 0.75)' }}>
+
+                            <div className={`mainDivInOutStats ${item.statusState === 0 && 'draft'} ${item.statusState === 2 && 'error'} ${item.statusState === 3 && 'trash'}`}>
                                 {columns.map((el, i) => {
                                     return <div key={i} className='statistic'>
                                         <div>

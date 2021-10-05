@@ -110,18 +110,18 @@ export class CategoriesDetails extends Component {
         } else if (page === 'sitesDiv') {
             this.props.history.push({
                 pathname: '/sites',
-                state: { whichToFilter: 'test' }
+                data: { searchBycategory: this.state.categoryDetailsData, prevPath: '/categories' }
             })
             this.setState({ isIteditable: false })
         } else if (page === 'postsDiv') {
             this.props.history.push({
                 pathname: '/posts',
-                state: { whichToFilter: 'test' }
+                data: { searchBycategory: this.state.categoryDetailsData, prevPath: '/categories' }
             })
         } else if (page === 'widgetsDiv') {
             this.props.history.push({
                 pathname: '/widgets',
-                state: { whichToFilter: 'test' }
+                data: { searchBycategory: this.state.categoryDetailsData, prevPath: '/categories' }
             })
         }
         else {
@@ -173,6 +173,8 @@ export class CategoriesDetails extends Component {
     }
     render() {
         const { isIteditable, categoryDetailsData, adult } = this.state
+
+        console.log(categoryDetailsData, 'dataaaaaaaaaaaaaaaa');
 
         return (
             <div className='mainSiteDetailsDiv'>

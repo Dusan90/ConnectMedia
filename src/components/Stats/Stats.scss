@@ -62,9 +62,20 @@
     @media only screen and (min-width: 1000px) {
       display: none;
     }
+
     .mainDivShotScreenStats {
       .mainDivInOutStats {
         background: rgba(171, 217, 150, 0.75);
+
+        &.draft {
+          background: #dfe094;
+        }
+        &.error {
+          background: #e09494;
+        }
+        &.trash {
+          background: #295265;
+        }
         .statistic {
           border-bottom: 1px solid rgba(187, 187, 187, 0.6);
           display: flex;

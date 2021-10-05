@@ -18,6 +18,7 @@ import '../../components/Home/Home.scss'
 
 function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selectedSiteSearch, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
     const [user, setUser] = useState('all users')
+    const [statusOn, setStatusOn] = useState('NOTRASH')
     const dispatch = useDispatch()
     const location = useLocation()
     const [showUserOptions, setShowUserOptions] = useState(false)
@@ -106,6 +107,15 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
         handleAllOptionsOnMain(el, 'categories')
     }
 
+    const handleStatusShow = (el) => {
+        if (statusOn === el) {
+            setStatusOn('')
+        } else {
+            setStatusOn(el)
+        }
+        handleSortByStatus(el)
+    }
+
 
     useEffect(() => {
         if (location?.data?.searchBy && location?.data?.prevPath) {
@@ -116,7 +126,19 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
             const pasedDataSearch = location?.data?.searchBycategory
             const prePath = location?.data?.prevPath
             prePath === '/categories' && setCategorie(pasedDataSearch.name)
+        } else if (location?.data?.searchByuser && location?.data?.prevPath) {
+            const pasedDataSearch = location?.data?.searchByuser
+            const prePath = location?.data?.prevPath
+            prePath === '/users' && setUser(pasedDataSearch.name)
+        } else if (location?.dataFromStats?.searchBycategory) {
+            const el = location?.dataFromStats
+            if (el.pageName === 'stats') {
+                setCategorie(el.searchBycategory?.name)
+                setSites(el.searchByuser.name)
+                setStatusOn(el.status)
+            }
         }
+
     }, [])
 
     return (
@@ -141,12 +163,12 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
                     </div>
                     {pageName !== 'TOTALS' && pageName !== 'USERS' && pageName !== 'CATEGORIES' && <div className='info2'>
                         <div className='sectionWithTrash'>
-                            <div className='col1' onClick={() => handleSortByStatus('NOTRASH')}><p>NO TRASH</p></div>
-                            <div className='col2' onClick={() => handleSortByStatus(1)}><p>PUBLISHED</p></div>
-                            <div className='col3' onClick={() => handleSortByStatus(0)}><p>DRAFT</p></div>
-                            <div className='col4' onClick={() => handleSortByStatus(2)}><p>ERROR</p></div>
+                            <div className='col1' style={{ borderBottom: statusOn === 'NOTRASH' && '5px solid #94d7e0' }} onClick={() => handleStatusShow('NOTRASH')}><p>NO TRASH</p></div>
+                            <div className='col2' style={{ borderBottom: statusOn === 1 && '5px solid #94d7e0' }} onClick={() => handleStatusShow(1)}><p>PUBLISHED</p></div>
+                            <div className='col3' style={{ borderBottom: statusOn === 0 && '5px solid #94d7e0' }} onClick={() => handleStatusShow(0)}><p>DRAFT</p></div>
+                            <div className='col4' style={{ borderBottom: statusOn === 2 && '5px solid #94d7e0' }} onClick={() => handleStatusShow(2)}><p>ERROR</p></div>
 
-                            <div className='trashDiv' onClick={() => handleSortByStatus(3)}><img src={trash} alt="trash" /></div>
+                            <div className='trashDiv' style={{ borderBottom: statusOn === 3 && '5px solid #94d7e0' }} onClick={() => handleStatusShow(3)}><img src={trash} alt="trash" /></div>
                         </div>
                     </div>}
                 </div>
