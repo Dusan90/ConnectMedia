@@ -82,7 +82,7 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
 
                 return <div key={key} className='mainDivShotScreen'>
                     <div className='checkAndTrashDiv'>
-                        <input type="checkbox" value={checkboxList} checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} />
+                        {/* <input type="checkbox" value={checkboxList} checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /> */}
                         <img src={secondTrash} alt="trash" onClick={() => handleTrashFunctionaliti(item.id)} />
                     </div>
                     <div className='statusDiv'>

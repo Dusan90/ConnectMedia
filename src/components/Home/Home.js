@@ -310,8 +310,6 @@ export class Home extends Component {
 
     render() {
         const { selectedUserSearch, urlForCreate, loading } = this.state
-
-        console.log(this.props.location);
         return (
             <>
                 <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>

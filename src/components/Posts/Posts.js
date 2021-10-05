@@ -412,7 +412,7 @@ export class Posts extends Component {
         const { urlForCreatePost, dataToRender, selectedSiteSearch, loading, sitesList } = this.state
         const { getSitesList } = this.props
 
-        console.log(this.props.location);
+        // console.log(this.props.location);
         return (
             <>
                 <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
@@ -436,7 +436,7 @@ export class Posts extends Component {
                         {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                             return <div key={key} className='mainDivShotScreen'>
                                 <div className='checkAndTrashDiv'>
-                                    <input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} />
+                                    {/* <input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /> */}
                                     <img src={secondTrash} onClick={() => this.handleTrashFunctionaliti(item.id)} alt="trash" />
                                 </div>
                                 <div className='statusDiv'>
@@ -519,7 +519,7 @@ export class Posts extends Component {
                                         <div className="divWithHashes">
                                             {/* <p>{this.props.getCategoryList?.data?.data.map((el, index) => el.id === item.site ? el.name : '')}</p> */}
                                             {/* <p>{this.props.getCategoryList?.data?.data.filter(el => item.categories.includes(el.id) ? el.name : '')}</p> */}
-                                            <p>{this.findcategory(item)}</p>
+                                            {this.findcategory(item)}
 
 
                                             <div className='box'>
@@ -529,27 +529,31 @@ export class Posts extends Component {
                                             </div>
                                         </div>
                                         {this.state.hashesArrowDown && item.id === this.state.hashesArrowWitchIsOn.id && <div id='noredirection' className='offeredHashes' >
-                                            {sitesList.map((el, i) => {
+                                            {getSitesList.data?.data?.map((el, i) => {
+
                                                 if (el.id === item.site) {
-                                                    return <div onClick={() => {
-                                                        if (!item.categories.includes(el.category.id)) {
-                                                            const pushData = item.categories.concat(el.category.id)
-                                                            this.props.dispatch(UpdatePostDetailsActionRequest({
-                                                                id: item.id,
-                                                                categories: pushData
-                                                            }))
-                                                            this.handleHashArrowClick(item)
-                                                        } else {
-                                                            const popData = item.categories.filter(elm => elm !== el.category.id)
-                                                            this.props.dispatch(UpdatePostDetailsActionRequest({
-                                                                id: item.id,
-                                                                categories: popData
-                                                            }))
-                                                            this.handleHashArrowClick(item)
-                                                        }
-                                                    }} style={{ background: item.categories.includes(el.category.id) ? '#e09494' : '' }} key={i} id='noredirection'>
-                                                        <p id='noredirection'>{el.category.name}</p>
-                                                    </div>
+                                                    return el.categories.map((el, i) => {
+
+                                                        return <div onClick={() => {
+                                                            if (!item.categories.includes(el.category.id)) {
+                                                                const pushData = item.categories.concat(el.category.id)
+                                                                this.props.dispatch(UpdatePostDetailsActionRequest({
+                                                                    id: item.id,
+                                                                    categories: pushData
+                                                                }))
+                                                                this.handleHashArrowClick(item)
+                                                            } else {
+                                                                const popData = item.categories.filter(elm => elm !== el.category.id)
+                                                                this.props.dispatch(UpdatePostDetailsActionRequest({
+                                                                    id: item.id,
+                                                                    categories: popData
+                                                                }))
+                                                                this.handleHashArrowClick(item)
+                                                            }
+                                                        }} style={{ background: item.categories.includes(el.category?.id) ? '#e09494' : '' }} key={i} id='noredirection'>
+                                                            <p id='noredirection'>{el.category?.name}</p>
+                                                        </div>
+                                                    })
                                                 }
                                             })}
                                         </div>}
@@ -634,7 +638,7 @@ export class Posts extends Component {
                     {!loading && this.state.dataToRender.length !== 0 ? <table>
                         <thead>
                             <tr>
-                                <th></th>
+                                {/* <th></th> */}
                                 <th></th>
                                 <th>
                                     <div>
@@ -752,7 +756,7 @@ export class Posts extends Component {
                         <tbody>
                             {dataToRender.length !== 0 && dataToRender.map((item, key) => {
                                 return <tr key={key} onClick={(e) => this.handlePageRedirect(e, item)}>
-                                    <td><input type="checkbox" id='noredirection' value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /></td>
+                                    {/* <td><input type="checkbox" id='noredirection' value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /></td> */}
                                     <td><img src={secondTrash} onClick={() => this.handleTrashFunctionaliti(item.id)} alt="trash" id='noredirection' /></td>
                                     <td> <div className='coloredDivStatus' style={{ background: item.status === 1 ? '#ABD996' : item.status === 0 ? '#dfe094' : item.status === 2 ? '#e09494' : item.status === 3 ? '#295265' : '' }}>
                                         {item.status === 1 ? 'PUBLISHED' : item.status === 0 ? 'DRAFT' : item.status === 2 ? 'ERROR' : item.status === 3 ? 'TRASH' : ''}

@@ -150,7 +150,7 @@ export class SiteDetails extends Component {
             if (getSiteDetailsData?.data?.translations?.feed.length !== 0) {
                 this.setState({
                     feed_translations: getSiteDetailsData?.data?.translations?.feed?.map(el => {
-                        return { feed: el.feed.id, category: el.category.id }
+                        return { feed: el.feed?.id, category: el.category?.id }
                     })
                 })
 
@@ -233,57 +233,29 @@ export class SiteDetails extends Component {
             const categorieFormating = categories.map(el => {
                 return { category: el.category.id, expire: el.expire, keep: el.keep, max_age: el.max_age, min_ctr: el.min_ctr, min_imp: el.min_imp }
             })
-
-            console.log(categorieFormating);
-            if (this.props.location.data?.createNew) {
-                this.props.dispatch(CreateSiteActionRequest({
-                    name,
-                    url,
-                    description,
-                    head,
-                    encoding,
-                    factor,
-                    minimum,
-                    tracking,
-                    auto_publish,
-                    better_images,
-                    feed_definition,
-                    post_definition,
-                    refresh_interval,
-                    copy_from_site,
-                    guess_remote,
-                    tag_map,
-                    state: dataState,
-                    feeds: typeof RSS === 'array' ? RSS.split(" ") : null,
-                    categories: categorieFormating,
-                    feed_translations
-                }))
-            } else {
-                console.log(RSS, 'RSS');
-                this.props.dispatch(UpdateSiteDetailsActionRequest({
-                    id: this.props.match.params.id,
-                    name,
-                    url,
-                    description,
-                    head,
-                    encoding,
-                    factor,
-                    minimum,
-                    tracking,
-                    auto_publish,
-                    better_images,
-                    feed_definition,
-                    post_definition,
-                    refresh_interval,
-                    copy_from_site,
-                    guess_remote,
-                    tag_map,
-                    state: dataState,
-                    feeds: typeof RSS === 'string' ? RSS.split(" ") : null,
-                    categories: categorieFormating,
-                    feed_translations
-                }))
-            }
+            this.props.dispatch(UpdateSiteDetailsActionRequest({
+                id: this.props.match.params.id,
+                name,
+                url,
+                description,
+                head,
+                encoding,
+                factor,
+                minimum,
+                tracking,
+                auto_publish,
+                better_images,
+                feed_definition,
+                post_definition,
+                refresh_interval,
+                copy_from_site,
+                guess_remote,
+                tag_map,
+                state: dataState,
+                feeds: typeof RSS === 'string' ? RSS.split(" ") : null,
+                categories: categorieFormating,
+                feed_translations
+            }))
         } else if (page === 'cancel') {
             this.setState({ isIteditable: false, wordToPass: 'canceled' })
         } else {
@@ -370,16 +342,22 @@ export class SiteDetails extends Component {
     }
 
     handleFeedTraslation = (e, item) => {
-
-        if (this.state.feed_translations.length === 0) {
-            this.setState({ feed_translations: [{ feed: item, category: e.value },] })
+        if (e.value === 'none') {
+            const noneValue = this.state.feed_translations.filter(el => {
+                return el.feed !== item
+            })
+            this.setState({ feed_translations: noneValue })
         } else {
-            let copyFeed = this.state.feed_translations.filter(el => el.feed !== item)
-            if (copyFeed.length !== 0) {
-                this.setState({ feed_translations: [...this.state.feed_translations, { feed: item, category: e.value }] })
+            if (this.state.feed_translations.length === 0) {
+                this.setState({ feed_translations: [{ feed: item, category: e.value },] })
             } else {
-                copyFeed.push({ feed: item, category: e.value })
-                this.setState({ feed_translations: copyFeed })
+                let copyFeed = this.state.feed_translations.filter(el => el.feed !== item)
+                if (copyFeed.length !== 0) {
+                    this.setState({ feed_translations: [...this.state.feed_translations, { feed: item, category: e.value }] })
+                } else {
+                    copyFeed.push({ feed: item, category: e.value })
+                    this.setState({ feed_translations: copyFeed })
+                }
             }
         }
 
@@ -531,12 +509,12 @@ export class SiteDetails extends Component {
 
 
                             </div>
-                            <div className='expression_div'>
+                            {/* <div className='expression_div'>
                                 <h4>Uniq ID expression</h4>
                                 {!isIteditable && <p></p>}
                                 {isIteditable && <input name='UniqIDExpression' onChange={(e) => this.handleChange(e)} type="text" placeholder='' />}
 
-                            </div>
+                            </div> */}
                             <div className='interval_div'>
                                 <h4>Refresh interval (min)</h4>
                                 {!isIteditable && <p>{siteDetailsData?.refresh_interval}</p>}
@@ -632,7 +610,11 @@ export class SiteDetails extends Component {
                                     </p>
                                 </div>}
                                 {isIteditable && <Select
-                                    defaultValue={categorialOption?.map(el => this.state.cateOptions[el])}
+                                    defaultValue={
+                                        categorialOption?.map(el => {
+                                            return this.state.cateOptions.find(elm => elm.value === el)
+
+                                        })}
                                     className="basic-single"
                                     classNamePrefix="select"
                                     // defaultValue={colourOptions[0]}
@@ -671,7 +653,7 @@ export class SiteDetails extends Component {
                             {siteDetailsData?.feeds?.length !== 0 && siteDetailsData?.feeds?.map(el => {
                                 return <div key={el.id} className='feedCat_div'>
                                     <Link to={el.url ? el.url : '#'}>{el.url}</Link>
-                                    {!isIteditable && <p>{siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}</p>}
+                                    {!isIteditable && <p>{siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category?.name : '')}</p>}
                                     {isIteditable && <div className='selectAndX'>
                                         <Select
                                             // defaultValue={siteDetailsData?.translations.feed?.map(el => el.category.name && `${el.category.id}`)}
@@ -679,19 +661,19 @@ export class SiteDetails extends Component {
                                             classNamePrefix="select"
                                             // defaultValue={colourOptions[0]}
                                             // isLoading={true}
-                                            placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}
+                                            placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category?.name : '')}
                                             styles={customSelectStyles}
-                                            isClearable={true}
+                                            // isClearable={true}
                                             isSearchable={true}
                                             name={`feed${el.id}`}
-                                            options={this.state.cateOptions}
+                                            options={[{ value: 'none', label: 'None' }, ...this.state.cateOptions]}
                                             onChange={(e) => this.handleFeedTraslation(e, el.id)}
 
                                         />
                                         {/* <select>
                                         <option className='options' value="">none selected</option>
                                     </select> */}
-                                        {/* <img src={xButton} onClick={() => handleDelete} alt="x" /> */}
+                                        {/* <img src={xButton} alt="x" /> */}
                                     </div>
                                     }
                                 </div>

@@ -213,7 +213,6 @@ export class Widgets extends Component {
             });
         } else if (value === 'Down') {
             const sorted = this.state.data.sort((a, b) => {
-                console.log(typeof a[sortByClicked], a, b);
                 if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
                     return a[sortByClicked]?.localeCompare(b[sortByClicked])
 

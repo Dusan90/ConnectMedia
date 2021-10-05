@@ -92,7 +92,6 @@ export class Users extends Component {
         e.preventDefault()
         const value = this.state.inputValue.toLowerCase()
         const newData = this.state.data.filter(el => {
-            console.log(el);
             return el.email?.toLowerCase().includes(value)
         })
 

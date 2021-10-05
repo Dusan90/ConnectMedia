@@ -90,7 +90,7 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
         <table>
             <thead>
                 <tr>
-                    <th></th>
+                    {/* <th></th> */}
                     <th></th>
                     <th>
                         <div>
@@ -154,7 +154,7 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
             <tbody>
                 {data.length !== 0 && data.map((item, key) => {
                     return <tr key={key} onClick={(e) => handlePageRedirect(e, item)}>
-                        <td><input type="checkbox" value={checkboxList} id='noredirection' checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td>
+                        {/* <td><input type="checkbox" value={checkboxList} id='noredirection' checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td> */}
                         <td><img src={secondTrash} onClick={() => handleTrashFunctionaliti(item.id)} alt="trash" id='noredirection' /></td>
                         <td>
                             {pageName !== 'widgets' && <div className='coloredDivStatus' style={{ background: item.state === 1 ? '#ABD996' : item.state === 0 ? '#dfe094' : item.state === 2 ? '#e09494' : item.state === 3 ? '#295265' : '' }}>
@@ -204,7 +204,9 @@ function TableRowContainer({ data, pageName, handleCheckbox, handleTrashFunction
                                         }))
                                     }}>{`${el.category.name}, `}</a>)}</p>}
                                     {pageName === 'widgets' && <p>{item?.categories?.slice(0, 2).map((el, i) => <a id='noredirection' onClick={() => {
-                                        const newData = item.categories.filter(elm => elm !== el.id)
+                                        const newData = item.categories.map(elm => {
+                                            if (elm.id !== el.id) { return elm.id }
+                                        })
                                         dispatch(UpdateWidgetDetailsActionRequest({
                                             id: item.id,
                                             categories: newData
