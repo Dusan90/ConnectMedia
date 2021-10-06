@@ -85,7 +85,12 @@ export class UsersDetails extends Component {
 
     handleWhereEverNav = (page) => {
         if (page === 'editDiv') {
-            this.setState({ isIteditable: true })
+            const { getSelfUser } = this.props
+            if (getSelfUser?.data?.data?.roles?.includes(0)) {
+                this.setState({ isIteditable: true })
+            } else {
+                NotificationManager.error(`You don't have a permission to do that`, "Failed", 2000)
+            }
         } else if (page === 'sitesDiv') {
             this.props.history.push({
                 pathname: '/sites',
@@ -266,11 +271,12 @@ export class UsersDetails extends Component {
 
 const mapStateToProps = (state) => {
     const { UsersReducer } = state;
-    const { getSpecUserDetails, updateSpecUser, deleteSpecUser } = UsersReducer
+    const { getSpecUserDetails, updateSpecUser, deleteSpecUser, getSelfUser } = UsersReducer
     return {
         getSpecUserDetails,
         updateSpecUser,
-        deleteSpecUser
+        deleteSpecUser,
+        getSelfUser
 
     }
 }

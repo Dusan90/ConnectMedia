@@ -14,6 +14,9 @@ import history from '../../routes/History'
 import AddContainer from '../../containers/AddContainer/AddContainer'
 import { GetPostsListActionRequest, DeletePostActionRequest, UpdatePostDetailsActionRequest } from '../../store/actions/PostActions'
 import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
+import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
+import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
+
 import moment from 'moment'
 import { NotificationManager } from 'react-notifications'
 import { filtering } from './Filtering'
@@ -70,33 +73,21 @@ export class Posts extends Component {
     componentDidMount() {
 
 
-        this.props.dispatch(GetSitesListActionRequest())
         this.props.dispatch(GetPostsListActionRequest())
 
     }
 
     componentDidUpdate(prevProps) {
         const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch, inputValue } = this.state
-        const { getPostsList, deletePost, getSitesList, updatePostDetails } = this.props
+        const { getPostsList, deletePost, getSitesList, updatePostDetails, getUsersList, getCategoryList } = this.props
         const { loading: getPostsListLoading, error: getPostsListError, data: getPostsListData, errorData: getPostsListErrorData } = getPostsList
         const { loading: deletePostLoading, error: deletePostError, data: deletePostData, errorData: deletePostErrorData } = deletePost
         const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData, errorData: getSitesListErrorData } = getSitesList
         const { data: updatePostDetailsData, loading: updatePostDetailsLoading, error: updatePostDetailsError, errorData: updatePostDetailsErrorData } = updatePostDetails;
 
-        if (prevProps.updatePostDetails !== updatePostDetails && !updatePostDetailsError && !updatePostDetailsLoading && updatePostDetailsData) {
-            NotificationManager.success("Post successfully updated", "Success", 2000);
-            this.props.dispatch(GetPostsListActionRequest())
-        } else if (prevProps.updatePostDetails !== updatePostDetails && updatePostDetailsError && updatePostDetailsErrorData) {
-            NotificationManager.error(`${updatePostDetailsErrorData.data.message}`, "Failed", 2000);
 
-        }
-
-
-        if (prevProps.deletePost !== deletePost && !deletePostError && !deletePostLoading && deletePostData) {
-            NotificationManager.success("Post successfully deleted", "Success", 2000);
-            this.setState({ confirmMessage: false })
-            this.props.dispatch(GetPostsListActionRequest())
-        }
+        const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData } = getCategoryList
+        const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData } = getUsersList
 
 
         if (prevProps.getPostsList !== getPostsList && !getPostsListLoading && !getPostsListError && getPostsListData) {
@@ -128,6 +119,34 @@ export class Posts extends Component {
             });
         }
 
+        if (!getUsersListLoading && !getUsersListError && !getUsersListData) {
+            this.props.dispatch(GetUsersListActionRequest())
+        }
+
+        if (!getCategoryListLoading && !getCategoryListError && !getCategoryListData) {
+            this.props.dispatch(GetCategoryListActionRequest())
+        }
+
+
+
+
+        if (prevProps.updatePostDetails !== updatePostDetails && !updatePostDetailsError && !updatePostDetailsLoading && updatePostDetailsData) {
+            NotificationManager.success("Post successfully updated", "Success", 2000);
+            this.props.dispatch(GetPostsListActionRequest())
+        } else if (prevProps.updatePostDetails !== updatePostDetails && updatePostDetailsError && updatePostDetailsErrorData) {
+            NotificationManager.error(`${updatePostDetailsErrorData.data.message}`, "Failed", 2000);
+
+        }
+
+
+        if (prevProps.deletePost !== deletePost && !deletePostError && !deletePostLoading && deletePostData) {
+            NotificationManager.success("Post successfully deleted", "Success", 2000);
+            this.setState({ confirmMessage: false })
+            this.props.dispatch(GetPostsListActionRequest())
+        }
+
+
+
         if (prevProps.getSitesList !== getSitesList && !getSitesListLoading && !getSitesListError && getSitesListData) {
             const allCategoryesOfAllSites = getSitesListData?.data?.map(el => el.categories)
             const merged = [].concat.apply([], allCategoryesOfAllSites);
@@ -137,6 +156,8 @@ export class Posts extends Component {
                 ))
             )
             this.setState({ sitesList: uniqueChars })
+        } else if (!getSitesListLoading && !getSitesListError && !getSitesListData) {
+            this.props.dispatch(GetSitesListActionRequest())
         }
 
     }
@@ -343,19 +364,25 @@ export class Posts extends Component {
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
-        if (this.props.location?.data?.searchByuser) {
+        if (this.props.location?.data?.searchByuser && !secondElement) {
             this.setState({ selectedUserSearch: el })
+            const newData = this.state.data.filter(elm => {
+                return elm.owner === el.id
+            })
+            this.setState({ data: newData })
             setTimeout(() => {
-                this.props.dispatch(GetPostsListActionRequest())
+                this.setState({ page: 1 })
+
+                this.paginate(1)
             });
         }
-        else if (this.props.location?.data?.searchBycategory) {
+        else if (this.props.location?.data?.searchBycategory && !secondElement) {
             this.setState({ selectedCategorieSearch: el })
             setTimeout(() => {
                 this.props.dispatch(GetPostsListActionRequest())
             });
         }
-        else if (this.props.location?.data?.searchBy) {
+        else if (this.props.location?.data?.searchBy && !secondElement) {
             this.setState({ selectedSiteSearch: el })
             setTimeout(() => {
                 this.props.dispatch(GetPostsListActionRequest())
@@ -412,7 +439,7 @@ export class Posts extends Component {
         const { urlForCreatePost, dataToRender, selectedSiteSearch, loading, sitesList } = this.state
         const { getSitesList } = this.props
 
-        // console.log(this.props.location);
+        console.log(this.props.location);
         return (
             <>
                 <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
@@ -847,10 +874,12 @@ export class Posts extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const { CategoryReducer, PostsReducer, SitesListReducer } = state;
+    const { CategoryReducer, PostsReducer, SitesListReducer, UsersReducer } = state;
     const { getCategoryList } = CategoryReducer
     const { getPostsList, deletePost, updatePostDetails } = PostsReducer
     const { getSitesList } = SitesListReducer
+    const { getUsersList } = UsersReducer
+
 
 
     return {
@@ -858,7 +887,8 @@ const mapStateToProps = (state) => {
         getPostsList,
         getSitesList,
         deletePost,
-        updatePostDetails
+        updatePostDetails,
+        getUsersList
 
     }
 }

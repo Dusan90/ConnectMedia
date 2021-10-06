@@ -47,6 +47,7 @@ export class Users extends Component {
             dataToRender: newArray,
             loading: false,
             maxPages: pages,
+
         });
     }
 
@@ -58,6 +59,8 @@ export class Users extends Component {
         const { createUser, getUsersList } = this.props
         const { loading: createUserLoading, error: createUserError, data: createUserData, errorData: createUserErrorData } = createUser
         const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData, errorData: getUsersListErrorData } = getUsersList
+
+
 
         if (prevProps.getUsersList !== getUsersList && !getUsersListLoading && !getUsersListError && getUsersListData) {
             this.setState({ data: getUsersListData.data })
@@ -192,7 +195,12 @@ export class Users extends Component {
     }
 
     handleAddSomeMore = () => {
-        this.setState({ addButtonClicked: !this.state.addButtonClicked })
+        const { getSelfUser } = this.props
+        if (getSelfUser?.data?.data?.roles?.includes(0)) {
+            this.setState({ addButtonClicked: !this.state.addButtonClicked })
+        } else {
+            NotificationManager.error(`You don't have a permission to do that`, "Failed", 2000)
+        }
     }
 
     handleCreateUser = (e) => {
@@ -209,6 +217,7 @@ export class Users extends Component {
 
     render() {
         const { dataToRender, loading } = this.state
+
 
         return (
             <>
@@ -328,10 +337,11 @@ export class Users extends Component {
 
 const mapStateToProps = (state) => {
     const { UsersReducer } = state;
-    const { createUser, getUsersList } = UsersReducer
+    const { createUser, getUsersList, getSelfUser } = UsersReducer
     return {
         createUser,
-        getUsersList
+        getUsersList,
+        getSelfUser
 
     }
 }

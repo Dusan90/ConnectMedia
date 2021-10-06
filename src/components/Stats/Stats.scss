@@ -93,6 +93,22 @@
             text-align: center;
             font-size: 15px;
             line-height: 32px;
+            p {
+              display: flex;
+              justify-content: space-evenly;
+              span {
+                color: green;
+              }
+              .span2 {
+                color: #896300;
+                &.underskoredSpan {
+                  &:hover {
+                    text-decoration: underline;
+                    cursor: pointer;
+                  }
+                }
+              }
+            }
           }
         }
       }

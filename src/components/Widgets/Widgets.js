@@ -8,6 +8,10 @@ import { connect } from 'react-redux'
 import '../Home/Home.scss'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import { GetWidgetsListActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
+import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
+import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
+import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
+
 import { NotificationManager } from 'react-notifications'
 import { tSThisType } from '@babel/types'
 import { filtering } from './Filtering'
@@ -77,10 +81,14 @@ export class Widgets extends Component {
     componentDidUpdate(prevProps) {
 
         const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch, inputValue } = this.state
-        const { getWidgetsList, deleteWidget, updateWidgetDetails } = this.props
+        const { getWidgetsList, deleteWidget, updateWidgetDetails, getSitesList, getCategoryList, getUsersList } = this.props
         const { loading: getWidgetsListLoading, error: getWidgetsListError, data: getWidgetsListData, errorData: getWidgetsListErrorData } = getWidgetsList
         const { loading: deleteWidgetLoading, error: deleteWidgetError, data: deleteWidgetData, errorData: deleteWidgetErrorData } = deleteWidget
         const { data: updateWidgetDetailsData, loading: updateWidgetDetailsLoading, error: updateWidgetDetailsError, errorData: updateWidgetDetailsErrorData } = updateWidgetDetails;
+
+        const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData, errorData: getSitesListErrorData } = getSitesList
+        const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData } = getCategoryList
+        const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData } = getUsersList
 
 
         if (prevProps.deleteWidget !== deleteWidget && !deleteWidgetError && !deleteWidgetLoading && deleteWidgetData) {
@@ -118,6 +126,19 @@ export class Widgets extends Component {
                 this.paginate(1)
             });
         }
+
+        if (!getUsersListLoading && !getUsersListError && !getUsersListData) {
+            this.props.dispatch(GetUsersListActionRequest())
+        }
+
+        if (!getCategoryListLoading && !getCategoryListError && !getCategoryListData) {
+            this.props.dispatch(GetCategoryListActionRequest())
+        }
+
+        if (!getSitesListLoading && !getSitesListError && !getSitesListData) {
+            this.props.dispatch(GetSitesListActionRequest())
+        }
+
 
 
 
@@ -269,19 +290,26 @@ export class Widgets extends Component {
     }
 
     handleSearchOnMainPage = (el, secondElement) => {
-        if (this.props.location?.data?.searchByuser) {
+        if (this.props.location?.data?.searchByuser && !secondElement) {
             this.setState({ selectedUserSearch: el })
+            const newData = this.state.data.filter(elm => {
+                console.log(elm, el);
+                return elm.owner.id === el.id
+            })
+            this.setState({ data: newData })
             setTimeout(() => {
-                this.props.dispatch(GetWidgetsListActionRequest())
+                this.setState({ page: 1 })
+
+                this.paginate(1)
             });
         }
-        else if (this.props.location?.data?.searchBycategory) {
+        else if (this.props.location?.data?.searchBycategory && !secondElement) {
             this.setState({ selectedCategorieSearch: el })
             setTimeout(() => {
                 this.props.dispatch(GetWidgetsListActionRequest())
             });
         }
-        else if (this.props.location?.data?.searchBy) {
+        else if (this.props.location?.data?.searchBy && !secondElement) {
             this.setState({ selectedSiteSearch: el })
             setTimeout(() => {
                 this.props.dispatch(GetWidgetsListActionRequest())
@@ -314,7 +342,8 @@ export class Widgets extends Component {
     handleAllOptionsOnMain = (el, sortBy) => {
         if (sortBy === "categories") {
             this.setState({ selectedCategorieSearch: '' })
-        } else if (sortBy === 'sites') {
+        }
+        if (sortBy === 'sites') {
             this.setState({ selectedSiteSearch: '' })
         }
         setTimeout(() => {
@@ -324,7 +353,7 @@ export class Widgets extends Component {
     }
 
     render() {
-        const { selectedSiteSearch, data, loading } = this.state
+        const { selectedSiteSearch, data, loading, selectedCategorieSearch, selectedUserSearch } = this.state
 
         return (
             <>
@@ -362,7 +391,11 @@ export class Widgets extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const { WidgetReducer } = state;
+    const { WidgetReducer, SitesListReducer, UsersReducer, CategoryReducer } = state;
+    const { getSitesList } = SitesListReducer
+    const { getUsersList } = UsersReducer
+    const { getCategoryList } = CategoryReducer
+
 
     const { getWidgetsList, deleteWidget, updateWidgetDetails } = WidgetReducer
 
@@ -370,7 +403,10 @@ const mapStateToProps = (state) => {
     return {
         getWidgetsList,
         deleteWidget,
-        updateWidgetDetails
+        updateWidgetDetails,
+        getSitesList,
+        getUsersList,
+        getCategoryList
 
 
     }

@@ -245,19 +245,19 @@ export class Home extends Component {
         }
     }
     handleSearchOnMainPage = (el, secondElement) => {
-        if (this.props.location?.data?.searchByuser) {
+        if (this.props.location?.data?.searchByuser && !secondElement) {
             this.setState({ selectedUserSearch: el })
             setTimeout(() => {
                 this.props.dispatch(GetSitesListActionRequest())
             });
         }
-        else if (this.props.location?.data?.searchBycategory) {
+        else if (this.props.location?.data?.searchBycategory && !secondElement) {
             this.setState({ selectedCategorieSearch: el })
             setTimeout(() => {
                 this.props.dispatch(GetSitesListActionRequest())
             });
         }
-        else if (this.props.location?.data?.searchBy) {
+        else if (this.props.location?.data?.searchBy && !secondElement) {
             this.setState({ selectedSiteSearch: el })
             setTimeout(() => {
                 this.props.dispatch(GetSitesListActionRequest())

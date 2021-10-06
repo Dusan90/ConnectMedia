@@ -32,25 +32,25 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
     const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData } = SitesListReducer.getSitesList
     const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData } = UsersReducer.getUsersList
 
-    useEffect(() => {
-        if (!getCategoryListLoading && !getCategoryListError && !getCategoryListData) {
-            dispatch(GetCategoryListActionRequest())
-        }
-    }, [CategoryReducer.getCategoryList])
+    // useEffect(() => {
+    //     if (!getCategoryListLoading && !getCategoryListError && !getCategoryListData) {
+    //         dispatch(GetCategoryListActionRequest())
+    //     }
+    // }, [CategoryReducer.getCategoryList])
 
-    useEffect(() => {
-        if (!getSitesListLoading && !getSitesListError && !getSitesListData) {
-            dispatch(GetSitesListActionRequest())
+    // useEffect(() => {
+    //     if (!getSitesListLoading && !getSitesListError && !getSitesListData) {
+    //         dispatch(GetSitesListActionRequest())
 
-        }
-    }, [SitesListReducer.getSitesList])
+    //     }
+    // }, [SitesListReducer.getSitesList])
 
-    useEffect(() => {
-        if (!getUsersListLoading && !getUsersListError && !getUsersListData) {
-            dispatch(GetUsersListActionRequest())
+    // useEffect(() => {
+    //     if (!getUsersListLoading && !getUsersListError && !getUsersListData) {
+    //         dispatch(GetUsersListActionRequest())
 
-        }
-    }, [UsersReducer.getUsersList])
+    //     }
+    // }, [UsersReducer.getUsersList])
 
 
     const handleChangeOptionsuser = (el) => {

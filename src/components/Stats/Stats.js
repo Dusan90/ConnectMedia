@@ -34,7 +34,7 @@ export class Stats extends Component {
 
 
     handleRedirect = (el, secondArg, elm) => {
-        console.log(el, elm);
+        // console.log(el, elm);
         if (secondArg === 'published') {
             this.props.history.push({
                 pathname: `/posts`,
@@ -129,8 +129,7 @@ export class Stats extends Component {
                                         <div>
                                             <p>{el.title}</p>
                                         </div>
-                                        {/* {this.handleForLoop(item, el)} */}
-                                        <p className="valueP">{item[`${el}`]}</p>
+                                        <div className="valueP">{item[el.key]}</div>
                                     </div>
                                 })}
                             </div>
