@@ -262,12 +262,10 @@ export class Posts extends Component {
         //         pathname: `/posts`,
         //         data: { searchBy: value, prevPath: window.location.pathname }
         //     })
-        // } else if (tabClicked === 'visit') {
-        //     history.push({
-        //         pathname: `/widgets`,
-        //         data: { searchBy: value, prevPath: window.location.pathname }
-        //     })
         // }
+        else if (tabClicked === 'visit') {
+            window.open(`${value?.link && value?.link}`)
+        }
     }
 
 
@@ -391,21 +389,18 @@ export class Posts extends Component {
         }
 
 
-        if (!this.state.addButtonClicked) {
-
-            if (secondElement === 'sites') {
-                this.setState({ selectedSiteSearch: el })
-                setTimeout(() => {
-                    this.props.dispatch(GetPostsListActionRequest())
-                });
-            } else if (secondElement === 'categories') {
-                this.setState({ selectedCategorieSearch: el })
-                setTimeout(() => {
-                    this.props.dispatch(GetPostsListActionRequest())
-                });
-            }
-
+        if (secondElement === 'sites') {
+            this.setState({ selectedSiteSearch: el })
+            setTimeout(() => {
+                this.props.dispatch(GetPostsListActionRequest())
+            });
+        } else if (secondElement === 'categories') {
+            this.setState({ selectedCategorieSearch: el })
+            setTimeout(() => {
+                this.props.dispatch(GetPostsListActionRequest())
+            });
         }
+
     }
 
 
@@ -440,7 +435,7 @@ export class Posts extends Component {
         const { urlForCreatePost, dataToRender, selectedSiteSearch, loading, sitesList } = this.state
         const { getSitesList } = this.props
 
-        console.log(this.props.location);
+        console.log(this.state.selectedSiteSearch);
         return (
             <>
                 <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />
@@ -532,8 +527,8 @@ export class Posts extends Component {
                                 </div>
                                 <div className='mainForIcons'>
                                     <div className="divWithClicableIcons">
-                                        <img src={posts} alt="posts" />
-                                        <p onClick={() => this.haneldeRedirect(item, 'portal')}>portal</p>
+                                        {/* <img src={posts} alt="posts" />
+                                        <p onClick={() => this.haneldeRedirect(item, 'portal')}>portal</p> */}
                                         <img src={visit} alt="visit" />
                                         <p onClick={() => this.haneldeRedirect(item, 'visit')}>visit</p>
                                         <img src={edit} alt="edit" />
@@ -809,7 +804,7 @@ export class Posts extends Component {
                                     </div>
                                     </td> */}
 
-                                    <td>{item?.timestamp && `${moment(new Date(item?.timestamp)).format("MM-DD-YYYY")}`}</td>
+                                    <td>{item?.timestamp && `${moment(item?.timestamp * 1000).format("MM-DD-YYYY")}`}</td>
                                     <td>{
                                         item.title
                                     }</td>

@@ -223,8 +223,8 @@ export class PostsDetails extends Component {
     handleChangeInputs = e => {
         if (e.target.type === 'date') {
             const d = new Date(e.target.value);
-            const miliseconds = d.getTime()
-            this.setState({ [e.target.name]: parseInt(miliseconds) })
+            const seconds = d.getTime() / 1000
+            this.setState({ [e.target.name]: parseInt(seconds) })
 
         } else {
             this.setState({ [e.target.name]: e.target.value })
@@ -297,7 +297,7 @@ export class PostsDetails extends Component {
                             </div>
                             <div className='url_div'>
                                 <h4>Url</h4>
-                                {!isIteditable && <Link to='#'>{postDetailsData['link']}</Link>}
+                                {!isIteditable && <a onClick={() => window.open(`${postDetailsData && postDetailsData['link']}`)} href='#'>{postDetailsData['link']}</a>}
                                 {isIteditable && <input type="text" name='url' onChange={(e) => this.handleChangeInputs(e)} placeholder={this.state.url ? this.state.url : postDetailsData['link']} />}
                                 {/* {isIteditable && <SaveButtonEdit labeltext={'Scrape'} colorization={'ScrapeClass'} customStyle={{ width: '135px', marginRight: '20px' }} />} */}
 
@@ -384,7 +384,7 @@ export class PostsDetails extends Component {
                             <div className='categ_div'>
                                 <h4>Date</h4>
 
-                                {!isIteditable && <p>{postDetailsData?.timestamp && `${moment(new Date(postDetailsData?.timestamp)).format("MM-DD-YYYY")}`}</p>}
+                                {!isIteditable && <p>{postDetailsData?.timestamp && `${moment(new Date(postDetailsData?.timestamp * 1000)).format("MM-DD-YYYY")}`}</p>}
                                 {isIteditable && <input className='dateInput' name='date' onChange={(e) => this.handleChangeInputs(e)} type="date" placeholder={postDetailsData?.timestamp && new Date(postDetailsData?.timestamp)} />}
 
                             </div>

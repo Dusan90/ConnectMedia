@@ -135,9 +135,7 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                         <div className="divWithClicableIcons">
                             <img src={visit} alt="visit" />
                             <p onClick={() => {
-                                if (item.url) {
-                                    window.location.href = `${item.url}`
-                                } else return null
+                                window.open(`${item?.url && item?.url}`)
                             }
                             }>visit</p>
                             <img src={edit} alt="edit" />
