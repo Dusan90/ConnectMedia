@@ -31,12 +31,12 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
     const handlePageRedirect = (item) => {
         if (pageName === 'widgets') {
             history.push({
-                pathname: `/widgets/${item.site?.id}`,
+                pathname: `/widgets/${item?.id}`,
                 state: item
             })
         } else {
             history.push({
-                pathname: `/sites/${item.site?.id}`,
+                pathname: `/sites/${item?.id}`,
                 state: item
             })
         }

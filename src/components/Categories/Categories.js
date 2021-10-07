@@ -256,7 +256,7 @@ export class Categories extends Component {
 
                                     </div>
                                     <div className='ownersNameClass'>
-                                        {item.nazivKorisnika}
+                                        {item.name}
                                     </div>
                                 </div>
                                 <div className='mainForIcons'>

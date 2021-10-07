@@ -242,7 +242,7 @@ export class Users extends Component {
 
                                     </div>
                                     <div className='ownersNameClass'>
-                                        {item.nazivKorisnika}
+                                        {item.email}
                                     </div>
                                 </div>
                                 <div className='mainForIcons'>
