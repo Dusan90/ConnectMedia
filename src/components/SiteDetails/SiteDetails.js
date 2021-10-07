@@ -199,6 +199,7 @@ export class SiteDetails extends Component {
         }
     }
 
+
     handleWhereEverNav = (page) => {
         if (page === 'editDiv') {
             this.setState({ isIteditable: true })
@@ -208,12 +209,12 @@ export class SiteDetails extends Component {
         } else if (page === 'postsDiv') {
             this.props.history.push({
                 pathname: '/posts',
-                state: { whichToFilter: 'test' }
+                data: { searchBy: this.state.siteDetailsData, prevPath: '/sites' }
             })
         } else if (page === 'widgetsDiv') {
             this.props.history.push({
                 pathname: '/widgets',
-                state: { whichToFilter: 'test' }
+                data: { searchBy: this.state.siteDetailsData, prevPath: '/sites' }
             })
         }
         else {
@@ -276,7 +277,6 @@ export class SiteDetails extends Component {
     }
 
     handleChangeRSS = (e) => {
-        console.log('-->', e.target.value);
         this.setState({ RSS: e.target.value });
     }
 
@@ -365,22 +365,14 @@ export class SiteDetails extends Component {
 
     handleChangeCategory = (e, item) => {
         const { categories } = this.state
-
-        // const editeditem = item
-
         item[e.target.name] = parseInt(e.target.value)
-
-        // console.log(item);
-
-        // console.log(categories);
-
     }
 
     render() {
         const { isIteditable, whichisit, wordToPass, treeButtonsMotivation, categories, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
         const categorialOption = siteDetailsData?.categories?.map(el => el.category.id)
 
-        console.log(this.state.RSS);
+        console.log(this.state.siteDetailsData);
         return (
             <div className='mainSiteDetailsDiv'>
                 <NavWidget isButtonNamepased={this.props?.location?.data?.buttonClicked} wordToPass={wordToPass} handleWhereEverNav={this.handleWhereEverNav} handleTrashClick={this.handleTrashClick} />
@@ -475,7 +467,7 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='tracking_div'>
                                 <h4>Tracking</h4>
-                                {!isIteditable && <p>{siteDetailsData?.tracking}</p>}
+                                {!isIteditable && <p>{`${siteDetailsData?.tracking}`}</p>}
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='tracking' value={tracking !== null ? tracking : siteDetailsData?.tracking} checked={tracking !== null ? tracking : siteDetailsData?.tracking} onChange={(e) => this.setState({ tracking: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">enable user tracking (sets cookie)</label></div>}
                             </div>
                         </div>
@@ -491,7 +483,7 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='images_div'>
                                 <h4>Look for better images</h4>
-                                {!isIteditable && <p>{siteDetailsData?.better_images}</p>}
+                                {!isIteditable && <p>{`${siteDetailsData?.better_images}`}</p>}
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='betterImage' value={better_images !== null ? better_images : siteDetailsData?.better_images} checked={better_images !== null ? better_images : siteDetailsData?.better_images} onChange={(e) => this.setState({ better_images: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">scrape individual pages for images (insert only)</label></div>}
 
 
@@ -523,7 +515,7 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='autopublish_div'>
                                 <h4>Autopublish</h4>
-                                {!isIteditable && <p>{siteDetailsData?.auto_publish}</p>}
+                                {!isIteditable && <p>{`${siteDetailsData?.auto_publish}`}</p>}
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input name='auto_publish' value={auto_publish !== null ? auto_publish : siteDetailsData?.auto_publish} checked={auto_publish !== null ? auto_publish : siteDetailsData?.auto_publish} onChange={(e) => this.setState({ auto_publish: e.target.checked })} style={{ width: '20px' }} type="checkbox" /> <label htmlFor="check">limit to feed</label></div>}
 
 
@@ -631,7 +623,7 @@ export class SiteDetails extends Component {
                             </div>
                             <div className='copySite_div'>
                                 <h4>Copy from site</h4>
-                                {!isIteditable && < p > {siteDetailsData?.copy_from_site}</p>}
+                                {!isIteditable && < p > {`${siteDetailsData?.copy_from_site}`}</p>}
                                 {isIteditable && <div><input type="checkbox" value={copy_from_site !== null ? copy_from_site : siteDetailsData?.copy_from_site} checked={copy_from_site !== null ? copy_from_site : siteDetailsData?.copy_from_site} onChange={(e) => this.setState({ copy_from_site: e.target.checked })} name="copy_from_site" /> <label htmlFor="check">copy site categories to new posts</label></div>}
 
                             </div>

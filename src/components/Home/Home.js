@@ -189,7 +189,7 @@ export class Home extends Component {
     }
 
     handleArrowSort = (sortByClicked, value) => {
-        // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
+        console.log(sortByClicked, value);
         if (value === 'Up') {
             const sorted = this.state.data.sort((a, b) => {
                 if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {

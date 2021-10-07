@@ -1,203 +1,246 @@
 export const filtering = (pasedData, selectedStatusSearch, selectedCategorieSearch, selectedUserSearch, inputValue) => {
 
+    let dataToSend = pasedData
 
-    if (selectedStatusSearch && !selectedCategorieSearch && !selectedUserSearch && !inputValue) {
-        const newArray = pasedData?.filter(el => {
+    if (selectedStatusSearch) {
+        const newArray = dataToSend?.filter(el => {
             return el?.state === selectedStatusSearch.id
         })
-        return newArray
+        dataToSend = newArray
     }
-    else if (selectedStatusSearch && selectedCategorieSearch && !selectedUserSearch && !inputValue) {
 
-        const categori = pasedData?.filter(el => {
-            console.log(el);
+    if (selectedCategorieSearch) {
+        const categori = dataToSend?.filter(el => {
             return el.categories.find(elm => {
                 return elm.category.id === selectedCategorieSearch.id
             })
         })
-        const newArray = categori.filter(el => {
-            return el?.state === selectedStatusSearch.id
-        })
-        return newArray
+
+        dataToSend = categori
     }
-    else if (selectedStatusSearch && !selectedCategorieSearch && selectedUserSearch && !inputValue) {
-        const sites = pasedData?.filter(el => {
+
+    if (selectedUserSearch) {
+        const newArray = dataToSend?.filter(el => {
             return el.owner?.id === selectedUserSearch.id
         })
-
-        const newArray = sites.filter(el => {
-            return el?.state === selectedStatusSearch.id
-        })
-        return newArray
-    }
-    else if (selectedUserSearch && !selectedCategorieSearch && !selectedStatusSearch && !inputValue) {
-
-        const newArray = pasedData?.filter(el => {
-            console.log(el, selectedUserSearch);
-            return el.owner?.id === selectedUserSearch.id
-        })
-        return newArray
+        dataToSend = newArray
     }
 
-    else if (!selectedUserSearch && selectedCategorieSearch && !selectedStatusSearch && !inputValue) {
-
-        const categori = pasedData?.filter(el => {
-            console.log(el);
-            return el.categories.find(elm => {
-                return elm.category.id === selectedCategorieSearch.id
-            })
-        })
-        return categori
-    }
-
-    else if (selectedUserSearch && selectedCategorieSearch && !selectedStatusSearch && !inputValue) {
-
-
-        const categori = pasedData?.filter(el => {
-
-            return el.categories.find(elm => {
-                return elm.category.id === selectedCategorieSearch.id
-            })
-        })
-
-        const newArray = categori.filter(el => {
-            return el.owner?.id === selectedUserSearch.id
-        })
-
-        return newArray
-    }
-
-    else if (selectedUserSearch && selectedCategorieSearch && selectedStatusSearch && !inputValue) {
-
-        const status = pasedData?.filter(el => {
-            return el?.state === selectedStatusSearch.id
-        })
-
-        const categori = status?.filter(el => {
-            console.log(el);
-            return el.categories.find(elm => {
-                return elm.category.id === selectedCategorieSearch.id
-            })
-        })
-        const newArray = categori.filter(el => {
-            return el.owner?.id === selectedUserSearch.id
-        })
-
-
-        return newArray
-    }
-
-
-
-
-
-
-
-
-
-
-
-    else if (inputValue && !selectedUserSearch && !selectedCategorieSearch && !selectedStatusSearch) {
-        const newData = pasedData.filter(el => {
+    if (inputValue) {
+        const newData = dataToSend.filter(el => {
             return el.name?.toLowerCase().includes(inputValue)
         })
-        return newData
+        dataToSend = newData
     }
 
-    else if (inputValue && selectedUserSearch && !selectedCategorieSearch && !selectedStatusSearch) {
 
-        const user = pasedData?.filter(el => {
-            return el.owner?.id === selectedUserSearch.id
-        })
 
-        const newData = user.filter(el => {
-            return el.name?.toLowerCase().includes(inputValue)
-        })
+    return dataToSend
 
-        return newData
-    }
 
-    else if (inputValue && selectedUserSearch && selectedCategorieSearch && !selectedStatusSearch) {
 
-        const user = pasedData?.filter(el => {
-            return el.owner?.id === selectedUserSearch.id
-        })
 
-        const categori = user?.filter(el => {
 
-            return el.categories.find(elm => {
-                return elm.category.id === selectedCategorieSearch.id
-            })
-        })
 
-        const newData = categori.filter(el => {
-            return el.name?.toLowerCase().includes(inputValue)
-        })
 
-        return newData
-    }
 
-    else if (inputValue && selectedUserSearch && selectedCategorieSearch && selectedStatusSearch) {
+    // if (selectedStatusSearch && !selectedCategorieSearch && !selectedUserSearch && !inputValue) {
+    //     const newArray = pasedData?.filter(el => {
+    //         return el?.state === selectedStatusSearch.id
+    //     })
+    //     return newArray
+    // }
+    // else if (selectedStatusSearch && selectedCategorieSearch && !selectedUserSearch && !inputValue) {
 
-        const status = pasedData?.filter(el => {
-            return el?.state === selectedStatusSearch.id
-        })
+    //     const categori = pasedData?.filter(el => {
+    //         console.log(el);
+    //         return el.categories.find(elm => {
+    //             return elm.category.id === selectedCategorieSearch.id
+    //         })
+    //     })
+    //     const newArray = categori.filter(el => {
+    //         return el?.state === selectedStatusSearch.id
+    //     })
+    //     return newArray
+    // }
+    // else if (selectedStatusSearch && !selectedCategorieSearch && selectedUserSearch && !inputValue) {
+    //     const sites = pasedData?.filter(el => {
+    //         return el.owner?.id === selectedUserSearch.id
+    //     })
 
-        const user = status?.filter(el => {
-            return el.owner?.id === selectedUserSearch.id
-        })
+    //     const newArray = sites.filter(el => {
+    //         return el?.state === selectedStatusSearch.id
+    //     })
+    //     return newArray
+    // }
+    // else if (selectedUserSearch && !selectedCategorieSearch && !selectedStatusSearch && !inputValue) {
 
-        const categori = user?.filter(el => {
+    //     const newArray = pasedData?.filter(el => {
+    //         console.log(el, selectedUserSearch);
+    //         return el.owner?.id === selectedUserSearch.id
+    //     })
+    //     return newArray
+    // }
 
-            return el.categories.find(elm => {
-                return elm.category.id === selectedCategorieSearch.id
-            })
-        })
+    // else if (!selectedUserSearch && selectedCategorieSearch && !selectedStatusSearch && !inputValue) {
 
-        const newData = categori.filter(el => {
-            return el.name?.toLowerCase().includes(inputValue)
-        })
-        return newData
-    }
-    else if (inputValue && !selectedUserSearch && selectedCategorieSearch && selectedStatusSearch) {
-        const status = pasedData?.filter(el => {
-            return el?.state === selectedStatusSearch.id
-        })
-        const categori = status?.filter(el => {
+    //     const categori = pasedData?.filter(el => {
+    //         console.log(el);
+    //         return el.categories.find(elm => {
+    //             return elm.category.id === selectedCategorieSearch.id
+    //         })
+    //     })
+    //     return categori
+    // }
 
-            return el.categories.find(elm => {
-                return elm.category.id === selectedCategorieSearch.id
-            })
-        })
-        const newData = categori.filter(el => {
-            return el.name?.toLowerCase().includes(inputValue)
-        })
-        return newData
-    }
+    // else if (selectedUserSearch && selectedCategorieSearch && !selectedStatusSearch && !inputValue) {
 
-    else if (inputValue && !selectedUserSearch && selectedCategorieSearch && !selectedStatusSearch) {
-        const categori = pasedData?.filter(el => {
 
-            return el.categories.find(elm => {
-                return elm.category.id === selectedCategorieSearch.id
-            })
-        })
-        const newData = categori.filter(el => {
-            return el.name?.toLowerCase().includes(inputValue)
-        })
-        return newData
-    }
-    else if (inputValue && !selectedUserSearch && !selectedCategorieSearch && selectedStatusSearch) {
+    //     const categori = pasedData?.filter(el => {
 
-        const status = pasedData?.filter(el => {
-            return el?.state === selectedStatusSearch.id
-        })
+    //         return el.categories.find(elm => {
+    //             return elm.category.id === selectedCategorieSearch.id
+    //         })
+    //     })
 
-        const newData = status.filter(el => {
-            return el.name?.toLowerCase().includes(inputValue)
-        })
-        return newData
-    }
+    //     const newArray = categori.filter(el => {
+    //         return el.owner?.id === selectedUserSearch.id
+    //     })
+
+    //     return newArray
+    // }
+
+    // else if (selectedUserSearch && selectedCategorieSearch && selectedStatusSearch && !inputValue) {
+
+    //     const status = pasedData?.filter(el => {
+    //         return el?.state === selectedStatusSearch.id
+    //     })
+
+    //     const categori = status?.filter(el => {
+    //         console.log(el);
+    //         return el.categories.find(elm => {
+    //             return elm.category.id === selectedCategorieSearch.id
+    //         })
+    //     })
+    //     const newArray = categori.filter(el => {
+    //         return el.owner?.id === selectedUserSearch.id
+    //     })
+
+
+    //     return newArray
+    // }
+
+
+
+
+
+
+
+
+
+
+
+    // else if (inputValue && !selectedUserSearch && !selectedCategorieSearch && !selectedStatusSearch) {
+    //     const newData = pasedData.filter(el => {
+    //         return el.name?.toLowerCase().includes(inputValue)
+    //     })
+    //     return newData
+    // }
+
+    // else if (inputValue && selectedUserSearch && !selectedCategorieSearch && !selectedStatusSearch) {
+
+    //     const user = pasedData?.filter(el => {
+    //         return el.owner?.id === selectedUserSearch.id
+    //     })
+
+    //     const newData = user.filter(el => {
+    //         return el.name?.toLowerCase().includes(inputValue)
+    //     })
+
+    //     return newData
+    // }
+
+    // else if (inputValue && selectedUserSearch && selectedCategorieSearch && !selectedStatusSearch) {
+
+    //     const user = pasedData?.filter(el => {
+    //         return el.owner?.id === selectedUserSearch.id
+    //     })
+
+    //     const categori = user?.filter(el => {
+
+    //         return el.categories.find(elm => {
+    //             return elm.category.id === selectedCategorieSearch.id
+    //         })
+    //     })
+
+    //     const newData = categori.filter(el => {
+    //         return el.name?.toLowerCase().includes(inputValue)
+    //     })
+
+    //     return newData
+    // }
+
+    // else if (inputValue && selectedUserSearch && selectedCategorieSearch && selectedStatusSearch) {
+
+    //     const status = pasedData?.filter(el => {
+    //         return el?.state === selectedStatusSearch.id
+    //     })
+
+    //     const user = status?.filter(el => {
+    //         return el.owner?.id === selectedUserSearch.id
+    //     })
+
+    //     const categori = user?.filter(el => {
+
+    //         return el.categories.find(elm => {
+    //             return elm.category.id === selectedCategorieSearch.id
+    //         })
+    //     })
+
+    //     const newData = categori.filter(el => {
+    //         return el.name?.toLowerCase().includes(inputValue)
+    //     })
+    //     return newData
+    // }
+    // else if (inputValue && !selectedUserSearch && selectedCategorieSearch && selectedStatusSearch) {
+    //     const status = pasedData?.filter(el => {
+    //         return el?.state === selectedStatusSearch.id
+    //     })
+    //     const categori = status?.filter(el => {
+
+    //         return el.categories.find(elm => {
+    //             return elm.category.id === selectedCategorieSearch.id
+    //         })
+    //     })
+    //     const newData = categori.filter(el => {
+    //         return el.name?.toLowerCase().includes(inputValue)
+    //     })
+    //     return newData
+    // }
+
+    // else if (inputValue && !selectedUserSearch && selectedCategorieSearch && !selectedStatusSearch) {
+    //     const categori = pasedData?.filter(el => {
+
+    //         return el.categories.find(elm => {
+    //             return elm.category.id === selectedCategorieSearch.id
+    //         })
+    //     })
+    //     const newData = categori.filter(el => {
+    //         return el.name?.toLowerCase().includes(inputValue)
+    //     })
+    //     return newData
+    // }
+    // else if (inputValue && !selectedUserSearch && !selectedCategorieSearch && selectedStatusSearch) {
+
+    //     const status = pasedData?.filter(el => {
+    //         return el?.state === selectedStatusSearch.id
+    //     })
+
+    //     const newData = status.filter(el => {
+    //         return el.name?.toLowerCase().includes(inputValue)
+    //     })
+    //     return newData
+    // }
 
 
 

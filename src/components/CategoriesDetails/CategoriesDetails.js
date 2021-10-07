@@ -201,7 +201,7 @@ export class CategoriesDetails extends Component {
                             </div>
                             <div className='name_div'>
                                 <h4>Adult</h4>
-                                {!isIteditable && <p>{categoryDetailsData?.adult}</p>}
+                                {!isIteditable && <p>{`${categoryDetailsData?.adult}`}</p>}
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={adult !== null ? adult : categoryDetailsData?.adult} checked={adult !== null ? adult : categoryDetailsData?.adult} onChange={(e) => this.setState({ adult: e.target.checked })} /> <label htmlFor="check"></label></div>}
                             </div>
                             {/* <div className='owner_div'>

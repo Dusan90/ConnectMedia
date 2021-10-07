@@ -94,18 +94,18 @@ export class UsersDetails extends Component {
         } else if (page === 'sitesDiv') {
             this.props.history.push({
                 pathname: '/sites',
-                data: { searchBycategory: this.state.usersData, prevPath: '/users' }
+                data: { searchByuser: this.state.usersData, prevPath: '/users' }
             })
             this.setState({ isIteditable: false })
         } else if (page === 'postsDiv') {
             this.props.history.push({
                 pathname: '/posts',
-                data: { searchBycategory: this.state.usersData, prevPath: '/users' }
+                data: { searchByuser: this.state.usersData, prevPath: '/users' }
             })
         } else if (page === 'widgetsDiv') {
             this.props.history.push({
                 pathname: '/widgets',
-                data: { searchBycategory: this.state.usersData, prevPath: '/users' }
+                data: { searchByuser: this.state.usersData, prevPath: '/users' }
             })
         }
         else {
@@ -204,7 +204,7 @@ export class UsersDetails extends Component {
 
                             </div>
                             <div className='name_div'>
-                                <h4>Company/ Organisation</h4>
+                                <h4>Company</h4>
                                 {!isIteditable && <p>{usersData?.company}</p>}
                                 {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='company' placeholder={usersData?.company} />}
                             </div>

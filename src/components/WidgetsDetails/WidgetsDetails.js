@@ -325,7 +325,7 @@ export class WidgetsDetails extends Component {
                             </div>
                             <div className='url_div'>
                                 <h4>Public</h4>
-                                {!isIteditable && <p>{WidgetDetailsData && WidgetDetailsData['public']}</p>}
+                                {!isIteditable && <p>{WidgetDetailsData && `${WidgetDetailsData['public']}`}</p>}
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={publicValue !== null ? publicValue : WidgetDetailsData['public']} checked={publicValue !== null ? publicValue : WidgetDetailsData['public']} onChange={(e) => this.setState({ publicValue: e.target.checked })} /></div>}
 
                             </div>
@@ -334,17 +334,17 @@ export class WidgetsDetails extends Component {
 
                             <div className='owner_div'>
                                 <h4>Include site</h4>
-                                {!isIteditable && <p>{WidgetDetailsData?.include}</p>}
+                                {!isIteditable && <p>{`${WidgetDetailsData?.include}`}</p>}
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={include !== null ? include : WidgetDetailsData?.include} checked={include !== null ? include : WidgetDetailsData?.include} onChange={(e) => this.setState({ include: e.target.checked })} /></div>}
                             </div>
                             <div className='owner_div'>
                                 <h4>Link direct</h4>
-                                {!isIteditable && <p>{WidgetDetailsData?.direct}</p>}
+                                {!isIteditable && <p>{`${WidgetDetailsData?.direct}`}</p>}
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={direct !== null ? direct : WidgetDetailsData?.direct} checked={direct !== null ? direct : WidgetDetailsData?.direct} onChange={(e) => this.setState({ direct: e.target.checked })} /></div>}
                             </div>
                             <div className='description_div'>
                                 <h4>Open site posts in the same window</h4>
-                                {!isIteditable && <p>{WidgetDetailsData?.same_window}</p>}
+                                {!isIteditable && <p style={{ marginLeft: '20px' }}>{`${WidgetDetailsData?.same_window}`}</p>}
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={same_window !== null ? same_window : WidgetDetailsData?.same_window} checked={same_window !== null ? same_window : WidgetDetailsData?.same_window} onChange={(e) => this.setState({ same_window: e.target.checked })} /></div>}
 
                             </div>
@@ -357,7 +357,7 @@ export class WidgetsDetails extends Component {
                             <h1 style={{ margin: '20px 0' }}>Order</h1>
                             <div className='head_div'>
                                 <h4>Do not register impressions</h4>
-                                {!isIteditable && <p>{WidgetDetailsData?.ignore_impressions}</p>}
+                                {!isIteditable && <p style={{ marginLeft: '20px' }}>{`${WidgetDetailsData?.ignore_impressions}`}</p>}
                                 {isIteditable && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><input style={{ width: '20px' }} type="checkbox" name="check" value={ignore_impressions !== null ? ignore_impressions : WidgetDetailsData?.ignore_impressions} checked={ignore_impressions !== null ? ignore_impressions : WidgetDetailsData?.ignore_impressions} onChange={(e) => this.setState({ ignore_impressions: e.target.checked })} /></div>}
 
                             </div>

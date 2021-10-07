@@ -383,6 +383,7 @@ export class Posts extends Component {
             });
         }
         else if (this.props.location?.data?.searchBy && !secondElement) {
+            console.log(el, 'halololooooooooooooooooo');
             this.setState({ selectedSiteSearch: el })
             setTimeout(() => {
                 this.props.dispatch(GetPostsListActionRequest())
