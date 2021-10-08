@@ -5,6 +5,7 @@ import Routes from "../src/routes/Routes";
 import history from './routes/History'
 import "react-notifications/lib/notifications.css";
 import { NotificationContainer } from "react-notifications"
+import IdleTimerContainer from './routes/IdleTimerContainer'
 
 
 
@@ -24,6 +25,7 @@ function App() {
         {Routes}
       </Router>
       <NotificationContainer />
+      <IdleTimerContainer />
     </div>
   );
 }

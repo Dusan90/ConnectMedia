@@ -9,6 +9,8 @@ import Header from '../components/Header/Header'
 
 
 
+
+
 // const urlPrefix = process.env.REACT_APP_BSC_URL_PREFIX;
 
 const pageComponentMap = {
@@ -123,6 +125,8 @@ const Routes = (
                 })}
 
                 <Pages.NotFound path="**" title="This page doesn't exist..." exact />
+
+
             </Switch>
         </Suspense>
         <Footer />
