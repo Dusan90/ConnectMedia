@@ -3,3 +3,52 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
+.mainDivStyle {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+  padding-top: 10px;
+  .mapedDiv {
+    width: 350px;
+    justify-self: center;
+    .imgStyle {
+      width: 350px;
+      height: 180px;
+      object-fit: cover;
+    }
+    .h1Style {
+      font-family: Calibri;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 26px;
+      line-height: 32px;
+      color: #062c3d;
+      text-align: start;
+      margin: 0;
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+    .pStyle {
+      font-family: Calibri;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 20px;
+      color: #84a2af;
+    }
+  }
+  @media only screen and (max-width: 400px) {
+    width: 290px;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    .mapedDiv {
+      width: 290px;
+
+      .imgStyle {
+        width: 290px;
+      }
+    }
+  }
+}

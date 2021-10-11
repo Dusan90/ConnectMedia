@@ -381,7 +381,6 @@ export class Posts extends Component {
             });
         }
         else if (this.props.location?.data?.searchBy && !secondElement) {
-            console.log(el, 'halololooooooooooooooooo');
             this.setState({ selectedSiteSearch: el })
             setTimeout(() => {
                 this.props.dispatch(GetPostsListActionRequest())
@@ -435,7 +434,6 @@ export class Posts extends Component {
         const { urlForCreatePost, dataToRender, selectedSiteSearch, loading, sitesList } = this.state
         const { getSitesList } = this.props
 
-        console.log(this.state.selectedSiteSearch);
         return (
             <>
                 <SearchContainer page={this.state.page} handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleSearchOnMainPage={this.handleSearchOnMainPage} handleAddSomeMore={this.handleAddSomeMore} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"POSTS"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handleSortByStatus={this.handleSortByStatus} handleHomePageSort={this.handleHomePageSort} handlePageChange={this.handlePageChange} />

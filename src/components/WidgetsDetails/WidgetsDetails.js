@@ -10,6 +10,7 @@ import VerticalChart from '../../containers/Chart/VerticalChart'
 import Select from 'react-select'
 import { GetWidgetDetailsActionRequest, CreateWidgetActionRequest, UpdateWidgetDetailsActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
 import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
+import ViewWidgets from './ViewWidgets'
 
 import { NotificationManager } from 'react-notifications'
 
@@ -101,10 +102,7 @@ export class WidgetsDetails extends Component {
         } else if (page === 'statsDiv') {
             this.setState({ isIteditable: false })
         } else if (page === 'viewDiv') {
-            this.props.history.push({
-                pathname: '/sites',
-                state: { whichToFilter: 'test' }
-            })
+            console.log('view');
         } else if (page === 'embedDiv') {
             this.setState({ isIteditable: false })
         }
@@ -298,7 +296,7 @@ export class WidgetsDetails extends Component {
                     </div>
                 </>
                 }
-                {tabClicked !== 'statsDiv' && tabClicked !== 'embedDiv' && <div className='mainSiteInfoDiv'>
+                {tabClicked !== 'statsDiv' && tabClicked !== 'embedDiv' && tabClicked !== 'viewDiv' && <div className='mainSiteInfoDiv'>
                     <div className='leftSideDiv'>
                         <div className='generalDiv'>
                             <h1>General</h1>
@@ -482,6 +480,8 @@ export class WidgetsDetails extends Component {
                     Async Js.
                     <textarea className={'widget-embed-scripts'} value={`<script src="https://ayu.luciascipher.com/api/v1/embed/tracker.js" async></script>`} disabled={true} />
                 </div>}
+
+                {this.state.tabClicked === 'viewDiv' && <ViewWidgets />}
             </div>
         )
     }
