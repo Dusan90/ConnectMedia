@@ -49,6 +49,15 @@ export function* DeleteWidgetSaga({ payload }) {
     }
 }
 
+export function* ViewWidgetSaga({ payload }) {
+    try {
+        const response = yield call(API.viewWidget, payload);
+        yield put(ACTIONS.ViewWidgetActionReceive(response.data));
+    } catch (err) {
+        yield put(ACTIONS.ViewWidgetActionError(err.response));
+    }
+}
+
 
 export function* widgetsListSaga() {
     yield takeLatest(TYPES.GET_WIDGETS_LIST_REQUEST, GetWidgetsListSaga);
@@ -56,4 +65,5 @@ export function* widgetsListSaga() {
     yield takeLatest(TYPES.GET_WIDGET_DETAILS_REQUEST, GetWidgetDetailsSaga);
     yield takeLatest(TYPES.UPDATE_WIDGET_DETAILS_REQUEST, UpdateWidgetDetailsSaga);
     yield takeLatest(TYPES.DELETE_WIDGET_REQUEST, DeleteWidgetSaga);
+    yield takeLatest(TYPES.VIEW_WIDGET_REQUEST, ViewWidgetSaga);
 }

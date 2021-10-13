@@ -114,3 +114,27 @@ export const DeleteWidgetActionError = payload => {
         payload
     }
 };
+
+
+// VIEW WIDGET
+
+export const ViewWidgetActionRequest = payload => {
+    return {
+        type: types.VIEW_WIDGET_REQUEST,
+        payload
+    }
+};
+
+export const ViewWidgetActionReceive = payload => {
+    return {
+        type: types.VIEW_WIDGET_RECEIVE,
+        payload
+    };
+}
+
+export const ViewWidgetActionError = payload => {
+    return {
+        type: types.VIEW_WIDGET_ERROR,
+        payload
+    }
+};

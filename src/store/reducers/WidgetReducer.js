@@ -32,6 +32,14 @@ const INITIAL_STATE = {
         data: null,
         loading: false,
     },
+    viewWidget: {
+        error: false,
+        errorData: null,
+        data: null,
+        loading: false,
+    },
+
+
 
 };
 
@@ -200,6 +208,42 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 deleteWidget: {
+                    error: false,
+                    errorData: null,
+                    data: action.payload,
+                    loading: false,
+                },
+
+            };
+
+
+        // view widget
+
+
+        case types.VIEW_WIDGET_REQUEST:
+            return {
+                ...state,
+                viewWidget: {
+                    error: false,
+                    errorData: null,
+                    data: null,
+                    loading: true,
+                },
+            };
+        case types.VIEW_WIDGET_ERROR:
+            return {
+                ...state,
+                viewWidget: {
+                    error: true,
+                    errorData: action.payload,
+                    data: null,
+                    loading: false,
+                },
+            };
+        case types.VIEW_WIDGET_RECEIVE:
+            return {
+                ...state,
+                viewWidget: {
                     error: false,
                     errorData: null,
                     data: action.payload,

@@ -75,10 +75,16 @@ const deleteWidget = async ({ id }) => {
     return await axiosInstance.delete(`${url(GET_WIDGET)}/${id}`)
 }
 
+const viewWidget = async () => {
+    // return await axiosInstance.get(`${url(GET_WIDGET)}`)
+    console.log('get view');
+}
+
 export default {
     getWidgetsList,
     getWidgetDetails,
     createWidget,
     updateWidgetDetails,
-    deleteWidget
+    deleteWidget,
+    viewWidget
 };
