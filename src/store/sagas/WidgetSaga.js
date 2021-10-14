@@ -3,6 +3,8 @@ import API from "../API/WidgetAPI";
 import * as ACTIONS from "../actions/WidgetActions";
 import { takeLatest } from "redux-saga/effects";
 import * as TYPES from "../types/WidgetsTypes";
+import History from '../../routes/History'
+import { NotificationManager } from "react-notifications";
 
 export function* GetWidgetsListSaga({ payload }) {
     try {
@@ -10,6 +12,12 @@ export function* GetWidgetsListSaga({ payload }) {
         yield put(ACTIONS.GetWidgetsListActionReceive(response.data));
     } catch (err) {
         yield put(ACTIONS.GetWidgetsListActionError(err.response));
+        if (err.response.data.code === 403 && err.response.data.message === 'Invalid token.') {
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('isLoged')
+            NotificationManager.error(`${err.response.data.message}`, "Failed", 2000);
+            History.push('/')
+        }
     }
 }
 

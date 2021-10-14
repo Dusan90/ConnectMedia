@@ -3,6 +3,9 @@ import API from "../API/PostAPI";
 import * as ACTIONS from "../actions/PostActions";
 import { takeLatest } from "redux-saga/effects";
 import * as TYPES from "../types/PostsTypes";
+import History from '../../routes/History'
+import { NotificationManager } from "react-notifications";
+
 
 export function* GetPostsListSaga({ payload }) {
     try {
@@ -10,6 +13,12 @@ export function* GetPostsListSaga({ payload }) {
         yield put(ACTIONS.GetPostsListActionReceive(response.data));
     } catch (err) {
         yield put(ACTIONS.GetPostsListActionError(err.response));
+        if (err.response.data.code === 403 && err.response.data.message === 'Invalid token.') {
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('isLoged')
+            NotificationManager.error(`${err.response.data.message}`, "Failed", 2000);
+            History.push('/')
+        }
     }
 }
 

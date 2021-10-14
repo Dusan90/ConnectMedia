@@ -3,6 +3,9 @@ import API from "../API/UsersAPI";
 import * as ACTIONS from "../actions/UsersActions";
 import { takeLatest } from "redux-saga/effects";
 import * as TYPES from "../types/UsersTypes";
+import History from "../../routes/History";
+import { NotificationManager } from "react-notifications";
+
 
 export function* GetSelfUserSaga({ payload }) {
     try {
@@ -19,6 +22,12 @@ export function* GetUsersListSaga({ payload }) {
         yield put(ACTIONS.GetUsersListActionReceive(response.data));
     } catch (err) {
         yield put(ACTIONS.GetUsersListActionError(err.response));
+        if (err.response.data.code === 403 && err.response.data.message === 'Invalid token.') {
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('isLoged')
+            NotificationManager.error(`${err.response.data.message}`, "Failed", 2000);
+            History.push('/')
+        }
     }
 }
 

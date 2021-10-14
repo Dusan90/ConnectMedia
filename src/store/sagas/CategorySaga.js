@@ -3,6 +3,9 @@ import API from "../API/CategoryAPI";
 import * as ACTIONS from "../actions/CategoryAction";
 import { takeLatest } from "redux-saga/effects";
 import * as TYPES from "../types/CategoryTypes";
+import History from '../../routes/History'
+import { NotificationManager } from "react-notifications";
+
 
 export function* GetCategoryListSaga({ payload }) {
     try {
@@ -10,6 +13,12 @@ export function* GetCategoryListSaga({ payload }) {
         yield put(ACTIONS.GetCategoryListActionReceive(response.data));
     } catch (err) {
         yield put(ACTIONS.GetCategoryListActionError(err.response));
+        if (err.response.data.code === 403 && err.response.data.message === 'Invalid token.') {
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('isLoged')
+            NotificationManager.error(`${err.response.data.message}`, "Failed", 2000);
+            History.push('/')
+        }
     }
 }
 
