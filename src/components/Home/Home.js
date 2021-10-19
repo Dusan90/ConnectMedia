@@ -44,8 +44,7 @@ export class Home extends Component {
     }
 
     paginate = (page) => {
-        const { countPerPage, filteredDate, data, tipeSearch, inputValue } = this.state
-        // const dataToRender = (tipeSearch && inputValue) ? tipeSearch : filteredDate ? filteredDate : data
+        const { countPerPage, data } = this.state
         const dataToRender = data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
@@ -77,11 +76,11 @@ export class Home extends Component {
         const { getSitesList, deleteSite, getCategoryList, bindCategory, unbindCategory, createSite } = this.props
         const { data: createSiteData, loading: createSiteLoading, error: createSiteError, errorData: createSiteErrorData } = createSite;
 
-        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError, errorData: getSitesListErrorData } = getSitesList;
-        const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
-        const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData, errorData: getCategoryListErrorData } = getCategoryList
-        const { data: unbindCategoryData, loading: unbindCategoryLoading, error: unbindCategoryError, errorData: unbindCategoryErrorData } = unbindCategory;
-        const { data: bindCategoryData, loading: bindCategoryLoading, error: bindCategoryError, errorData: bindCategoryErrorData } = bindCategory;
+        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError } = getSitesList;
+        const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError } = deleteSite;
+        const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData } = getCategoryList
+        const { data: unbindCategoryData, loading: unbindCategoryLoading, error: unbindCategoryError } = unbindCategory;
+        const { data: bindCategoryData, loading: bindCategoryLoading, error: bindCategoryError } = bindCategory;
 
         if (prevProps.bindCategory !== bindCategory && !bindCategoryError && !bindCategoryLoading && bindCategoryData) {
             NotificationManager.success("Category successfully bind", "Success", 2000);
@@ -309,7 +308,7 @@ export class Home extends Component {
     }
 
     render() {
-        const { selectedUserSearch, urlForCreate, loading } = this.state
+        const { urlForCreate, loading } = this.state
         return (
             <>
                 <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>

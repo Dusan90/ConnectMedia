@@ -4,14 +4,7 @@ import { connect } from 'react-redux'
 import './Stats.scss'
 import { GetStatsActionRequest } from '../../store/actions/StatsAction';
 import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
-import { thisExpression } from '@babel/types';
 import { v4 as uuidv4 } from 'uuid'
-
-
-
-
-const categories = ['Site', 'B92', 'Auto', 'Biznis', 'Kuhinja', 'Ljubav', 'Moda', 'Novosti', 'Total']
-
 
 
 
@@ -52,8 +45,8 @@ export class Stats extends Component {
 
     componentDidUpdate(prevProps) {
         const { getStats, getCategoryList } = this.props
-        const { loading: getStatsLoading, error: getStatsError, data: getStatsData, errorData: getStatsErrorData } = getStats
-        const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData, errorData: getCategoryListErrorData } = getCategoryList
+        const { loading: getStatsLoading, error: getStatsError, data: getStatsData } = getStats
+        const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData } = getCategoryList
 
         if (prevProps.getCategoryList !== getCategoryList && !getCategoryListLoading && !getCategoryListError && getCategoryListData) {
             let filteredCategories = getCategoryListData?.data?.map((el, i) => {

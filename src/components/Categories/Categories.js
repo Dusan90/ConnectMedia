@@ -37,7 +37,7 @@ export class Categories extends Component {
     }
 
     paginate = (page) => {
-        const { countPerPage, filteredDate, data, tipeSearch, inputValue } = this.state
+        const { countPerPage, data } = this.state
         const dataToRender = data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
@@ -59,7 +59,7 @@ export class Categories extends Component {
         const { inputValue, selectedSitesSearch } = this.state
         const { getCategoryList, createCategory } = this.props
         const { loading: createCategoryLoading, error: createCategoryError, data: createCategoryData, errorData: createCategoryErrorData } = createCategory
-        const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData, errorData: getCategoryListErrorData } = getCategoryList
+        const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData } = getCategoryList
 
 
         if (prevProps.getCategoryList !== getCategoryList && !getCategoryListLoading && !getCategoryListError && getCategoryListData) {

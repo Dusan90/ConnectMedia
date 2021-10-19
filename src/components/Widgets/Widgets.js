@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import TableRowContainer from '../../containers/TableRowContainer/TableRowContainer'
 import ShortTableRowContainer from '../../containers/TableRowContainer/ShortTableRowContainer'
 import SearchContainer from '../../containers/SearchContainer/SearchContainer'
-import AddContainer from '../../containers/AddContainer/AddContainer'
-import Select from 'react-select'
+// import AddContainer from '../../containers/AddContainer/AddContainer'
+// import Select from 'react-select'
 import { connect } from 'react-redux'
 import '../Home/Home.scss'
 import EditableInline from '../../containers/EditableInline/EditableInline'
@@ -13,23 +13,22 @@ import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction
 import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
 
 import { NotificationManager } from 'react-notifications'
-import { tSThisType } from '@babel/types'
 import { filtering } from './Filtering'
 
 
-const customSelectStyles = {
-    control: (base, state) => ({
-        ...base,
-        flex: "1",
-        fontWeight: "500",
-        // background: "white",
-        background: '#d6dbdc',
-        // !props.organization && props.color && "rgb(245, 192, 192)",
-    }),
-    placeholder: () => ({
-        color: 'black'
-    })
-};
+// const customSelectStyles = {
+//     control: (base, state) => ({
+//         ...base,
+//         flex: "1",
+//         fontWeight: "500",
+//         // background: "white",
+//         background: '#d6dbdc',
+//         // !props.organization && props.color && "rgb(245, 192, 192)",
+//     }),
+//     placeholder: () => ({
+//         color: 'black'
+//     })
+// };
 
 export class Widgets extends Component {
     constructor(props) {
@@ -58,8 +57,7 @@ export class Widgets extends Component {
     }
 
     paginate = (page) => {
-        const { countPerPage, data, tipeSearch, inputValue } = this.state
-        // const dataToRender = (tipeSearch && inputValue) ? tipeSearch : data
+        const { countPerPage, data } = this.state
         const dataToRender = data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
@@ -82,11 +80,11 @@ export class Widgets extends Component {
 
         const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch, inputValue } = this.state
         const { getWidgetsList, deleteWidget, updateWidgetDetails, getSitesList, getCategoryList, getUsersList } = this.props
-        const { loading: getWidgetsListLoading, error: getWidgetsListError, data: getWidgetsListData, errorData: getWidgetsListErrorData } = getWidgetsList
-        const { loading: deleteWidgetLoading, error: deleteWidgetError, data: deleteWidgetData, errorData: deleteWidgetErrorData } = deleteWidget
+        const { loading: getWidgetsListLoading, error: getWidgetsListError, data: getWidgetsListData } = getWidgetsList
+        const { loading: deleteWidgetLoading, error: deleteWidgetError, data: deleteWidgetData } = deleteWidget
         const { data: updateWidgetDetailsData, loading: updateWidgetDetailsLoading, error: updateWidgetDetailsError, errorData: updateWidgetDetailsErrorData } = updateWidgetDetails;
 
-        const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData, errorData: getSitesListErrorData } = getSitesList
+        const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData } = getSitesList
         const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData } = getCategoryList
         const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData } = getUsersList
 
@@ -353,7 +351,7 @@ export class Widgets extends Component {
     }
 
     render() {
-        const { selectedSiteSearch, data, loading, selectedCategorieSearch, selectedUserSearch } = this.state
+        const { loading } = this.state
 
         return (
             <>

@@ -27,17 +27,17 @@ function Header() {
     const [isItClicked, setIsItClicked] = useState(false)
     const [isItClickedChangePass, setIsClickedChangePass] = useState(false)
     const [isHamburgerClicked, setIsHamburgerClicked] = useState(false)
-    const [isNotificationOpen, setIsNotificationOpen] = useState(false)
+    // const [isNotificationOpen, setIsNotificationOpen] = useState(false)
     const [currentPass, setCurrentPass] = useState('')
     const [newPass, setNewPass] = useState('')
-    const [whoIsActive, setWhoIsActive] = useState('')
+    // const [whoIsActive, setWhoIsActive] = useState('')
     const [currentUserData, setCurrentUserData] = useState('')
 
     const { pathname } = history.location
 
     const { loading: getSelfUserLoading, error: getSelfUserError, data: getSelfUserData } = UsersReducer.getSelfUser
     const { loading: changeSelfUserPassLoading, errorData: changeSelfUserPassErrorData, error: changeSelfUserPassError, data: changeSelfUserPassData } = UsersReducer.changeSelfUserPass
-    const { loading: logOutLoading, errorData: logOutErrorData, error: logOutError, data: logOutData } = LoginReducer.logOut
+    const { loading: logOutLoading, error: logOutError, data: logOutData } = LoginReducer.logOut
 
 
 
@@ -69,7 +69,7 @@ function Header() {
 
 
     const handleDropDown = () => {
-        setIsNotificationOpen(false)
+        // setIsNotificationOpen(false)
         setIsClickedChangePass(false)
         setIsHamburgerClicked(false)
         setIsItClicked(prevState => {
@@ -84,7 +84,7 @@ function Header() {
     }
 
     const handleHamburgerClick = () => {
-        setIsNotificationOpen(false)
+        // setIsNotificationOpen(false)
         setIsClickedChangePass(false)
         setIsItClicked(false)
         setIsHamburgerClicked(prevState => {
@@ -99,7 +99,7 @@ function Header() {
 
     const handleTabChange = (path) => {
         setIsHamburgerClicked(false)
-        setWhoIsActive(path)
+        // setWhoIsActive(path)
         history.push(`${path}`)
     }
 
@@ -107,9 +107,9 @@ function Header() {
         setIsHamburgerClicked(false)
         setIsClickedChangePass(false)
         setIsItClicked(false)
-        setIsNotificationOpen(prevProps => {
-            return !prevProps
-        })
+        // setIsNotificationOpen(prevProps => {
+        //     return !prevProps
+        // })
     }
 
     const handleChangePassword = () => {

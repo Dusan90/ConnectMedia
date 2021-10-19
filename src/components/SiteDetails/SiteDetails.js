@@ -3,35 +3,20 @@ import { Link } from 'react-router-dom'
 import NavWidget from '../../containers/NavWidget/NavWidget'
 import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
 import secondarrowDown from '../../assets/img/TableIcons/arrow.svg'
-import xButton from '../../assets/img/SiteDetails/xButton.svg'
+// import xButton from '../../assets/img/SiteDetails/xButton.svg'
 import { connect } from 'react-redux'
 import './SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
-import { GetSiteDetailsActionRequest, DeleteSiteActionRequest, UpdateSiteDetailsActionRequest, CreateSiteActionRequest } from '../../store/actions/SitesListAction'
+import { GetSiteDetailsActionRequest, DeleteSiteActionRequest, UpdateSiteDetailsActionRequest } from '../../store/actions/SitesListAction'
 import { BindCategoryActionRequest, UnbindCategoryActionRequest, GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
 import Chart from '../../containers/Chart/Chart'
 import Select from 'react-select'
 import { NotificationManager } from 'react-notifications'
-import { placeholder, thisExpression, tSThisType } from '@babel/types'
-
-const test = [{
-    title: 'vesti',
-    keep: 50,
-    expire: 23,
-    maxAge: 24
-}]
 
 const test2 = [{ mesto: 'Beograd', title: 'vesti' }, { mesto: 'dobra vest', title: 'vesti' }, { mesto: 'dobra vest', title: 'vesti' }, { mesto: 'kultura', title: 'zanimljivosti' }]
 
-const test3 = [{ text: 'vesti' }, { text: 'zabava' }]
 
 const options = [0, 1, 2, 3]
-
-const optionss = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-]
 
 const customSelectStyles = {
     control: (base, state) => ({
@@ -109,14 +94,14 @@ export class SiteDetails extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { getSiteDetails, deleteSite, createSite, updateSiteDetails, getCategoryList, unbindCategory, bindCategory } = this.props
-        const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError, errorData: getSiteDetailsErrorData } = getSiteDetails;
-        const { data: getCategoryListData, loading: getCategoryListLoading, error: getCategoryListError, errorData: getCategoryListErrorData } = getCategoryList;
-        const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError, errorData: deleteSiteErrorData } = deleteSite;
+        const { getSiteDetails, deleteSite, updateSiteDetails, getCategoryList, unbindCategory, bindCategory } = this.props
+        const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError } = getSiteDetails;
+        const { data: getCategoryListData, loading: getCategoryListLoading, error: getCategoryListError } = getCategoryList;
+        const { data: deleteSiteData, loading: deleteSiteLoading, error: deleteSiteError } = deleteSite;
         // const { data: createSiteData, loading: createSiteLoading, error: createSiteError, errorData: createSiteErrorData } = createSite;
         const { data: updateSiteDetailsData, loading: updateSiteDetailsLoading, error: updateSiteDetailsError, errorData: updateSiteDetailsErrorData } = updateSiteDetails;
-        const { data: unbindCategoryData, loading: unbindCategoryLoading, error: unbindCategoryError, errorData: unbindCategoryErrorData } = unbindCategory;
-        const { data: bindCategoryData, loading: bindCategoryLoading, error: bindCategoryError, errorData: bindCategoryErrorData } = bindCategory;
+        const { data: unbindCategoryData, loading: unbindCategoryLoading, error: unbindCategoryError } = unbindCategory;
+        const { data: bindCategoryData, loading: bindCategoryLoading, error: bindCategoryError } = bindCategory;
 
 
         if (prevProps.bindCategory !== bindCategory && !bindCategoryError && !bindCategoryLoading && bindCategoryData) {
@@ -310,9 +295,9 @@ export class SiteDetails extends Component {
                     return el.value
                 })
                 const intersection = item.filter(itemm => {
-                    if (
-                        !element.includes(itemm.value)
-                    ) { return itemm }
+                    if (!element.includes(itemm.value)) {
+                        return itemm
+                    }
                 });
                 // const intersection = item.filter((entry1) => {
                 //     return categorialOption.some((entry2) => { return entry1.value !== entry2.value });
@@ -364,12 +349,11 @@ export class SiteDetails extends Component {
     }
 
     handleChangeCategory = (e, item) => {
-        const { categories } = this.state
         item[e.target.name] = parseInt(e.target.value)
     }
 
     render() {
-        const { isIteditable, whichisit, wordToPass, treeButtonsMotivation, categories, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
+        const { isIteditable, whichisit, wordToPass, treeButtonsMotivation, dataState, tabClicked, siteDetailsData, tracking, better_images, auto_publish, copy_from_site } = this.state
         const categorialOption = siteDetailsData?.categories?.map(el => el.category.id)
 
         console.log(this.state.siteDetailsData);

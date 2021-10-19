@@ -6,9 +6,9 @@ import secondarrowDown from '../../assets/img/TableIcons/arrow.svg'
 import secondTrash from '../../assets/img/TableIcons/trash.svg'
 import visit from '../../assets/img/TableIcons/visit.svg'
 import edit from '../../assets/img/TableIcons/edit.svg'
-import posts from '../../assets/img/TableIcons/posts.svg'
+// import posts from '../../assets/img/TableIcons/posts.svg'
 import stats from '../../assets/img/TableIcons/stats.svg'
-import widgets from '../../assets/img/TableIcons/widgets.svg'
+// import widgets from '../../assets/img/TableIcons/widgets.svg'
 import EditableInline from '../../containers/EditableInline/EditableInline'
 import history from '../../routes/History'
 import AddContainer from '../../containers/AddContainer/AddContainer'
@@ -55,8 +55,7 @@ export class Posts extends Component {
     }
 
     paginate = (page) => {
-        const { countPerPage, filteredDate, data, tipeSearch, inputValue } = this.state
-        // const dataToRender = (tipeSearch && inputValue) ? tipeSearch : filteredDate ? filteredDate : data
+        const { countPerPage, data } = this.state
         const dataToRender = data
         let limit = countPerPage;
         let pages = Math.ceil(dataToRender.length / countPerPage);
@@ -80,9 +79,9 @@ export class Posts extends Component {
     componentDidUpdate(prevProps) {
         const { selectedSiteSearch, selectedCategorieSearch, selectedStatusSearch, inputValue } = this.state
         const { getPostsList, deletePost, getSitesList, updatePostDetails, getUsersList, getCategoryList } = this.props
-        const { loading: getPostsListLoading, error: getPostsListError, data: getPostsListData, errorData: getPostsListErrorData } = getPostsList
-        const { loading: deletePostLoading, error: deletePostError, data: deletePostData, errorData: deletePostErrorData } = deletePost
-        const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData, errorData: getSitesListErrorData } = getSitesList
+        const { loading: getPostsListLoading, error: getPostsListError, data: getPostsListData } = getPostsList
+        const { loading: deletePostLoading, error: deletePostError, data: deletePostData } = deletePost
+        const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData } = getSitesList
         const { data: updatePostDetailsData, loading: updatePostDetailsLoading, error: updatePostDetailsError, errorData: updatePostDetailsErrorData } = updatePostDetails;
 
 
@@ -431,7 +430,7 @@ export class Posts extends Component {
 
 
     render() {
-        const { urlForCreatePost, dataToRender, selectedSiteSearch, loading, sitesList } = this.state
+        const { urlForCreatePost, dataToRender, selectedSiteSearch, loading } = this.state
         const { getSitesList } = this.props
 
         return (

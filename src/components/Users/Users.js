@@ -3,7 +3,7 @@ import SearchContainer from '../../containers/SearchContainer/SearchContainer'
 import { connect } from 'react-redux'
 import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
 import secondarrowDown from '../../assets/img/TableIcons/arrow.svg'
-import visit from '../../assets/img/TableIcons/visit.svg'
+// import visit from '../../assets/img/TableIcons/visit.svg'
 import edit from '../../assets/img/TableIcons/edit.svg'
 import posts from '../../assets/img/TableIcons/posts.svg'
 import stats from '../../assets/img/TableIcons/stats.svg'
@@ -58,7 +58,7 @@ export class Users extends Component {
     componentDidUpdate(prevProps) {
         const { createUser, getUsersList } = this.props
         const { loading: createUserLoading, error: createUserError, data: createUserData, errorData: createUserErrorData } = createUser
-        const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData, errorData: getUsersListErrorData } = getUsersList
+        const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData } = getUsersList
 
 
 

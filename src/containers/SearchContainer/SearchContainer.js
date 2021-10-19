@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import trash from '../../assets/img/SecondHeader/Icons3.svg'
-import { useSelector, useDispatch } from 'react-redux'
+import {
+    useSelector,
+    //  useDispatch
+} from 'react-redux'
 import { useLocation } from 'react-router'
 import search from '../../assets/img/SecondHeader/Frame.svg'
 import plas from '../../assets/img/SecondHeader/Group5361.svg'
@@ -8,9 +11,9 @@ import arrowLeft from '../../assets/img/SecondHeader/Vector.svg'
 import arrowRight from '../../assets/img/SecondHeader/Vector(1).svg'
 import Pagination from "react-js-pagination";
 import DropDown from '../DropDown/DropDown'
-import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
-import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
-import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
+// import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
+// import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
+// import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
 
 
 import '../../components/Home/Home.scss'
@@ -19,7 +22,7 @@ import '../../components/Home/Home.scss'
 function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selectedSiteSearch, handleSearchOnMainPage, pageName, state, handleAddSomeMore, handleCountPerPage, handleSortByStatus, handleSubtmit, handleSearchBar, secondHeaderCustomStyle, customStyleForlesTabs }) {
     const [user, setUser] = useState('all users')
     const [statusOn, setStatusOn] = useState('NOTRASH')
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
     const location = useLocation()
     const [showUserOptions, setShowUserOptions] = useState(false)
     const [categorie, setCategorie] = useState('all categories')
@@ -28,9 +31,9 @@ function SearchContainer({ page, handlePageChange, handleAllOptionsOnMain, selec
     const [showSitesOptions, setShowSitesOptions] = useState(false)
     const states = useSelector(state => state)
     const { CategoryReducer, SitesListReducer, UsersReducer } = states
-    const { loading: getCategoryListLoading, error: getCategoryListError, data: getCategoryListData } = CategoryReducer.getCategoryList
-    const { loading: getSitesListLoading, error: getSitesListError, data: getSitesListData } = SitesListReducer.getSitesList
-    const { loading: getUsersListLoading, error: getUsersListError, data: getUsersListData } = UsersReducer.getUsersList
+    const { error: getCategoryListError, data: getCategoryListData } = CategoryReducer.getCategoryList
+    const { error: getSitesListError, data: getSitesListData } = SitesListReducer.getSitesList
+    const { error: getUsersListError, data: getUsersListData } = UsersReducer.getUsersList
 
     // useEffect(() => {
     //     if (!getCategoryListLoading && !getCategoryListError && !getCategoryListData) {

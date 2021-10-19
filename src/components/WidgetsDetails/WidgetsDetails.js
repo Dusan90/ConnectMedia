@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import NavWidget from '../../containers/NavWidget/NavWidget'
-import xButton from '../../assets/img/SiteDetails/xButton.svg'
+// import xButton from '../../assets/img/SiteDetails/xButton.svg'
 import { connect } from 'react-redux'
 import '../SiteDetails/SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
@@ -115,7 +115,7 @@ export class WidgetsDetails extends Component {
     componentDidMount() {
         this.props.dispatch(GetCategoryListActionRequest())
 
-        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError, errorData: getSitesListErrorData } = this.props.getSitesList;
+        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError } = this.props.getSitesList;
         if (!getSitesListError && !getSitesListLoading && getSitesListData) {
             const siteOptions = getSitesListData.data.map(el => {
                 return { value: el.id, label: el.name ? el.name : 'no name' }
@@ -133,9 +133,9 @@ export class WidgetsDetails extends Component {
 
     componentDidUpdate(prevProps) {
         const { getWidgetDetails, getCategoryList, deleteWidget, createWidget, updateWidgetDetails } = this.props
-        const { data: getWidgetDetailsData, loading: getWidgetDetailsLoading, error: getWidgetDetailsError, errorData: getWidgetDetailsErrorData } = getWidgetDetails;
-        const { data: getCategoryListData, loading: getCategoryListLoading, error: getCategoryListError, errorData: getCategoryListErrorData } = getCategoryList;
-        const { data: deleteWidgetData, loading: deleteWidgetLoading, error: deleteWidgetError, errorData: deleteWidgetErrorData } = deleteWidget;
+        const { data: getWidgetDetailsData, loading: getWidgetDetailsLoading, error: getWidgetDetailsError } = getWidgetDetails;
+        const { data: getCategoryListData, loading: getCategoryListLoading, error: getCategoryListError } = getCategoryList;
+        const { data: deleteWidgetData, loading: deleteWidgetLoading, error: deleteWidgetError } = deleteWidget;
         const { data: createWidgetData, loading: createWidgetLoading, error: createWidgetError, errorData: createWidgetErrorData } = createWidget;
         const { data: updateWidgetDetailsData, loading: updateWidgetDetailsLoading, error: updateWidgetDetailsError, errorData: updateWidgetDetailsErrorData } = updateWidgetDetails;
 
@@ -182,7 +182,7 @@ export class WidgetsDetails extends Component {
 
     handleButtonActive = (page) => {
         if (page === 'save') {
-            const { name, site, status, dataState, image, description, categories, sites, include, minima, direct, append, same_window, ignore_impressions, count, width, height, encoding, template,
+            const { name, site, dataState, image, description, categories, sites, include, minima, direct, append, same_window, ignore_impressions, count, width, height, encoding, template,
                 publicValue,
             } = this.state
             if (this.props.location.data?.createNew) {
@@ -272,7 +272,7 @@ export class WidgetsDetails extends Component {
     }
 
     render() {
-        const { isIteditable, dataState, site, categoryList, wordToPass, siteDetailsData, tabClicked, WidgetDetailsData, publicValue, include, direct, same_window, ignore_impressions, siteOptions } = this.state
+        const { isIteditable, dataState, site, categoryList, wordToPass, tabClicked, WidgetDetailsData, publicValue, include, direct, same_window, ignore_impressions, siteOptions } = this.state
 
         const categorialOption = categoryList?.map(el => {
             return { value: el.id, label: el.name }

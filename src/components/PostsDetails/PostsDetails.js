@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import NavWidget from '../../containers/NavWidget/NavWidget'
-import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
+// import arrowUp from '../../assets/img/TableIcons/arrow(1).svg'
 import { connect } from 'react-redux'
-import xButton from '../../assets/img/SiteDetails/xButton.svg'
+// import xButton from '../../assets/img/SiteDetails/xButton.svg'
 import '../SiteDetails/SiteDetails.scss'
 import SaveButtonEdit from '../../containers/Buttons/SaveButtonEdit'
 import Chart from '../../containers/Chart/Chart'
@@ -14,12 +14,6 @@ import { GetSiteDetailsActionRequest } from '../../store/actions/SitesListAction
 import { NotificationManager } from 'react-notifications'
 import moment from 'moment'
 
-
-const optionss = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-]
 
 const customSelectStyles = {
     control: (base, state) => ({
@@ -44,8 +38,6 @@ const data = [
         amt: 1400,
     },
 ]
-
-const test3 = [{ text: 'vesti' }, { text: 'zabava' }]
 
 const options = [0, 1, 2, 3]
 
@@ -77,7 +69,7 @@ export class PostsDetails extends Component {
     }
 
     componentDidMount() {
-        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError, errorData: getSitesListErrorData } = this.props.getSitesList;
+        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError } = this.props.getSitesList;
         if (!getSitesListError && !getSitesListLoading && getSitesListData) {
             const siteOptions = getSitesListData.data.map(el => {
                 return { value: el.id, label: el.name ? el.name : 'no name' }
@@ -101,9 +93,9 @@ export class PostsDetails extends Component {
 
     componentDidUpdate(prevProps) {
         const { getPostDetails, getSiteDetails, deletePost, createPost, updatePostDetails } = this.props
-        const { data: getPostDetailsData, loading: getPostDetailsLoading, error: getPostDetailsError, errorData: getPostDetailsErrorData } = getPostDetails;
-        const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError, errorData: getSiteDetailsErrorData } = getSiteDetails;
-        const { data: deletePostData, loading: deletePostLoading, error: deletePostError, errorData: deletePostErrorData } = deletePost;
+        const { data: getPostDetailsData, loading: getPostDetailsLoading, error: getPostDetailsError } = getPostDetails;
+        const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError } = getSiteDetails;
+        const { data: deletePostData, loading: deletePostLoading, error: deletePostError } = deletePost;
         const { data: createPostData, loading: createPostLoading, error: createPostError, errorData: createPostErrorData } = createPost;
         const { data: updatePostDetailsData, loading: updatePostDetailsLoading, error: updatePostDetailsError, errorData: updatePostDetailsErrorData } = updatePostDetails;
 
