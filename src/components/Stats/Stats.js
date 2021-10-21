@@ -64,7 +64,7 @@ export class Stats extends Component {
                 const newasdf = elem.length !== 0 && elem.map(elm => {
                     return { [`${elm.toLowerCase()}`]: [<p><span className='underskoredSpan' onClick={() => this.handleRedirect(el, 'published', elm)}>{el.stats[elm]['stats']['published']}</span> <span onClick={() => this.handleRedirect(el, 'draft', elm)} className="span2 underskoredSpan">{el.stats[elm]['stats']['draft']}</span></p>] }
                 })
-                let arrayoFObj = newasdf.reduce(((r, c) => Object.assign(r, c)), {})
+                let arrayoFObj = newasdf && newasdf.reduce(((r, c) => Object.assign(r, c)), {})
                 return {
                     statusState: el.state,
                     key: el.id,
