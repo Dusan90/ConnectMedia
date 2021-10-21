@@ -10,6 +10,7 @@ import VerticalChart from '../../containers/Chart/VerticalChart'
 import Select from 'react-select'
 import { GetWidgetDetailsActionRequest, CreateWidgetActionRequest, UpdateWidgetDetailsActionRequest, DeleteWidgetActionRequest } from '../../store/actions/WidgetActions'
 import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
+import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
 import ViewWidgets from './ViewWidgets'
 
 import { NotificationManager } from 'react-notifications'
@@ -114,14 +115,9 @@ export class WidgetsDetails extends Component {
 
     componentDidMount() {
         this.props.dispatch(GetCategoryListActionRequest())
+        this.props.dispatch(GetSitesListActionRequest())
 
-        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError } = this.props.getSitesList;
-        if (!getSitesListError && !getSitesListLoading && getSitesListData) {
-            const siteOptions = getSitesListData.data.map(el => {
-                return { value: el.id, label: el.name ? el.name : 'no name' }
-            })
-            this.setState({ siteOptions })
-        }
+
 
         if (!this.props?.location?.data?.createNew) {
             this.props.dispatch(GetWidgetDetailsActionRequest({
@@ -132,13 +128,20 @@ export class WidgetsDetails extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { getWidgetDetails, getCategoryList, deleteWidget, createWidget, updateWidgetDetails } = this.props
+        const { getWidgetDetails, getCategoryList, deleteWidget, createWidget, updateWidgetDetails, getSitesList } = this.props
         const { data: getWidgetDetailsData, loading: getWidgetDetailsLoading, error: getWidgetDetailsError } = getWidgetDetails;
         const { data: getCategoryListData, loading: getCategoryListLoading, error: getCategoryListError } = getCategoryList;
         const { data: deleteWidgetData, loading: deleteWidgetLoading, error: deleteWidgetError } = deleteWidget;
         const { data: createWidgetData, loading: createWidgetLoading, error: createWidgetError, errorData: createWidgetErrorData } = createWidget;
         const { data: updateWidgetDetailsData, loading: updateWidgetDetailsLoading, error: updateWidgetDetailsError, errorData: updateWidgetDetailsErrorData } = updateWidgetDetails;
+        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError } = getSitesList;
 
+        if (prevProps.getSitesList !== getSitesList && !getSitesListError && !getSitesListLoading && getSitesListData) {
+            const siteOptions = getSitesListData.data.map(el => {
+                return { value: el.id, label: el.name ? el.name : 'no name' }
+            })
+            this.setState({ siteOptions })
+        }
 
         if (prevProps.getCategoryList !== getCategoryList && !getCategoryListError && !getCategoryListLoading && getCategoryListData) {
             this.setState({

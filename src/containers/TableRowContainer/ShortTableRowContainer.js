@@ -64,6 +64,12 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                 data: { searchBy: value, prevPath: window.location.pathname }
             })
         }
+        else if (tabClicked === 'embed') {
+            history.push({
+                pathname: `/widgets/${value.id}`,
+                data: { buttonClicked: 'embedDiv' }
+            })
+        }
     }
 
     const hashesmaping = state?.hashesArrowWitchIsOn?.categories?.length !== 0 ? state?.hashesArrowWitchIsOn?.categories?.map(el => {
@@ -139,13 +145,27 @@ function ShortTableRowContainer({ data, pageName, handleCheckbox, handleTrashFun
                             }
                             }>visit</p>
                             <img src={edit} alt="edit" />
-                            <p onClick={() => haneldeRedirect(item, 'edit')}>edit</p>
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'edit')}>edit</p>}
+                            {pageName === 'widgets' && <p onClick={
+                                () => history.push({
+                                    pathname: `/widgets/${item.id}`,
+                                    data: { buttonClicked: 'editDiv' }
+                                })
+                            } id='noredirection'>edit</p>}
                             <img src={stats} alt="stats" />
-                            <p onClick={() => haneldeRedirect(item, 'stats')}>stats</p>
+                            {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'stats')} id='noredirection'>stats</p>}
+                            {pageName === 'widgets' && <p onClick={() =>
+                                history.push({
+                                    pathname: `/widgets/${item.id}`,
+                                    data: { buttonClicked: 'statsDiv' }
+                                })
+                            } id='noredirection'>stats</p>}
                             {pageName !== 'widgets' && <img src={posts} alt="posts" />}
                             {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'posts')}>posts</p>}
                             {pageName !== 'widgets' && <img src={widgets} alt="widgets" />}
                             {pageName !== 'widgets' && <p onClick={() => haneldeRedirect(item, 'widgets')}>widgets</p>}
+                            {pageName === 'widgets' && <img src={visit} alt="visit" />}
+                            {pageName === 'widgets' && <p onClick={() => haneldeRedirect(item, 'embed')} id='noredirection'>embed</p>}
 
                         </div>
                     </div>
