@@ -73,7 +73,19 @@ export class UsersDetails extends Component {
 
 
         if (prevProps.getSpecUserDetails !== getSpecUserDetails && !getSpecUserDetailsLoading && !getSpecUserDetailsError && getSpecUserDetailsData) {
-            this.setState({ usersData: getSpecUserDetailsData.data })
+            this.setState({
+                usersData: getSpecUserDetailsData.data,
+                name: getSpecUserDetailsData.data?.name,
+                email: getSpecUserDetailsData.data?.email,
+                company: getSpecUserDetailsData.data?.company,
+                streetAddress: getSpecUserDetailsData.data?.address,
+                country: getSpecUserDetailsData.data?.country,
+                city: getSpecUserDetailsData.data?.city,
+                contactperson: getSpecUserDetailsData.data?.contact,
+                phone: getSpecUserDetailsData.data?.phone,
+                vat: getSpecUserDetailsData.data?.vat
+
+            })
         }
 
         if (prevProps.deleteSpecUser !== deleteSpecUser && !deleteSpecUserLoading && !deleteSpecUserError && deleteSpecUserData) {
@@ -174,12 +186,12 @@ export class UsersDetails extends Component {
                             <div className='name_div'>
                                 <h4>Name</h4>
                                 {!isIteditable && <p>{usersData?.name}</p>}
-                                {isIteditable && <input name='name' type="text" onChange={(e) => this.handleUserChanges(e)} placeholder={usersData?.name} />}
+                                {isIteditable && <input name='name' type="text" value={this.state.name} onChange={(e) => this.handleUserChanges(e)} />}
                             </div>
                             <div className='owner_div'>
                                 <h4>Email</h4>
                                 {!isIteditable && <p>{usersData?.email}</p>}
-                                {isIteditable && <input name='email' type="text" onChange={(e) => this.handleUserChanges(e)} placeholder={usersData?.email} />}
+                                {isIteditable && <input name='email' type="text" value={this.state.email} onChange={(e) => this.handleUserChanges(e)} />}
                             </div>
                             <div className='url_div selectable'>
                                 <h4>Roles</h4>
@@ -206,12 +218,12 @@ export class UsersDetails extends Component {
                             <div className='name_div'>
                                 <h4>Company</h4>
                                 {!isIteditable && <p>{usersData?.company}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='company' placeholder={usersData?.company} />}
+                                {isIteditable && <input type="text" value={this.state.company} onChange={(e) => this.handleUserChanges(e)} name='company' />}
                             </div>
                             <div className='name_div'>
                                 <h4>Street address</h4>
                                 {!isIteditable && <p>{usersData?.address}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='streetAddress' placeholder={usersData?.address} />}
+                                {isIteditable && <input type="text" value={this.state.streetAddress} onChange={(e) => this.handleUserChanges(e)} name='streetAddress' />}
                             </div>
                             {/* <div className='description_div'>
                                 <h4>ZIP + City</h4>
@@ -222,31 +234,31 @@ export class UsersDetails extends Component {
                             <div className='description_div'>
                                 <h4>Country</h4>
                                 {!isIteditable && <p>{usersData?.country}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='country' placeholder={usersData?.country} />}
+                                {isIteditable && <input type="text" value={this.state.country} onChange={(e) => this.handleUserChanges(e)} name='country' />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>City</h4>
                                 {!isIteditable && <p>{usersData?.city}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='city' placeholder={usersData?.city} />}
+                                {isIteditable && <input type="text" value={this.state.city} onChange={(e) => this.handleUserChanges(e)} name='city' />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Contact Person</h4>
                                 {!isIteditable && <p>{usersData?.contact}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleUserChanges(e)} name='contactperson' placeholder={usersData?.contact} />}
+                                {isIteditable && <input type="text" value={this.state.contactperson} onChange={(e) => this.handleUserChanges(e)} name='contactperson' />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Contact Phone</h4>
                                 {!isIteditable && <p>{usersData?.phone}</p>}
-                                {isIteditable && <input type="number" name='phone' onChange={(e) => this.handleUserChanges(e)} placeholder={usersData?.phone} />}
+                                {isIteditable && <input type="number" name='phone' value={this.state.phone} onChange={(e) => this.handleUserChanges(e)} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>VAT Number</h4>
                                 {!isIteditable && <p>{usersData?.vat}</p>}
-                                {isIteditable && <input type="number" name='vat' onChange={(e) => this.handleUserChanges(e)} placeholder={usersData?.vat} />}
+                                {isIteditable && <input type="number" name='vat' value={this.state.vat} onChange={(e) => this.handleUserChanges(e)} />}
 
                             </div>
                         </div>

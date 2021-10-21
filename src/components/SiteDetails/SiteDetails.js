@@ -131,6 +131,18 @@ export class SiteDetails extends Component {
             this.setState({
                 dataState: getSiteDetails.data.state,
                 siteDetailsData: getSiteDetailsData.data,
+                name: getSiteDetailsData.data?.name,
+                url: getSiteDetailsData.data?.url,
+                description: getSiteDetailsData.data?.description,
+                head: getSiteDetailsData.data?.head,
+                encoding: getSiteDetailsData.data?.encoding,
+                factor: getSiteDetailsData.data?.factor,
+                minimum: getSiteDetailsData.data?.minimum,
+                feed_definition: getSiteDetailsData.data?.feed_definition,
+                post_definition: getSiteDetailsData.data?.post_definition,
+                refresh_interval: getSiteDetailsData.data?.refresh_interval,
+                guess_remote: getSiteDetailsData.data?.guess_remote,
+                tag_map: getSiteDetailsData.data?.tag_map
             })
             if (getSiteDetailsData?.data?.translations?.feed.length !== 0) {
                 this.setState({
@@ -390,12 +402,12 @@ export class SiteDetails extends Component {
                             <div className='name_div'>
                                 <h4>Name</h4>
                                 {!isIteditable && <p>{siteDetailsData?.name}</p>}
-                                {isIteditable && <input onChange={(e) => this.handleChange(e)} type="text" name='name' placeholder={siteDetailsData?.name} />}
+                                {isIteditable && <input onChange={(e) => this.handleChange(e)} type="text" name='name' value={this.state.name} />}
                             </div>
                             <div className='url_div'>
                                 <h4>Url</h4>
                                 {!isIteditable && <Link to={siteDetailsData?.url ? siteDetailsData.url : '#'}>{siteDetailsData?.url}</Link>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} placeholder={this.state.url ? this.state.url : siteDetailsData?.url} name='url' />}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} value={this.state.url} placeholder={this.state.url ? this.state.url : siteDetailsData?.url} name='url' />}
                                 {/* {isIteditable && <SaveButtonEdit labeltext={'Scrape'} colorization={'ScrapeClass'} customStyle={{ width: '135px', marginRight: '20px' }} />} */}
 
                             </div>
@@ -419,33 +431,33 @@ export class SiteDetails extends Component {
                             <div className='description_div'>
                                 <h4>Description</h4>
                                 {!isIteditable && <p>{siteDetailsData?.description}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='description' placeholder={siteDetailsData?.description} />}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='description' value={this.state.description} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Head</h4>
                                 {!isIteditable && <p>{siteDetailsData?.head}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='head' placeholder={siteDetailsData?.head} />}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='head' value={this.state.head} />}
 
                             </div>
                             <div className='info_div'>
                                 <div className="endcFactMini">
                                     <h4>Encoding</h4>
                                     {!isIteditable && <p>{siteDetailsData?.encoding}</p>}
-                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='encoding' placeholder={siteDetailsData?.encoding} style={{ width: '40px' }} />}
+                                    {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='encoding' value={this.state.encoding} style={{ width: '40px' }} />}
 
                                 </div>
 
                                 <div className="endcFactMini">
                                     <h4>Factor</h4>
                                     {!isIteditable && <p>{siteDetailsData?.factor}</p>}
-                                    {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='factor' placeholder={siteDetailsData?.factor} style={{ width: '40px' }} />}
+                                    {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='factor' value={this.state.factor} style={{ width: '40px' }} />}
 
                                 </div>
                                 <div className="endcFactMini">
                                     <h4>Minimum</h4>
                                     {!isIteditable && <p>{siteDetailsData?.minimum}</p>}
-                                    {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='minimum' placeholder={siteDetailsData?.minimum} style={{ width: '40px' }} />}
+                                    {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='minimum' value={this.state.minimum} style={{ width: '40px' }} />}
 
                                 </div>
                             </div>
@@ -475,13 +487,13 @@ export class SiteDetails extends Component {
                             <div className='definition_div'>
                                 <h4>Feed definition</h4>
                                 {!isIteditable && <p>{siteDetailsData?.feed_definition}</p>}
-                                {isIteditable && <input name='feed_definition' onChange={(e) => this.handleChange(e)} type="text" placeholder={siteDetailsData?.feed_definition} />}
+                                {isIteditable && <input name='feed_definition' value={this.state.feed_definition} onChange={(e) => this.handleChange(e)} type="text" />}
 
                             </div>
                             <div className='definition_div'>
                                 <h4>Single post definition</h4>
                                 {!isIteditable && <p>{siteDetailsData?.post_definition}</p>}
-                                {isIteditable && <input name='post_definition' onChange={(e) => this.handleChange(e)} type="text" placeholder={siteDetailsData?.post_definition} />}
+                                {isIteditable && <input name='post_definition' value={this.state.post_definition} onChange={(e) => this.handleChange(e)} type="text" />}
 
 
                             </div>
@@ -494,7 +506,7 @@ export class SiteDetails extends Component {
                             <div className='interval_div'>
                                 <h4>Refresh interval (min)</h4>
                                 {!isIteditable && <p>{siteDetailsData?.refresh_interval}</p>}
-                                {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='refresh_interval' placeholder={siteDetailsData?.refresh_interval} />}
+                                {isIteditable && <input type="number" onChange={(e) => this.handleChange(e)} name='refresh_interval' value={this.state.refresh_interval} />}
 
                             </div>
                             <div className='autopublish_div'>
@@ -614,13 +626,13 @@ export class SiteDetails extends Component {
                             <div className='guessRemote_div'>
                                 <h4>Guess remote category from url - enter the number of the path segment</h4>
                                 {!isIteditable && <p>{siteDetailsData?.guess_remote}</p>}
-                                {isIteditable && <input name='guess_remote' type="number" onChange={(e) => this.handleChange(e)} placeholder={siteDetailsData?.guess_remote} />}
+                                {isIteditable && <input name='guess_remote' value={this.state.guess_remote} type="number" onChange={(e) => this.handleChange(e)} />}
 
                             </div>
                             <div className='indexTag_div'>
                                 <h4>Index of tag for mapping <br /> (1=first,2=seocnd,..)</h4>
                                 {!isIteditable && <p>{siteDetailsData?.tag_map}</p>}
-                                {isIteditable && <input name='tag_map' type="number" onChange={(e) => this.handleChange(e)} placeholder={siteDetailsData?.tag_map} />}
+                                {isIteditable && <input name='tag_map' value={this.state.tag_map} type="number" onChange={(e) => this.handleChange(e)} />}
 
                             </div>
                         </div>

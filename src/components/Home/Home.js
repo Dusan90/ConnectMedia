@@ -191,10 +191,15 @@ export class Home extends Component {
         console.log(sortByClicked, value);
         if (value === 'Up') {
             const sorted = this.state.data.sort((a, b) => {
-                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
-                    return b[sortByClicked]?.localeCompare(a[sortByClicked])
+                if (sortByClicked === 'in' || sortByClicked === 'out' || sortByClicked === 'txr') {
+                    return b.stats[sortByClicked] - a.stats[sortByClicked]
+
                 } else {
-                    return b[sortByClicked] - a[sortByClicked]
+                    if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                        return b[sortByClicked]?.localeCompare(a[sortByClicked])
+                    } else {
+                        return b[sortByClicked] - a[sortByClicked]
+                    }
                 }
             })
             this.setState({ data: sorted })
@@ -205,11 +210,16 @@ export class Home extends Component {
             });
         } else if (value === 'Down') {
             const sorted = this.state.data.sort((a, b) => {
-                if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
-                    return a[sortByClicked]?.localeCompare(b[sortByClicked])
+                if (sortByClicked === 'in' || sortByClicked === 'out' || sortByClicked === 'txr') {
+                    return a.stats[sortByClicked] - b.stats[sortByClicked]
 
                 } else {
-                    return a[sortByClicked] - b[sortByClicked]
+                    if (typeof a[sortByClicked] === "string" || typeof b[sortByClicked] === "string") {
+                        return a[sortByClicked]?.localeCompare(b[sortByClicked])
+
+                    } else {
+                        return a[sortByClicked] - b[sortByClicked]
+                    }
                 }
 
             })

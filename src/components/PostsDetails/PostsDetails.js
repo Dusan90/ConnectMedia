@@ -10,7 +10,7 @@ import Chart from '../../containers/Chart/Chart'
 import VerticalChart from '../../containers/Chart/VerticalChart'
 import Select from 'react-select'
 import { GetPostDetailsActionRequest, CreatePostActionRequest, UpdatePostDetailsActionRequest, DeletePostActionRequest } from '../../store/actions/PostActions'
-import { GetSiteDetailsActionRequest } from '../../store/actions/SitesListAction'
+import { GetSiteDetailsActionRequest, GetSitesListActionRequest } from '../../store/actions/SitesListAction'
 import { NotificationManager } from 'react-notifications'
 import moment from 'moment'
 
@@ -69,14 +69,6 @@ export class PostsDetails extends Component {
     }
 
     componentDidMount() {
-        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError } = this.props.getSitesList;
-        if (!getSitesListError && !getSitesListLoading && getSitesListData) {
-            const siteOptions = getSitesListData.data.map(el => {
-                return { value: el.id, label: el.name ? el.name : 'no name' }
-            })
-            this.setState({ siteOptions })
-        }
-
 
         if (this.props?.location?.data?.urlpost) {
             this.setState({ url: this.props.location.data?.urlpost, site: this.props.location.data?.site.id })
@@ -89,16 +81,24 @@ export class PostsDetails extends Component {
             }))
 
         }
+        this.props.dispatch(GetSitesListActionRequest())
+
     }
 
     componentDidUpdate(prevProps) {
-        const { getPostDetails, getSiteDetails, deletePost, createPost, updatePostDetails } = this.props
+        const { getPostDetails, getSiteDetails, deletePost, createPost, updatePostDetails, getSitesList } = this.props
         const { data: getPostDetailsData, loading: getPostDetailsLoading, error: getPostDetailsError } = getPostDetails;
         const { data: getSiteDetailsData, loading: getSiteDetailsLoading, error: getSiteDetailsError } = getSiteDetails;
         const { data: deletePostData, loading: deletePostLoading, error: deletePostError } = deletePost;
         const { data: createPostData, loading: createPostLoading, error: createPostError, errorData: createPostErrorData } = createPost;
         const { data: updatePostDetailsData, loading: updatePostDetailsLoading, error: updatePostDetailsError, errorData: updatePostDetailsErrorData } = updatePostDetails;
-
+        const { data: getSitesListData, loading: getSitesListLoading, error: getSitesListError } = getSitesList;
+        if (prevProps.getSitesList !== getSitesList && !getSitesListError && !getSitesListLoading && getSitesListData) {
+            const siteOptions = getSitesListData.data.map(el => {
+                return { value: el.id, label: el.name ? el.name : 'no name' }
+            })
+            this.setState({ siteOptions })
+        }
 
         if (prevProps.getSiteDetails !== getSiteDetails && !getSiteDetailsError && !getSiteDetailsLoading && getSiteDetailsData) {
             this.setState({
@@ -115,6 +115,11 @@ export class PostsDetails extends Component {
             this.setState({
                 dataState: getPostDetails.data.state,
                 postDetailsData: getPostDetailsData.data,
+                name: getPostDetailsData.data?.title,
+                url: getPostDetailsData.data['link'],
+                description: getPostDetailsData.data?.description,
+                author: getPostDetailsData.data?.author,
+                content: getPostDetailsData.data?.content
             })
         }
 
@@ -285,12 +290,12 @@ export class PostsDetails extends Component {
                             <div className='name_div'>
                                 <h4>Name</h4>
                                 {!isIteditable && <p>{postDetailsData?.title}</p>}
-                                {isIteditable && <input type="text" name='name' onChange={(e) => this.handleChangeInputs(e)} placeholder={postDetailsData?.title} />}
+                                {isIteditable && <input type="text" name='name' value={this.state.name} onChange={(e) => this.handleChangeInputs(e)} />}
                             </div>
                             <div className='url_div'>
                                 <h4>Url</h4>
                                 {!isIteditable && <a onClick={() => window.open(`${postDetailsData && postDetailsData['link']}`)} href='#'>{postDetailsData['link']}</a>}
-                                {isIteditable && <input type="text" name='url' onChange={(e) => this.handleChangeInputs(e)} placeholder={this.state.url ? this.state.url : postDetailsData['link']} />}
+                                {isIteditable && <input type="text" name='url' onChange={(e) => this.handleChangeInputs(e)} value={this.state.url} placeholder={this.state.url ? this.state.url : postDetailsData['link']} />}
                                 {/* {isIteditable && <SaveButtonEdit labeltext={'Scrape'} colorization={'ScrapeClass'} customStyle={{ width: '135px', marginRight: '20px' }} />} */}
 
                             </div>
@@ -325,20 +330,20 @@ export class PostsDetails extends Component {
                             <div className='description_div'>
                                 <h4>Description</h4>
                                 {!isIteditable && <p>{postDetailsData?.description}</p>}
-                                {isIteditable && <input name='description' onChange={(e) => this.handleChangeInputs(e)} type="text" placeholder={postDetailsData?.description} />}
+                                {isIteditable && <input name='description' value={this.state.description} onChange={(e) => this.handleChangeInputs(e)} type="text" />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Author</h4>
                                 {!isIteditable && <p>{postDetailsData?.author}</p>}
-                                {isIteditable && <input name='author' onChange={(e) => this.handleChangeInputs(e)} type="text" placeholder={postDetailsData?.author} />}
+                                {isIteditable && <input name='author' value={this.state.author} onChange={(e) => this.handleChangeInputs(e)} type="text" />}
 
                             </div>
                             <h1 style={{ margin: '20px 0' }}>Order</h1>
                             <div className='description_div'>
                                 <h4>Content</h4>
                                 {!isIteditable && <p>{postDetailsData?.content}</p>}
-                                {isIteditable && <input type="text" name='content' onChange={(e) => this.handleChangeInputs(e)} placeholder={postDetailsData?.content} />}
+                                {isIteditable && <input type="text" name='content' value={this.state.content} onChange={(e) => this.handleChangeInputs(e)} />}
 
                             </div>
                         </div>

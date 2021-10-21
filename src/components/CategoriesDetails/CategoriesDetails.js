@@ -28,6 +28,7 @@ export class CategoriesDetails extends Component {
     constructor(prosp) {
         super(prosp)
         this.state = {
+            categoryDetailsData: '',
             isIteditable: false,
             whichisit: '',
             confirmMessage: false,
@@ -35,7 +36,6 @@ export class CategoriesDetails extends Component {
             name: null,
             description: null,
             rename: null,
-            categoryDetailsData: '',
             adult: null,
             merge: null,
             mergeOptions: []
@@ -72,7 +72,13 @@ export class CategoriesDetails extends Component {
 
 
         if (prevProps.getCategoryDetails !== getCategoryDetails && !getCategoryDetailsError && !getCategoryDetailsLoading && getCategoryDetailsData) {
-            this.setState({ categoryDetailsData: getCategoryDetailsData.data })
+            this.setState({
+                categoryDetailsData: getCategoryDetailsData.data,
+                name: getCategoryDetailsData.data.name,
+                description: getCategoryDetailsData.data.description,
+                rename: getCategoryDetailsData.data.rename,
+            })
+
         }
 
         if (prevProps.deleteCategory !== deleteCategory && !deleteCategoryError && !deleteCategoryLoading && deleteCategoryData) {
@@ -191,13 +197,13 @@ export class CategoriesDetails extends Component {
                             <div className='name_div'>
                                 <h4>Name</h4>
                                 {!isIteditable && <p>{categoryDetailsData?.name}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChangeCategory(e)} name='name' placeholder={categoryDetailsData?.name} />}
+                                {isIteditable && <input type="text" value={this.state.name} onChange={(e) => this.handleChangeCategory(e)} name='name' />}
                             </div>
 
                             <div className='name_div'>
                                 <h4>Description</h4>
                                 {!isIteditable && <p>{categoryDetailsData?.description}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChangeCategory(e)} name='description' placeholder={categoryDetailsData?.description} />}
+                                {isIteditable && <input type="text" onChange={(e) => this.handleChangeCategory(e)} value={this.state.description} name='description' />}
                             </div>
                             <div className='name_div'>
                                 <h4>Adult</h4>
@@ -222,7 +228,7 @@ export class CategoriesDetails extends Component {
                             <div className='name_div'>
                                 <h4>Rename</h4>
                                 {!isIteditable && <p>{categoryDetailsData?.rename}</p>}
-                                {isIteditable && <input type="text" onChange={(e) => this.handleChangeCategory(e)} name='rename' placeholder={categoryDetailsData?.rename} />}
+                                {isIteditable && <input type="text" value={this.state.rename} onChange={(e) => this.handleChangeCategory(e)} name='rename' />}
                             </div>
                             <div className='url_div selectable'>
                                 <h4>Merge</h4>

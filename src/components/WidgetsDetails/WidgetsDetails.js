@@ -155,6 +155,14 @@ export class WidgetsDetails extends Component {
             this.setState({
                 dataState: getWidgetDetails.data.status,
                 WidgetDetailsData: getWidgetDetailsData.data,
+                name: getWidgetDetailsData.data?.name,
+                append: getWidgetDetailsData.data?.append,
+                count: getWidgetDetailsData.data?.count,
+                encoding: getWidgetDetailsData.data?.encoding,
+                width: getWidgetDetailsData.data?.width,
+                height: getWidgetDetailsData.data?.height,
+                template: getWidgetDetailsData.data?.template,
+                description: getWidgetDetailsData.data?.description
             })
         }
 
@@ -322,7 +330,7 @@ export class WidgetsDetails extends Component {
                             <div className='name_div'>
                                 <h4>Name</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.name}</p>}
-                                {isIteditable && <input type="text" name='name' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.name} />}
+                                {isIteditable && <input type="text" name='name' value={this.state.name} onChange={(e) => this.handlewidgetInput(e)} />}
                             </div>
                             <div className='url_div'>
                                 <h4>Public</h4>
@@ -352,7 +360,7 @@ export class WidgetsDetails extends Component {
                             <div className='description_div'>
                                 <h4>Append to links</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.append}</p>}
-                                {isIteditable && <input type="text" name='append' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.append} />}
+                                {isIteditable && <input type="text" name='append' value={this.state.append} onChange={(e) => this.handlewidgetInput(e)} />}
 
                             </div>
                             <h1 style={{ margin: '20px 0' }}>Order</h1>
@@ -366,31 +374,31 @@ export class WidgetsDetails extends Component {
                             <div className='description_div'>
                                 <h4>Count</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.count}</p>}
-                                {isIteditable && <input type="number" name='count' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.count} />}
+                                {isIteditable && <input type="number" name='count' value={this.state.count} onChange={(e) => this.handlewidgetInput(e)} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Encoding</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.encoding}</p>}
-                                {isIteditable && <input type="text" name='encoding' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.encoding} />}
+                                {isIteditable && <input type="text" name='encoding' value={this.state.encoding} onChange={(e) => this.handlewidgetInput(e)} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Image width</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.width}</p>}
-                                {isIteditable && <input type="number" name='width' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.width} />}
+                                {isIteditable && <input type="number" name='width' value={this.state.width} onChange={(e) => this.handlewidgetInput(e)} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Image height</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.height}</p>}
-                                {isIteditable && <input type="number" name='height' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.height} />}
+                                {isIteditable && <input type="number" name='height' value={this.state.height} onChange={(e) => this.handlewidgetInput(e)} />}
 
                             </div>
                             <div className='description_div'>
                                 <h4>Template</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.template}</p>}
-                                {isIteditable && <textarea style={{ flex: '1', padding: '10px', background: '#d6dbdc', marginRight: '20px', border: 'none', borderRadius: '5px' }} type="text" name='template' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.template} />}
+                                {isIteditable && <textarea defaultValue={this.state.template} style={{ flex: '1', padding: '10px', background: '#d6dbdc', marginRight: '20px', border: 'none', borderRadius: '5px' }} type="text" name='template' onChange={(e) => this.handlewidgetInput(e)} />}
 
                             </div>
                         </div>
@@ -458,7 +466,7 @@ export class WidgetsDetails extends Component {
                             <div className='categ_div'>
                                 <h4>Description</h4>
                                 {!isIteditable && <p>{WidgetDetailsData?.description}</p>}
-                                {isIteditable && <input type="text" name='description' onChange={(e) => this.handlewidgetInput(e)} placeholder={WidgetDetailsData?.description} />}
+                                {isIteditable && <input type="text" name='description' value={this.state.description} onChange={(e) => this.handlewidgetInput(e)} />}
 
                             </div>
 
