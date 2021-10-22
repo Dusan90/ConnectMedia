@@ -9,7 +9,7 @@
   .IconDiv {
     display: flex;
     align-items: center;
-    margin: 0 120px 0 30px;
+    margin: 0 100px 0 30px;
   }
 
   .NavBarDiv {
@@ -81,6 +81,9 @@
         gap: 9px;
         p {
           padding-top: 3px;
+          max-width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .arrowDown {
           &:hover {
