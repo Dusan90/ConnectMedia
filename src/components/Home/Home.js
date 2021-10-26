@@ -321,7 +321,7 @@ export class Home extends Component {
         const { urlForCreate, loading } = this.state
         return (
             <>
-                <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>
+                {/* <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>
                     <div >
                         <ViewSectionCard label={'<p><span>Info categories </span> <br> on site <span>Novosti.rs</span></p>'} description={'<p>Following categories were disabled: <span> sport, vesti, zabava </span> <br> They were disabled because they have less than 2 posts.</p>'} customDescriptionStyle={{ backgroundColor: '#AEE8F0' }} customStyle={{ backgroundColor: '#94D7E0' }} />
                     </div>
@@ -331,7 +331,7 @@ export class Home extends Component {
                     <div style={{ marginTop: '17px' }}>
                         <ViewSectionCard label={'<p><span>Error categories </span> <br> on site <span>Novosti.rs</span></p>'} description={'<p>Following categories were disabled: <span> sport, vesti, zabava </span> <br> They were disabled because they have less than 2 posts.</p>'} customDescriptionStyle={{ backgroundColor: '#F0D2AE' }} customStyle={{ backgroundColor: '#E0B494' }} />
                     </div>
-                </div>
+                </div> */}
                 <SearchContainer handleAllOptionsOnMain={this.handleAllOptionsOnMain} handleAddSomeMore={this.handleAddSomeMore} page={this.state.page} handleSearchOnMainPage={this.handleSearchOnMainPage} state={this.state} handleCountPerPage={this.handleCountPerPage} pageName={"SITES"} handleSearchBar={this.handleSearchBar} handleSubtmit={this.handleSubtmit} handlePageChange={this.handlePageChange} handleSortByStatus={this.handleSortByStatus} />
                 {this.state.addButtonClicked && <AddContainer>
                     {/* {!selectedUserSearch && <p style={{ color: '#7befff', fontSize: '18px', alignSelf: 'center', padding: '0 10px' }}>Please choose owner.</p>} */}
