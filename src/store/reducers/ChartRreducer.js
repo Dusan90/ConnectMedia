@@ -1,14 +1,14 @@
-import * as types from "../types/LoginTypes";
+import * as types from "../types/ChartTypes";
 // import Auth from '../../utils/Auth';
 
 const INITIAL_STATE = {
-  login: {
+  total: {
     error: false,
     errorData: null,
     data: null,
     loading: false,
   },
-  logOut: {
+  specSiteChart: {
     error: false,
     errorData: null,
     data: null,
@@ -18,82 +18,66 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case types.LOGIN_REQUEST:
+    case types.GET_TOTAL_CHART_REQUEST:
       return {
         ...state,
-        login: {
+        total: {
           error: false,
           errorData: null,
           data: null,
           loading: true,
         },
       };
-    case types.LOGIN_ERROR:
-      //   Auth.signOut();
+    case types.GET_TOTAL_CHART_ERROR:
       return {
         ...state,
-        login: {
+        total: {
           error: true,
           errorData: action.payload,
           data: null,
           loading: false,
         },
       };
-    case types.LOGIN_RECEIVE:
-      //   Auth.setSessionDataToStorage(action.payload);
+    case types.GET_TOTAL_CHART_RECEIVE:
       return {
         ...state,
-        login: {
+        total: {
           error: false,
           errorData: null,
           data: action.payload,
           loading: false,
         },
-        logOut: {
-          error: false,
-          errorData: null,
-          data: null,
-          loading: false,
-        },
       };
 
-    //logout
+    //specSiteChart
 
-    case types.LOGOUT_REQUEST:
+    case types.GET_SPEC_SITE_CHART_REQUEST:
       return {
         ...state,
-        logOut: {
+        specSiteChart: {
           error: false,
           errorData: null,
           data: null,
           loading: true,
         },
       };
-    case types.LOGOUT_ERROR:
-      //   Auth.signOut();
+    case types.GET_SPEC_SITE_CHART_ERROR:
       return {
         ...state,
-        logOut: {
+        specSiteChart: {
           error: true,
           errorData: action.payload,
           data: null,
           loading: false,
         },
       };
-    case types.LOGOUT_RECEIVE:
-      //   Auth.setSessionDataToStorage(action.payload);
+    case types.GET_SPEC_SITE_CHART_RECEIVE:
       return {
         ...state,
-        logOut: {
+        specSiteChart: {
           error: false,
           errorData: null,
           data: action.payload,
-          loading: false,
-        },
-        login: {
-          error: false,
-          errorData: null,
-          data: null,
           loading: false,
         },
       };
