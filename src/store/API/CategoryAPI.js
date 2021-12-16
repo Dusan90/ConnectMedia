@@ -1,32 +1,30 @@
 import { axiosInstance } from "./index";
-import axios from 'axios'
-import {
-    API_URL,
-    GET_CATEGORY,
-
-} from './urlConsts'
+import axios from "axios";
+import { API_URL, GET_CATEGORY } from "./urlConsts";
 
 // const handlerEnabled = false;
 
-const url = endpoint => `${API_URL}${endpoint}`;
+const url = (endpoint) => `${API_URL}${endpoint}`;
 
-const getCategoryList = async () => {
-    return await axiosInstance.get(`${url(GET_CATEGORY)}`)
-}
+const getCategoryList = async ({ page, search, limit }) => {
+  return await axiosInstance.get(
+    `${url(GET_CATEGORY)}?page=${page}&limit=${limit}&search=${search}`
+  );
+};
 
 const createCategory = async ({ name, adult, rename, merge, description }) => {
-    return await axiosInstance.post(`${url(GET_CATEGORY)}`, {
-        name,
-        description,
-        adult,
-        rename,
-        merge
-    })
-}
+  return await axiosInstance.post(`${url(GET_CATEGORY)}`, {
+    name,
+    description,
+    adult,
+    rename,
+    merge,
+  });
+};
 
 const getCategoryDetails = async ({ id }) => {
-    return await axiosInstance.get(`${url(GET_CATEGORY)}/${id}`)
-}
+  return await axiosInstance.get(`${url(GET_CATEGORY)}/${id}`);
+};
 
 // const updateCategoryDetails = async ({ id, name, adult, rename, merge, description }) => {
 //     const formData = new FormData();
@@ -44,31 +42,44 @@ const getCategoryDetails = async ({ id }) => {
 //     });
 // }
 
-const updateCategoryDetails = async ({ id, name, adult, rename, merge, description }) => {
-    const objective = { name, adult, rename, merge, description }
-    let dataforSend = Object.fromEntries(Object.entries(objective).filter(([_, v]) => v != null));
+const updateCategoryDetails = async ({
+  id,
+  name,
+  adult,
+  rename,
+  merge,
+  description,
+}) => {
+  const objective = { name, adult, rename, merge, description };
+  let dataforSend = Object.fromEntries(
+    Object.entries(objective).filter(([_, v]) => v != null)
+  );
 
-    return await axiosInstance.put(`${url(GET_CATEGORY)}/${id}`, dataforSend)
-}
+  return await axiosInstance.put(`${url(GET_CATEGORY)}/${id}`, dataforSend);
+};
 
 const deleteCategory = async ({ id }) => {
-    return await axiosInstance.delete(`${url(GET_CATEGORY)}/${id}`)
-}
+  return await axiosInstance.delete(`${url(GET_CATEGORY)}/${id}`);
+};
 
 const bindCategory = async ({ siteId, categoryId }) => {
-    return await axiosInstance.post(`${url(GET_CATEGORY)}/binding/${siteId}/${categoryId}`)
-}
+  return await axiosInstance.post(
+    `${url(GET_CATEGORY)}/binding/${siteId}/${categoryId}`
+  );
+};
 
 const unbindCategory = async ({ siteId, categoryId }) => {
-    return await axiosInstance.delete(`${url(GET_CATEGORY)}/binding/${siteId}/${categoryId}`)
-}
+  return await axiosInstance.delete(
+    `${url(GET_CATEGORY)}/binding/${siteId}/${categoryId}`
+  );
+};
 
 export default {
-    getCategoryList,
-    getCategoryDetails,
-    createCategory,
-    updateCategoryDetails,
-    deleteCategory,
-    bindCategory,
-    unbindCategory
+  getCategoryList,
+  getCategoryDetails,
+  createCategory,
+  updateCategoryDetails,
+  deleteCategory,
+  bindCategory,
+  unbindCategory,
 };

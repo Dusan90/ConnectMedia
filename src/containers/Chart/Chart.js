@@ -55,14 +55,14 @@ const data = [
   },
 ];
 
-function Chart({ customStyle, dataToShow, siteChartData }) {
+function Chart({ customStyle, dataToShow }) {
   return (
     <div className="mainDivCharts" style={customStyle && customStyle}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           width={800}
           height={500}
-          data={dataToShow ? dataToShow : siteChartData ? siteChartData : data}
+          data={dataToShow ? dataToShow : data}
           margin={{
             top: 10,
             right: 30,

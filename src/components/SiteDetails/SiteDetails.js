@@ -90,7 +90,13 @@ export class SiteDetails extends Component {
       });
       this.setState({ cateOptions: optionsData });
     } else {
-      this.props.dispatch(GetCategoryListActionRequest());
+      this.props.dispatch(
+        GetCategoryListActionRequest({
+          search: "",
+          limit: "",
+          page: "",
+        })
+      );
     }
 
     if (this.props?.location?.data?.url) {
@@ -560,7 +566,7 @@ export class SiteDetails extends Component {
           <div style={{ height: "500px", marginTop: "20px" }}>
             <Chart
               customStyle={{ padding: "0" }}
-              siteChartData={this.state.siteChartData}
+              dataToShow={this.state.siteChartData}
             />
           </div>
         )}
