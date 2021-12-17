@@ -104,6 +104,11 @@
               text-decoration: underline;
             }
           }
+          a {
+            &:hover {
+              cursor: pointer;
+            }
+          }
         }
         .status_div {
           div {

@@ -654,9 +654,15 @@ export class SiteDetails extends Component {
                 <div className="url_div">
                   <h4>Url</h4>
                   {!isIteditable && (
-                    <Link to={siteDetailsData?.url ? siteDetailsData.url : "#"}>
+                    <a
+                      style={{ textDecoration: "underline" }}
+                      onClick={() => {
+                        siteDetailsData?.url &&
+                          window.open(siteDetailsData?.url);
+                      }}
+                    >
                       {siteDetailsData?.url}
-                    </Link>
+                    </a>
                   )}
                   {isIteditable && (
                     <input
@@ -1152,7 +1158,7 @@ export class SiteDetails extends Component {
                   siteDetailsData?.feeds?.map((el) => {
                     return (
                       <div key={el.id} className="feedCat_div">
-                        <Link to={el.url ? el.url : "#"}>{el.url}</Link>
+                        <Link to={"#"}>{el.url}</Link>
                         {!isIteditable && (
                           <p>
                             {siteDetailsData?.translations.feed?.map((elm) =>

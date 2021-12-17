@@ -559,7 +559,9 @@ export class PostsDetails extends Component {
                 </div>
                 <div className="owner_div">
                   <h4>Owner</h4>
-                  <Link to="#">{postDetailsData?.owner?.email}</Link>
+                  <Link to={`/users/${postDetailsData?.owner?.id}`}>
+                    {postDetailsData?.owner?.email}
+                  </Link>
                   {/* {isIteditable && <input type="text" placeholder='nina.aralica@alo.rs' />} */}
                 </div>
                 <div className="description_div">

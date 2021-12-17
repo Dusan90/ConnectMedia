@@ -880,7 +880,7 @@ export class WidgetsDetails extends Component {
                   </div>
                   <div className="categ_div">
                     <h4>Owner</h4>
-                    <Link to={`${WidgetDetailsData?.owner?.email}`}>
+                    <Link to={`/users/${WidgetDetailsData?.owner?.id}`}>
                       {WidgetDetailsData?.owner?.email}
                     </Link>
                     {/* {isIteditable && <input type="text" placeholder='nina.aralica@alo.rs' />} */}
