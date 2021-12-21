@@ -243,8 +243,11 @@ export class SiteDetails extends Component {
         });
       }
       if (getSiteDetailsData?.data?.feeds?.length !== 0) {
+        const rssToshoe = getSiteDetailsData?.data?.feeds?.map(
+          (el) => `${el.url}`
+        );
         this.setState({
-          RSS: getSiteDetailsData?.data?.feeds?.map((el) => `${el.url} `),
+          RSS: rssToshoe.join(" "),
         });
       }
       if (getSiteDetailsData?.data?.categories !== 0) {
@@ -541,7 +544,8 @@ export class SiteDetails extends Component {
       (el) => el.category.id
     );
 
-    console.log(this.state.siteDetailsData);
+    console.log(this.state.RSS, "ovo je u stateu");
+
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget
