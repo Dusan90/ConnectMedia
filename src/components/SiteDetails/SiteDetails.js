@@ -243,11 +243,12 @@ export class SiteDetails extends Component {
         });
       }
       if (getSiteDetailsData?.data?.feeds?.length !== 0) {
-        const rssToshoe = getSiteDetailsData?.data?.feeds?.map(
-          (el) => `${el.url}`
+        const rssTofilter = getSiteDetailsData?.data?.feeds?.filter(
+          (el) => el.active && el
         );
+        const rssToshow = rssTofilter.map((el) => el.url);
         this.setState({
-          RSS: rssToshoe.join(" "),
+          RSS: rssToshow.join(" "),
         });
       }
       if (getSiteDetailsData?.data?.categories !== 0) {
@@ -811,7 +812,9 @@ export class SiteDetails extends Component {
                   <h4>RSS</h4>
                   {!isIteditable && (
                     <Link to="#">
-                      {siteDetailsData?.feeds?.map((el) => `${el.url} `)}
+                      {siteDetailsData?.feeds?.map((el) =>
+                        el.active ? `${el.url} ` : null
+                      )}
                     </Link>
                   )}
                   {isIteditable && (
@@ -819,9 +822,9 @@ export class SiteDetails extends Component {
                       name="RSS"
                       value={this.state.RSS !== null ? this.state.RSS : ""}
                       onChange={(e) => this.handleChangeRSS(e)}
-                      placeholder={siteDetailsData?.feeds?.map(
-                        (el) => `${el.url} `
-                      )}
+                      // placeholder={siteDetailsData?.feeds?.map(
+                      //   (el) => `${el.url} `
+                      // )}
                     />
                   )}
                 </div>
@@ -1160,50 +1163,52 @@ export class SiteDetails extends Component {
                 </h1>
                 {siteDetailsData?.feeds?.length !== 0 &&
                   siteDetailsData?.feeds?.map((el) => {
-                    return (
-                      <div key={el.id} className="feedCat_div">
-                        <Link to={"#"}>{el.url}</Link>
-                        {!isIteditable && (
-                          <p>
-                            {siteDetailsData?.translations.feed?.map((elm) =>
-                              elm.feed.id === el.id ? elm.category?.name : ""
-                            )}
-                          </p>
-                        )}
-                        {isIteditable && (
-                          <div className="selectAndX">
-                            <Select
-                              // defaultValue={siteDetailsData?.translations.feed?.map(el => el.category.name && `${el.category.id}`)}
-                              className="basic-single"
-                              classNamePrefix="select"
-                              // defaultValue={colourOptions[0]}
-                              // isLoading={true}
-                              placeholder={siteDetailsData?.translations.feed?.map(
-                                (elm) =>
-                                  elm.feed.id === el.id
-                                    ? elm.category?.name
-                                    : ""
+                    if (el.active) {
+                      return (
+                        <div key={el.id} className="feedCat_div">
+                          <Link to={"#"}>{el.url}</Link>
+                          {!isIteditable && (
+                            <p>
+                              {siteDetailsData?.translations.feed?.map((elm) =>
+                                elm.feed.id === el.id ? elm.category?.name : ""
                               )}
-                              styles={customSelectStyles}
-                              // isClearable={true}
-                              isSearchable={true}
-                              name={`feed${el.id}`}
-                              options={[
-                                { value: "none", label: "None" },
-                                ...this.state.cateOptions,
-                              ]}
-                              onChange={(e) =>
-                                this.handleFeedTraslation(e, el.id)
-                              }
-                            />
-                            {/* <select>
-                                        <option className='options' value="">none selected</option>
-                                    </select> */}
-                            {/* <img src={xButton} alt="x" /> */}
-                          </div>
-                        )}
-                      </div>
-                    );
+                            </p>
+                          )}
+                          {isIteditable && (
+                            <div className="selectAndX">
+                              <Select
+                                // defaultValue={siteDetailsData?.translations.feed?.map(el => el.category.name && `${el.category.id}`)}
+                                className="basic-single"
+                                classNamePrefix="select"
+                                // defaultValue={colourOptions[0]}
+                                // isLoading={true}
+                                placeholder={siteDetailsData?.translations.feed?.map(
+                                  (elm) =>
+                                    elm.feed.id === el.id
+                                      ? elm.category?.name
+                                      : ""
+                                )}
+                                styles={customSelectStyles}
+                                // isClearable={true}
+                                isSearchable={true}
+                                name={`feed${el.id}`}
+                                options={[
+                                  { value: "none", label: "None" },
+                                  ...this.state.cateOptions,
+                                ]}
+                                onChange={(e) =>
+                                  this.handleFeedTraslation(e, el.id)
+                                }
+                              />
+                              {/* <select>
+                                          <option className='options' value="">none selected</option>
+                                      </select> */}
+                              {/* <img src={xButton} alt="x" /> */}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
                   })}
               </div>
 
