@@ -80,6 +80,7 @@ export class SiteDetails extends Component {
       remote_translations: [],
       wordToPass: "",
       siteChartData: "",
+      ratio: null,
     };
   }
 
@@ -232,6 +233,7 @@ export class SiteDetails extends Component {
         refresh_interval: getSiteDetailsData.data?.refresh_interval,
         guess_remote: getSiteDetailsData.data?.guess_remote,
         tag_map: getSiteDetailsData.data?.tag_map,
+        ratio: getSiteDetailsData.data?.ratio,
       });
       if (getSiteDetailsData?.data?.translations?.feed.length !== 0) {
         this.setState({
@@ -248,7 +250,7 @@ export class SiteDetails extends Component {
         );
         const rssToshow = rssTofilter.map((el) => el.url);
         this.setState({
-          RSS: rssToshow.join(" "),
+          RSS: rssToshow.join(" ").replace(/ /g, "\n"),
         });
       }
       if (getSiteDetailsData?.data?.categories !== 0) {
@@ -361,6 +363,7 @@ export class SiteDetails extends Component {
         copy_from_site,
         guess_remote,
         tag_map,
+        ratio,
       } = this.state;
       const categorieFormating = categories.map((el) => {
         return {
@@ -392,9 +395,13 @@ export class SiteDetails extends Component {
           guess_remote,
           tag_map,
           state: dataState,
-          feeds: typeof RSS === "string" ? RSS.split(" ") : null,
+          feeds:
+            typeof RSS === "string"
+              ? RSS.replace(/\s+/g, " ").trim().split(" ")
+              : null,
           categories: categorieFormating,
           feed_translations,
+          ratio,
         })
       );
     } else if (page === "cancel") {
@@ -545,8 +552,7 @@ export class SiteDetails extends Component {
       (el) => el.category.id
     );
 
-    console.log(this.state.RSS, "ovo je u stateu");
-
+    console.log(this.state.ratio);
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget
@@ -904,6 +910,33 @@ export class SiteDetails extends Component {
                       onChange={(e) => this.handleChange(e)}
                       name="refresh_interval"
                       value={this.state.refresh_interval}
+                    />
+                  )}
+                </div>
+                <div className="interval_div">
+                  <h4>Ratio</h4>
+                  {!isIteditable && <p>{siteDetailsData?.ratio}</p>}
+                  {isIteditable && (
+                    <input
+                      type="number"
+                      min="0"
+                      onChange={(e) => {
+                        if (
+                          (!isNaN(e.target.value) &&
+                            parseInt(e.target.value) > 0) ||
+                          e.target.value === ""
+                        ) {
+                          let val =
+                            e.target.value === ""
+                              ? e.target.value
+                              : parseInt(e.target.value);
+                          setTimeout(() => {
+                            this.setState({ ratio: val });
+                          });
+                        }
+                      }}
+                      name="ratio"
+                      value={this.state.ratio !== null && this.state.ratio}
                     />
                   )}
                 </div>

@@ -33,6 +33,7 @@ const createSite = async ({
   copy_from_site,
   guess_remote,
   tag_map,
+  ratio,
 }) => {
   const objective = {
     name,
@@ -55,6 +56,7 @@ const createSite = async ({
     copy_from_site,
     guess_remote,
     tag_map,
+    ratio,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
@@ -88,6 +90,7 @@ const updateSiteDetails = async ({
   copy_from_site,
   guess_remote,
   tag_map,
+  ratio,
 }) => {
   const objective = {
     name,
@@ -110,6 +113,7 @@ const updateSiteDetails = async ({
     copy_from_site,
     guess_remote,
     tag_map,
+    ratio,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
