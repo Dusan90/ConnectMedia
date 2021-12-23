@@ -74,7 +74,9 @@ h1 {
   .buttonAndATagDiv {
     display: flex;
     gap: 20px;
+    justify-content: space-between;
     align-items: center;
+
     a {
       color: #418d9e;
       font-size: 18px;
@@ -83,6 +85,20 @@ h1 {
       &:hover {
         text-decoration: underline;
       }
+    }
+  }
+  .checkbox-rememberMe {
+    display: flex;
+    align-items: center;
+    input {
+      width: 15px;
+      height: 15px;
+      margin-right: 10px;
+    }
+    p {
+      color: #418d9e;
+      font-size: 18px;
+      line-height: 22px;
     }
   }
 }

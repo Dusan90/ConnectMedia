@@ -14,10 +14,16 @@ export class Login extends Component {
     this.state = {
       email: "",
       password: "",
+      rememberMe: false,
     };
   }
 
   componentDidMount() {
+    const rememberMe = localStorage.getItem("rememberMe") === "true";
+    const emailValue = rememberMe
+      ? localStorage.getItem("emailValue")
+      : localStorage.removeItem("emailValue");
+    this.setState({ email: emailValue, rememberMe });
     if (!sessionStorage.getItem("token")) {
       sessionStorage.setItem("token", uuidv4());
       window.location.reload();
@@ -29,7 +35,9 @@ export class Login extends Component {
     const { data, loading, error, errorData } = login;
 
     if (prevProps.login !== login && !loading && !error && data) {
-      // sessionStorage.setItem('isLoged', 'true')
+      if (this.state.rememberMe) {
+        localStorage.setItem("emailValue", `${this.state.email}`);
+      }
       this.setState({ mail: "", password: "" });
       history.push("/sites");
     } else if (prevProps.login !== login && error && errorData) {
@@ -54,6 +62,11 @@ export class Login extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  handleCheckBox = (e) => {
+    this.setState({ rememberMe: e.target.checked });
+    localStorage.setItem("rememberMe", e.target.checked);
+  };
+
   render() {
     return (
       <>
@@ -68,15 +81,15 @@ export class Login extends Component {
             type="email"
             name="email"
             placeholder="Enter your email"
-            autocomplete="off"
             onChange={(e) => this.handleInputLogin(e)}
+            value={this.state.email}
           />
           <input
             type="password"
             name="password"
             placeholder="Enter yout password"
-            autocomplete="off"
             onChange={(e) => this.handleInputLogin(e)}
+            value={this.state.password}
           />
           <div className="buttonAndATagDiv">
             <LogOutButton
@@ -90,6 +103,14 @@ export class Login extends Component {
               }}
             />
             <a href="#">Forgot password</a>
+          </div>
+          <div className="checkbox-rememberMe">
+            <input
+              type="checkbox"
+              checked={this.state.rememberMe}
+              onChange={this.handleCheckBox}
+            />
+            <p>Remember me</p>
           </div>
         </div>
       </>
