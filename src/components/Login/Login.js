@@ -68,12 +68,14 @@ export class Login extends Component {
             type="email"
             name="email"
             placeholder="Enter your email"
+            autocomplete="off"
             onChange={(e) => this.handleInputLogin(e)}
           />
           <input
             type="password"
             name="password"
             placeholder="Enter yout password"
+            autocomplete="off"
             onChange={(e) => this.handleInputLogin(e)}
           />
           <div className="buttonAndATagDiv">
