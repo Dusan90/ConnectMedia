@@ -2,7 +2,8 @@
 FROM node:16.13 as builder
 WORKDIR /src
 COPY . .
-RUN npm install -loglevel=error
+RUN yarn install --production --silent &&
+  yarn build --silent
 
 
 
@@ -19,7 +20,7 @@ RUN mkdir -p /app
 RUN echo healthcheck > /app/providus.html
 
 # copying angular app from builder image to it's own directory
-COPY --from=builder /src/dist /app
+COPY --from=builder /src/build /app
 
 # actually configured on Jenkins Deploy job
 ENV APP_URL ${APP_URL}
