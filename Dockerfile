@@ -9,7 +9,7 @@ RUN yarn install --production --silent &&
 
 
 # base image, can be upgraded in future
-FROM nginx:1.18.0-alpine
+FROM nginx:1.18-alpine
 
 # copying base nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
