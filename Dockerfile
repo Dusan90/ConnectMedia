@@ -2,7 +2,7 @@
 FROM node:16.13 as builder
 WORKDIR /src
 COPY . .
-RUN yarn install --production --silent &&
+RUN yarn install --production --silent && \
   yarn build --silent
 
 
