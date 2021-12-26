@@ -598,7 +598,7 @@ export class SiteDetails extends Component {
       }
     });
 
-    console.log(options, "options", numberOfRatio);
+    console.log(numberOfRatio, optionsForRatioSelect);
 
     return (
       <div className="mainSiteDetailsDiv">
@@ -965,6 +965,7 @@ export class SiteDetails extends Component {
                     <div
                       className="interval_div"
                       style={{ gap: isIteditable && "10px" }}
+                      key={index}
                     >
                       {!isIteditable && <h4>{el.name}</h4>}
                       {isIteditable && (
@@ -1046,7 +1047,6 @@ export class SiteDetails extends Component {
                           className="deleteRatioRow"
                           onClick={() => {
                             const newRatiolist = [...this.state.numberOfRatio];
-                            console.log(el.id, newRatiolist[index]["id"]);
                             if (newRatiolist[index]["id"] === el.id) {
                               const newone = newRatiolist.filter(
                                 (elm) => elm.id !== el.id
