@@ -579,10 +579,27 @@ export class SiteDetails extends Component {
       better_images,
       auto_publish,
       copy_from_site,
+      numberOfRatio,
+      optionsForRatioSelect,
     } = this.state;
     const categorialOption = siteDetailsData?.categories?.map(
       (el) => el.category.id
     );
+
+    const optionsSelection = numberOfRatio.map((el) => {
+      return el.id;
+    });
+
+    const optionsS = optionsForRatioSelect.map((el) => {
+      if (optionsSelection.includes(el.value)) {
+        return { ...el, isdisabled: true };
+      } else {
+        return el;
+      }
+    });
+
+    console.log(options, "options", numberOfRatio);
+
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget
@@ -973,12 +990,11 @@ export class SiteDetails extends Component {
                             isClearable={true}
                             isSearchable={true}
                             name={`feed${el.id}`}
-                            options={this.state.optionsForRatioSelect}
+                            options={optionsS}
                             onChange={(e) => {
                               const newRatiolist = [
                                 ...this.state.numberOfRatio,
                               ];
-                              console.log(newRatiolist[index], e);
                               if (newRatiolist[index]["id"] === el.id) {
                                 newRatiolist[index]["id"] = e.value;
                                 newRatiolist[index]["name"] = e.label;
@@ -990,6 +1006,7 @@ export class SiteDetails extends Component {
                               }
                             }}
                             isClearable={false}
+                            isOptionDisabled={(option) => option.isdisabled}
                           />
                         </div>
                       )}
