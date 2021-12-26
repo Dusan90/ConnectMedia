@@ -11,6 +11,7 @@ import {
   GetSiteDetailsActionRequest,
   DeleteSiteActionRequest,
   UpdateSiteDetailsActionRequest,
+  GetSitesListActionRequest,
 } from "../../store/actions/SitesListAction";
 import {
   BindCategoryActionRequest,
@@ -81,6 +82,8 @@ export class SiteDetails extends Component {
       wordToPass: "",
       siteChartData: "",
       ratio: null,
+      numberOfRatio: [],
+      optionsForRatioSelect: [],
     };
   }
 
@@ -113,6 +116,14 @@ export class SiteDetails extends Component {
     this.props.dispatch(
       SpecSiteChartRequest({ id: this.props.match.params.id })
     );
+
+    this.props.dispatch(
+      GetSitesListActionRequest({
+        search: "",
+        limit: "",
+        page: "",
+      })
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -124,7 +135,13 @@ export class SiteDetails extends Component {
       unbindCategory,
       bindCategory,
       specSiteChart,
+      getSitesList,
     } = this.props;
+    const {
+      data: getSitesListData,
+      loading: getSitesListLoading,
+      error: getSitesListError,
+    } = getSitesList;
     const {
       data: specSiteChartData,
       loading: specSiteChartLoading,
@@ -162,6 +179,18 @@ export class SiteDetails extends Component {
       loading: bindCategoryLoading,
       error: bindCategoryError,
     } = bindCategory;
+
+    if (
+      prevProps.getSitesList !== getSitesList &&
+      !getSitesListError &&
+      !getSitesListLoading &&
+      getSitesListData
+    ) {
+      const option = getSitesListData.data.map((el) => {
+        return { value: el.id, label: el.name };
+      });
+      this.setState({ optionsForRatioSelect: option });
+    }
 
     if (
       prevProps.bindCategory !== bindCategory &&
@@ -234,6 +263,7 @@ export class SiteDetails extends Component {
         guess_remote: getSiteDetailsData.data?.guess_remote,
         tag_map: getSiteDetailsData.data?.tag_map,
         ratio: getSiteDetailsData.data?.ratio,
+        numberOfRatio: getSiteDetailsData.data?.ratios,
       });
       if (getSiteDetailsData?.data?.translations?.feed.length !== 0) {
         this.setState({
@@ -364,6 +394,7 @@ export class SiteDetails extends Component {
         guess_remote,
         tag_map,
         ratio,
+        numberOfRatio,
       } = this.state;
       const categorieFormating = categories.map((el) => {
         return {
@@ -402,6 +433,7 @@ export class SiteDetails extends Component {
           categories: categorieFormating,
           feed_translations,
           ratio,
+          ratios: numberOfRatio,
         })
       );
     } else if (page === "cancel") {
@@ -551,8 +583,6 @@ export class SiteDetails extends Component {
     const categorialOption = siteDetailsData?.categories?.map(
       (el) => el.category.id
     );
-
-    console.log(this.state.ratio);
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget
@@ -913,6 +943,126 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div>
+                {this.state.numberOfRatio.length !== 0 &&
+                  this.state.numberOfRatio.map((el, index) => (
+                    <div
+                      className="interval_div"
+                      style={{ gap: isIteditable && "10px" }}
+                    >
+                      {!isIteditable && <h4>{el.name}</h4>}
+                      {isIteditable && (
+                        <div style={{ flex: 1 }}>
+                          <Select
+                            value={{
+                              label: `${el.name}`,
+                            }}
+                            className="basic"
+                            classNamePrefix="select"
+                            // placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}
+                            styles={{
+                              control: (base, state) => ({
+                                ...base,
+                                flex: 1,
+                                fontWeight: "500",
+                                background: "#d6dbdc",
+                              }),
+                              placeholder: () => ({
+                                color: "black",
+                              }),
+                            }}
+                            isClearable={true}
+                            isSearchable={true}
+                            name={`feed${el.id}`}
+                            options={this.state.optionsForRatioSelect}
+                            onChange={(e) => {
+                              const newRatiolist = [
+                                ...this.state.numberOfRatio,
+                              ];
+                              console.log(newRatiolist[index], e);
+                              if (newRatiolist[index]["id"] === el.id) {
+                                newRatiolist[index]["id"] = e.value;
+                                newRatiolist[index]["name"] = e.label;
+                                setTimeout(() => {
+                                  this.setState({
+                                    numberOfRatio: newRatiolist,
+                                  });
+                                });
+                              }
+                            }}
+                            isClearable={false}
+                          />
+                        </div>
+                      )}
+                      {!isIteditable && <p>{el.ratio}</p>}
+                      {isIteditable && (
+                        <input
+                          type="number"
+                          min="0"
+                          style={{ flex: 1, margin: 0 }}
+                          onChange={(e) => {
+                            if (
+                              (!isNaN(e.target.value) &&
+                                parseInt(e.target.value) > 0) ||
+                              e.target.value === ""
+                            ) {
+                              const newRatiolist = [
+                                ...this.state.numberOfRatio,
+                              ];
+                              if (newRatiolist[index]["id"] === el.id) {
+                                newRatiolist[index]["ratio"] = parseInt(
+                                  e.target.value
+                                );
+                                setTimeout(() => {
+                                  this.setState({
+                                    numberOfRatio: newRatiolist,
+                                  });
+                                });
+                              }
+                            }
+                          }}
+                          name="ratio"
+                          value={el.ratio}
+                        />
+                      )}
+                      {isIteditable && (
+                        <p
+                          className="deleteRatioRow"
+                          onClick={() => {
+                            const newRatiolist = [...this.state.numberOfRatio];
+                            console.log(el.id, newRatiolist[index]["id"]);
+                            if (newRatiolist[index]["id"] === el.id) {
+                              const newone = newRatiolist.filter(
+                                (elm) => elm.id !== el.id
+                              );
+                              setTimeout(() => {
+                                this.setState({ numberOfRatio: newone });
+                              });
+                            }
+                          }}
+                        >
+                          X
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                {isIteditable && (
+                  <div className="interval_div">
+                    <button
+                      onClick={() => {
+                        const newRatiolist = [
+                          ...this.state.numberOfRatio,
+                          { id: "", name: "", ratio: "" },
+                        ];
+                        setTimeout(() => {
+                          this.setState({ numberOfRatio: newRatiolist });
+                        });
+                      }}
+                      className="addingButton"
+                    >
+                      Add ratio
+                    </button>
+                  </div>
+                )}
                 <div className="interval_div">
                   <h4>Ratio</h4>
                   {!isIteditable && <p>{siteDetailsData?.ratio}</p>}
@@ -1402,8 +1552,13 @@ export class SiteDetails extends Component {
 
 const mapStateToProps = (state) => {
   const { SitesListReducer, CategoryReducer, ChartRreducer } = state;
-  const { getSiteDetails, deleteSite, updateSiteDetails, createSite } =
-    SitesListReducer;
+  const {
+    getSitesList,
+    getSiteDetails,
+    deleteSite,
+    updateSiteDetails,
+    createSite,
+  } = SitesListReducer;
   const { getCategoryList, bindCategory, unbindCategory } = CategoryReducer;
   const { specSiteChart } = ChartRreducer;
 
@@ -1416,6 +1571,7 @@ const mapStateToProps = (state) => {
     unbindCategory,
     bindCategory,
     specSiteChart,
+    getSitesList,
   };
 };
 

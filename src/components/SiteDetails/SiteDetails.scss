@@ -262,6 +262,22 @@
           p {
             font-weight: bold;
           }
+          .deleteRatioRow {
+            color: red;
+            font-weight: normal;
+            &:hover {
+              cursor: pointer;
+            }
+          }
+          .addingButton {
+            background: #418d9e;
+            border-radius: 3px;
+            height: 42px;
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
         .autopublish_div {
           border: none;

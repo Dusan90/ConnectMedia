@@ -34,6 +34,7 @@ const createSite = async ({
   guess_remote,
   tag_map,
   ratio,
+  ratios,
 }) => {
   const objective = {
     name,
@@ -57,6 +58,7 @@ const createSite = async ({
     guess_remote,
     tag_map,
     ratio,
+    ratios,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
@@ -91,6 +93,7 @@ const updateSiteDetails = async ({
   guess_remote,
   tag_map,
   ratio,
+  ratios,
 }) => {
   const objective = {
     name,
@@ -114,6 +117,7 @@ const updateSiteDetails = async ({
     guess_remote,
     tag_map,
     ratio,
+    ratios,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
