@@ -76,21 +76,21 @@ function Chart({ customStyle, dataToShow }) {
           <Tooltip />
           <Area
             type="monotone"
-            dataKey="visits"
+            dataKey="in"
             stackId="1"
             stroke="#8884d8"
             fill="#8884d8"
           />
           <Area
             type="monotone"
-            dataKey="users"
+            dataKey="out"
             stackId="2"
             stroke="#82ca9d"
             fill="#82ca9d"
           />
           <Area
             type="monotone"
-            dataKey="repeating"
+            dataKey="txr"
             stackId="3"
             stroke="#ffc658"
             fill="#ffc658"
