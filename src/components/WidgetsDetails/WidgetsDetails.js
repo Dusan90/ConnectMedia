@@ -840,7 +840,7 @@ export class WidgetsDetails extends Component {
                         </p>
                       </div>
                     )}
-                    {isIteditable && categorialOption && (
+                    {isIteditable && WidgetDetailsData && (
                       <Select
                         className="basic-single"
                         classNamePrefix="select"
