@@ -26,7 +26,7 @@ export class Users extends Component {
       info: "",
       filteredDate: "",
       inputValue: "",
-      countPerPage: 10,
+      countPerPage: 20,
       addButtonClicked: false,
       newUseremail: "",
       newUserpassword: "",

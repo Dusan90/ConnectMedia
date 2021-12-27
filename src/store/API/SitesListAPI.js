@@ -35,6 +35,7 @@ const createSite = async ({
   tag_map,
   ratio,
   ratios,
+  random_ratio,
 }) => {
   const objective = {
     name,
@@ -59,6 +60,7 @@ const createSite = async ({
     tag_map,
     ratio,
     ratios,
+    random_ratio,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
@@ -94,6 +96,7 @@ const updateSiteDetails = async ({
   tag_map,
   ratio,
   ratios,
+  random_ratio,
 }) => {
   const objective = {
     name,
@@ -118,6 +121,7 @@ const updateSiteDetails = async ({
     tag_map,
     ratio,
     ratios,
+    random_ratio,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)

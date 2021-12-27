@@ -45,7 +45,7 @@ export class Widgets extends Component {
       checkboxList: [],
       hashesArrowDown: false,
       hashesArrowWitchIsOn: "",
-      countPerPage: 10,
+      countPerPage: 20,
       selectedSiteSearch: null,
       selectedCategorieSearch: null,
       selectedStatusSearch: null,

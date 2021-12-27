@@ -172,10 +172,10 @@ export class Totals extends Component {
           handleAllOptionsOnMain={this.handleAllOptionsOnMain}
           secondHeaderCustomStyle={{ height: "55px" }}
         />
-        <div style={{ padding: "0 35px" }}>
+        {/* <div style={{ padding: "0 35px" }}>
           <div className="mainSiteDetailsNavigationTotal">
-            <div className="siteDetailsNavigate">
-              <div
+            <div className="siteDetailsNavigate"> */}
+        {/* <div
                 onClick={() => {
                   return (
                     this.handlePageChange("goback"), this.props.history.goBack()
@@ -184,9 +184,9 @@ export class Totals extends Component {
                 className={`goback ${whichIsActive === "goback" && "active"}`}
               >
                 <p>GO BACK</p>
-              </div>
-              {/* <div onClick={() => this.handlePageChange('siteDetails')} className={`siteDetails ${whichIsActive === 'siteDetails' && 'active'}`}><p>Site details</p></div> */}
-              <div
+              </div> */}
+        {/* <div onClick={() => this.handlePageChange('siteDetails')} className={`siteDetails ${whichIsActive === 'siteDetails' && 'active'}`}><p>Site details</p></div> */}
+        {/* <div
                 onClick={() => this.handlePageChange("sitesDiv")}
                 className={`sitesDiv ${
                   whichIsActive === "sitesDiv" && "active"
@@ -197,8 +197,8 @@ export class Totals extends Component {
                   alt="posts"
                 />
                 <p>sites</p>
-              </div>
-              <div
+              </div> */}
+        {/* <div
                 onClick={() => this.handlePageChange("postsPorDiv")}
                 className={`postsPorDiv ${
                   whichIsActive === "postsPorDiv" && "active"
@@ -210,8 +210,8 @@ export class Totals extends Component {
                 />
 
                 <p>posts on portal</p>
-              </div>
-              {
+              </div> */}
+        {/* {
                 <div
                   onClick={() => {
                     return this.handlePageChange("postsWidgDiv");
@@ -226,8 +226,8 @@ export class Totals extends Component {
                   />
                   <p>posts on widgets</p>
                 </div>
-              }
-              {
+              } */}
+        {/* {
                 <div
                   onClick={() => this.handlePageChange("widgetsDiv")}
                   className={`widgetsDiv ${
@@ -240,18 +240,31 @@ export class Totals extends Component {
                   />
                   <p>widgets</p>
                 </div>
-              }
-            </div>
+              } */}
+        {/* </div>
           </div>
+        </div> */}
+
+        <div
+          style={{ height: "500px", marginTop: "20px" }}
+          className="linechart"
+        >
+          <Chart
+            dataToShow={this.state.chartData}
+            fields={{ 0: "clicks", 1: "impressions", 2: "ctr" }}
+          />
         </div>
 
         <div
           style={{ height: "500px", marginTop: "20px" }}
           className="linechart"
         >
-          <Chart dataToShow={this.state.chartData} />
+          <Chart
+            dataToShow={this.state.chartData}
+            fields={{ 0: "visits", 1: "unique_perc", 2: "unique" }}
+          />
         </div>
-        <h1
+        {/* <h1
           className="secondHeaderOnTotals"
           style={{ marginTop: "50px", textAlign: "center" }}
         >
@@ -259,7 +272,7 @@ export class Totals extends Component {
         </h1>
         <div style={{ height: `${dataLength * 30}px` }}>
           <VerticalChart />
-        </div>
+        </div> */}
       </>
     );
   }

@@ -40,7 +40,7 @@ export class Posts extends Component {
       checkboxList: [],
       hashesArrowDown: false,
       hashesArrowWitchIsOn: "",
-      countPerPage: 10,
+      countPerPage: 20,
       addButtonClicked: false,
       selectedSiteSearch: null,
       selectedCategorieSearch: null,
@@ -1085,7 +1085,7 @@ export class Posts extends Component {
                           </div>
                           <p>{item.txr}</p>
                         </div>
-                        <div className="statistic">
+                        {/* <div className="statistic">
                           <div>
                             <div className="arrowDiv">
                               <img
@@ -1106,8 +1106,8 @@ export class Posts extends Component {
                             <p>wimp</p>
                           </div>
                           <p>{item.txr}</p>
-                        </div>
-                        <div className="statistic">
+                        </div> */}
+                        {/* <div className="statistic">
                           <div>
                             <div className="arrowDiv">
                               <img
@@ -1128,8 +1128,8 @@ export class Posts extends Component {
                             <p>wclk</p>
                           </div>
                           <p>{item.txr}</p>
-                        </div>
-                        <div className="statistic">
+                        </div> */}
+                        {/* <div className="statistic">
                           <div>
                             <div className="arrowDiv">
                               <img
@@ -1150,8 +1150,8 @@ export class Posts extends Component {
                             <p>wctr</p>
                           </div>
                           <p>{item.txr}</p>
-                        </div>
-                        <div className="statistic">
+                        </div> */}
+                        {/* <div className="statistic">
                           <div>
                             <div className="arrowDiv">
                               <img
@@ -1172,7 +1172,7 @@ export class Posts extends Component {
                             <p>pimp</p>
                           </div>
                           <p>{item.txr}</p>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   );
@@ -1288,7 +1288,7 @@ export class Posts extends Component {
                   {/* <th></th> */}
                   <th>
                     <div>
-                      <div>
+                      {/* <div>
                         <img
                           src={arrowUp}
                           onClick={() => this.handleArrowSort("imp", "Up")}
@@ -1299,13 +1299,13 @@ export class Posts extends Component {
                           onClick={() => this.handleArrowSort("imp", "Down")}
                           alt="arrow"
                         />
-                      </div>
+                      </div> */}
                       <p>imp</p>
                     </div>
                   </th>
                   <th>
                     <div>
-                      <div>
+                      {/* <div>
                         <img
                           src={arrowUp}
                           onClick={() => this.handleArrowSort("clk", "Up")}
@@ -1316,13 +1316,13 @@ export class Posts extends Component {
                           onClick={() => this.handleArrowSort("clk", "Down")}
                           alt="arrow"
                         />
-                      </div>
+                      </div> */}
                       <p>clk</p>
                     </div>
                   </th>
                   <th>
                     <div>
-                      <div>
+                      {/* <div>
                         <img
                           src={arrowUp}
                           onClick={() => this.handleArrowSort("ctr", "Up")}
@@ -1333,11 +1333,11 @@ export class Posts extends Component {
                           onClick={() => this.handleArrowSort("ctr", "Down")}
                           alt="arrow"
                         />
-                      </div>
+                      </div> */}
                       <p>ctr</p>
                     </div>
                   </th>
-                  <th>
+                  {/* <th>
                     <div>
                       <div>
                         <img
@@ -1353,8 +1353,8 @@ export class Posts extends Component {
                       </div>
                       <p>wimp</p>
                     </div>
-                  </th>
-                  <th>
+                  </th> */}
+                  {/* <th>
                     <div>
                       <div>
                         <img
@@ -1370,8 +1370,8 @@ export class Posts extends Component {
                       </div>
                       <p>wclk</p>
                     </div>
-                  </th>
-                  <th>
+                  </th> */}
+                  {/* <th>
                     <div>
                       <div>
                         <img
@@ -1387,8 +1387,8 @@ export class Posts extends Component {
                       </div>
                       <p>wctr</p>
                     </div>
-                  </th>
-                  <th>
+                  </th> */}
+                  {/* <th>
                     <div>
                       <div>
                         <img
@@ -1404,7 +1404,7 @@ export class Posts extends Component {
                       </div>
                       <p>pimp</p>
                     </div>
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
 
@@ -1589,13 +1589,9 @@ export class Posts extends Component {
                               )}
                           </>
                         </td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
+                        <td>{item.imp}</td>
+                        <td>{item.clk}</td>
+                        <td>{item.ctr}</td>
                       </tr>
                     );
                   })}

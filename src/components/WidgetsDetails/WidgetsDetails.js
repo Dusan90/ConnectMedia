@@ -13,9 +13,12 @@ import {
   CreateWidgetActionRequest,
   UpdateWidgetDetailsActionRequest,
   DeleteWidgetActionRequest,
+  ViewWidgetActionRequest,
 } from "../../store/actions/WidgetActions";
 import { GetCategoryListActionRequest } from "../../store/actions/CategoryAction";
 import { GetSitesListActionRequest } from "../../store/actions/SitesListAction";
+import { SpecWidgetChartRequest } from "../../store/actions/ChartAction";
+
 import ViewWidgets from "./ViewWidgets";
 
 import { NotificationManager } from "react-notifications";
@@ -36,33 +39,6 @@ const customSelectStyles = {
     color: "black",
   }),
 };
-
-const data = [
-  {
-    name: "Page A",
-    uv: 590,
-    pv: 800,
-    amt: 1400,
-  },
-  {
-    name: "Page B",
-    uv: 590,
-    pv: 800,
-    amt: 1400,
-  },
-  {
-    name: "Page C",
-    uv: 590,
-    pv: 800,
-    amt: 1400,
-  },
-  {
-    name: "Page D",
-    uv: 590,
-    pv: 800,
-    amt: 1400,
-  },
-];
 
 const options = [0, 1, 2, 3];
 
@@ -97,6 +73,8 @@ export class WidgetsDetails extends Component {
       template: null,
       siteOptions: [],
       wordToPass: "",
+      widgetChartData: "",
+      viewWidget: "",
     };
   }
 
@@ -106,7 +84,9 @@ export class WidgetsDetails extends Component {
     } else if (page === "statsDiv") {
       this.setState({ isIteditable: false });
     } else if (page === "viewDiv") {
-      console.log("view");
+      window.open(
+        `https://connectmedia.rs/api/v1/widget/${this.props.match.params.id}/test`
+      );
     } else if (page === "embedDiv") {
       this.setState({ isIteditable: false });
     } else {
@@ -138,6 +118,12 @@ export class WidgetsDetails extends Component {
         })
       );
     }
+    this.props.dispatch(
+      SpecWidgetChartRequest({ id: this.props.match.params.id })
+    );
+    this.props.dispatch(
+      ViewWidgetActionRequest({ id: this.props.match.params.id })
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -148,6 +134,8 @@ export class WidgetsDetails extends Component {
       createWidget,
       updateWidgetDetails,
       getSitesList,
+      specWidgetChart,
+      viewWidget,
     } = this.props;
     const {
       data: getWidgetDetailsData,
@@ -181,6 +169,34 @@ export class WidgetsDetails extends Component {
       loading: getSitesListLoading,
       error: getSitesListError,
     } = getSitesList;
+    const {
+      data: specWidgetChartData,
+      loading: specWidgetChartLoading,
+      error: specWidgetChartError,
+    } = specWidgetChart;
+    const {
+      data: viewWidgetData,
+      loading: viewWidgetLoading,
+      error: viewWidgetError,
+    } = viewWidget;
+
+    if (
+      prevProps.viewWidget !== viewWidget &&
+      !viewWidgetError &&
+      !viewWidgetLoading &&
+      viewWidgetData
+    ) {
+      this.setState({ viewWidget: viewWidgetData.data });
+    }
+
+    if (
+      prevProps.specWidgetChart !== specWidgetChart &&
+      !specWidgetChartError &&
+      !specWidgetChartLoading &&
+      specWidgetChartData
+    ) {
+      this.setState({ widgetChartData: specWidgetChartData.data });
+    }
 
     if (
       prevProps.getSitesList !== getSitesList &&
@@ -315,7 +331,7 @@ export class WidgetsDetails extends Component {
         this.props.dispatch(
           CreateWidgetActionRequest({
             name,
-            site,
+            site: site.value,
             status: dataState,
             public: publicValue,
             image,
@@ -340,7 +356,7 @@ export class WidgetsDetails extends Component {
           UpdateWidgetDetailsActionRequest({
             id: this.props.match.params.id,
             name,
-            site,
+            site: site.value,
             status: dataState,
             public: publicValue,
             image,
@@ -385,7 +401,7 @@ export class WidgetsDetails extends Component {
   };
 
   handleSite = (value) => {
-    this.setState({ site: value.value });
+    this.setState({ site: value });
   };
 
   handlewidgetInput = (e) => {
@@ -422,6 +438,7 @@ export class WidgetsDetails extends Component {
       return { value: el.id, label: el.name };
     });
 
+    console.log(site);
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget
@@ -447,9 +464,13 @@ export class WidgetsDetails extends Component {
           <>
             {" "}
             <div style={{ height: "500px", marginTop: "20px" }}>
-              <Chart customStyle={{ padding: "0" }} />
+              <Chart
+                dataToShow={this.state.widgetChartData}
+                fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}
+                customStyle={{ padding: "0" }}
+              />
             </div>
-            <h1
+            {/* <h1
               style={{
                 marginTop: "50px",
                 textAlign: "center",
@@ -457,10 +478,10 @@ export class WidgetsDetails extends Component {
               }}
             >
               Daily totals for post
-            </h1>
-            <div style={{ height: `200px` }}>
+            </h1> */}
+            {/* <div style={{ height: `200px` }}>
               <VerticalChart customData={data} customStyle={{ padding: "0" }} />
-            </div>
+            </div> */}
           </>
         )}
         {tabClicked !== "statsDiv" &&
@@ -548,7 +569,7 @@ export class WidgetsDetails extends Component {
                       />
                     )}
                   </div>
-                  <div className="url_div">
+                  {/* <div className="url_div">
                     <h4>Public</h4>
                     {!isIteditable && (
                       <p>
@@ -583,10 +604,10 @@ export class WidgetsDetails extends Component {
                         />
                       </div>
                     )}
-                  </div>
+                  </div> */}
                   <h1 style={{ margin: "20px 0" }}>Default content</h1>
 
-                  <div className="owner_div">
+                  {/* <div className="owner_div">
                     <h4>Include site</h4>
                     {!isIteditable && <p>{`${WidgetDetailsData?.include}`}</p>}
                     {isIteditable && (
@@ -617,8 +638,8 @@ export class WidgetsDetails extends Component {
                         />
                       </div>
                     )}
-                  </div>
-                  <div className="owner_div">
+                  </div> */}
+                  {/* <div className="owner_div">
                     <h4>Link direct</h4>
                     {!isIteditable && <p>{`${WidgetDetailsData?.direct}`}</p>}
                     {isIteditable && (
@@ -645,8 +666,8 @@ export class WidgetsDetails extends Component {
                         />
                       </div>
                     )}
-                  </div>
-                  <div className="description_div">
+                  </div> */}
+                  {/* <div className="description_div">
                     <h4>Open site posts in the same window</h4>
                     {!isIteditable && (
                       <p
@@ -681,7 +702,7 @@ export class WidgetsDetails extends Component {
                         />
                       </div>
                     )}
-                  </div>
+                  </div> */}
                   <div className="description_div">
                     <h4>Append to links</h4>
                     {!isIteditable && <p>{WidgetDetailsData?.append}</p>}
@@ -819,7 +840,7 @@ export class WidgetsDetails extends Component {
                         </p>
                       </div>
                     )}
-                    {isIteditable && (
+                    {isIteditable && categorialOption && (
                       <Select
                         className="basic-single"
                         classNamePrefix="select"
@@ -885,7 +906,7 @@ export class WidgetsDetails extends Component {
                     </Link>
                     {/* {isIteditable && <input type="text" placeholder='nina.aralica@alo.rs' />} */}
                   </div>
-                  <div className="categ_div">
+                  {/* <div className="categ_div">
                     <h4>Description</h4>
                     {!isIteditable && <p>{WidgetDetailsData?.description}</p>}
                     {isIteditable && (
@@ -896,7 +917,7 @@ export class WidgetsDetails extends Component {
                         onChange={(e) => this.handlewidgetInput(e)}
                       />
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -929,12 +950,12 @@ export class WidgetsDetails extends Component {
 
         {this.state.tabClicked === "embedDiv" && (
           <div>
-            Sync:
+            {/* Sync:
             <textarea
               className={"widget-embed-scripts"}
               value={`<script src="https://ayu.luciascipher.com/api/v1/embed/${WidgetDetailsData?.id}.js"></script>`}
               disabled={true}
-            />
+            /> */}
             Async Div:
             <textarea
               className={"widget-embed-scripts"}
@@ -944,24 +965,33 @@ export class WidgetsDetails extends Component {
             Async Js.
             <textarea
               className={"widget-embed-scripts"}
-              value={`<script src="https://ayu.luciascipher.com/api/v1/embed/tracker.js" async></script>`}
+              value={`<script src="https://connectmedia.rs/api/v1/embed/tracker.js" async></script>`}
               disabled={true}
             />
           </div>
         )}
 
-        {this.state.tabClicked === "viewDiv" && <ViewWidgets />}
+        {/* {this.state.tabClicked === "viewDiv" && (
+          <ViewWidgets data={this.state.viewWidget} />
+        )} */}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  const { WidgetReducer, SitesListReducer, CategoryReducer } = state;
-  const { getWidgetDetails, deleteWidget, createWidget, updateWidgetDetails } =
-    WidgetReducer;
+  const { WidgetReducer, SitesListReducer, CategoryReducer, ChartRreducer } =
+    state;
+  const {
+    getWidgetDetails,
+    deleteWidget,
+    createWidget,
+    updateWidgetDetails,
+    viewWidget,
+  } = WidgetReducer;
   const { getCategoryList } = CategoryReducer;
   const { getSitesList, getSiteDetails } = SitesListReducer;
+  const { specWidgetChart } = ChartRreducer;
   return {
     getWidgetDetails,
     getSitesList,
@@ -970,6 +1000,8 @@ const mapStateToProps = (state) => {
     deleteWidget,
     createWidget,
     updateWidgetDetails,
+    specWidgetChart,
+    viewWidget,
   };
 };
 

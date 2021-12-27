@@ -84,6 +84,7 @@ export class SiteDetails extends Component {
       ratio: null,
       numberOfRatio: [],
       optionsForRatioSelect: [],
+      random_ratio: null,
     };
   }
 
@@ -264,6 +265,7 @@ export class SiteDetails extends Component {
         tag_map: getSiteDetailsData.data?.tag_map,
         ratio: getSiteDetailsData.data?.ratio,
         numberOfRatio: getSiteDetailsData.data?.ratios,
+        random_ratio: getSiteDetailsData.data?.random_ratio,
       });
       if (getSiteDetailsData?.data?.translations?.feed.length !== 0) {
         this.setState({
@@ -395,6 +397,7 @@ export class SiteDetails extends Component {
         tag_map,
         ratio,
         numberOfRatio,
+        random_ratio,
       } = this.state;
       const categorieFormating = categories.map((el) => {
         return {
@@ -434,6 +437,7 @@ export class SiteDetails extends Component {
           feed_translations,
           ratio,
           ratios: numberOfRatio,
+          random_ratio,
         })
       );
     } else if (page === "cancel") {
@@ -598,7 +602,7 @@ export class SiteDetails extends Component {
       }
     });
 
-    console.log(numberOfRatio, optionsForRatioSelect);
+    console.log(categorialOption);
 
     return (
       <div className="mainSiteDetailsDiv">
@@ -625,6 +629,7 @@ export class SiteDetails extends Component {
             <Chart
               customStyle={{ padding: "0" }}
               dataToShow={this.state.siteChartData}
+              fields={{ 0: "in", 1: "out", 2: "txr" }}
             />
           </div>
         )}
@@ -756,7 +761,7 @@ export class SiteDetails extends Component {
                                     options={optionss}
                                 />} */}
                 </div>
-                <div className="description_div">
+                {/* <div className="description_div">
                   <h4>Description</h4>
                   {!isIteditable && <p>{siteDetailsData?.description}</p>}
                   {isIteditable && (
@@ -767,8 +772,8 @@ export class SiteDetails extends Component {
                       value={this.state.description}
                     />
                   )}
-                </div>
-                <div className="description_div">
+                </div> */}
+                {/* <div className="description_div">
                   <h4>Head</h4>
                   {!isIteditable && <p>{siteDetailsData?.head}</p>}
                   {isIteditable && (
@@ -779,8 +784,8 @@ export class SiteDetails extends Component {
                       value={this.state.head}
                     />
                   )}
-                </div>
-                <div className="info_div">
+                </div> */}
+                {/* <div className="info_div">
                   <div className="endcFactMini">
                     <h4>Encoding</h4>
                     {!isIteditable && <p>{siteDetailsData?.encoding}</p>}
@@ -821,8 +826,8 @@ export class SiteDetails extends Component {
                       />
                     )}
                   </div>
-                </div>
-                <div className="tracking_div">
+                </div> */}
+                {/* <div className="tracking_div">
                   <h4>Tracking</h4>
                   {!isIteditable && <p>{`${siteDetailsData?.tracking}`}</p>}
                   {isIteditable && (
@@ -856,7 +861,7 @@ export class SiteDetails extends Component {
                       </label>
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
 
               <div className="feedDiv">
@@ -881,7 +886,7 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div>
-                <div className="images_div">
+                {/* <div className="images_div">
                   <h4>Look for better images</h4>
                   {!isIteditable && (
                     <p>{`${siteDetailsData?.better_images}`}</p>
@@ -917,8 +922,8 @@ export class SiteDetails extends Component {
                       </label>
                     </div>
                   )}
-                </div>
-                <div className="definition_div">
+                </div> */}
+                {/* <div className="definition_div">
                   <h4>Feed definition</h4>
                   {!isIteditable && <p>{siteDetailsData?.feed_definition}</p>}
                   {isIteditable && (
@@ -941,7 +946,7 @@ export class SiteDetails extends Component {
                       type="text"
                     />
                   )}
-                </div>
+                </div> */}
                 {/* <div className='expression_div'>
                                 <h4>Uniq ID expression</h4>
                                 {!isIteditable && <p></p>}
@@ -1107,7 +1112,37 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div>
-                <div className="autopublish_div">
+                <div className="interval_div">
+                  <h4>Random ratio</h4>
+                  {!isIteditable && <p>{siteDetailsData?.random_ratio}</p>}
+                  {isIteditable && (
+                    <input
+                      type="number"
+                      min="0"
+                      onChange={(e) => {
+                        if (
+                          (!isNaN(e.target.value) &&
+                            parseInt(e.target.value) > 0) ||
+                          e.target.value === ""
+                        ) {
+                          let val =
+                            e.target.value === ""
+                              ? e.target.value
+                              : parseInt(e.target.value);
+                          setTimeout(() => {
+                            this.setState({ random_ratio: val });
+                          });
+                        }
+                      }}
+                      name="ratio"
+                      value={
+                        this.state.random_ratio !== null &&
+                        this.state.random_ratio
+                      }
+                    />
+                  )}
+                </div>
+                {/* <div className="autopublish_div">
                   <h4>Autopublish</h4>
                   {!isIteditable && <p>{`${siteDetailsData?.auto_publish}`}</p>}
                   {isIteditable && (
@@ -1139,8 +1174,8 @@ export class SiteDetails extends Component {
                       <label htmlFor="check">limit to feed</label>
                     </div>
                   )}
-                </div>
-                {siteDetailsData?.categories?.length !== 0 &&
+                </div> */}
+                {/* {siteDetailsData?.categories?.length !== 0 &&
                   !siteDetailsData?.auto_publish && (
                     <div className="table_div">
                       <div className="leftTable">
@@ -1259,7 +1294,7 @@ export class SiteDetails extends Component {
                         </table>
                       </div>
                     </div>
-                  )}
+                  )} */}
               </div>
             </div>
             <div className="rightSideDiv">
@@ -1276,7 +1311,7 @@ export class SiteDetails extends Component {
                       </p>
                     </div>
                   )}
-                  {isIteditable && (
+                  {isIteditable && categorialOption && (
                     <Select
                       defaultValue={categorialOption?.map((el) => {
                         return this.state.cateOptions.find(
@@ -1297,7 +1332,7 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div>
-                <div className="copySite_div">
+                {/* <div className="copySite_div">
                   <h4>Copy from site</h4>
                   {!isIteditable && (
                     <p> {`${siteDetailsData?.copy_from_site}`}</p>
@@ -1326,8 +1361,8 @@ export class SiteDetails extends Component {
                       </label>
                     </div>
                   )}
-                </div>
-                <div className="guessRemote_div">
+                </div> */}
+                {/* <div className="guessRemote_div">
                   <h4>
                     Guess remote category from url - enter the number of the
                     path segment
@@ -1341,8 +1376,8 @@ export class SiteDetails extends Component {
                       onChange={(e) => this.handleChange(e)}
                     />
                   )}
-                </div>
-                <div className="indexTag_div">
+                </div> */}
+                {/* <div className="indexTag_div">
                   <h4>
                     Index of tag for mapping <br /> (1=first,2=seocnd,..)
                   </h4>
@@ -1355,7 +1390,7 @@ export class SiteDetails extends Component {
                       onChange={(e) => this.handleChange(e)}
                     />
                   )}
-                </div>
+                </div> */}
               </div>
               <div className="feedCategoriesDiv">
                 <h1>
@@ -1413,7 +1448,7 @@ export class SiteDetails extends Component {
               </div>
 
               <div className="remoteCategoriesDiv">
-                <div className="divButtonsmaping">
+                {/* <div className="divButtonsmaping">
                   <h1>
                     Remote Category -<span>{`>`}</span> Category
                   </h1>
@@ -1449,8 +1484,8 @@ export class SiteDetails extends Component {
                       />
                     </div>
                   )}
-                </div>
-                <table>
+                </div> */}
+                {/* <table>
                   <thead>
                     <tr>
                       <th>
@@ -1525,14 +1560,14 @@ export class SiteDetails extends Component {
                                     }
                                   />
                                   {/* <img src={xButton} onClick={() => handleDelete} alt="x" /> */}
-                                </div>
+                {/* </div>
                               </td>
                             )}
                           </tr>
                         );
                       })}
-                  </tbody>
-                </table>
+                  </tbody> */}
+                {/* // </table> */}
               </div>
             </div>
           </div>

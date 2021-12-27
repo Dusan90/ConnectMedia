@@ -55,7 +55,7 @@ const data = [
   },
 ];
 
-function Chart({ customStyle, dataToShow }) {
+function Chart({ customStyle, dataToShow, fields }) {
   return (
     <div className="mainDivCharts" style={customStyle && customStyle}>
       <ResponsiveContainer width="100%" height="100%">
@@ -76,21 +76,21 @@ function Chart({ customStyle, dataToShow }) {
           <Tooltip />
           <Area
             type="monotone"
-            dataKey="in"
+            dataKey={`${fields[0]}`}
             stackId="1"
             stroke="#8884d8"
             fill="#8884d8"
           />
           <Area
             type="monotone"
-            dataKey="out"
+            dataKey={`${fields[1]}`}
             stackId="2"
             stroke="#82ca9d"
             fill="#82ca9d"
           />
           <Area
             type="monotone"
-            dataKey="txr"
+            dataKey={`${fields[2]}`}
             stackId="3"
             stroke="#ffc658"
             fill="#ffc658"

@@ -19,7 +19,9 @@ import {
   GetSiteDetailsActionRequest,
   GetSitesListActionRequest,
 } from "../../store/actions/SitesListAction";
+import { SpecPostChartRequest } from "../../store/actions/ChartAction";
 import { NotificationManager } from "react-notifications";
+
 import moment from "moment";
 
 const customSelectStyles = {
@@ -36,15 +38,6 @@ const customSelectStyles = {
     color: "black",
   }),
 };
-
-const data = [
-  {
-    name: "Page A",
-    uv: 590,
-    pv: 800,
-    amt: 1400,
-  },
-];
 
 const options = [0, 1, 2, 3];
 
@@ -71,6 +64,7 @@ export class PostsDetails extends Component {
       site: null,
       categories: null,
       wordToPass: "",
+      postChartData: "",
     };
   }
 
@@ -99,6 +93,9 @@ export class PostsDetails extends Component {
         page: "",
       })
     );
+    this.props.dispatch(
+      SpecPostChartRequest({ id: this.props.match.params.id })
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -109,6 +106,7 @@ export class PostsDetails extends Component {
       createPost,
       updatePostDetails,
       getSitesList,
+      specPostChart,
     } = this.props;
     const {
       data: getPostDetailsData,
@@ -142,6 +140,22 @@ export class PostsDetails extends Component {
       loading: getSitesListLoading,
       error: getSitesListError,
     } = getSitesList;
+
+    const {
+      data: specPostChartData,
+      loading: specPostChartLoading,
+      error: specPostChartError,
+    } = specPostChart;
+
+    if (
+      prevProps.specPostChart !== specPostChart &&
+      !specPostChartError &&
+      !specPostChartLoading &&
+      specPostChartData
+    ) {
+      this.setState({ postChartData: specPostChartData.data });
+    }
+
     if (
       prevProps.getSitesList !== getSitesList &&
       !getSitesListError &&
@@ -390,9 +404,13 @@ export class PostsDetails extends Component {
           <>
             {" "}
             <div style={{ height: "500px", marginTop: "20px" }}>
-              <Chart customStyle={{ padding: "0" }} />
+              <Chart
+                dataToShow={this.state.postChartData}
+                fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}
+                customStyle={{ padding: "0" }}
+              />
             </div>
-            <h1
+            {/* <h1
               style={{
                 marginTop: "50px",
                 textAlign: "center",
@@ -403,7 +421,7 @@ export class PostsDetails extends Component {
             </h1>
             <div style={{ height: `200px` }}>
               <VerticalChart customData={data} customStyle={{ padding: "0" }} />
-            </div>
+            </div> */}
           </>
         )}
         {tabClicked !== "statsDiv" && (
@@ -724,11 +742,13 @@ export class PostsDetails extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { PostsReducer, SitesListReducer, CategoryReducer } = state;
+  const { PostsReducer, SitesListReducer, CategoryReducer, ChartRreducer } =
+    state;
   const { getPostDetails, deletePost, createPost, updatePostDetails } =
     PostsReducer;
   const { getCategoryList } = CategoryReducer;
   const { getSitesList, getSiteDetails } = SitesListReducer;
+  const { specPostChart } = ChartRreducer;
   return {
     getPostDetails,
     getSitesList,
@@ -737,6 +757,7 @@ const mapStateToProps = (state) => {
     deletePost,
     createPost,
     updatePostDetails,
+    specPostChart,
   };
 };
 

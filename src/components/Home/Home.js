@@ -30,7 +30,7 @@ export class Home extends Component {
       checkboxList: [],
       hashesArrowDown: false,
       hashesArrowWitchIsOn: "",
-      countPerPage: 10,
+      countPerPage: 20,
       selectedUserSearch: null,
       selectedSiteSearch: null,
       selectedCategorieSearch: null,

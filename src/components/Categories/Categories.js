@@ -25,7 +25,7 @@ export class Categories extends Component {
       filteredDate: "",
       tipeSearch: "",
       inputValue: null,
-      countPerPage: 10,
+      countPerPage: 20,
       addButtonClicked: false,
       categoryNewName: "",
       selectedSitesSearch: null,
@@ -416,12 +416,12 @@ export class Categories extends Component {
                           <p onClick={() => this.haneldeRedirect(item, "edit")}>
                             edit
                           </p>
-                          <img src={stats} alt="stats" />
+                          {/* <img src={stats} alt="stats" />
                           <p
                             onClick={() => this.haneldeRedirect(item, "stats")}
                           >
                             stats
-                          </p>
+                          </p> */}
                         </div>
                       </div>
                       <div className="mainForIcons">
@@ -518,7 +518,7 @@ export class Categories extends Component {
                             >
                               edit
                             </p>
-                            <img src={stats} alt="stats" />
+                            {/* <img src={stats} alt="stats" />
                             <p
                               onClick={() =>
                                 this.haneldeRedirect(item, "stats")
@@ -526,7 +526,7 @@ export class Categories extends Component {
                               id="noredirection"
                             >
                               stats
-                            </p>
+                            </p> */}
                           </div>
                         </td>
                         <td>

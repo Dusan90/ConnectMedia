@@ -22,7 +22,27 @@ export function* SpecSiteTotalSaga({ payload }) {
   }
 }
 
+export function* SpecWidgetTotalSaga({ payload }) {
+  try {
+    const response = yield call(API.specWidgetTotals, payload);
+    yield put(ACTIONS.SpecWidgetChartReceive(response.data));
+  } catch (err) {
+    yield put(ACTIONS.SpecWidgetChartError(err.response));
+  }
+}
+
+export function* SpecPostTotalSaga({ payload }) {
+  try {
+    const response = yield call(API.specPostTotals, payload);
+    yield put(ACTIONS.SpecPostChartReceive(response.data));
+  } catch (err) {
+    yield put(ACTIONS.SpecPostChartError(err.response));
+  }
+}
+
 export function* chartSaga() {
   yield takeLatest(TYPES.GET_TOTAL_CHART_REQUEST, TotalSaga);
   yield takeLatest(TYPES.GET_SPEC_SITE_CHART_REQUEST, SpecSiteTotalSaga);
+  yield takeLatest(TYPES.GET_SPEC_WIDGET_CHART_REQUEST, SpecWidgetTotalSaga);
+  yield takeLatest(TYPES.GET_SPEC_POST_CHART_REQUEST, SpecPostTotalSaga);
 }
