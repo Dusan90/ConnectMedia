@@ -10,20 +10,26 @@ import {
 
 const url = (endpoint) => `${API_URL}${endpoint}`;
 
-const totals = async () => {
-  return await axiosInstance.get(`${url(TOTALS)}`);
+const totals = async ({ from, to }) => {
+  return await axiosInstance.get(`${url(TOTALS)}?from=${from}&to=${to}`);
 };
 
-const specSiteTotals = async ({ id }) => {
-  return await axiosInstance.get(`${url(SPEC_SITE_TOTALS)}/${id}/stats`);
+const specSiteTotals = async ({ id, from, to }) => {
+  return await axiosInstance.get(
+    `${url(SPEC_SITE_TOTALS)}/${id}/stats?from=${from}&to=${to}`
+  );
 };
 
-const specWidgetTotals = async ({ id }) => {
-  return await axiosInstance.get(`${url(SPEC_WIDGET_TOTALS)}/${id}/stats`);
+const specWidgetTotals = async ({ id, from, to }) => {
+  return await axiosInstance.get(
+    `${url(SPEC_WIDGET_TOTALS)}/${id}/stats?from=${from}&to=${to}`
+  );
 };
 
-const specPostTotals = async ({ id }) => {
-  return await axiosInstance.get(`${url(SPEC_POST_TOTALS)}/${id}/stats`);
+const specPostTotals = async ({ id, from, to }) => {
+  return await axiosInstance.get(
+    `${url(SPEC_POST_TOTALS)}/${id}/stats?from=${from}&to=${to}`
+  );
 };
 
 export default {

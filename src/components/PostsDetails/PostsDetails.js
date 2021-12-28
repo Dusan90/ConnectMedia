@@ -21,6 +21,8 @@ import {
 } from "../../store/actions/SitesListAction";
 import { SpecPostChartRequest } from "../../store/actions/ChartAction";
 import { NotificationManager } from "react-notifications";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import moment from "moment";
 
@@ -65,6 +67,10 @@ export class PostsDetails extends Component {
       categories: null,
       wordToPass: "",
       postChartData: "",
+      priority_lifetime: null,
+      priority: null,
+      startDate: new Date().setDate(new Date().getDate() - 7),
+      endDate: new Date(),
     };
   }
 
@@ -91,10 +97,21 @@ export class PostsDetails extends Component {
         search: "",
         limit: "",
         page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
       })
     );
     this.props.dispatch(
-      SpecPostChartRequest({ id: this.props.match.params.id })
+      SpecPostChartRequest({
+        id: this.props.match.params.id,
+        from: Math.round(new Date(this.state.startDate).getTime() / 1000),
+        to: Math.round(new Date(this.state.endDate).getTime() / 1000),
+      })
     );
   }
 
@@ -191,6 +208,7 @@ export class PostsDetails extends Component {
           id: getPostDetailsData.data.site.id,
         })
       );
+      console.log(getPostDetails);
       this.setState({
         dataState: getPostDetails.data.state,
         postDetailsData: getPostDetailsData.data,
@@ -199,6 +217,8 @@ export class PostsDetails extends Component {
         description: getPostDetailsData.data?.description,
         author: getPostDetailsData.data?.author,
         content: getPostDetailsData.data?.content,
+        priority_lifetime: getPostDetailsData.data?.priority_lifetime,
+        priority: getPostDetailsData.data?.priority,
       });
     }
 
@@ -289,6 +309,8 @@ export class PostsDetails extends Component {
         site,
         dataState,
         categories,
+        priority_lifetime,
+        priority,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
@@ -303,6 +325,8 @@ export class PostsDetails extends Component {
             site,
             status: dataState,
             categories,
+            priority_lifetime,
+            priority,
           })
         );
       } else {
@@ -319,6 +343,8 @@ export class PostsDetails extends Component {
             site,
             status: dataState,
             categories,
+            priority_lifetime,
+            priority,
           })
         );
       }
@@ -374,10 +400,13 @@ export class PostsDetails extends Component {
       site,
       siteOptions,
       siteDetailsData,
+      priority,
     } = this.state;
     const categorialOption = siteDetailsData?.categories?.map((el) => {
       return { value: el.category.id, label: el.category.name };
     });
+
+    console.log(this.state);
 
     return (
       <div className="mainSiteDetailsDiv">
@@ -404,6 +433,61 @@ export class PostsDetails extends Component {
           <>
             {" "}
             <div style={{ height: "500px", marginTop: "20px" }}>
+              <h2
+                style={{ marginBottom: "20px" }}
+              >{`Chart for post ${postDetailsData?.title}`}</h2>
+              <div
+                style={{ display: "flex", gap: "10px", marginBottom: "20px" }}
+              >
+                <h4>Select date range</h4>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <DatePicker
+                    selected={this.state.startDate}
+                    onChange={(date) => {
+                      this.setState({ startDate: date });
+                      setTimeout(() => {
+                        this.props.dispatch(
+                          SpecPostChartRequest({
+                            id: this.props.match.params.id,
+                            from: Math.round(
+                              new Date(this.state.startDate).getTime() / 1000
+                            ),
+                            to: Math.round(
+                              new Date(this.state.endDate).getTime() / 1000
+                            ),
+                          })
+                        );
+                      });
+                    }}
+                    selectsStart
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                  />
+                  <DatePicker
+                    selected={this.state.endDate}
+                    onChange={(date) => {
+                      this.setState({ endDate: date });
+                      setTimeout(() => {
+                        this.props.dispatch(
+                          SpecPostChartRequest({
+                            id: this.props.match.params.id,
+                            from: Math.round(
+                              new Date(this.state.startDate).getTime() / 1000
+                            ),
+                            to: Math.round(
+                              new Date(this.state.endDate).getTime() / 1000
+                            ),
+                          })
+                        );
+                      });
+                    }}
+                    selectsEnd
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    minDate={this.state.startDate}
+                  />
+                </div>
+              </div>
               <Chart
                 dataToShow={this.state.postChartData}
                 fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}
@@ -617,6 +701,70 @@ export class PostsDetails extends Component {
                       value={this.state.content}
                       onChange={(e) => this.handleChangeInputs(e)}
                     />
+                  )}
+                </div>
+                <div className="description_div">
+                  <h4>Priority lifetime</h4>
+                  {!isIteditable && <p>{postDetailsData?.priority_lifetime}</p>}
+                  {isIteditable && (
+                    <input
+                      type="number"
+                      min="0"
+                      onChange={(e) => {
+                        if (
+                          (!isNaN(e.target.value) &&
+                            parseInt(e.target.value) > 0) ||
+                          e.target.value === "" ||
+                          parseInt(e.target.value) === 0
+                        ) {
+                          let val =
+                            e.target.value === ""
+                              ? e.target.value
+                              : parseInt(e.target.value);
+                          setTimeout(() => {
+                            this.setState({ priority_lifetime: val });
+                          });
+                        }
+                      }}
+                      name="ratio"
+                      value={
+                        this.state.priority_lifetime !== null &&
+                        this.state.priority_lifetime
+                      }
+                    />
+                  )}
+                </div>
+                <div className="tracking_div">
+                  <h4>Priority</h4>
+                  {!isIteditable && <p>{`${postDetailsData?.priority}`}</p>}
+                  {isIteditable && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <input
+                        name="priority"
+                        value={
+                          priority !== null
+                            ? priority
+                            : postDetailsData?.priority
+                        }
+                        checked={
+                          priority !== null
+                            ? priority
+                            : postDetailsData?.priority
+                        }
+                        onChange={(e) =>
+                          this.setState({ priority: e.target.checked })
+                        }
+                        style={{ width: "20px" }}
+                        type="checkbox"
+                      />{" "}
+                      <label htmlFor="check">Is this post a priority</label>
+                    </div>
                   )}
                 </div>
               </div>

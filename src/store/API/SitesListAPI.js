@@ -6,9 +6,22 @@ import { API_URL, GET_SITES_LIST } from "./urlConsts";
 
 const url = (endpoint) => `${API_URL}${endpoint}`;
 
-const getSitesList = async ({ limit, search, page }) => {
+const getSitesList = async ({
+  limit,
+  search,
+  page,
+  sortName,
+  sortDir,
+  status,
+  user,
+  category,
+  site,
+  state,
+}) => {
   return await axiosInstance.get(
-    `${url(GET_SITES_LIST)}?page=${page}&limit=${limit}&search=${search}`
+    `${url(
+      GET_SITES_LIST
+    )}?page=${page}&limit=${limit}&search=${search}&sort_key=${sortName}&sort_dir=${sortDir}&filter_state=${state}&filter_site=${site}&filter_category=${category}&filter_status=${status}&filter_owner=${user}`
   );
 };
 
@@ -36,6 +49,8 @@ const createSite = async ({
   ratio,
   ratios,
   random_ratio,
+  post_lifetime,
+  ctr_ratio,
 }) => {
   const objective = {
     name,
@@ -61,6 +76,8 @@ const createSite = async ({
     ratio,
     ratios,
     random_ratio,
+    post_lifetime,
+    ctr_ratio,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
@@ -97,6 +114,8 @@ const updateSiteDetails = async ({
   ratio,
   ratios,
   random_ratio,
+  post_lifetime,
+  ctr_ratio,
 }) => {
   const objective = {
     name,
@@ -122,6 +141,8 @@ const updateSiteDetails = async ({
     ratio,
     ratios,
     random_ratio,
+    post_lifetime,
+    ctr_ratio,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)

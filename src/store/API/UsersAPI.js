@@ -14,9 +14,11 @@ const getSelfUser = async () => {
 
 // get list of users
 
-const geUsersList = async ({ search, limit, page }) => {
+const geUsersList = async ({ search, limit, page, sortName, sortDir }) => {
   return await axiosInstance.get(
-    `${url(GET_SELF_USER)}/index?page=${page}&limit=${limit}&search=${search}`
+    `${url(
+      GET_SELF_USER
+    )}/index?page=${page}&limit=${limit}&search=${search}&sort_key=${sortName}&sort_dir=${sortDir}`
   );
 };
 

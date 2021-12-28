@@ -21,6 +21,13 @@ export class Stats extends Component {
         search: "",
         limit: "",
         page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
       })
     );
 

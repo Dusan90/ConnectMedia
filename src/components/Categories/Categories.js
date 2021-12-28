@@ -34,6 +34,8 @@ export class Categories extends Component {
       dataToRender: [],
       mamxPages: "",
       loading: true,
+      sortName: "",
+      sortDir: "",
     };
   }
 
@@ -58,6 +60,15 @@ export class Categories extends Component {
         search: "",
         limit: this.state.countPerPage,
         page: this.state.page,
+        sortName: this.state.sortName,
+        sortDir: this.state.sortDir,
+        status: "",
+        user: "",
+        category: "",
+        site: this.state.selectedSitesSearch
+          ? this.state.selectedSitesSearch?.id
+          : "",
+        state: "",
       })
     );
   }
@@ -85,17 +96,7 @@ export class Categories extends Component {
     ) {
       if (selectedSitesSearch || inputValue) {
         this.setState({
-          data: filtering(
-            getCategoryListData.data,
-            selectedSitesSearch,
-            inputValue
-          )
-            ? filtering(
-                getCategoryListData.data,
-                selectedSitesSearch,
-                inputValue
-              )
-            : getCategoryListData.data,
+          data: getCategoryListData.data,
           info: getCategoryListData.info,
         });
       } else {
@@ -166,6 +167,15 @@ export class Categories extends Component {
           search: value,
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: "",
+          category: "",
+          site: this.state.selectedSitesSearch
+            ? this.state.selectedSitesSearch?.id
+            : "",
+          state: "",
         })
       );
     });
@@ -201,36 +211,53 @@ export class Categories extends Component {
   };
 
   handleArrowSort = (sortByClicked, value) => {
+    this.setState({ sortName: sortByClicked, sortDir: value });
+    this.props.dispatch(
+      GetCategoryListActionRequest({
+        search: "",
+        limit: this.state.countPerPage,
+        page: this.state.page,
+        sortName: sortByClicked,
+        sortDir: value,
+        status: "",
+        user: "",
+        category: "",
+        site: this.state.selectedSitesSearch
+          ? this.state.selectedSitesSearch?.id
+          : "",
+        state: "",
+      })
+    );
     // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
-    if (value === "Up") {
-      const sorted = this.state.data.sort((a, b) => {
-        if (
-          typeof a[sortByClicked] === "string" ||
-          typeof b[sortByClicked] === "string"
-        ) {
-          return b[sortByClicked]?.localeCompare(a[sortByClicked]);
-        }
-      });
-      this.setState({ data: sorted });
-      setTimeout(() => {
-        this.setState({ page: 1 });
-        // this.paginate(1)
-      });
-    } else if (value === "Down") {
-      const sorted = this.state.data.sort((a, b) => {
-        if (
-          typeof a[sortByClicked] === "string" ||
-          typeof b[sortByClicked] === "string"
-        ) {
-          return a[sortByClicked]?.localeCompare(b[sortByClicked]);
-        }
-      });
-      this.setState({ data: sorted });
-      setTimeout(() => {
-        this.setState({ page: 1 });
-        // this.paginate(1)
-      });
-    }
+    // if (value === "Up") {
+    //   const sorted = this.state.data.sort((a, b) => {
+    //     if (
+    //       typeof a[sortByClicked] === "string" ||
+    //       typeof b[sortByClicked] === "string"
+    //     ) {
+    //       return b[sortByClicked]?.localeCompare(a[sortByClicked]);
+    //     }
+    //   });
+    //   this.setState({ data: sorted });
+    //   setTimeout(() => {
+    //     this.setState({ page: 1 });
+    //     // this.paginate(1)
+    //   });
+    // } else if (value === "Down") {
+    //   const sorted = this.state.data.sort((a, b) => {
+    //     if (
+    //       typeof a[sortByClicked] === "string" ||
+    //       typeof b[sortByClicked] === "string"
+    //     ) {
+    //       return a[sortByClicked]?.localeCompare(b[sortByClicked]);
+    //     }
+    //   });
+    //   this.setState({ data: sorted });
+    //   setTimeout(() => {
+    //     this.setState({ page: 1 });
+    //     // this.paginate(1)
+    //   });
+    // }
   };
 
   handlePageRedirect = (e, item) => {
@@ -251,6 +278,15 @@ export class Categories extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: "",
+          category: "",
+          site: this.state.selectedSitesSearch
+            ? this.state.selectedSitesSearch?.id
+            : "",
+          state: "",
         })
       );
     });
@@ -266,6 +302,15 @@ export class Categories extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: "",
+            user: "",
+            category: "",
+            site: this.state.selectedSitesSearch
+              ? this.state.selectedSitesSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -278,6 +323,15 @@ export class Categories extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: "",
+            user: "",
+            category: "",
+            site: this.state.selectedSitesSearch
+              ? this.state.selectedSitesSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -298,6 +352,15 @@ export class Categories extends Component {
               search: "",
               limit: this.state.countPerPage,
               page: this.state.page,
+              sortName: this.state.sortName,
+              sortDir: this.state.sortDir,
+              status: "",
+              user: "",
+              category: "",
+              site: this.state.selectedSitesSearch
+                ? this.state.selectedSitesSearch?.id
+                : "",
+              state: "",
             })
           );
         });
@@ -309,6 +372,15 @@ export class Categories extends Component {
               search: "",
               limit: this.state.countPerPage,
               page: this.state.page,
+              sortName: this.state.sortName,
+              sortDir: this.state.sortDir,
+              status: "",
+              user: "",
+              category: "",
+              site: this.state.selectedSitesSearch
+                ? this.state.selectedSitesSearch?.id
+                : "",
+              state: "",
             })
           );
         });
@@ -324,6 +396,15 @@ export class Categories extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: "",
+          category: "",
+          site: this.state.selectedSitesSearch
+            ? this.state.selectedSitesSearch?.id
+            : "",
+          state: "",
         })
       );
     });
@@ -390,14 +471,12 @@ export class Categories extends Component {
                             <img
                               src={arrowUp}
                               alt="arrow"
-                              onClick={() => this.handleArrowSort("name", "Up")}
+                              onClick={() => this.handleArrowSort("name", "1")}
                             />
                             <img
                               src={secondarrowDown}
                               alt="arrow"
-                              onClick={() =>
-                                this.handleArrowSort("name", "Down")
-                              }
+                              onClick={() => this.handleArrowSort("name", "-1")}
                             />
                           </div>
                           <p>{"Name"}</p>
@@ -406,12 +485,12 @@ export class Categories extends Component {
                       </div>
                       <div className="mainForIcons">
                         <div className="divWithClicableIcons">
-                          <img src={visit} alt="visit" />
+                          {/* <img src={visit} alt="visit" />
                           <p
                             onClick={() => this.haneldeRedirect(item, "visit")}
                           >
                             visit
-                          </p>
+                          </p> */}
                           <img src={edit} alt="edit" />
                           <p onClick={() => this.haneldeRedirect(item, "edit")}>
                             edit
@@ -473,12 +552,12 @@ export class Categories extends Component {
                         <img
                           src={arrowUp}
                           alt="arrow"
-                          onClick={() => this.handleArrowSort("name", "Up")}
+                          onClick={() => this.handleArrowSort("name", "1")}
                         />
                         <img
                           src={secondarrowDown}
                           alt="arrow"
-                          onClick={() => this.handleArrowSort("name", "Down")}
+                          onClick={() => this.handleArrowSort("name", "-1")}
                         />
                       </div>
                       <p>Name</p>
@@ -500,9 +579,9 @@ export class Categories extends Component {
                         <td>
                           <div className="ownerClass">{item.name}</div>
                         </td>
-                        <td>
+                        {/* <td>
                           <div className="divWithClicableIcons">
-                            <img src={visit} alt="visit" />
+                            {/* <img src={visit} alt="visit" />
                             <p
                               onClick={() =>
                                 this.haneldeRedirect(item, "visit")
@@ -510,15 +589,15 @@ export class Categories extends Component {
                               id="noredirection"
                             >
                               visit
-                            </p>
-                            <img src={edit} alt="edit" />
+                            </p> */}
+                        {/* <img src={edit} alt="edit" />
                             <p
                               onClick={() => this.haneldeRedirect(item, "edit")}
                               id="noredirection"
                             >
                               edit
-                            </p>
-                            {/* <img src={stats} alt="stats" />
+                            </p> */}
+                        {/* <img src={stats} alt="stats" />
                             <p
                               onClick={() =>
                                 this.haneldeRedirect(item, "stats")
@@ -527,10 +606,17 @@ export class Categories extends Component {
                             >
                               stats
                             </p> */}
-                          </div>
-                        </td>
+                        {/* </div>
+                        </td> */}
                         <td>
                           <div className="divWithClicableIcons">
+                            <img src={edit} alt="edit" />
+                            <p
+                              onClick={() => this.haneldeRedirect(item, "edit")}
+                              id="noredirection"
+                            >
+                              edit
+                            </p>
                             <img src={posts} alt="widgets" />
                             <p
                               onClick={() =>

@@ -22,6 +22,8 @@ import { SpecSiteChartRequest } from "../../store/actions/ChartAction";
 import Chart from "../../containers/Chart/Chart";
 import Select from "react-select";
 import { NotificationManager } from "react-notifications";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const test2 = [
   { mesto: "Beograd", title: "vesti" },
@@ -85,6 +87,10 @@ export class SiteDetails extends Component {
       numberOfRatio: [],
       optionsForRatioSelect: [],
       random_ratio: null,
+      post_lifetime: null,
+      ctr_ratio: null,
+      startDate: new Date().setDate(new Date().getDate() - 7),
+      endDate: new Date(),
     };
   }
 
@@ -100,6 +106,13 @@ export class SiteDetails extends Component {
           search: "",
           limit: "",
           page: "",
+          sortName: "",
+          sortDir: "",
+          status: "",
+          user: "",
+          category: "",
+          site: "",
+          state: "",
         })
       );
     }
@@ -115,7 +128,11 @@ export class SiteDetails extends Component {
     }
 
     this.props.dispatch(
-      SpecSiteChartRequest({ id: this.props.match.params.id })
+      SpecSiteChartRequest({
+        id: this.props.match.params.id,
+        from: Math.round(new Date(this.state.startDate).getTime() / 1000),
+        to: Math.round(new Date(this.state.endDate).getTime() / 1000),
+      })
     );
 
     this.props.dispatch(
@@ -123,6 +140,13 @@ export class SiteDetails extends Component {
         search: "",
         limit: "",
         page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
       })
     );
   }
@@ -266,6 +290,8 @@ export class SiteDetails extends Component {
         ratio: getSiteDetailsData.data?.ratio,
         numberOfRatio: getSiteDetailsData.data?.ratios,
         random_ratio: getSiteDetailsData.data?.random_ratio,
+        post_lifetime: getSiteDetailsData.data?.post_lifetime,
+        ctr_ratio: getSiteDetailsData.data?.ctr_ratio,
       });
       if (getSiteDetailsData?.data?.translations?.feed.length !== 0) {
         this.setState({
@@ -398,6 +424,8 @@ export class SiteDetails extends Component {
         ratio,
         numberOfRatio,
         random_ratio,
+        post_lifetime,
+        ctr_ratio,
       } = this.state;
       const categorieFormating = categories.map((el) => {
         return {
@@ -438,6 +466,8 @@ export class SiteDetails extends Component {
           ratio,
           ratios: numberOfRatio,
           random_ratio,
+          post_lifetime,
+          ctr_ratio,
         })
       );
     } else if (page === "cancel") {
@@ -626,6 +656,59 @@ export class SiteDetails extends Component {
         )}
         {tabClicked === "statsDiv" && (
           <div style={{ height: "500px", marginTop: "20px" }}>
+            <h2
+              style={{ marginBottom: "20px" }}
+            >{`Chart for site ${siteDetailsData?.name}`}</h2>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+              <h4>Select date range</h4>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <DatePicker
+                  selected={this.state.startDate}
+                  onChange={(date) => {
+                    this.setState({ startDate: date });
+                    setTimeout(() => {
+                      this.props.dispatch(
+                        SpecSiteChartRequest({
+                          id: this.props.match.params.id,
+                          from: Math.round(
+                            new Date(this.state.startDate).getTime() / 1000
+                          ),
+                          to: Math.round(
+                            new Date(this.state.endDate).getTime() / 1000
+                          ),
+                        })
+                      );
+                    });
+                  }}
+                  selectsStart
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                />
+                <DatePicker
+                  selected={this.state.endDate}
+                  onChange={(date) => {
+                    this.setState({ endDate: date });
+                    setTimeout(() => {
+                      this.props.dispatch(
+                        SpecSiteChartRequest({
+                          id: this.props.match.params.id,
+                          from: Math.round(
+                            new Date(this.state.startDate).getTime() / 1000
+                          ),
+                          to: Math.round(
+                            new Date(this.state.endDate).getTime() / 1000
+                          ),
+                        })
+                      );
+                    });
+                  }}
+                  selectsEnd
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                  minDate={this.state.startDate}
+                />
+              </div>
+            </div>
             <Chart
               customStyle={{ padding: "0" }}
               dataToShow={this.state.siteChartData}
@@ -1138,6 +1221,67 @@ export class SiteDetails extends Component {
                       value={
                         this.state.random_ratio !== null &&
                         this.state.random_ratio
+                      }
+                    />
+                  )}
+                </div>
+                <div className="interval_div">
+                  <h4>Post lifetime</h4>
+                  {!isIteditable && <p>{siteDetailsData?.post_lifetime}</p>}
+                  {isIteditable && (
+                    <input
+                      type="number"
+                      min="0"
+                      onChange={(e) => {
+                        if (
+                          (!isNaN(e.target.value) &&
+                            parseInt(e.target.value) > 0) ||
+                          e.target.value === "" ||
+                          parseInt(e.target.value) === 0
+                        ) {
+                          let val =
+                            e.target.value === ""
+                              ? e.target.value
+                              : parseInt(e.target.value);
+                          setTimeout(() => {
+                            this.setState({ post_lifetime: val });
+                          });
+                        }
+                      }}
+                      name="ratio"
+                      value={
+                        this.state.post_lifetime !== null &&
+                        this.state.post_lifetime
+                      }
+                    />
+                  )}
+                </div>
+                <div className="interval_div">
+                  <h4>Ctr ratio</h4>
+                  {!isIteditable && <p>{siteDetailsData?.ctr_ratio}</p>}
+                  {isIteditable && (
+                    <input
+                      type="number"
+                      min="0"
+                      onChange={(e) => {
+                        if (
+                          (!isNaN(e.target.value) &&
+                            parseInt(e.target.value) > 0) ||
+                          e.target.value === "" ||
+                          parseInt(e.target.value) === 0
+                        ) {
+                          let val =
+                            e.target.value === ""
+                              ? e.target.value
+                              : parseInt(e.target.value);
+                          setTimeout(() => {
+                            this.setState({ ctr_ratio: val });
+                          });
+                        }
+                      }}
+                      name="ratio"
+                      value={
+                        this.state.ctr_ratio !== null && this.state.ctr_ratio
                       }
                     />
                   )}

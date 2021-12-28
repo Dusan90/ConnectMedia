@@ -44,6 +44,8 @@ export class Home extends Component {
       dataToRender: [],
       mamxPages: "",
       loading: true,
+      sortName: "",
+      sortDir: "",
     };
   }
 
@@ -68,6 +70,19 @@ export class Home extends Component {
         search: "",
         limit: this.state.countPerPage,
         page: this.state.page,
+        sortName: this.state.sortName,
+        sortDir: this.state.sortDir,
+        status: "",
+        user: this.state.selectedUserSearch
+          ? this.state.selectedUserSearch?.id
+          : "",
+        category: this.state.selectedCategorieSearch
+          ? this.state.selectedCategorieSearch?.id
+          : "",
+        site: "",
+        state: this.state.selectedStatusSearch
+          ? this.state.selectedStatusSearch?.id
+          : "",
       })
     );
     this.props.dispatch(
@@ -75,6 +90,13 @@ export class Home extends Component {
         search: "",
         limit: "",
         page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
       })
     );
     this.props.dispatch(
@@ -82,6 +104,8 @@ export class Home extends Component {
         search: "",
         limit: "",
         page: "",
+        sortName: "",
+        sortDir: "",
       })
     );
   }
@@ -152,6 +176,19 @@ export class Home extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
         })
       );
     }
@@ -192,6 +229,19 @@ export class Home extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
         })
       );
     }
@@ -219,21 +269,7 @@ export class Home extends Component {
         inputValue
       ) {
         this.setState({
-          data: filtering(
-            getSitesListData?.data,
-            selectedStatusSearch,
-            selectedCategorieSearch,
-            selectedUserSearch,
-            inputValue
-          )
-            ? filtering(
-                getSitesListData?.data,
-                selectedStatusSearch,
-                selectedCategorieSearch,
-                selectedUserSearch,
-                inputValue
-              )
-            : getSitesListData?.data,
+          data: getSitesListData?.data,
           info: getSitesListData?.info,
           loading: false,
         });
@@ -288,6 +324,19 @@ export class Home extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
         })
       );
     }
@@ -302,6 +351,19 @@ export class Home extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
         })
       );
     });
@@ -320,6 +382,19 @@ export class Home extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
         })
       );
     });
@@ -348,6 +423,19 @@ export class Home extends Component {
           search: value,
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
         })
       );
     });
@@ -372,6 +460,8 @@ export class Home extends Component {
 
   handleArrowSort = (sortByClicked, value) => {
     console.log(sortByClicked, value);
+    this.setState({ sortName: sortByClicked, sortDir: value });
+
     if (value === "Up") {
       const sorted = this.state.data.sort((a, b) => {
         if (
@@ -380,16 +470,17 @@ export class Home extends Component {
           sortByClicked === "txr"
         ) {
           return b.stats[sortByClicked] - a.stats[sortByClicked];
-        } else {
-          if (
-            typeof a[sortByClicked] === "string" ||
-            typeof b[sortByClicked] === "string"
-          ) {
-            return b[sortByClicked]?.localeCompare(a[sortByClicked]);
-          } else {
-            return b[sortByClicked] - a[sortByClicked];
-          }
         }
+        //  else {
+        //   if (
+        //     typeof a[sortByClicked] === "string" ||
+        //     typeof b[sortByClicked] === "string"
+        //   ) {
+        //     return b[sortByClicked]?.localeCompare(a[sortByClicked]);
+        //   } else {
+        //     return b[sortByClicked] - a[sortByClicked];
+        //   }
+        // }
       });
       this.setState({ data: sorted });
       setTimeout(() => {
@@ -405,16 +496,17 @@ export class Home extends Component {
           sortByClicked === "txr"
         ) {
           return a.stats[sortByClicked] - b.stats[sortByClicked];
-        } else {
-          if (
-            typeof a[sortByClicked] === "string" ||
-            typeof b[sortByClicked] === "string"
-          ) {
-            return a[sortByClicked]?.localeCompare(b[sortByClicked]);
-          } else {
-            return a[sortByClicked] - b[sortByClicked];
-          }
         }
+        // else {
+        //   if (
+        //     typeof a[sortByClicked] === "string" ||
+        //     typeof b[sortByClicked] === "string"
+        //   ) {
+        //     return a[sortByClicked]?.localeCompare(b[sortByClicked]);
+        //   } else {
+        //     return a[sortByClicked] - b[sortByClicked];
+        //   }
+        // }
       });
       this.setState({ data: sorted });
       setTimeout(() => {
@@ -422,6 +514,27 @@ export class Home extends Component {
 
         // this.paginate(1);
       });
+    } else {
+      this.props.dispatch(
+        GetSitesListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: sortByClicked,
+          sortDir: value,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+        })
+      );
     }
   };
 
@@ -443,6 +556,19 @@ export class Home extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: "",
+            user: this.state.selectedUserSearch
+              ? this.state.selectedUserSearch?.id
+              : "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: "",
+            state: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
           })
         );
       });
@@ -456,6 +582,19 @@ export class Home extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: "",
+            user: this.state.selectedUserSearch
+              ? this.state.selectedUserSearch?.id
+              : "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: "",
+            state: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
           })
         );
       });
@@ -470,6 +609,19 @@ export class Home extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: "",
+            user: this.state.selectedUserSearch
+              ? this.state.selectedUserSearch?.id
+              : "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: "",
+            state: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
           })
         );
       });
@@ -481,6 +633,19 @@ export class Home extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: "",
+            user: this.state.selectedUserSearch
+              ? this.state.selectedUserSearch?.id
+              : "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: "",
+            state: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
           })
         );
       });
@@ -492,6 +657,19 @@ export class Home extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: "",
+            user: this.state.selectedUserSearch
+              ? this.state.selectedUserSearch?.id
+              : "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: "",
+            state: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
           })
         );
       });
@@ -505,6 +683,19 @@ export class Home extends Component {
                 search: "",
                 limit: this.state.countPerPage,
                 page: this.state.page,
+                sortName: this.state.sortName,
+                sortDir: this.state.sortDir,
+                status: "",
+                user: this.state.selectedUserSearch
+                  ? this.state.selectedUserSearch?.id
+                  : "",
+                category: this.state.selectedCategorieSearch
+                  ? this.state.selectedCategorieSearch?.id
+                  : "",
+                site: "",
+                state: this.state.selectedStatusSearch
+                  ? this.state.selectedStatusSearch?.id
+                  : "",
               })
             );
           });
@@ -516,6 +707,19 @@ export class Home extends Component {
                 search: "",
                 limit: this.state.countPerPage,
                 page: this.state.page,
+                sortName: this.state.sortName,
+                sortDir: this.state.sortDir,
+                status: "",
+                user: this.state.selectedUserSearch
+                  ? this.state.selectedUserSearch?.id
+                  : "",
+                category: this.state.selectedCategorieSearch
+                  ? this.state.selectedCategorieSearch?.id
+                  : "",
+                site: "",
+                state: this.state.selectedStatusSearch
+                  ? this.state.selectedStatusSearch?.id
+                  : "",
               })
             );
           });
@@ -554,6 +758,19 @@ export class Home extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
         })
       );
     });
@@ -561,6 +778,8 @@ export class Home extends Component {
 
   render() {
     const { urlForCreate, loading } = this.state;
+
+    console.log(this.state);
     return (
       <>
         {/* <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>

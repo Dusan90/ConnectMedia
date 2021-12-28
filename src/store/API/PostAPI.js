@@ -6,9 +6,22 @@ import { API_URL, GET_POST } from "./urlConsts";
 
 const url = (endpoint) => `${API_URL}${endpoint}`;
 
-const getPostsList = async ({ search, limit, page }) => {
+const getPostsList = async ({
+  search,
+  limit,
+  page,
+  sortName,
+  sortDir,
+  status,
+  user,
+  category,
+  site,
+  state,
+}) => {
   return await axiosInstance.get(
-    `${url(GET_POST)}?page=${page}&limit=${limit}&search=${search}`
+    `${url(
+      GET_POST
+    )}?page=${page}&limit=${limit}&search=${search}&sort_key=${sortName}&sort_dir=${sortDir}&filter_state=${state}&filter_site=${site}&filter_category=${category}&filter_status=${status}&filter_owner=${user}`
   );
 };
 
@@ -24,6 +37,8 @@ const createPost = async ({
   description,
   author,
   content,
+  priority_lifetime,
+  priority,
 }) => {
   const objective = {
     site,
@@ -37,6 +52,8 @@ const createPost = async ({
     description,
     author,
     content,
+    priority_lifetime,
+    priority,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
@@ -61,6 +78,8 @@ const updatePostDetails = async ({
   description,
   author,
   content,
+  priority_lifetime,
+  priority,
 }) => {
   const objective = {
     site,
@@ -74,6 +93,8 @@ const updatePostDetails = async ({
     description,
     author,
     content,
+    priority_lifetime,
+    priority,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)

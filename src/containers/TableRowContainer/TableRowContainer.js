@@ -119,7 +119,7 @@ function TableRowContainer({
                   onClick={() =>
                     handleArrowSort(
                       pageName === "widgets" ? "status" : "state",
-                      "Up"
+                      "1"
                     )
                   }
                   alt="arrow"
@@ -129,7 +129,7 @@ function TableRowContainer({
                   onClick={() =>
                     handleArrowSort(
                       pageName === "widgets" ? "status" : "state",
-                      "Down"
+                      "-1"
                     )
                   }
                   alt="arrow"
@@ -146,7 +146,7 @@ function TableRowContainer({
                   onClick={() =>
                     handleArrowSort(
                       pageName === "widgets" ? "site" : "owner",
-                      "Up"
+                      "1"
                     )
                   }
                   alt="arrow"
@@ -156,7 +156,7 @@ function TableRowContainer({
                   onClick={() =>
                     handleArrowSort(
                       pageName === "widgets" ? "site" : "owner",
-                      "Down"
+                      "-1"
                     )
                   }
                   alt="arrow"
@@ -170,12 +170,12 @@ function TableRowContainer({
               <div>
                 <img
                   src={arrowUp}
-                  onClick={() => handleArrowSort("name", "Up")}
+                  onClick={() => handleArrowSort("name", "1")}
                   alt="arrow"
                 />
                 <img
                   src={secondarrowDown}
-                  onClick={() => handleArrowSort("name", "Down")}
+                  onClick={() => handleArrowSort("name", "-1")}
                   alt="arrow"
                 />
               </div>
@@ -186,7 +186,7 @@ function TableRowContainer({
           <th></th>
           <th>
             <div>
-              {/* <div>
+              <div>
                 <img
                   src={arrowUp}
                   onClick={() =>
@@ -204,13 +204,13 @@ function TableRowContainer({
                   }
                   alt="arrow"
                 />
-              </div> */}
+              </div>
               <p>{pageName === "widgets" ? "imp" : "in"}</p>
             </div>
           </th>
           <th>
             <div>
-              {/* <div>
+              <div>
                 <img
                   src={arrowUp}
                   onClick={() =>
@@ -231,13 +231,13 @@ function TableRowContainer({
                   }
                   alt="arrow"
                 />
-              </div> */}
+              </div>
               <p>{pageName === "widgets" ? "clk" : "out"}</p>
             </div>
           </th>
           <th>
             <div>
-              {/* <div>
+              <div>
                 <img
                   src={arrowUp}
                   onClick={() =>
@@ -258,7 +258,7 @@ function TableRowContainer({
                   }
                   alt="arrow"
                 />
-              </div> */}
+              </div>
               <p>{pageName === "widgets" ? "ctr" : "txr"}</p>
             </div>
           </th>

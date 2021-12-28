@@ -55,6 +55,8 @@ export class Widgets extends Component {
       dataToRender: [],
       mamxPages: "",
       loading: true,
+      sortName: "",
+      sortDir: "",
     };
   }
 
@@ -79,6 +81,19 @@ export class Widgets extends Component {
         search: "",
         limit: this.state.countPerPage,
         page: this.state.page,
+        sortName: this.state.sortName,
+        sortDir: this.state.sortDir,
+        status: this.state.selectedStatusSearch
+          ? this.state.selectedStatusSearch?.id
+          : "",
+        user: "",
+        category: this.state.selectedCategorieSearch
+          ? this.state.selectedCategorieSearch?.id
+          : "",
+        site: this.state.selectedSiteSearch
+          ? this.state.selectedSiteSearch?.id
+          : "",
+        state: "",
       })
     );
   }
@@ -148,6 +163,19 @@ export class Widgets extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     }
@@ -191,21 +219,7 @@ export class Widgets extends Component {
         inputValue
       ) {
         this.setState({
-          data: filtering(
-            getWidgetsListData.data,
-            selectedStatusSearch,
-            selectedCategorieSearch,
-            selectedSiteSearch,
-            inputValue
-          )
-            ? filtering(
-                getWidgetsListData.data,
-                selectedStatusSearch,
-                selectedCategorieSearch,
-                selectedSiteSearch,
-                inputValue
-              )
-            : getWidgetsListData.data,
+          data: getWidgetsListData.data,
           info: getWidgetsListData.info,
         });
       } else {
@@ -229,6 +243,8 @@ export class Widgets extends Component {
           search: "",
           limit: "",
           page: "",
+          sortName: "",
+          sortDir: "",
         })
       );
     }
@@ -243,6 +259,13 @@ export class Widgets extends Component {
           search: "",
           limit: "",
           page: "",
+          sortName: "",
+          sortDir: "",
+          status: "",
+          user: "",
+          category: "",
+          site: "",
+          state: "",
         })
       );
     }
@@ -253,6 +276,13 @@ export class Widgets extends Component {
           search: "",
           limit: "",
           page: "",
+          sortName: "",
+          sortDir: "",
+          status: "",
+          user: "",
+          category: "",
+          site: "",
+          state: "",
         })
       );
     }
@@ -274,6 +304,19 @@ export class Widgets extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     } else if (
@@ -302,6 +345,19 @@ export class Widgets extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     });
@@ -330,6 +386,19 @@ export class Widgets extends Component {
           search: value,
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     });
@@ -361,32 +430,36 @@ export class Widgets extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     });
   };
 
   handleArrowSort = (sortByClicked, value) => {
+    this.setState({ sortName: sortByClicked, sortDir: value });
+
     // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
     if (value === "Up") {
       const sorted = this.state.data.sort((a, b) => {
         if (
-          typeof a[sortByClicked] === "string" ||
-          typeof b[sortByClicked] === "string"
+          sortByClicked === "ctr" ||
+          sortByClicked === "clk" ||
+          sortByClicked === "imp"
         ) {
-          return b[sortByClicked]?.localeCompare(a[sortByClicked]);
-        } else if (
-          typeof a[sortByClicked] === "object" ||
-          typeof b[sortByClicked] === "object"
-        ) {
-          if (a.site && b.site) {
-            return b.site[sortByClicked]?.localeCompare(a.site[sortByClicked]);
-          } else {
-            return -1;
-          }
-          // return b?.site[sortByClicked]?.localeCompare(a?.site[sortByClicked])
-        } else {
-          return b[sortByClicked] - a[sortByClicked];
+          return a.stats[sortByClicked] - b.stats[sortByClicked];
         }
       });
       this.setState({ data: sorted });
@@ -398,21 +471,11 @@ export class Widgets extends Component {
     } else if (value === "Down") {
       const sorted = this.state.data.sort((a, b) => {
         if (
-          typeof a[sortByClicked] === "string" ||
-          typeof b[sortByClicked] === "string"
+          sortByClicked === "ctr" ||
+          sortByClicked === "clk" ||
+          sortByClicked === "imp"
         ) {
-          return a[sortByClicked]?.localeCompare(b[sortByClicked]);
-        } else if (
-          typeof a[sortByClicked] === "object" ||
-          typeof b[sortByClicked] === "object"
-        ) {
-          if (a.site && b.site) {
-            return a.site[sortByClicked]?.localeCompare(b.site[sortByClicked]);
-          } else {
-            return -1;
-          }
-        } else {
-          return a[sortByClicked] - b[sortByClicked];
+          return b.stats[sortByClicked] - a.stats[sortByClicked];
         }
       });
       this.setState({ data: sorted });
@@ -421,6 +484,27 @@ export class Widgets extends Component {
 
         // this.paginate(1);
       });
+    } else {
+      this.props.dispatch(
+        GetWidgetsListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: sortByClicked,
+          sortDir: value,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
+        })
+      );
     }
   };
 
@@ -442,6 +526,19 @@ export class Widgets extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -455,6 +552,19 @@ export class Widgets extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -482,6 +592,19 @@ export class Widgets extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -493,6 +616,19 @@ export class Widgets extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -504,6 +640,19 @@ export class Widgets extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -516,6 +665,19 @@ export class Widgets extends Component {
               search: "",
               limit: this.state.countPerPage,
               page: this.state.page,
+              sortName: this.state.sortName,
+              sortDir: this.state.sortDir,
+              status: this.state.selectedStatusSearch
+                ? this.state.selectedStatusSearch?.id
+                : "",
+              user: "",
+              category: this.state.selectedCategorieSearch
+                ? this.state.selectedCategorieSearch?.id
+                : "",
+              site: this.state.selectedSiteSearch
+                ? this.state.selectedSiteSearch?.id
+                : "",
+              state: "",
             })
           );
         });
@@ -527,6 +689,19 @@ export class Widgets extends Component {
               search: "",
               limit: this.state.countPerPage,
               page: this.state.page,
+              sortName: this.state.sortName,
+              sortDir: this.state.sortDir,
+              status: this.state.selectedStatusSearch
+                ? this.state.selectedStatusSearch?.id
+                : "",
+              user: "",
+              category: this.state.selectedCategorieSearch
+                ? this.state.selectedCategorieSearch?.id
+                : "",
+              site: this.state.selectedSiteSearch
+                ? this.state.selectedSiteSearch?.id
+                : "",
+              state: "",
             })
           );
         });
@@ -559,6 +734,19 @@ export class Widgets extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     });

@@ -18,6 +18,8 @@ import {
 import { GetCategoryListActionRequest } from "../../store/actions/CategoryAction";
 import { GetSitesListActionRequest } from "../../store/actions/SitesListAction";
 import { SpecWidgetChartRequest } from "../../store/actions/ChartAction";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import ViewWidgets from "./ViewWidgets";
 
@@ -75,6 +77,8 @@ export class WidgetsDetails extends Component {
       wordToPass: "",
       widgetChartData: "",
       viewWidget: "",
+      startDate: new Date().setDate(new Date().getDate() - 7),
+      endDate: new Date(),
     };
   }
 
@@ -101,6 +105,13 @@ export class WidgetsDetails extends Component {
         search: "",
         limit: "",
         page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
       })
     );
     this.props.dispatch(
@@ -108,6 +119,13 @@ export class WidgetsDetails extends Component {
         search: "",
         limit: "",
         page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
       })
     );
 
@@ -119,7 +137,11 @@ export class WidgetsDetails extends Component {
       );
     }
     this.props.dispatch(
-      SpecWidgetChartRequest({ id: this.props.match.params.id })
+      SpecWidgetChartRequest({
+        id: this.props.match.params.id,
+        from: Math.round(new Date(this.state.startDate).getTime() / 1000),
+        to: Math.round(new Date(this.state.endDate).getTime() / 1000),
+      })
     );
     this.props.dispatch(
       ViewWidgetActionRequest({ id: this.props.match.params.id })
@@ -464,6 +486,61 @@ export class WidgetsDetails extends Component {
           <>
             {" "}
             <div style={{ height: "500px", marginTop: "20px" }}>
+              <h2
+                style={{ marginBottom: "20px" }}
+              >{`Chart for widget ${WidgetDetailsData?.name}`}</h2>
+              <div
+                style={{ display: "flex", gap: "10px", marginBottom: "20px" }}
+              >
+                <h4>Select date range</h4>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <DatePicker
+                    selected={this.state.startDate}
+                    onChange={(date) => {
+                      this.setState({ startDate: date });
+                      setTimeout(() => {
+                        this.props.dispatch(
+                          SpecWidgetChartRequest({
+                            id: this.props.match.params.id,
+                            from: Math.round(
+                              new Date(this.state.startDate).getTime() / 1000
+                            ),
+                            to: Math.round(
+                              new Date(this.state.endDate).getTime() / 1000
+                            ),
+                          })
+                        );
+                      });
+                    }}
+                    selectsStart
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                  />
+                  <DatePicker
+                    selected={this.state.endDate}
+                    onChange={(date) => {
+                      this.setState({ endDate: date });
+                      setTimeout(() => {
+                        this.props.dispatch(
+                          SpecWidgetChartRequest({
+                            id: this.props.match.params.id,
+                            from: Math.round(
+                              new Date(this.state.startDate).getTime() / 1000
+                            ),
+                            to: Math.round(
+                              new Date(this.state.endDate).getTime() / 1000
+                            ),
+                          })
+                        );
+                      });
+                    }}
+                    selectsEnd
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    minDate={this.state.startDate}
+                  />
+                </div>
+              </div>
               <Chart
                 dataToShow={this.state.widgetChartData}
                 fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}

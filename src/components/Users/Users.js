@@ -35,6 +35,8 @@ export class Users extends Component {
       dataToRender: [],
       mamxPages: "",
       loading: true,
+      sortName: "",
+      sortDir: "",
     };
   }
 
@@ -60,6 +62,8 @@ export class Users extends Component {
         search: "",
         limit: this.state.countPerPage,
         page: this.state.page,
+        sortName: this.state.sortName,
+        sortDir: this.state.sortDir,
       })
     );
   }
@@ -112,6 +116,8 @@ export class Users extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
         })
       );
       NotificationManager.success("User successfully created", "Success", 2000);
@@ -137,6 +143,8 @@ export class Users extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
         })
       );
     });
@@ -172,6 +180,8 @@ export class Users extends Component {
         search: value,
         limit: this.state.countPerPage,
         page: this.state.page,
+        sortName: this.state.sortName,
+        sortDir: this.state.sortDir,
       })
     );
   };
@@ -201,50 +211,60 @@ export class Users extends Component {
   };
 
   handleArrowSort = (sortByClicked, value) => {
+    this.setState({ sortName: sortByClicked, sortDir: value });
+    this.props.dispatch(
+      GetUsersListActionRequest({
+        search: "",
+        limit: this.state.countPerPage,
+        page: this.state.page,
+        sortName: sortByClicked,
+        sortDir: value,
+      })
+    );
     // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
-    if (value === "Up") {
-      const sorted = this.state.data.sort((a, b) => {
-        if (
-          typeof a[sortByClicked] === "string" ||
-          typeof b[sortByClicked] === "string"
-        ) {
-          return b[sortByClicked]?.localeCompare(a[sortByClicked]);
-        } else if (
-          typeof a[sortByClicked] === "object" ||
-          typeof b[sortByClicked] === "object"
-        ) {
-          return b[sortByClicked]["name"]?.localeCompare(
-            a[sortByClicked]["name"]
-          );
-        }
-      });
-      this.setState({ data: sorted });
-      setTimeout(() => {
-        this.setState({ page: 1 });
-        // this.paginate(1);
-      });
-    } else if (value === "Down") {
-      const sorted = this.state.data.sort((a, b) => {
-        if (
-          typeof a[sortByClicked] === "string" ||
-          typeof b[sortByClicked] === "string"
-        ) {
-          return a[sortByClicked]?.localeCompare(b[sortByClicked]);
-        } else if (
-          typeof a[sortByClicked] === "object" ||
-          typeof b[sortByClicked] === "object"
-        ) {
-          return a[sortByClicked]["name"]?.localeCompare(
-            b[sortByClicked]["name"]
-          );
-        }
-      });
-      this.setState({ data: sorted });
-      setTimeout(() => {
-        this.setState({ page: 1 });
-        // this.paginate(1);
-      });
-    }
+    // if (value === "Up") {
+    //   const sorted = this.state.data.sort((a, b) => {
+    //     if (
+    //       typeof a[sortByClicked] === "string" ||
+    //       typeof b[sortByClicked] === "string"
+    //     ) {
+    //       return b[sortByClicked]?.localeCompare(a[sortByClicked]);
+    //     } else if (
+    //       typeof a[sortByClicked] === "object" ||
+    //       typeof b[sortByClicked] === "object"
+    //     ) {
+    //       return b[sortByClicked]["name"]?.localeCompare(
+    //         a[sortByClicked]["name"]
+    //       );
+    //     }
+    //   });
+    //   this.setState({ data: sorted });
+    //   setTimeout(() => {
+    //     this.setState({ page: 1 });
+    //     // this.paginate(1);
+    //   });
+    // } else if (value === "Down") {
+    //   const sorted = this.state.data.sort((a, b) => {
+    //     if (
+    //       typeof a[sortByClicked] === "string" ||
+    //       typeof b[sortByClicked] === "string"
+    //     ) {
+    //       return a[sortByClicked]?.localeCompare(b[sortByClicked]);
+    //     } else if (
+    //       typeof a[sortByClicked] === "object" ||
+    //       typeof b[sortByClicked] === "object"
+    //     ) {
+    //       return a[sortByClicked]["name"]?.localeCompare(
+    //         b[sortByClicked]["name"]
+    //       );
+    //     }
+    //   });
+    //   this.setState({ data: sorted });
+    //   setTimeout(() => {
+    //     this.setState({ page: 1 });
+    //     // this.paginate(1);
+    //   });
+    // }
   };
 
   handlePageRedirect = (e, item) => {
@@ -266,6 +286,8 @@ export class Users extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
           })
         );
       });
@@ -278,6 +300,8 @@ export class Users extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
           })
         );
       });
@@ -451,12 +475,12 @@ export class Users extends Component {
                         <img
                           src={arrowUp}
                           alt="arrow"
-                          onClick={() => this.handleArrowSort("email", "Up")}
+                          onClick={() => this.handleArrowSort("email", "1")}
                         />
                         <img
                           src={secondarrowDown}
                           alt="arrow"
-                          onClick={() => this.handleArrowSort("email", "Down")}
+                          onClick={() => this.handleArrowSort("email", "-1")}
                         />
                       </div>
                       <p>Email</p>

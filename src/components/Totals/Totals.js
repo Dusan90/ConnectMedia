@@ -11,6 +11,8 @@ import {
 
 import { connect } from "react-redux";
 import "./Totals.scss";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const test = [
   {
@@ -42,11 +44,19 @@ export class Totals extends Component {
       inputValue: "",
       countPerPage: "",
       chartData: "",
+      startDate: new Date().setDate(new Date().getDate() - 7),
+      endDate: new Date(),
+      loading: true,
     };
   }
 
   componentDidMount() {
-    this.props.dispatch(TotalRequest());
+    this.props.dispatch(
+      TotalRequest({
+        from: Math.round(new Date(this.state.startDate).getTime() / 1000),
+        to: Math.round(new Date(this.state.endDate).getTime() / 1000),
+      })
+    );
   }
 
   handlePageChange = (page) => {
@@ -56,11 +66,11 @@ export class Totals extends Component {
   componentDidUpdate(prevProps) {
     const { total, specSiteChart } = this.props;
     const { loading: totalLoading, error: totalError, data: totalData } = total;
-    const {
-      loading: specSiteChartLoading,
-      error: specSiteChartError,
-      data: specSiteChartData,
-    } = specSiteChart;
+    // const {
+    //   loading: specSiteChartLoading,
+    //   error: specSiteChartError,
+    //   data: specSiteChartData,
+    // } = specSiteChart;
 
     if (
       prevProps.total !== total &&
@@ -68,17 +78,17 @@ export class Totals extends Component {
       !totalError &&
       totalData
     ) {
-      this.setState({ chartData: totalData.data });
+      this.setState({ chartData: totalData.data, loading: false });
     }
 
-    if (
-      prevProps.specSiteChart !== specSiteChart &&
-      !specSiteChartLoading &&
-      !specSiteChartError &&
-      specSiteChartData
-    ) {
-      this.setState({ chartData: specSiteChartData.data });
-    }
+    // if (
+    //   prevProps.specSiteChart !== specSiteChart &&
+    //   !specSiteChartLoading &&
+    //   !specSiteChartError &&
+    //   specSiteChartData
+    // ) {
+    //   this.setState({ chartData: specSiteChartData.data });
+    // }
   }
 
   handleHomePageSort = (value, sortBy) => {
@@ -148,7 +158,12 @@ export class Totals extends Component {
 
   handleAllOptionsOnMain = (el, sortBy) => {
     console.log(el, sortBy);
-    this.props.dispatch(TotalRequest());
+    this.props.dispatch(
+      TotalRequest({
+        from: Math.round(new Date(this.state.startDate).getTime() / 1000),
+        to: Math.round(new Date(this.state.endDate).getTime() / 1000),
+      })
+    );
     // if (sortBy === "categories") {
     //     this.setState({ selectedCategorieSearch: '' })
     // } else if (sortBy === 'sites') {
@@ -249,21 +264,81 @@ export class Totals extends Component {
           style={{ height: "500px", marginTop: "20px" }}
           className="linechart"
         >
-          <Chart
-            dataToShow={this.state.chartData}
-            fields={{ 0: "clicks", 1: "impressions", 2: "ctr" }}
-          />
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              marginBottom: "20px",
+              padding: "0 35px",
+            }}
+          >
+            <h4>Select date range</h4>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <DatePicker
+                selected={this.state.startDate}
+                onChange={(date) => {
+                  this.setState({ startDate: date, loading: true });
+                  setTimeout(() => {
+                    this.props.dispatch(
+                      TotalRequest({
+                        from: Math.round(
+                          new Date(this.state.startDate).getTime() / 1000
+                        ),
+                        to: Math.round(
+                          new Date(this.state.endDate).getTime() / 1000
+                        ),
+                      })
+                    );
+                  }, 1000);
+                }}
+                selectsStart
+                startDate={this.state.startDate}
+                endDate={this.state.endDate}
+              />
+              <DatePicker
+                selected={this.state.endDate}
+                onChange={(date) => {
+                  this.setState({ endDate: date, loading: true });
+                  setTimeout(() => {
+                    this.props.dispatch(
+                      TotalRequest({
+                        from: Math.round(
+                          new Date(this.state.startDate).getTime() / 1000
+                        ),
+                        to: Math.round(
+                          new Date(this.state.endDate).getTime() / 1000
+                        ),
+                      })
+                    );
+                  }, 1000);
+                }}
+                selectsEnd
+                startDate={this.state.startDate}
+                endDate={this.state.endDate}
+                minDate={this.state.startDate}
+              />
+              {this.state.loading && <p>Loading...</p>}
+            </div>
+          </div>
+          {!this.state.loading && (
+            <Chart
+              dataToShow={this.state.chartData}
+              fields={{ 0: "clicks", 1: "impressions", 2: "ctr" }}
+            />
+          )}
         </div>
 
-        <div
-          style={{ height: "500px", marginTop: "20px" }}
-          className="linechart"
-        >
-          <Chart
-            dataToShow={this.state.chartData}
-            fields={{ 0: "visits", 1: "unique_perc", 2: "unique" }}
-          />
-        </div>
+        {!this.state.loading && (
+          <div
+            style={{ height: "500px", marginTop: "60px" }}
+            className="linechart"
+          >
+            <Chart
+              dataToShow={this.state.chartData}
+              fields={{ 0: "visits", 1: "unique_perc", 2: "unique" }}
+            />
+          </div>
+        )}
         {/* <h1
           className="secondHeaderOnTotals"
           style={{ marginTop: "50px", textAlign: "center" }}

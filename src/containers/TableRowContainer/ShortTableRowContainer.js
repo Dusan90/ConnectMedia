@@ -123,7 +123,7 @@ function ShortTableRowContainer({
                       onClick={() =>
                         handleArrowSort(
                           pageName === "widgets" ? "status" : "state",
-                          "Up"
+                          "1"
                         )
                       }
                       alt="arrow"
@@ -133,7 +133,7 @@ function ShortTableRowContainer({
                       onClick={() =>
                         handleArrowSort(
                           pageName === "widgets" ? "status" : "state",
-                          "Down"
+                          "-1"
                         )
                       }
                       alt="arrow"
@@ -208,7 +208,7 @@ function ShortTableRowContainer({
                       onClick={() =>
                         handleArrowSort(
                           pageName === "widgets" ? "site" : "owner",
-                          "Up"
+                          "1"
                         )
                       }
                     />
@@ -217,7 +217,7 @@ function ShortTableRowContainer({
                       onClick={() =>
                         handleArrowSort(
                           pageName === "widgets" ? "site" : "owner",
-                          "Down"
+                          "-1"
                         )
                       }
                       alt="arrow"
@@ -251,12 +251,12 @@ function ShortTableRowContainer({
                   <div className="arrowDiv">
                     <img
                       src={arrowUp}
-                      onClick={() => handleArrowSort("name", "Up")}
+                      onClick={() => handleArrowSort("name", "1")}
                       alt="arrow"
                     />
                     <img
                       src={secondarrowDown}
-                      onClick={() => handleArrowSort("name", "Down")}
+                      onClick={() => handleArrowSort("name", "-1")}
                       alt="arrow"
                     />
                   </div>
@@ -462,7 +462,7 @@ function ShortTableRowContainer({
                 <div className="statistic">
                   <div>
                     <div className="arrowDiv">
-                      {/* <img
+                      <img
                         src={arrowUp}
                         alt="arrow"
                         onClick={() =>
@@ -471,8 +471,8 @@ function ShortTableRowContainer({
                             "Up"
                           )
                         }
-                      /> */}
-                      {/* <img
+                      />
+                      <img
                         src={secondarrowDown}
                         alt="arrow"
                         onClick={() =>
@@ -481,7 +481,7 @@ function ShortTableRowContainer({
                             "Down"
                           )
                         }
-                      /> */}
+                      />
                     </div>
                     <p>{pageName === "widgets" ? "imp" : "in"}</p>
                   </div>
@@ -491,7 +491,7 @@ function ShortTableRowContainer({
                 <div className="statistic">
                   <div>
                     <div className="arrowDiv">
-                      {/* <img
+                      <img
                         src={arrowUp}
                         onClick={() =>
                           handleArrowSort(
@@ -500,8 +500,8 @@ function ShortTableRowContainer({
                           )
                         }
                         alt="arrow"
-                      /> */}
-                      {/* <img
+                      />
+                      <img
                         src={secondarrowDown}
                         onClick={() =>
                           handleArrowSort(
@@ -510,7 +510,7 @@ function ShortTableRowContainer({
                           )
                         }
                         alt="arrow"
-                      /> */}
+                      />
                     </div>
                     <p>{pageName === "widgets" ? "clk" : "out"}</p>
                   </div>
@@ -520,7 +520,7 @@ function ShortTableRowContainer({
                 <div className="statistic">
                   <div>
                     <div className="arrowDiv">
-                      {/* <img
+                      <img
                         src={arrowUp}
                         onClick={() =>
                           handleArrowSort(
@@ -529,8 +529,8 @@ function ShortTableRowContainer({
                           )
                         }
                         alt="arrow"
-                      /> */}
-                      {/* <img
+                      />
+                      <img
                         src={secondarrowDown}
                         onClick={() =>
                           handleArrowSort(
@@ -539,7 +539,7 @@ function ShortTableRowContainer({
                           )
                         }
                         alt="arrow"
-                      /> */}
+                      />
                     </div>
                     <p>{pageName === "widgets" ? "ctr" : "txr"}</p>
                   </div>
