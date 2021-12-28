@@ -320,7 +320,7 @@ function Header() {
           </p>
           <Bars active={pathname === "/widgets"} />
         </div>
-        <div className="cont">
+        {/* <div className="cont">
           <p
             onClick={() => handleTabChange("/stats")}
             style={{ opacity: pathname === "/stats" ? "1" : "0.6" }}
@@ -328,7 +328,7 @@ function Header() {
             Stats
           </p>
           <Bars active={pathname === "/stats"} />
-        </div>
+        </div> */}
         <div className="cont">
           <p
             onClick={() => handleTabChange("/users")}
