@@ -353,7 +353,7 @@ export class WidgetsDetails extends Component {
         this.props.dispatch(
           CreateWidgetActionRequest({
             name,
-            site: site.value,
+            site: site?.value,
             status: dataState,
             public: publicValue,
             image,
@@ -378,7 +378,7 @@ export class WidgetsDetails extends Component {
           UpdateWidgetDetailsActionRequest({
             id: this.props.match.params.id,
             name,
-            site: site.value,
+            site: site?.value,
             status: dataState,
             public: publicValue,
             image,
