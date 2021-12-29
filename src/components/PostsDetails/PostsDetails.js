@@ -448,6 +448,7 @@ export class PostsDetails extends Component {
                 <h4>Select date range</h4>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <DatePicker
+                    dateFormat="dd/MM/yyyy"
                     selected={this.state.startDate}
                     onChange={(date) => {
                       this.setState({ startDate: date });
@@ -470,6 +471,7 @@ export class PostsDetails extends Component {
                     endDate={this.state.endDate}
                   />
                   <DatePicker
+                    dateFormat="dd/MM/yyyy"
                     selected={this.state.endDate}
                     onChange={(date) => {
                       this.setState({ endDate: date });

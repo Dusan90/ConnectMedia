@@ -663,6 +663,7 @@ export class SiteDetails extends Component {
               <h4>Select date range</h4>
               <div style={{ display: "flex", gap: "10px" }}>
                 <DatePicker
+                  dateFormat="dd/MM/yyyy"
                   selected={this.state.startDate}
                   onChange={(date) => {
                     this.setState({ startDate: date });
@@ -685,6 +686,7 @@ export class SiteDetails extends Component {
                   endDate={this.state.endDate}
                 />
                 <DatePicker
+                  dateFormat="dd/MM/yyyy"
                   selected={this.state.endDate}
                   onChange={(date) => {
                     this.setState({ endDate: date });
@@ -1048,126 +1050,6 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div>
-                {this.state.numberOfRatio.length !== 0 &&
-                  this.state.numberOfRatio.map((el, index) => (
-                    <div
-                      className="interval_div"
-                      style={{ gap: isIteditable && "10px" }}
-                      key={index}
-                    >
-                      {!isIteditable && <h4>{el.name}</h4>}
-                      {isIteditable && (
-                        <div style={{ flex: 1 }}>
-                          <Select
-                            value={{
-                              label: `${el.name}`,
-                            }}
-                            className="basic"
-                            classNamePrefix="select"
-                            // placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}
-                            styles={{
-                              control: (base, state) => ({
-                                ...base,
-                                flex: 1,
-                                fontWeight: "500",
-                                background: "#d6dbdc",
-                              }),
-                              placeholder: () => ({
-                                color: "black",
-                              }),
-                            }}
-                            isClearable={true}
-                            isSearchable={true}
-                            name={`feed${el.id}`}
-                            options={optionsS}
-                            onChange={(e) => {
-                              const newRatiolist = [
-                                ...this.state.numberOfRatio,
-                              ];
-                              if (newRatiolist[index]["id"] === el.id) {
-                                newRatiolist[index]["id"] = e.value;
-                                newRatiolist[index]["name"] = e.label;
-                                setTimeout(() => {
-                                  this.setState({
-                                    numberOfRatio: newRatiolist,
-                                  });
-                                });
-                              }
-                            }}
-                            isClearable={false}
-                            isOptionDisabled={(option) => option.isdisabled}
-                          />
-                        </div>
-                      )}
-                      {!isIteditable && <p>{el.ratio}</p>}
-                      {isIteditable && (
-                        <input
-                          type="number"
-                          min="0"
-                          style={{ flex: 1, margin: 0 }}
-                          onChange={(e) => {
-                            if (
-                              (!isNaN(e.target.value) &&
-                                parseInt(e.target.value) > 0) ||
-                              e.target.value === ""
-                            ) {
-                              const newRatiolist = [
-                                ...this.state.numberOfRatio,
-                              ];
-                              if (newRatiolist[index]["id"] === el.id) {
-                                newRatiolist[index]["ratio"] = parseInt(
-                                  e.target.value
-                                );
-                                setTimeout(() => {
-                                  this.setState({
-                                    numberOfRatio: newRatiolist,
-                                  });
-                                });
-                              }
-                            }
-                          }}
-                          name="ratio"
-                          value={el.ratio}
-                        />
-                      )}
-                      {isIteditable && (
-                        <p
-                          className="deleteRatioRow"
-                          onClick={() => {
-                            const newRatiolist = [...this.state.numberOfRatio];
-                            if (newRatiolist[index]["id"] === el.id) {
-                              const newone = newRatiolist.filter(
-                                (elm) => elm.id !== el.id
-                              );
-                              setTimeout(() => {
-                                this.setState({ numberOfRatio: newone });
-                              });
-                            }
-                          }}
-                        >
-                          X
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                {isIteditable && (
-                  <div className="interval_div">
-                    <button
-                      onClick={() => {
-                        const newRatiolist = [
-                          ...this.state.numberOfRatio,
-                          { id: "", name: "", ratio: "" },
-                        ];
-                        setTimeout(() => {
-                          this.setState({ numberOfRatio: newRatiolist });
-                        });
-                      }}
-                      className="addingButton"
-                    >
-                      Add ratio
-                    </button>
-                  </div>
-                )}
                 <div className="interval_div">
                   <h4>Ratio (%)</h4>
                   {!isIteditable && <p>{siteDetailsData?.ratio}</p>}
@@ -1178,7 +1060,7 @@ export class SiteDetails extends Component {
                       onChange={(e) => {
                         if (
                           (!isNaN(e.target.value) &&
-                            parseInt(e.target.value) > 0) ||
+                            parseInt(e.target.value) >= 0) ||
                           e.target.value === ""
                         ) {
                           let val =
@@ -1711,6 +1593,123 @@ export class SiteDetails extends Component {
                   </tbody> */}
                 {/* // </table> */}
               </div>
+              <h1>Ratio</h1>
+              {this.state.numberOfRatio.length !== 0 &&
+                this.state.numberOfRatio.map((el, index) => (
+                  <div
+                    className="interval_div"
+                    style={{ gap: isIteditable && "10px" }}
+                    key={index}
+                  >
+                    {!isIteditable && <h4>{el.name}</h4>}
+                    {isIteditable && (
+                      <div style={{ flex: 1 }}>
+                        <Select
+                          value={{
+                            label: `${el.name}`,
+                          }}
+                          className="basic"
+                          classNamePrefix="select"
+                          // placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}
+                          styles={{
+                            control: (base, state) => ({
+                              ...base,
+                              flex: 1,
+                              fontWeight: "500",
+                              background: "#d6dbdc",
+                            }),
+                            placeholder: () => ({
+                              color: "black",
+                            }),
+                          }}
+                          isClearable={true}
+                          isSearchable={true}
+                          name={`feed${el.id}`}
+                          options={optionsS}
+                          onChange={(e) => {
+                            const newRatiolist = [...this.state.numberOfRatio];
+                            if (newRatiolist[index]["id"] === el.id) {
+                              newRatiolist[index]["id"] = e.value;
+                              newRatiolist[index]["name"] = e.label;
+                              setTimeout(() => {
+                                this.setState({
+                                  numberOfRatio: newRatiolist,
+                                });
+                              });
+                            }
+                          }}
+                          isClearable={false}
+                          isOptionDisabled={(option) => option.isdisabled}
+                        />
+                      </div>
+                    )}
+                    {!isIteditable && <p>{el.ratio}</p>}
+                    {isIteditable && (
+                      <input
+                        type="number"
+                        min="0"
+                        style={{ flex: 1, margin: 0 }}
+                        onChange={(e) => {
+                          if (
+                            (!isNaN(e.target.value) &&
+                              parseInt(e.target.value) >= 0) ||
+                            e.target.value === ""
+                          ) {
+                            const newRatiolist = [...this.state.numberOfRatio];
+                            if (newRatiolist[index]["id"] === el.id) {
+                              newRatiolist[index]["ratio"] = parseInt(
+                                e.target.value
+                              );
+                              setTimeout(() => {
+                                this.setState({
+                                  numberOfRatio: newRatiolist,
+                                });
+                              });
+                            }
+                          }
+                        }}
+                        name="ratio"
+                        value={el.ratio}
+                      />
+                    )}
+                    {isIteditable && (
+                      <p
+                        className="deleteRatioRow"
+                        onClick={() => {
+                          const newRatiolist = [...this.state.numberOfRatio];
+                          if (newRatiolist[index]["id"] === el.id) {
+                            const newone = newRatiolist.filter(
+                              (elm) => elm.id !== el.id
+                            );
+                            setTimeout(() => {
+                              this.setState({ numberOfRatio: newone });
+                            });
+                          }
+                        }}
+                      >
+                        X
+                      </p>
+                    )}
+                  </div>
+                ))}
+              {isIteditable && (
+                <div className="interval_div">
+                  <button
+                    onClick={() => {
+                      const newRatiolist = [
+                        ...this.state.numberOfRatio,
+                        { id: "", name: "", ratio: "" },
+                      ];
+                      setTimeout(() => {
+                        this.setState({ numberOfRatio: newRatiolist });
+                      });
+                    }}
+                    className="addingButton"
+                  >
+                    Add ratio
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
