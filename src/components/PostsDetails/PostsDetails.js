@@ -697,7 +697,7 @@ export class PostsDetails extends Component {
                   )}
                 </div>
                 <h1 style={{ margin: "20px 0" }}>Order</h1>
-                <div className="description_div">
+                {/* <div className="description_div">
                   <h4>Content</h4>
                   {!isIteditable && <p>{postDetailsData?.content}</p>}
                   {isIteditable && (
@@ -708,9 +708,9 @@ export class PostsDetails extends Component {
                       onChange={(e) => this.handleChangeInputs(e)}
                     />
                   )}
-                </div>
+                </div> */}
                 <div className="description_div">
-                  <h4>Priority lifetime</h4>
+                  <h4>Lifetime (hours)</h4>
                   {!isIteditable && <p>{postDetailsData?.priority_lifetime}</p>}
                   {isIteditable && (
                     <input
@@ -804,7 +804,7 @@ export class PostsDetails extends Component {
                         type="checkbox"
                       />{" "}
                       <label htmlFor="check">
-                        Move this post to first position
+                        Move this post into first position
                       </label>
                     </div>
                   )}
