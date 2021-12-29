@@ -39,6 +39,7 @@ const createPost = async ({
   content,
   priority_lifetime,
   priority,
+  first_position,
 }) => {
   const objective = {
     site,
@@ -54,6 +55,7 @@ const createPost = async ({
     content,
     priority_lifetime,
     priority,
+    first_position,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
@@ -80,6 +82,7 @@ const updatePostDetails = async ({
   content,
   priority_lifetime,
   priority,
+  first_position,
 }) => {
   const objective = {
     site,
@@ -95,6 +98,7 @@ const updatePostDetails = async ({
     content,
     priority_lifetime,
     priority,
+    first_position,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)

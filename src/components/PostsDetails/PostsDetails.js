@@ -69,6 +69,7 @@ export class PostsDetails extends Component {
       postChartData: "",
       priority_lifetime: null,
       priority: null,
+      first_position: null,
       startDate: new Date().setDate(new Date().getDate() - 7),
       endDate: new Date(),
     };
@@ -219,6 +220,7 @@ export class PostsDetails extends Component {
         content: getPostDetailsData.data?.content,
         priority_lifetime: getPostDetailsData.data?.priority_lifetime,
         priority: getPostDetailsData.data?.priority,
+        first_position: getPostDetailsData.data?.first_position,
       });
     }
 
@@ -311,6 +313,7 @@ export class PostsDetails extends Component {
         categories,
         priority_lifetime,
         priority,
+        first_position,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
@@ -327,6 +330,7 @@ export class PostsDetails extends Component {
             categories,
             priority_lifetime,
             priority,
+            first_position,
           })
         );
       } else {
@@ -345,6 +349,7 @@ export class PostsDetails extends Component {
             categories,
             priority_lifetime,
             priority,
+            first_position,
           })
         );
       }
@@ -401,6 +406,7 @@ export class PostsDetails extends Component {
       siteOptions,
       siteDetailsData,
       priority,
+      first_position,
     } = this.state;
     const categorialOption = siteDetailsData?.categories?.map((el) => {
       return { value: el.category.id, label: el.category.name };
@@ -763,6 +769,43 @@ export class PostsDetails extends Component {
                         type="checkbox"
                       />{" "}
                       <label htmlFor="check">Is this post a priority</label>
+                    </div>
+                  )}
+                </div>
+                <div className="tracking_div">
+                  <h4>First position</h4>
+                  {!isIteditable && (
+                    <p>{`${postDetailsData?.first_position}`}</p>
+                  )}
+                  {isIteditable && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <input
+                        name="first_position"
+                        value={
+                          first_position !== null
+                            ? first_position
+                            : postDetailsData?.first_position
+                        }
+                        checked={
+                          first_position !== null
+                            ? first_position
+                            : postDetailsData?.first_position
+                        }
+                        onChange={(e) =>
+                          this.setState({ first_position: e.target.checked })
+                        }
+                        style={{ width: "20px" }}
+                        type="checkbox"
+                      />{" "}
+                      <label htmlFor="check">
+                        Move this post to first position
+                      </label>
                     </div>
                   )}
                 </div>
