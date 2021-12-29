@@ -449,8 +449,6 @@ export class Widgets extends Component {
   };
 
   handleArrowSort = (sortByClicked, value) => {
-    this.setState({ sortName: sortByClicked, sortDir: value });
-
     // ovde moras da imas 2 parametra, moras da prosledis naziv po kome ce se sortirati i drugi je 'up' ili 'down' po tome ces znati koji arrow je kliknut
     if (value === "Up") {
       const sorted = this.state.data.sort((a, b) => {
@@ -485,6 +483,8 @@ export class Widgets extends Component {
         // this.paginate(1);
       });
     } else {
+      this.setState({ sortName: sortByClicked, sortDir: value });
+
       this.props.dispatch(
         GetWidgetsListActionRequest({
           search: "",

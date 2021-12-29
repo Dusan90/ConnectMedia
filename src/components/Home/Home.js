@@ -460,7 +460,6 @@ export class Home extends Component {
 
   handleArrowSort = (sortByClicked, value) => {
     console.log(sortByClicked, value);
-    this.setState({ sortName: sortByClicked, sortDir: value });
 
     if (value === "Up") {
       const sorted = this.state.data.sort((a, b) => {
@@ -515,6 +514,8 @@ export class Home extends Component {
         // this.paginate(1);
       });
     } else {
+      this.setState({ sortName: sortByClicked, sortDir: value });
+
       this.props.dispatch(
         GetSitesListActionRequest({
           search: "",
