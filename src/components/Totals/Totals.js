@@ -350,6 +350,158 @@ export class Totals extends Component {
         <div style={{ height: `${dataLength * 30}px` }}>
           <VerticalChart />
         </div> */}
+        {!this.state.loading && (
+          <div style={{ padding: "0 35px" }}>
+            <table style={{ marginTop: "20px" }}>
+              <thead>
+                <tr style={{ height: "40px" }}>
+                  <th style={{ width: "100px" }}>Date</th>
+                  <th style={{ width: "100px" }}>Clicks</th>
+                  <th style={{ width: "100px" }}>Ctr</th>
+                  <th style={{ width: "100px" }}>Impressions</th>
+                  <th style={{ width: "100px" }}>Unique</th>
+                  <th style={{ width: "100px" }}>Unique perc</th>
+                  <th style={{ width: "100px" }}>Visits</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.chartData.length !== 0 &&
+                  this.state.chartData?.map((el) => (
+                    <tr style={{ height: "40px" }}>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.name}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.clicks}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.ctr}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.impressions}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.unique}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.unique_perc}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.visits}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+              <tfoot>
+                <tr style={{ height: "40px" }}>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    Total
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData?.reduce((a, b) => +a + +b.clicks, 0)}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData?.reduce((a, b) => +a + +b.ctr, 0)}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData?.reduce(
+                        (a, b) => +a + +b.impressions,
+                        0
+                      )}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData?.reduce((a, b) => +a + +b.unique, 0)}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData?.reduce(
+                        (a, b) => +a + +b.unique_perc,
+                        0
+                      )}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData?.reduce((a, b) => +a + +b.visits, 0)}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        )}
       </>
     );
   }

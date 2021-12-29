@@ -655,7 +655,7 @@ export class SiteDetails extends Component {
           </div>
         )}
         {tabClicked === "statsDiv" && (
-          <div style={{ height: "500px", marginTop: "20px" }}>
+          <>
             <h2
               style={{ marginBottom: "20px" }}
             >{`Chart for site ${siteDetailsData?.name}`}</h2>
@@ -711,12 +711,113 @@ export class SiteDetails extends Component {
                 />
               </div>
             </div>
-            <Chart
-              customStyle={{ padding: "0" }}
-              dataToShow={this.state.siteChartData}
-              fields={{ 0: "in", 1: "out", 2: "txr" }}
-            />
-          </div>
+            <div style={{ height: "500px", marginTop: "20px" }}>
+              <Chart
+                customStyle={{ padding: "0" }}
+                dataToShow={this.state.siteChartData}
+                fields={{ 0: "in", 1: "out", 2: "txr" }}
+              />
+            </div>
+            <div>
+              <table style={{ marginTop: "20px" }}>
+                <thead>
+                  <tr style={{ height: "40px" }}>
+                    <th style={{ width: "100px" }}>Date</th>
+                    <th style={{ width: "100px" }}>In</th>
+                    <th style={{ width: "100px" }}>Out</th>
+                    <th style={{ width: "100px" }}>Txr</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.siteChartData.length !== 0 &&
+                    this.state.siteChartData?.map((el) => (
+                      <tr style={{ height: "40px" }}>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.name}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.in}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.out}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.txr}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+                <tfoot>
+                  <tr style={{ height: "40px" }}>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      Total
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.siteChartData.length !== 0 &&
+                        this.state.siteChartData?.reduce(
+                          (a, b) => +a + +b.in,
+                          0
+                        )}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.siteChartData.length !== 0 &&
+                        this.state.siteChartData?.reduce(
+                          (a, b) => +a + +b.out,
+                          0
+                        )}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.siteChartData.length !== 0 &&
+                        this.state.siteChartData?.reduce(
+                          (a, b) => +a + +b.txr,
+                          0
+                        )}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </>
         )}
         {tabClicked !== "statsDiv" && (
           <div className="mainSiteInfoDiv">

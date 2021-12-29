@@ -437,70 +437,166 @@ export class PostsDetails extends Component {
         )}
         {tabClicked === "statsDiv" && (
           <>
-            {" "}
-            <div style={{ height: "500px", marginTop: "20px" }}>
-              <h2
-                style={{ marginBottom: "20px" }}
-              >{`Chart for post ${postDetailsData?.title}`}</h2>
-              <div
-                style={{ display: "flex", gap: "10px", marginBottom: "20px" }}
-              >
-                <h4>Select date range</h4>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <DatePicker
-                    dateFormat="dd/MM/yyyy"
-                    selected={this.state.startDate}
-                    onChange={(date) => {
-                      this.setState({ startDate: date });
-                      setTimeout(() => {
-                        this.props.dispatch(
-                          SpecPostChartRequest({
-                            id: this.props.match.params.id,
-                            from: Math.round(
-                              new Date(this.state.startDate).getTime() / 1000
-                            ),
-                            to: Math.round(
-                              new Date(this.state.endDate).getTime() / 1000
-                            ),
-                          })
-                        );
-                      });
-                    }}
-                    selectsStart
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                  />
-                  <DatePicker
-                    dateFormat="dd/MM/yyyy"
-                    selected={this.state.endDate}
-                    onChange={(date) => {
-                      this.setState({ endDate: date });
-                      setTimeout(() => {
-                        this.props.dispatch(
-                          SpecPostChartRequest({
-                            id: this.props.match.params.id,
-                            from: Math.round(
-                              new Date(this.state.startDate).getTime() / 1000
-                            ),
-                            to: Math.round(
-                              new Date(this.state.endDate).getTime() / 1000
-                            ),
-                          })
-                        );
-                      });
-                    }}
-                    selectsEnd
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                    minDate={this.state.startDate}
-                  />
-                </div>
+            <h2
+              style={{ marginBottom: "20px" }}
+            >{`Chart for post ${postDetailsData?.title}`}</h2>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+              <h4>Select date range</h4>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <DatePicker
+                  dateFormat="dd/MM/yyyy"
+                  selected={this.state.startDate}
+                  onChange={(date) => {
+                    this.setState({ startDate: date });
+                    setTimeout(() => {
+                      this.props.dispatch(
+                        SpecPostChartRequest({
+                          id: this.props.match.params.id,
+                          from: Math.round(
+                            new Date(this.state.startDate).getTime() / 1000
+                          ),
+                          to: Math.round(
+                            new Date(this.state.endDate).getTime() / 1000
+                          ),
+                        })
+                      );
+                    });
+                  }}
+                  selectsStart
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                />
+                <DatePicker
+                  dateFormat="dd/MM/yyyy"
+                  selected={this.state.endDate}
+                  onChange={(date) => {
+                    this.setState({ endDate: date });
+                    setTimeout(() => {
+                      this.props.dispatch(
+                        SpecPostChartRequest({
+                          id: this.props.match.params.id,
+                          from: Math.round(
+                            new Date(this.state.startDate).getTime() / 1000
+                          ),
+                          to: Math.round(
+                            new Date(this.state.endDate).getTime() / 1000
+                          ),
+                        })
+                      );
+                    });
+                  }}
+                  selectsEnd
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                  minDate={this.state.startDate}
+                />
               </div>
+            </div>
+            <div style={{ height: "500px", marginTop: "20px" }}>
               <Chart
                 dataToShow={this.state.postChartData}
                 fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}
                 customStyle={{ padding: "0" }}
               />
+            </div>
+            <div>
+              <table style={{ marginTop: "20px" }}>
+                <thead>
+                  <tr style={{ height: "40px" }}>
+                    <th style={{ width: "100px" }}>Date</th>
+                    <th style={{ width: "100px" }}>Clicks</th>
+                    <th style={{ width: "100px" }}>Ctr</th>
+                    <th style={{ width: "100px" }}>Impressions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.postChartData.length !== 0 &&
+                    this.state.postChartData?.map((el) => (
+                      <tr style={{ height: "40px" }}>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.name}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.clicks}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.ctr}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.impressions}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+                <tfoot>
+                  <tr style={{ height: "40px" }}>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      Total
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.postChartData.length !== 0 &&
+                        this.state.postChartData?.reduce(
+                          (a, b) => +a + +b.clicks,
+                          0
+                        )}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.postChartData.length !== 0 &&
+                        this.state.postChartData?.reduce(
+                          (a, b) => +a + +b.ctr,
+                          0
+                        )}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.postChartData.length !== 0 &&
+                        this.state.postChartData?.reduce(
+                          (a, b) => +a + +b.impressions,
+                          0
+                        )}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
             {/* <h1
               style={{
