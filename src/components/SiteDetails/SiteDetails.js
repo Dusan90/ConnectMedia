@@ -1196,7 +1196,7 @@ export class SiteDetails extends Component {
                   )}
                 </div>
                 <div className="interval_div">
-                  <h4>Random ratio (%)</h4>
+                  <h4>Initial ratio (%)</h4>
                   {!isIteditable && <p>{siteDetailsData?.random_ratio}</p>}
                   {isIteditable && (
                     <input
