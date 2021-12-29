@@ -1169,7 +1169,7 @@ export class SiteDetails extends Component {
                   </div>
                 )}
                 <div className="interval_div">
-                  <h4>Ratio</h4>
+                  <h4>Ratio (%)</h4>
                   {!isIteditable && <p>{siteDetailsData?.ratio}</p>}
                   {isIteditable && (
                     <input
@@ -1196,7 +1196,7 @@ export class SiteDetails extends Component {
                   )}
                 </div>
                 <div className="interval_div">
-                  <h4>Random ratio</h4>
+                  <h4>Random ratio (%)</h4>
                   {!isIteditable && <p>{siteDetailsData?.random_ratio}</p>}
                   {isIteditable && (
                     <input
@@ -1226,7 +1226,7 @@ export class SiteDetails extends Component {
                   )}
                 </div>
                 <div className="interval_div">
-                  <h4>Post lifetime</h4>
+                  <h4>Post lifetime (days)</h4>
                   {!isIteditable && <p>{siteDetailsData?.post_lifetime}</p>}
                   {isIteditable && (
                     <input
@@ -1256,7 +1256,7 @@ export class SiteDetails extends Component {
                   )}
                 </div>
                 <div className="interval_div">
-                  <h4>Ctr ratio</h4>
+                  <h4>Ctr ratio (%)</h4>
                   {!isIteditable && <p>{siteDetailsData?.ctr_ratio}</p>}
                   {isIteditable && (
                     <input
