@@ -713,9 +713,8 @@ export class PostsDetails extends Component {
                       onChange={(e) => {
                         if (
                           (!isNaN(e.target.value) &&
-                            parseInt(e.target.value) > 0) ||
-                          e.target.value === "" ||
-                          parseInt(e.target.value) === 0
+                            parseInt(e.target.value) >= 0) ||
+                          e.target.value === ""
                         ) {
                           let val =
                             e.target.value === ""

@@ -779,7 +779,6 @@ export class Home extends Component {
   render() {
     const { urlForCreate, loading } = this.state;
 
-    console.log(this.state);
     return (
       <>
         {/* <div className='mainDivForViewSection' style={{ marginTop: '44px' }}>
