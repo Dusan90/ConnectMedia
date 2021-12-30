@@ -1121,7 +1121,7 @@ export class Posts extends Component {
                           style={{ fontSize: "12px" }}
                         >
                           {" "}
-                          {item?.priority ? (
+                          {item?.priority && item?.first_position ? (
                             <p
                               style={{
                                 background: "rgb(171, 217, 150)",
@@ -1721,7 +1721,7 @@ export class Posts extends Component {
                             )}`}
                         </td>
                         <td>
-                          {item?.priority ? (
+                          {item?.priority && item?.first_position ? (
                             <p
                               style={{
                                 background: "rgb(171, 217, 150)",
