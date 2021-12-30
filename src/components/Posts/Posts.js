@@ -1121,7 +1121,21 @@ export class Posts extends Component {
                           style={{ fontSize: "12px" }}
                         >
                           {" "}
-                          {item?.priority && item?.first_position ? (
+                          {item?.priority && !item?.first_position ? (
+                            <p
+                              style={{
+                                background: "#e09494",
+                                fontSize: "12px",
+                                height: "50px",
+                                display: "flex",
+                                lineHeight: "15px",
+                                fontWeight: "500",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.title}
+                            </p>
+                          ) : item?.priority && item?.first_position ? (
                             <p
                               style={{
                                 background: "rgb(171, 217, 150)",
@@ -1721,7 +1735,18 @@ export class Posts extends Component {
                             )}`}
                         </td>
                         <td>
-                          {item?.priority && item?.first_position ? (
+                          {item?.priority && !item?.first_position ? (
+                            <p
+                              style={{
+                                background: "#e09494",
+                                height: "47px",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.title}
+                            </p>
+                          ) : item?.priority && item?.first_position ? (
                             <p
                               style={{
                                 background: "rgb(171, 217, 150)",
