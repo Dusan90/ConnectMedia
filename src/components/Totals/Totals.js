@@ -260,10 +260,7 @@ export class Totals extends Component {
           </div>
         </div> */}
 
-        <div
-          style={{ height: "500px", marginTop: "20px" }}
-          className="linechart"
-        >
+        <div style={{ marginTop: "20px" }} className="linechart">
           <div
             style={{
               display: "flex",
@@ -322,34 +319,7 @@ export class Totals extends Component {
               {this.state.loading && <p>Loading...</p>}
             </div>
           </div>
-          {!this.state.loading && (
-            <Chart
-              dataToShow={this.state.chartData}
-              fields={{ 0: "clicks", 1: "impressions", 2: "ctr" }}
-            />
-          )}
         </div>
-
-        {!this.state.loading && (
-          <div
-            style={{ height: "500px", marginTop: "60px" }}
-            className="linechart"
-          >
-            <Chart
-              dataToShow={this.state.chartData}
-              fields={{ 0: "visits", 1: "unique_perc", 2: "unique" }}
-            />
-          </div>
-        )}
-        {/* <h1
-          className="secondHeaderOnTotals"
-          style={{ marginTop: "50px", textAlign: "center" }}
-        >
-          Daily totals for sites
-        </h1>
-        <div style={{ height: `${dataLength * 30}px` }}>
-          <VerticalChart />
-        </div> */}
         {!this.state.loading && (
           <div style={{ padding: "0 35px" }}>
             <table style={{ marginTop: "20px" }}>
@@ -382,7 +352,7 @@ export class Totals extends Component {
                           textAlign: "center",
                         }}
                       >
-                        {el.clicks}
+                        {el.clicks.toLocaleString()}
                       </td>
                       <td
                         style={{
@@ -390,7 +360,7 @@ export class Totals extends Component {
                           textAlign: "center",
                         }}
                       >
-                        {el.ctr}
+                        {el.ctr.toLocaleString()}
                       </td>
                       <td
                         style={{
@@ -398,7 +368,7 @@ export class Totals extends Component {
                           textAlign: "center",
                         }}
                       >
-                        {el.impressions}
+                        {el.impressions.toLocaleString()}
                       </td>
                       <td
                         style={{
@@ -406,7 +376,7 @@ export class Totals extends Component {
                           textAlign: "center",
                         }}
                       >
-                        {el.unique}
+                        {el.unique.toLocaleString()}
                       </td>
                       <td
                         style={{
@@ -414,7 +384,7 @@ export class Totals extends Component {
                           textAlign: "center",
                         }}
                       >
-                        {el.unique_perc}
+                        {el.unique_perc.toLocaleString()}
                       </td>
                       <td
                         style={{
@@ -422,7 +392,7 @@ export class Totals extends Component {
                           textAlign: "center",
                         }}
                       >
-                        {el.visits}
+                        {el.visits.toLocaleString()}
                       </td>
                     </tr>
                   ))}
@@ -444,7 +414,9 @@ export class Totals extends Component {
                     }}
                   >
                     {this.state.chartData.length !== 0 &&
-                      this.state.chartData?.reduce((a, b) => +a + +b.clicks, 0)}
+                      this.state.chartData
+                        ?.reduce((a, b) => +a + +b.clicks, 0)
+                        .toLocaleString()}
                   </td>
                   <td
                     style={{
@@ -453,19 +425,29 @@ export class Totals extends Component {
                     }}
                   >
                     {this.state.chartData.length !== 0 &&
-                      this.state.chartData?.reduce((a, b) => +a + +b.ctr, 0)}
-                  </td>
-                  <td
-                    style={{
-                      borderTop: "1px solid black",
-                      textAlign: "center",
-                    }}
-                  >
-                    {this.state.chartData.length !== 0 &&
-                      this.state.chartData?.reduce(
-                        (a, b) => +a + +b.impressions,
+                    !isNaN(
+                      (this.state.chartData?.reduce(
+                        (a, b) => +a + +b.clicks,
                         0
-                      )}
+                      ) /
+                        this.state.chartData?.reduce(
+                          (a, b) => +a + +b.impressions,
+                          0
+                        )) *
+                        100
+                    )
+                      ? (
+                          (this.state.chartData?.reduce(
+                            (a, b) => +a + +b.clicks,
+                            0
+                          ) /
+                            this.state.chartData?.reduce(
+                              (a, b) => +a + +b.impressions,
+                              0
+                            )) *
+                          100
+                        ).toLocaleString()
+                      : 0}
                   </td>
                   <td
                     style={{
@@ -474,7 +456,9 @@ export class Totals extends Component {
                     }}
                   >
                     {this.state.chartData.length !== 0 &&
-                      this.state.chartData?.reduce((a, b) => +a + +b.unique, 0)}
+                      this.state.chartData
+                        ?.reduce((a, b) => +a + +b.impressions, 0)
+                        .toLocaleString()}
                   </td>
                   <td
                     style={{
@@ -483,10 +467,40 @@ export class Totals extends Component {
                     }}
                   >
                     {this.state.chartData.length !== 0 &&
-                      this.state.chartData?.reduce(
-                        (a, b) => +a + +b.unique_perc,
+                      this.state.chartData
+                        ?.reduce((a, b) => +a + +b.unique, 0)
+                        .toLocaleString()}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                    !isNaN(
+                      (this.state.chartData?.reduce(
+                        (a, b) => +a + +b.unique,
                         0
-                      )}
+                      ) /
+                        this.state.chartData?.reduce(
+                          (a, b) => +a + +b.visits,
+                          0
+                        )) *
+                        100
+                    )
+                      ? (
+                          (this.state.chartData?.reduce(
+                            (a, b) => +a + +b.unique,
+                            0
+                          ) /
+                            this.state.chartData?.reduce(
+                              (a, b) => +a + +b.visits,
+                              0
+                            )) *
+                          100
+                        ).toLocaleString()
+                      : 0}
                   </td>
                   <td
                     style={{
@@ -495,13 +509,47 @@ export class Totals extends Component {
                     }}
                   >
                     {this.state.chartData.length !== 0 &&
-                      this.state.chartData?.reduce((a, b) => +a + +b.visits, 0)}
+                      this.state.chartData
+                        ?.reduce((a, b) => +a + +b.visits, 0)
+                        .toLocaleString()}
                   </td>
                 </tr>
               </tfoot>
             </table>
           </div>
         )}
+        {!this.state.loading && (
+          <div
+            style={{ height: "500px", marginTop: "60px" }}
+            className="linechart"
+          >
+            <Chart
+              dataToShow={this.state.chartData}
+              fields={{ 0: "clicks", 1: "impressions", 2: "ctr" }}
+            />
+          </div>
+        )}
+
+        {!this.state.loading && (
+          <div
+            style={{ height: "500px", marginTop: "60px" }}
+            className="linechart"
+          >
+            <Chart
+              dataToShow={this.state.chartData}
+              fields={{ 0: "visits", 1: "unique_perc", 2: "unique" }}
+            />
+          </div>
+        )}
+        {/* <h1
+          className="secondHeaderOnTotals"
+          style={{ marginTop: "50px", textAlign: "center" }}
+        >
+          Daily totals for sites
+        </h1>
+        <div style={{ height: `${dataLength * 30}px` }}>
+          <VerticalChart />
+        </div> */}
       </>
     );
   }

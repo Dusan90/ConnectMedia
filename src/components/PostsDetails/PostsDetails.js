@@ -492,13 +492,6 @@ export class PostsDetails extends Component {
                 />
               </div>
             </div>
-            <div style={{ height: "500px", marginTop: "20px" }}>
-              <Chart
-                dataToShow={this.state.postChartData}
-                fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}
-                customStyle={{ padding: "0" }}
-              />
-            </div>
             <div>
               <table style={{ marginTop: "20px" }}>
                 <thead>
@@ -527,7 +520,7 @@ export class PostsDetails extends Component {
                             textAlign: "center",
                           }}
                         >
-                          {el.clicks}
+                          {el.clicks.toLocaleString()}
                         </td>
                         <td
                           style={{
@@ -535,7 +528,7 @@ export class PostsDetails extends Component {
                             textAlign: "center",
                           }}
                         >
-                          {el.ctr}
+                          {el.ctr.toLocaleString()}
                         </td>
                         <td
                           style={{
@@ -543,7 +536,7 @@ export class PostsDetails extends Component {
                             textAlign: "center",
                           }}
                         >
-                          {el.impressions}
+                          {el.impressions.toLocaleString()}
                         </td>
                       </tr>
                     ))}
@@ -565,10 +558,40 @@ export class PostsDetails extends Component {
                       }}
                     >
                       {this.state.postChartData.length !== 0 &&
-                        this.state.postChartData?.reduce(
+                        this.state.postChartData
+                          ?.reduce((a, b) => +a + +b.clicks, 0)
+                          .toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.postChartData.length !== 0 &&
+                      !isNaN(
+                        (this.state.postChartData?.reduce(
                           (a, b) => +a + +b.clicks,
                           0
-                        )}
+                        ) /
+                          this.state.postChartData?.reduce(
+                            (a, b) => +a + +b.impressions,
+                            0
+                          )) *
+                          100
+                      )
+                        ? (
+                            (this.state.postChartData?.reduce(
+                              (a, b) => +a + +b.clicks,
+                              0
+                            ) /
+                              this.state.postChartData?.reduce(
+                                (a, b) => +a + +b.impressions,
+                                0
+                              )) *
+                            100
+                          ).toLocaleString()
+                        : 0}
                     </td>
                     <td
                       style={{
@@ -577,27 +600,22 @@ export class PostsDetails extends Component {
                       }}
                     >
                       {this.state.postChartData.length !== 0 &&
-                        this.state.postChartData?.reduce(
-                          (a, b) => +a + +b.ctr,
-                          0
-                        )}
-                    </td>
-                    <td
-                      style={{
-                        borderTop: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {this.state.postChartData.length !== 0 &&
-                        this.state.postChartData?.reduce(
-                          (a, b) => +a + +b.impressions,
-                          0
-                        )}
+                        this.state.postChartData
+                          ?.reduce((a, b) => +a + +b.impressions, 0)
+                          .toLocaleString()}
                     </td>
                   </tr>
                 </tfoot>
               </table>
             </div>
+            <div style={{ height: "500px", marginTop: "20px" }}>
+              <Chart
+                dataToShow={this.state.postChartData}
+                fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}
+                customStyle={{ padding: "0" }}
+              />
+            </div>
+
             {/* <h1
               style={{
                 marginTop: "50px",
@@ -611,6 +629,11 @@ export class PostsDetails extends Component {
               <VerticalChart customData={data} customStyle={{ padding: "0" }} />
             </div> */}
           </>
+        )}
+        {tabClicked !== "statsDiv" && (
+          <h2
+            style={{ marginBottom: "20px" }}
+          >{`Details for post ${postDetailsData?.title}`}</h2>
         )}
         {tabClicked !== "statsDiv" && (
           <div className="mainSiteInfoDiv">
@@ -949,7 +972,7 @@ export class PostsDetails extends Component {
                       {postDetailsData?.timestamp &&
                         `${moment(
                           new Date(postDetailsData?.timestamp * 1000)
-                        ).format("MM-DD-YYYY")}`}
+                        ).format("DD/MM/YYYY")}`}
                     </p>
                   )}
                   {isIteditable && (

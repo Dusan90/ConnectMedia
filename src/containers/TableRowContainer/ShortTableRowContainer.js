@@ -485,8 +485,12 @@ function ShortTableRowContainer({
                     </div>
                     <p>{pageName === "widgets" ? "imp" : "in"}</p>
                   </div>
-                  {pageName !== "widgets" && <p>{item.stats.in}</p>}
-                  {pageName === "widgets" && <p>{item.stats.imp}</p>}
+                  {pageName !== "widgets" && (
+                    <p>{item.stats.in?.toLocaleString()}</p>
+                  )}
+                  {pageName === "widgets" && (
+                    <p>{item.stats.imp?.toLocaleString()}</p>
+                  )}
                 </div>
                 <div className="statistic">
                   <div>
@@ -514,8 +518,12 @@ function ShortTableRowContainer({
                     </div>
                     <p>{pageName === "widgets" ? "clk" : "out"}</p>
                   </div>
-                  {pageName === "widgets" && <p>{item.stats.clk}</p>}
-                  {pageName !== "widgets" && <p>{item.stats.out}</p>}
+                  {pageName === "widgets" && (
+                    <p>{item.stats.clk?.toLocaleString()}</p>
+                  )}
+                  {pageName !== "widgets" && (
+                    <p>{item.stats.out?.toLocaleString()}</p>
+                  )}
                 </div>
                 <div className="statistic">
                   <div>
@@ -543,8 +551,12 @@ function ShortTableRowContainer({
                     </div>
                     <p>{pageName === "widgets" ? "ctr" : "txr"}</p>
                   </div>
-                  {pageName === "widgets" && <p>{item.stats.ctr}</p>}
-                  {pageName !== "widgets" && <p>{item.stats.txr}</p>}
+                  {pageName === "widgets" && (
+                    <p>{item.stats.ctr?.toLocaleString()}</p>
+                  )}
+                  {pageName !== "widgets" && (
+                    <p>{item.stats.txr?.toLocaleString()}</p>
+                  )}
                 </div>
               </div>
             </div>

@@ -570,12 +570,24 @@ function TableRowContainer({
                       )}
                   </>
                 </td>
-                {pageName === "widgets" && <td>{item.stats.imp}</td>}
-                {pageName === "widgets" && <td>{item.stats.clk}</td>}
-                {pageName === "widgets" && <td>{item.stats.ctr}</td>}
-                {pageName !== "widgets" && <td>{item.stats.in}</td>}
-                {pageName !== "widgets" && <td>{item.stats.out}</td>}
-                {pageName !== "widgets" && <td>{item.stats.txr}</td>}
+                {pageName === "widgets" && (
+                  <td>{item.stats.imp?.toLocaleString()}</td>
+                )}
+                {pageName === "widgets" && (
+                  <td>{item.stats.clk?.toLocaleString()}</td>
+                )}
+                {pageName === "widgets" && (
+                  <td>{item.stats.ctr?.toLocaleString()}</td>
+                )}
+                {pageName !== "widgets" && (
+                  <td>{item.stats.in?.toLocaleString()}</td>
+                )}
+                {pageName !== "widgets" && (
+                  <td>{item.stats.out?.toLocaleString()}</td>
+                )}
+                {pageName !== "widgets" && (
+                  <td>{item.stats.txr?.toLocaleString()}</td>
+                )}
               </tr>
             );
           })}

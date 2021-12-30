@@ -1093,7 +1093,7 @@ export class Posts extends Component {
                         <div className="ownerClass">
                           {item?.timestamp &&
                             `${moment(new Date(item?.timestamp)).format(
-                              "MM-DD-YYYY"
+                              "DD/MM/YYYY"
                             )}`}
                         </div>
                       </div>
@@ -1116,7 +1116,29 @@ export class Posts extends Component {
                           </div>
                           <p>Name</p>
                         </div>
-                        <div className="ownerClass">{item.title}</div>
+                        <div
+                          className="ownerClass"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {" "}
+                          {item?.priority ? (
+                            <p
+                              style={{
+                                background: "rgb(171, 217, 150)",
+                                fontSize: "12px",
+                                height: "50px",
+                                display: "flex",
+                                lineHeight: "15px",
+                                fontWeight: "500",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.title}
+                            </p>
+                          ) : (
+                            item?.title
+                          )}
+                        </div>
                       </div>
                       <div className="mainForIcons">
                         <div className="divWithClicableIcons">
@@ -1246,7 +1268,7 @@ export class Posts extends Component {
                             </div>
                             <p>imp</p>
                           </div>
-                          <p>{item.in}</p>
+                          <p>{item.imp?.toLocaleString()}</p>
                         </div>
                         <div className="statistic">
                           <div>
@@ -1268,7 +1290,7 @@ export class Posts extends Component {
                             </div>
                             <p>clk</p>
                           </div>
-                          <p>{item.out}</p>
+                          <p>{item.clk?.toLocaleString()}</p>
                         </div>
                         <div className="statistic">
                           <div>
@@ -1290,7 +1312,7 @@ export class Posts extends Component {
                             </div>
                             <p>ctr</p>
                           </div>
-                          <p>{item.txr}</p>
+                          <p>{item.ctr?.toLocaleString()}</p>
                         </div>
                         {/* <div className="statistic">
                           <div>
@@ -1695,10 +1717,25 @@ export class Posts extends Component {
                         <td>
                           {item?.timestamp &&
                             `${moment(item?.timestamp * 1000).format(
-                              "MM-DD-YYYY"
+                              "DD/MM/YYYY"
                             )}`}
                         </td>
-                        <td>{item.title}</td>
+                        <td>
+                          {item?.priority ? (
+                            <p
+                              style={{
+                                background: "rgb(171, 217, 150)",
+                                height: "47px",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.title}
+                            </p>
+                          ) : (
+                            item?.title
+                          )}
+                        </td>
                         <td>
                           <>
                             <div className="divWithHashes">
@@ -1794,9 +1831,9 @@ export class Posts extends Component {
                               )}
                           </>
                         </td>
-                        <td>{item.imp}</td>
-                        <td>{item.clk}</td>
-                        <td>{item.ctr}</td>
+                        <td>{item.imp?.toLocaleString()}</td>
+                        <td>{item.clk?.toLocaleString()}</td>
+                        <td>{item.ctr?.toLocaleString()}</td>
                       </tr>
                     );
                   })}

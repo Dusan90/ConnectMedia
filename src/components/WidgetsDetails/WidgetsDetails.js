@@ -540,13 +540,6 @@ export class WidgetsDetails extends Component {
                 />
               </div>
             </div>
-            <div style={{ height: "500px", marginTop: "20px" }}>
-              <Chart
-                dataToShow={this.state.widgetChartData}
-                fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}
-                customStyle={{ padding: "0" }}
-              />
-            </div>
             <div>
               <table style={{ marginTop: "20px" }}>
                 <thead>
@@ -575,7 +568,7 @@ export class WidgetsDetails extends Component {
                             textAlign: "center",
                           }}
                         >
-                          {el.clicks}
+                          {el.clicks.toLocaleString()}
                         </td>
                         <td
                           style={{
@@ -583,7 +576,7 @@ export class WidgetsDetails extends Component {
                             textAlign: "center",
                           }}
                         >
-                          {el.ctr}
+                          {el.ctr.toLocaleString()}
                         </td>
                         <td
                           style={{
@@ -591,7 +584,7 @@ export class WidgetsDetails extends Component {
                             textAlign: "center",
                           }}
                         >
-                          {el.impressions}
+                          {el.impressions.toLocaleString()}
                         </td>
                       </tr>
                     ))}
@@ -613,10 +606,40 @@ export class WidgetsDetails extends Component {
                       }}
                     >
                       {this.state.widgetChartData.length !== 0 &&
-                        this.state.widgetChartData?.reduce(
+                        this.state.widgetChartData
+                          ?.reduce((a, b) => +a + +b.clicks, 0)
+                          .toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.widgetChartData.length !== 0 &&
+                      !isNaN(
+                        (this.state.widgetChartData?.reduce(
                           (a, b) => +a + +b.clicks,
                           0
-                        )}
+                        ) /
+                          this.state.widgetChartData?.reduce(
+                            (a, b) => +a + +b.impressions,
+                            0
+                          )) *
+                          100
+                      )
+                        ? (
+                            (this.state.widgetChartData?.reduce(
+                              (a, b) => +a + +b.clicks,
+                              0
+                            ) /
+                              this.state.widgetChartData?.reduce(
+                                (a, b) => +a + +b.impressions,
+                                0
+                              )) *
+                            100
+                          ).toLocaleString()
+                        : 0}
                     </td>
                     <td
                       style={{
@@ -625,26 +648,20 @@ export class WidgetsDetails extends Component {
                       }}
                     >
                       {this.state.widgetChartData.length !== 0 &&
-                        this.state.widgetChartData?.reduce(
-                          (a, b) => +a + +b.ctr,
-                          0
-                        )}
-                    </td>
-                    <td
-                      style={{
-                        borderTop: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {this.state.widgetChartData.length !== 0 &&
-                        this.state.widgetChartData?.reduce(
-                          (a, b) => +a + +b.impressions,
-                          0
-                        )}
+                        this.state.widgetChartData
+                          ?.reduce((a, b) => +a + +b.impressions, 0)
+                          .toLocaleString()}
                     </td>
                   </tr>
                 </tfoot>
               </table>
+            </div>
+            <div style={{ height: "500px", marginTop: "20px" }}>
+              <Chart
+                dataToShow={this.state.widgetChartData}
+                fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}
+                customStyle={{ padding: "0" }}
+              />
             </div>
             {/* <h1
               style={{
@@ -659,6 +676,11 @@ export class WidgetsDetails extends Component {
               <VerticalChart customData={data} customStyle={{ padding: "0" }} />
             </div> */}
           </>
+        )}
+        {tabClicked !== "statsDiv" && tabClicked !== "viewDiv" && (
+          <h2
+            style={{ marginBottom: "20px" }}
+          >{`Details for widget ${WidgetDetailsData?.name}`}</h2>
         )}
         {tabClicked !== "statsDiv" &&
           tabClicked !== "embedDiv" &&
@@ -1099,7 +1121,7 @@ export class WidgetsDetails extends Component {
             </div>
           )}
 
-        {isIteditable && (
+        {isIteditable && tabClicked === "viewDiv" && (
           <div className="buttonsDiv">
             <SaveButtonEdit
               labeltext={"Save changes"}

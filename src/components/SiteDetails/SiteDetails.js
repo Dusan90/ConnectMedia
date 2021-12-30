@@ -659,6 +659,7 @@ export class SiteDetails extends Component {
             <h2
               style={{ marginBottom: "20px" }}
             >{`Chart for site ${siteDetailsData?.name}`}</h2>
+
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
               <h4>Select date range</h4>
               <div style={{ display: "flex", gap: "10px" }}>
@@ -711,13 +712,6 @@ export class SiteDetails extends Component {
                 />
               </div>
             </div>
-            <div style={{ height: "500px", marginTop: "20px" }}>
-              <Chart
-                customStyle={{ padding: "0" }}
-                dataToShow={this.state.siteChartData}
-                fields={{ 0: "in", 1: "out", 2: "txr" }}
-              />
-            </div>
             <div>
               <table style={{ marginTop: "20px" }}>
                 <thead>
@@ -746,7 +740,7 @@ export class SiteDetails extends Component {
                             textAlign: "center",
                           }}
                         >
-                          {el.in}
+                          {el.in.toLocaleString()}
                         </td>
                         <td
                           style={{
@@ -754,7 +748,7 @@ export class SiteDetails extends Component {
                             textAlign: "center",
                           }}
                         >
-                          {el.out}
+                          {el.out.toLocaleString()}
                         </td>
                         <td
                           style={{
@@ -762,7 +756,7 @@ export class SiteDetails extends Component {
                             textAlign: "center",
                           }}
                         >
-                          {el.txr}
+                          {el.txr.toLocaleString()}
                         </td>
                       </tr>
                     ))}
@@ -784,10 +778,9 @@ export class SiteDetails extends Component {
                       }}
                     >
                       {this.state.siteChartData.length !== 0 &&
-                        this.state.siteChartData?.reduce(
-                          (a, b) => +a + +b.in,
-                          0
-                        )}
+                        this.state.siteChartData
+                          ?.reduce((a, b) => +a + +b.in, 0)
+                          .toLocaleString()}
                     </td>
                     <td
                       style={{
@@ -796,28 +789,58 @@ export class SiteDetails extends Component {
                       }}
                     >
                       {this.state.siteChartData.length !== 0 &&
-                        this.state.siteChartData?.reduce(
+                        this.state.siteChartData
+                          ?.reduce((a, b) => +a + +b.out, 0)
+                          .toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.siteChartData.length !== 0 &&
+                      !isNaN(
+                        (this.state.siteChartData?.reduce(
                           (a, b) => +a + +b.out,
                           0
-                        )}
-                    </td>
-                    <td
-                      style={{
-                        borderTop: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {this.state.siteChartData.length !== 0 &&
-                        this.state.siteChartData?.reduce(
-                          (a, b) => +a + +b.txr,
-                          0
-                        )}
+                        ) /
+                          this.state.siteChartData?.reduce(
+                            (a, b) => +a + +b.in,
+                            0
+                          )) *
+                          100
+                      )
+                        ? (
+                            (this.state.siteChartData?.reduce(
+                              (a, b) => +a + +b.out,
+                              0
+                            ) /
+                              this.state.siteChartData?.reduce(
+                                (a, b) => +a + +b.in,
+                                0
+                              )) *
+                            100
+                          ).toLocaleString()
+                        : 0}
                     </td>
                   </tr>
                 </tfoot>
               </table>
             </div>
+            <div style={{ height: "500px", marginTop: "20px" }}>
+              <Chart
+                customStyle={{ padding: "0" }}
+                dataToShow={this.state.siteChartData}
+                fields={{ 0: "in", 1: "out", 2: "txr" }}
+              />
+            </div>
           </>
+        )}
+        {tabClicked !== "statsDiv" && (
+          <h2
+            style={{ marginBottom: "20px" }}
+          >{`Details for site ${siteDetailsData?.name}`}</h2>
         )}
         {tabClicked !== "statsDiv" && (
           <div className="mainSiteInfoDiv">
