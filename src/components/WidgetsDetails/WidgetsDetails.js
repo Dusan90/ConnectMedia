@@ -1121,7 +1121,7 @@ export class WidgetsDetails extends Component {
             </div>
           )}
 
-        {isIteditable && tabClicked === "viewDiv" && (
+        {isIteditable && tabClicked !== "viewDiv" && (
           <div className="buttonsDiv">
             <SaveButtonEdit
               labeltext={"Save changes"}
