@@ -55,6 +55,7 @@ export class Posts extends Component {
       sortName: "",
       sortDir: "",
     };
+    this.inputEl = React.createRef(null);
   }
 
   //   paginate = (page) => {
@@ -878,6 +879,12 @@ export class Posts extends Component {
     const { urlForCreatePost, data, selectedSiteSearch, loading } = this.state;
     const { getSitesList } = this.props;
 
+    if (this.state.hashesArrowDown) {
+      setTimeout(() => {
+        this.inputEl.current && this.inputEl.current.focus();
+      });
+    }
+
     return (
       <>
         <SearchContainer
@@ -1200,7 +1207,13 @@ export class Posts extends Component {
                           </div>
                           {this.state.hashesArrowDown &&
                             item.id === this.state.hashesArrowWitchIsOn.id && (
-                              <div id="noredirection" className="offeredHashes">
+                              <div
+                                id="noredirection"
+                                className="offeredHashes"
+                                ref={this.inputEl}
+                                onBlur={() => this.handleHashArrowClick(item)}
+                                tabindex="1"
+                              >
                                 {getSitesList.data?.data?.map((el, i) => {
                                   if (el.id === item.site) {
                                     return el.categories.map((el, i) => {
@@ -1791,6 +1804,9 @@ export class Posts extends Component {
                                 <div
                                   id="noredirection"
                                   className="offeredHashes"
+                                  ref={this.inputEl}
+                                  onBlur={() => this.handleHashArrowClick(item)}
+                                  tabindex="1"
                                 >
                                   {getSitesList.data?.data?.map((el, i) => {
                                     if (el.id === item.site) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import arrowUp from "../../assets/img/TableIcons/arrow(1).svg";
 import secondarrowDown from "../../assets/img/TableIcons/arrow.svg";
 import secondTrash from "../../assets/img/TableIcons/trash.svg";
@@ -26,6 +26,7 @@ function ShortTableRowContainer({
   handleHashArrowClick,
   state,
 }) {
+  const inputEl = useRef(null);
   const statee = useSelector((state) => state);
   const dispatch = useDispatch();
   const { CategoryReducer } = statee;
@@ -36,6 +37,14 @@ function ShortTableRowContainer({
     errorData: getCategoryListErrorData,
   } = CategoryReducer.getCategoryList;
   const [categoryList, setCategoryList] = useState([]);
+
+  useEffect(() => {
+    if (state.hashesArrowDown) {
+      setTimeout(() => {
+        inputEl.current && inputEl.current.focus();
+      });
+    }
+  });
 
   useEffect(() => {
     if (
@@ -395,7 +404,13 @@ function ShortTableRowContainer({
                   </div>
                   {state.hashesArrowDown &&
                     item.id === state.hashesArrowWitchIsOn.id && (
-                      <div id="noredirection" className="offeredHashes">
+                      <div
+                        id="noredirection"
+                        className="offeredHashes"
+                        ref={inputEl}
+                        onBlur={() => handleHashArrowClick(item)}
+                        tabindex="1"
+                      >
                         {categoryList.map((el, i) => {
                           return (
                             <div

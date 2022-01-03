@@ -412,8 +412,6 @@ export class PostsDetails extends Component {
       return { value: el.category.id, label: el.category.name };
     });
 
-    console.log(this.state);
-
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget

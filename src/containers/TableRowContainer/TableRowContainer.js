@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import arrowUp from "../../assets/img/TableIcons/arrow(1).svg";
 import { useHistory } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,6 +27,7 @@ function TableRowContainer({
   handleHashArrowClick,
   state,
 }) {
+  const inputEl = useRef(null);
   const statee = useSelector((state) => state);
   const dispatch = useDispatch();
   const { CategoryReducer } = statee;
@@ -37,6 +38,13 @@ function TableRowContainer({
     errorData: getCategoryListErrorData,
   } = CategoryReducer.getCategoryList;
   const [categoryList, setCategoryList] = useState([]);
+  useEffect(() => {
+    if (state.hashesArrowDown) {
+      setTimeout(() => {
+        inputEl.current && inputEl.current.focus();
+      });
+    }
+  });
 
   useEffect(() => {
     if (
@@ -507,7 +515,13 @@ function TableRowContainer({
                     </div>
                     {state.hashesArrowDown &&
                       item.id === state.hashesArrowWitchIsOn.id && (
-                        <div id="noredirection" className="offeredHashes">
+                        <div
+                          ref={inputEl}
+                          onBlur={() => handleHashArrowClick(item)}
+                          tabindex="1"
+                          id="noredirection"
+                          className="offeredHashes"
+                        >
                           {categoryList.map((el, i) => {
                             return (
                               <div
