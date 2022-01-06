@@ -14,6 +14,18 @@ const INITIAL_STATE = {
     data: null,
     loading: false,
   },
+  specWidgetChart: {
+    error: false,
+    errorData: null,
+    data: null,
+    loading: false,
+  },
+  specPostChart: {
+    error: false,
+    errorData: null,
+    data: null,
+    loading: false,
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -82,6 +94,71 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
 
+    // widget
+
+    case types.GET_SPEC_WIDGET_CHART_REQUEST:
+      return {
+        ...state,
+        specWidgetChart: {
+          error: false,
+          errorData: null,
+          data: null,
+          loading: true,
+        },
+      };
+    case types.GET_SPEC_WIDGET_CHART_ERROR:
+      return {
+        ...state,
+        specWidgetChart: {
+          error: true,
+          errorData: action.payload,
+          data: null,
+          loading: false,
+        },
+      };
+    case types.GET_SPEC_WIDGET_CHART_RECEIVE:
+      return {
+        ...state,
+        specWidgetChart: {
+          error: false,
+          errorData: null,
+          data: action.payload,
+          loading: false,
+        },
+      };
+
+    // post
+
+    case types.GET_SPEC_POST_CHART_REQUEST:
+      return {
+        ...state,
+        specPostChart: {
+          error: false,
+          errorData: null,
+          data: null,
+          loading: true,
+        },
+      };
+    case types.GET_SPEC_POST_CHART_ERROR:
+      return {
+        ...state,
+        specPostChart: {
+          error: true,
+          errorData: action.payload,
+          data: null,
+          loading: false,
+        },
+      };
+    case types.GET_SPEC_POST_CHART_RECEIVE:
+      return {
+        ...state,
+        specPostChart: {
+          error: false,
+          errorData: null,
+          data: action.payload,
+          loading: false,
+        },
+      };
     default:
       return state;
   }

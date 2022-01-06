@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import arrowUp from "../../assets/img/TableIcons/arrow(1).svg";
 import secondarrowDown from "../../assets/img/TableIcons/arrow.svg";
 import secondTrash from "../../assets/img/TableIcons/trash.svg";
@@ -26,6 +26,7 @@ function ShortTableRowContainer({
   handleHashArrowClick,
   state,
 }) {
+  const inputEl = useRef(null);
   const statee = useSelector((state) => state);
   const dispatch = useDispatch();
   const { CategoryReducer } = statee;
@@ -36,6 +37,14 @@ function ShortTableRowContainer({
     errorData: getCategoryListErrorData,
   } = CategoryReducer.getCategoryList;
   const [categoryList, setCategoryList] = useState([]);
+
+  useEffect(() => {
+    if (state.hashesArrowDown) {
+      setTimeout(() => {
+        inputEl.current && inputEl.current.focus();
+      });
+    }
+  });
 
   useEffect(() => {
     if (
@@ -123,7 +132,7 @@ function ShortTableRowContainer({
                       onClick={() =>
                         handleArrowSort(
                           pageName === "widgets" ? "status" : "state",
-                          "Up"
+                          "1"
                         )
                       }
                       alt="arrow"
@@ -133,7 +142,7 @@ function ShortTableRowContainer({
                       onClick={() =>
                         handleArrowSort(
                           pageName === "widgets" ? "status" : "state",
-                          "Down"
+                          "-1"
                         )
                       }
                       alt="arrow"
@@ -208,7 +217,7 @@ function ShortTableRowContainer({
                       onClick={() =>
                         handleArrowSort(
                           pageName === "widgets" ? "site" : "owner",
-                          "Up"
+                          "1"
                         )
                       }
                     />
@@ -217,7 +226,7 @@ function ShortTableRowContainer({
                       onClick={() =>
                         handleArrowSort(
                           pageName === "widgets" ? "site" : "owner",
-                          "Down"
+                          "-1"
                         )
                       }
                       alt="arrow"
@@ -251,12 +260,12 @@ function ShortTableRowContainer({
                   <div className="arrowDiv">
                     <img
                       src={arrowUp}
-                      onClick={() => handleArrowSort("name", "Up")}
+                      onClick={() => handleArrowSort("name", "1")}
                       alt="arrow"
                     />
                     <img
                       src={secondarrowDown}
-                      onClick={() => handleArrowSort("name", "Down")}
+                      onClick={() => handleArrowSort("name", "-1")}
                       alt="arrow"
                     />
                   </div>
@@ -395,7 +404,13 @@ function ShortTableRowContainer({
                   </div>
                   {state.hashesArrowDown &&
                     item.id === state.hashesArrowWitchIsOn.id && (
-                      <div id="noredirection" className="offeredHashes">
+                      <div
+                        id="noredirection"
+                        className="offeredHashes"
+                        ref={inputEl}
+                        onBlur={() => handleHashArrowClick(item)}
+                        tabindex="1"
+                      >
                         {categoryList.map((el, i) => {
                           return (
                             <div
@@ -485,8 +500,12 @@ function ShortTableRowContainer({
                     </div>
                     <p>{pageName === "widgets" ? "imp" : "in"}</p>
                   </div>
-                  {pageName !== "widgets" && <p>{item.stats.in}</p>}
-                  {pageName === "widgets" && <p>{item.stats.imp}</p>}
+                  {pageName !== "widgets" && (
+                    <p>{item.stats.in?.toLocaleString()}</p>
+                  )}
+                  {pageName === "widgets" && (
+                    <p>{item.stats.imp?.toLocaleString()}</p>
+                  )}
                 </div>
                 <div className="statistic">
                   <div>
@@ -514,8 +533,12 @@ function ShortTableRowContainer({
                     </div>
                     <p>{pageName === "widgets" ? "clk" : "out"}</p>
                   </div>
-                  {pageName === "widgets" && <p>{item.stats.clk}</p>}
-                  {pageName !== "widgets" && <p>{item.stats.out}</p>}
+                  {pageName === "widgets" && (
+                    <p>{item.stats.clk?.toLocaleString()}</p>
+                  )}
+                  {pageName !== "widgets" && (
+                    <p>{item.stats.out?.toLocaleString()}</p>
+                  )}
                 </div>
                 <div className="statistic">
                   <div>
@@ -543,8 +566,12 @@ function ShortTableRowContainer({
                     </div>
                     <p>{pageName === "widgets" ? "ctr" : "txr"}</p>
                   </div>
-                  {pageName === "widgets" && <p>{item.stats.ctr}</p>}
-                  {pageName !== "widgets" && <p>{item.stats.txr}</p>}
+                  {pageName === "widgets" && (
+                    <p>{item.stats.ctr?.toLocaleString()}</p>
+                  )}
+                  {pageName !== "widgets" && (
+                    <p>{item.stats.txr?.toLocaleString()}</p>
+                  )}
                 </div>
               </div>
             </div>

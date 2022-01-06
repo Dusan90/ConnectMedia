@@ -31,3 +31,5 @@ export const GET_STATS = "/stats";
 
 export const TOTALS = "/totals";
 export const SPEC_SITE_TOTALS = "/site"; // /site/<site id>/stats'
+export const SPEC_WIDGET_TOTALS = "/widget";
+export const SPEC_POST_TOTALS = "/post";

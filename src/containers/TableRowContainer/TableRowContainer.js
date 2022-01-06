@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import arrowUp from "../../assets/img/TableIcons/arrow(1).svg";
 import { useHistory } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,6 +27,7 @@ function TableRowContainer({
   handleHashArrowClick,
   state,
 }) {
+  const inputEl = useRef(null);
   const statee = useSelector((state) => state);
   const dispatch = useDispatch();
   const { CategoryReducer } = statee;
@@ -37,6 +38,13 @@ function TableRowContainer({
     errorData: getCategoryListErrorData,
   } = CategoryReducer.getCategoryList;
   const [categoryList, setCategoryList] = useState([]);
+  useEffect(() => {
+    if (state.hashesArrowDown) {
+      setTimeout(() => {
+        inputEl.current && inputEl.current.focus();
+      });
+    }
+  });
 
   useEffect(() => {
     if (
@@ -119,7 +127,7 @@ function TableRowContainer({
                   onClick={() =>
                     handleArrowSort(
                       pageName === "widgets" ? "status" : "state",
-                      "Up"
+                      "1"
                     )
                   }
                   alt="arrow"
@@ -129,7 +137,7 @@ function TableRowContainer({
                   onClick={() =>
                     handleArrowSort(
                       pageName === "widgets" ? "status" : "state",
-                      "Down"
+                      "-1"
                     )
                   }
                   alt="arrow"
@@ -146,7 +154,7 @@ function TableRowContainer({
                   onClick={() =>
                     handleArrowSort(
                       pageName === "widgets" ? "site" : "owner",
-                      "Up"
+                      "1"
                     )
                   }
                   alt="arrow"
@@ -156,7 +164,7 @@ function TableRowContainer({
                   onClick={() =>
                     handleArrowSort(
                       pageName === "widgets" ? "site" : "owner",
-                      "Down"
+                      "-1"
                     )
                   }
                   alt="arrow"
@@ -170,12 +178,12 @@ function TableRowContainer({
               <div>
                 <img
                   src={arrowUp}
-                  onClick={() => handleArrowSort("name", "Up")}
+                  onClick={() => handleArrowSort("name", "1")}
                   alt="arrow"
                 />
                 <img
                   src={secondarrowDown}
-                  onClick={() => handleArrowSort("name", "Down")}
+                  onClick={() => handleArrowSort("name", "-1")}
                   alt="arrow"
                 />
               </div>
@@ -507,7 +515,13 @@ function TableRowContainer({
                     </div>
                     {state.hashesArrowDown &&
                       item.id === state.hashesArrowWitchIsOn.id && (
-                        <div id="noredirection" className="offeredHashes">
+                        <div
+                          ref={inputEl}
+                          onBlur={() => handleHashArrowClick(item)}
+                          tabindex="1"
+                          id="noredirection"
+                          className="offeredHashes"
+                        >
                           {categoryList.map((el, i) => {
                             return (
                               <div
@@ -570,12 +584,24 @@ function TableRowContainer({
                       )}
                   </>
                 </td>
-                {pageName === "widgets" && <td>{item.stats.imp}</td>}
-                {pageName === "widgets" && <td>{item.stats.clk}</td>}
-                {pageName === "widgets" && <td>{item.stats.ctr}</td>}
-                {pageName !== "widgets" && <td>{item.stats.in}</td>}
-                {pageName !== "widgets" && <td>{item.stats.out}</td>}
-                {pageName !== "widgets" && <td>{item.stats.txr}</td>}
+                {pageName === "widgets" && (
+                  <td>{item.stats.imp?.toLocaleString()}</td>
+                )}
+                {pageName === "widgets" && (
+                  <td>{item.stats.clk?.toLocaleString()}</td>
+                )}
+                {pageName === "widgets" && (
+                  <td>{item.stats.ctr?.toLocaleString()}</td>
+                )}
+                {pageName !== "widgets" && (
+                  <td>{item.stats.in?.toLocaleString()}</td>
+                )}
+                {pageName !== "widgets" && (
+                  <td>{item.stats.out?.toLocaleString()}</td>
+                )}
+                {pageName !== "widgets" && (
+                  <td>{item.stats.txr?.toLocaleString()}</td>
+                )}
               </tr>
             );
           })}

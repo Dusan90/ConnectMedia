@@ -11,6 +11,8 @@ import {
 
 import { connect } from "react-redux";
 import "./Totals.scss";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const test = [
   {
@@ -42,11 +44,19 @@ export class Totals extends Component {
       inputValue: "",
       countPerPage: "",
       chartData: "",
+      startDate: new Date().setDate(new Date().getDate() - 7),
+      endDate: new Date(),
+      loading: true,
     };
   }
 
   componentDidMount() {
-    this.props.dispatch(TotalRequest());
+    this.props.dispatch(
+      TotalRequest({
+        from: Math.round(new Date(this.state.startDate).getTime() / 1000),
+        to: Math.round(new Date(this.state.endDate).getTime() / 1000),
+      })
+    );
   }
 
   handlePageChange = (page) => {
@@ -56,11 +66,11 @@ export class Totals extends Component {
   componentDidUpdate(prevProps) {
     const { total, specSiteChart } = this.props;
     const { loading: totalLoading, error: totalError, data: totalData } = total;
-    const {
-      loading: specSiteChartLoading,
-      error: specSiteChartError,
-      data: specSiteChartData,
-    } = specSiteChart;
+    // const {
+    //   loading: specSiteChartLoading,
+    //   error: specSiteChartError,
+    //   data: specSiteChartData,
+    // } = specSiteChart;
 
     if (
       prevProps.total !== total &&
@@ -68,17 +78,17 @@ export class Totals extends Component {
       !totalError &&
       totalData
     ) {
-      this.setState({ chartData: totalData.data });
+      this.setState({ chartData: totalData.data, loading: false });
     }
 
-    if (
-      prevProps.specSiteChart !== specSiteChart &&
-      !specSiteChartLoading &&
-      !specSiteChartError &&
-      specSiteChartData
-    ) {
-      this.setState({ chartData: specSiteChartData.data });
-    }
+    // if (
+    //   prevProps.specSiteChart !== specSiteChart &&
+    //   !specSiteChartLoading &&
+    //   !specSiteChartError &&
+    //   specSiteChartData
+    // ) {
+    //   this.setState({ chartData: specSiteChartData.data });
+    // }
   }
 
   handleHomePageSort = (value, sortBy) => {
@@ -148,7 +158,12 @@ export class Totals extends Component {
 
   handleAllOptionsOnMain = (el, sortBy) => {
     console.log(el, sortBy);
-    this.props.dispatch(TotalRequest());
+    this.props.dispatch(
+      TotalRequest({
+        from: Math.round(new Date(this.state.startDate).getTime() / 1000),
+        to: Math.round(new Date(this.state.endDate).getTime() / 1000),
+      })
+    );
     // if (sortBy === "categories") {
     //     this.setState({ selectedCategorieSearch: '' })
     // } else if (sortBy === 'sites') {
@@ -172,10 +187,10 @@ export class Totals extends Component {
           handleAllOptionsOnMain={this.handleAllOptionsOnMain}
           secondHeaderCustomStyle={{ height: "55px" }}
         />
-        <div style={{ padding: "0 35px" }}>
+        {/* <div style={{ padding: "0 35px" }}>
           <div className="mainSiteDetailsNavigationTotal">
-            <div className="siteDetailsNavigate">
-              <div
+            <div className="siteDetailsNavigate"> */}
+        {/* <div
                 onClick={() => {
                   return (
                     this.handlePageChange("goback"), this.props.history.goBack()
@@ -184,9 +199,9 @@ export class Totals extends Component {
                 className={`goback ${whichIsActive === "goback" && "active"}`}
               >
                 <p>GO BACK</p>
-              </div>
-              {/* <div onClick={() => this.handlePageChange('siteDetails')} className={`siteDetails ${whichIsActive === 'siteDetails' && 'active'}`}><p>Site details</p></div> */}
-              <div
+              </div> */}
+        {/* <div onClick={() => this.handlePageChange('siteDetails')} className={`siteDetails ${whichIsActive === 'siteDetails' && 'active'}`}><p>Site details</p></div> */}
+        {/* <div
                 onClick={() => this.handlePageChange("sitesDiv")}
                 className={`sitesDiv ${
                   whichIsActive === "sitesDiv" && "active"
@@ -197,8 +212,8 @@ export class Totals extends Component {
                   alt="posts"
                 />
                 <p>sites</p>
-              </div>
-              <div
+              </div> */}
+        {/* <div
                 onClick={() => this.handlePageChange("postsPorDiv")}
                 className={`postsPorDiv ${
                   whichIsActive === "postsPorDiv" && "active"
@@ -210,8 +225,8 @@ export class Totals extends Component {
                 />
 
                 <p>posts on portal</p>
-              </div>
-              {
+              </div> */}
+        {/* {
                 <div
                   onClick={() => {
                     return this.handlePageChange("postsWidgDiv");
@@ -226,8 +241,8 @@ export class Totals extends Component {
                   />
                   <p>posts on widgets</p>
                 </div>
-              }
-              {
+              } */}
+        {/* {
                 <div
                   onClick={() => this.handlePageChange("widgetsDiv")}
                   className={`widgetsDiv ${
@@ -240,18 +255,293 @@ export class Totals extends Component {
                   />
                   <p>widgets</p>
                 </div>
-              }
+              } */}
+        {/* </div>
+          </div>
+        </div> */}
+
+        <div style={{ marginTop: "20px" }} className="linechart">
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              marginBottom: "20px",
+              padding: "0 35px",
+            }}
+          >
+            <h4>Select date range</h4>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <DatePicker
+                dateFormat="dd/MM/yyyy"
+                selected={this.state.startDate}
+                onChange={(date) => {
+                  this.setState({ startDate: date, loading: true });
+                  setTimeout(() => {
+                    this.props.dispatch(
+                      TotalRequest({
+                        from: Math.round(
+                          new Date(this.state.startDate).getTime() / 1000
+                        ),
+                        to: Math.round(
+                          new Date(this.state.endDate).getTime() / 1000
+                        ),
+                      })
+                    );
+                  }, 1000);
+                }}
+                selectsStart
+                startDate={this.state.startDate}
+                endDate={this.state.endDate}
+              />
+              <DatePicker
+                dateFormat="dd/MM/yyyy"
+                selected={this.state.endDate}
+                onChange={(date) => {
+                  this.setState({ endDate: date, loading: true });
+                  setTimeout(() => {
+                    this.props.dispatch(
+                      TotalRequest({
+                        from: Math.round(
+                          new Date(this.state.startDate).getTime() / 1000
+                        ),
+                        to: Math.round(
+                          new Date(this.state.endDate).getTime() / 1000
+                        ),
+                      })
+                    );
+                  }, 1000);
+                }}
+                selectsEnd
+                startDate={this.state.startDate}
+                endDate={this.state.endDate}
+                minDate={this.state.startDate}
+              />
+              {this.state.loading && <p>Loading...</p>}
             </div>
           </div>
         </div>
+        {!this.state.loading && (
+          <div style={{ padding: "0 35px" }}>
+            <table style={{ marginTop: "20px" }}>
+              <thead>
+                <tr style={{ height: "40px" }}>
+                  <th style={{ width: "100px" }}>Date</th>
+                  <th style={{ width: "100px" }}>Clicks</th>
+                  <th style={{ width: "100px" }}>Ctr</th>
+                  <th style={{ width: "100px" }}>Impressions</th>
+                  <th style={{ width: "100px" }}>Unique</th>
+                  <th style={{ width: "100px" }}>Unique perc</th>
+                  <th style={{ width: "100px" }}>Visits</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.chartData.length !== 0 &&
+                  this.state.chartData?.map((el) => (
+                    <tr style={{ height: "40px" }}>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.name}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.clicks.toLocaleString()}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.ctr.toLocaleString()}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.impressions.toLocaleString()}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.unique.toLocaleString()}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.unique_perc.toLocaleString()}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.visits.toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+              <tfoot>
+                <tr style={{ height: "40px" }}>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    Total
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData
+                        ?.reduce((a, b) => +a + +b.clicks, 0)
+                        .toLocaleString()}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                    !isNaN(
+                      (this.state.chartData?.reduce(
+                        (a, b) => +a + +b.clicks,
+                        0
+                      ) /
+                        this.state.chartData?.reduce(
+                          (a, b) => +a + +b.impressions,
+                          0
+                        )) *
+                        100
+                    )
+                      ? (
+                          (this.state.chartData?.reduce(
+                            (a, b) => +a + +b.clicks,
+                            0
+                          ) /
+                            this.state.chartData?.reduce(
+                              (a, b) => +a + +b.impressions,
+                              0
+                            )) *
+                          100
+                        ).toLocaleString()
+                      : 0}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData
+                        ?.reduce((a, b) => +a + +b.impressions, 0)
+                        .toLocaleString()}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData
+                        ?.reduce((a, b) => +a + +b.unique, 0)
+                        .toLocaleString()}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                    !isNaN(
+                      (this.state.chartData?.reduce(
+                        (a, b) => +a + +b.unique,
+                        0
+                      ) /
+                        this.state.chartData?.reduce(
+                          (a, b) => +a + +b.visits,
+                          0
+                        )) *
+                        100
+                    )
+                      ? (
+                          (this.state.chartData?.reduce(
+                            (a, b) => +a + +b.unique,
+                            0
+                          ) /
+                            this.state.chartData?.reduce(
+                              (a, b) => +a + +b.visits,
+                              0
+                            )) *
+                          100
+                        ).toLocaleString()
+                      : 0}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData
+                        ?.reduce((a, b) => +a + +b.visits, 0)
+                        .toLocaleString()}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        )}
+        {!this.state.loading && (
+          <div
+            style={{ height: "500px", marginTop: "60px" }}
+            className="linechart"
+          >
+            <Chart
+              dataToShow={this.state.chartData}
+              fields={{ 0: "clicks", 1: "impressions", 2: "ctr" }}
+            />
+          </div>
+        )}
 
-        <div
-          style={{ height: "500px", marginTop: "20px" }}
-          className="linechart"
-        >
-          <Chart dataToShow={this.state.chartData} />
-        </div>
-        <h1
+        {!this.state.loading && (
+          <div
+            style={{ height: "500px", marginTop: "60px" }}
+            className="linechart"
+          >
+            <Chart
+              dataToShow={this.state.chartData}
+              fields={{ 0: "visits", 1: "unique_perc", 2: "unique" }}
+            />
+          </div>
+        )}
+        {/* <h1
           className="secondHeaderOnTotals"
           style={{ marginTop: "50px", textAlign: "center" }}
         >
@@ -259,7 +549,7 @@ export class Totals extends Component {
         </h1>
         <div style={{ height: `${dataLength * 30}px` }}>
           <VerticalChart />
-        </div>
+        </div> */}
       </>
     );
   }

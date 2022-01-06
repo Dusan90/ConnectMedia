@@ -40,7 +40,7 @@ export class Posts extends Component {
       checkboxList: [],
       hashesArrowDown: false,
       hashesArrowWitchIsOn: "",
-      countPerPage: 10,
+      countPerPage: 20,
       addButtonClicked: false,
       selectedSiteSearch: null,
       selectedCategorieSearch: null,
@@ -52,7 +52,10 @@ export class Posts extends Component {
       dataToRender: [],
       mamxPages: "",
       loading: true,
+      sortName: "",
+      sortDir: "",
     };
+    this.inputEl = React.createRef(null);
   }
 
   //   paginate = (page) => {
@@ -76,6 +79,19 @@ export class Posts extends Component {
         search: "",
         limit: this.state.countPerPage,
         page: this.state.page,
+        sortName: this.state.sortName,
+        sortDir: this.state.sortDir,
+        status: this.state.selectedStatusSearch
+          ? this.state.selectedStatusSearch?.id
+          : "",
+        user: "",
+        category: this.state.selectedCategorieSearch
+          ? this.state.selectedCategorieSearch?.id
+          : "",
+        site: this.state.selectedSiteSearch
+          ? this.state.selectedSiteSearch?.id
+          : "",
+        state: "",
       })
     );
   }
@@ -141,21 +157,7 @@ export class Posts extends Component {
         inputValue
       ) {
         this.setState({
-          data: filtering(
-            getPostsListData.data,
-            selectedStatusSearch,
-            selectedCategorieSearch,
-            selectedSiteSearch,
-            inputValue
-          )
-            ? filtering(
-                getPostsListData.data,
-                selectedStatusSearch,
-                selectedCategorieSearch,
-                selectedSiteSearch,
-                inputValue
-              )
-            : getPostsListData.data,
+          data: getPostsListData.data,
           info: getPostsListData.info,
         });
       } else {
@@ -210,6 +212,8 @@ export class Posts extends Component {
           search: "",
           limit: "",
           page: "",
+          sortName: "",
+          sortDir: "",
         })
       );
     }
@@ -224,6 +228,13 @@ export class Posts extends Component {
           search: "",
           limit: "",
           page: "",
+          sortName: "",
+          sortDir: "",
+          status: "",
+          user: "",
+          category: "",
+          site: "",
+          state: "",
         })
       );
     }
@@ -240,6 +251,19 @@ export class Posts extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     } else if (
@@ -267,6 +291,19 @@ export class Posts extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     }
@@ -296,6 +333,13 @@ export class Posts extends Component {
           search: "",
           limit: "",
           page: "",
+          sortName: "",
+          sortDir: "",
+          status: "",
+          user: "",
+          category: "",
+          site: "",
+          state: "",
         })
       );
     }
@@ -310,6 +354,19 @@ export class Posts extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     });
@@ -333,6 +390,19 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -352,6 +422,19 @@ export class Posts extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     });
@@ -369,6 +452,19 @@ export class Posts extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     });
@@ -397,6 +493,19 @@ export class Posts extends Component {
           search: value,
           limit: this.state.countPerPage,
           page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
         })
       );
     });
@@ -447,26 +556,22 @@ export class Posts extends Component {
     if (value === "Up") {
       const sorted = this.state.data.sort((a, b) => {
         if (
-          typeof a[sortByClicked] === "string" ||
-          typeof b[sortByClicked] === "string"
+          sortByClicked === "ctr" ||
+          sortByClicked === "clk" ||
+          sortByClicked === "imp"
         ) {
-          return b[sortByClicked]?.localeCompare(a[sortByClicked]);
-        } else if (
-          typeof a[sortByClicked] === "object" ||
-          typeof b[sortByClicked] === "object"
-        ) {
-          if (sortByClicked === "timestamp") {
-            return b[sortByClicked] - a[sortByClicked];
-          } else if (sortByClicked === "image") {
-            return b[sortByClicked] - a[sortByClicked];
-          } else {
-            return b[sortByClicked]["name"]?.localeCompare(
-              a[sortByClicked]["name"]
-            );
-          }
-        } else {
-          return b[sortByClicked] - a[sortByClicked];
+          return a[sortByClicked] - b[sortByClicked];
         }
+        // else {
+        //   if (
+        //     typeof a[sortByClicked] === "string" ||
+        //     typeof b[sortByClicked] === "string"
+        //   ) {
+        //     return a[sortByClicked]?.localeCompare(b[sortByClicked]);
+        //   } else {
+        //     return a[sortByClicked] - b[sortByClicked];
+        //   }
+        // }
       });
       this.setState({ data: sorted });
       setTimeout(() => {
@@ -477,26 +582,22 @@ export class Posts extends Component {
     } else if (value === "Down") {
       const sorted = this.state.data.sort((a, b) => {
         if (
-          typeof a[sortByClicked] === "string" ||
-          typeof b[sortByClicked] === "string"
+          sortByClicked === "ctr" ||
+          sortByClicked === "clk" ||
+          sortByClicked === "imp"
         ) {
-          return a[sortByClicked]?.localeCompare(b[sortByClicked]);
-        } else if (
-          typeof a[sortByClicked] === "object" ||
-          typeof b[sortByClicked] === "object"
-        ) {
-          if (sortByClicked === "timestamp") {
-            return a[sortByClicked] - b[sortByClicked];
-          } else if (sortByClicked === "image") {
-            return a[sortByClicked] - b[sortByClicked];
-          } else {
-            return a[sortByClicked]["name"].localeCompare(
-              b[sortByClicked]["name"]
-            );
-          }
-        } else {
-          return a[sortByClicked] - b[sortByClicked];
+          return b[sortByClicked] - a[sortByClicked];
         }
+        //  else {
+        //   if (
+        //     typeof a[sortByClicked] === "string" ||
+        //     typeof b[sortByClicked] === "string"
+        //   ) {
+        //     return b[sortByClicked]?.localeCompare(a[sortByClicked]);
+        //   } else {
+        //     return b[sortByClicked] - a[sortByClicked];
+        //   }
+        // }
       });
       this.setState({ data: sorted });
       setTimeout(() => {
@@ -504,6 +605,28 @@ export class Posts extends Component {
 
         // this.paginate(1);
       });
+    } else {
+      this.setState({ sortName: sortByClicked, sortDir: value });
+      this.props.dispatch(
+        GetPostsListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: sortByClicked,
+          sortDir: value,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
+        })
+      );
     }
   };
 
@@ -534,6 +657,19 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -547,6 +683,19 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -570,6 +719,19 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -581,6 +743,19 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -592,6 +767,19 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -605,6 +793,19 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -616,6 +817,19 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            sortName: this.state.sortName,
+            sortDir: this.state.sortDir,
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: this.state.selectedSiteSearch
+              ? this.state.selectedSiteSearch?.id
+              : "",
+            state: "",
           })
         );
       });
@@ -664,6 +878,12 @@ export class Posts extends Component {
   render() {
     const { urlForCreatePost, data, selectedSiteSearch, loading } = this.state;
     const { getSitesList } = this.props;
+
+    if (this.state.hashesArrowDown) {
+      setTimeout(() => {
+        this.inputEl.current && this.inputEl.current.focus();
+      });
+    }
 
     return (
       <>
@@ -764,14 +984,14 @@ export class Posts extends Component {
                             <img
                               src={arrowUp}
                               onClick={() =>
-                                this.handleArrowSort("status", "Up")
+                                this.handleArrowSort("status", "1")
                               }
                               alt="arrow"
                             />
                             <img
                               src={secondarrowDown}
                               onClick={() =>
-                                this.handleArrowSort("status", "Down")
+                                this.handleArrowSort("status", "-1")
                               }
                               alt="arrow"
                             />
@@ -813,14 +1033,12 @@ export class Posts extends Component {
                           <div className="arrowDiv">
                             <img
                               src={arrowUp}
-                              onClick={() => this.handleArrowSort("site", "Up")}
+                              onClick={() => this.handleArrowSort("site", "1")}
                               alt="arrow"
                             />
                             <img
                               src={secondarrowDown}
-                              onClick={() =>
-                                this.handleArrowSort("site", "Down")
-                              }
+                              onClick={() => this.handleArrowSort("site", "-1")}
                               alt="arrow"
                             />
                           </div>
@@ -842,15 +1060,13 @@ export class Posts extends Component {
                           <div className="arrowDiv">
                             <img
                               src={arrowUp}
-                              onClick={() =>
-                                this.handleArrowSort("image", "Up")
-                              }
+                              onClick={() => this.handleArrowSort("image", "1")}
                               alt="arrow"
                             />
                             <img
                               src={secondarrowDown}
                               onClick={() =>
-                                this.handleArrowSort("image", "Down")
+                                this.handleArrowSort("image", "-1")
                               }
                               alt="arrow"
                             />
@@ -867,14 +1083,14 @@ export class Posts extends Component {
                             <img
                               src={arrowUp}
                               onClick={() =>
-                                this.handleArrowSort("timestamp", "Up")
+                                this.handleArrowSort("timestamp", "1")
                               }
                               alt="arrow"
                             />
                             <img
                               src={secondarrowDown}
                               onClick={() =>
-                                this.handleArrowSort("timestamp", "Down")
+                                this.handleArrowSort("timestamp", "-1")
                               }
                               alt="arrow"
                             />
@@ -884,7 +1100,7 @@ export class Posts extends Component {
                         <div className="ownerClass">
                           {item?.timestamp &&
                             `${moment(new Date(item?.timestamp)).format(
-                              "MM-DD-YYYY"
+                              "DD/MM/YYYY"
                             )}`}
                         </div>
                       </div>
@@ -894,22 +1110,56 @@ export class Posts extends Component {
                           <div className="arrowDiv">
                             <img
                               src={arrowUp}
-                              onClick={() =>
-                                this.handleArrowSort("title", "Up")
-                              }
+                              onClick={() => this.handleArrowSort("title", "1")}
                               alt="arrow"
                             />
                             <img
                               src={secondarrowDown}
                               onClick={() =>
-                                this.handleArrowSort("title", "Down")
+                                this.handleArrowSort("title", "-1")
                               }
                               alt="arrow"
                             />
                           </div>
                           <p>Name</p>
                         </div>
-                        <div className="ownerClass">{item.title}</div>
+                        <div
+                          className="ownerClass"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {" "}
+                          {item?.priority && !item?.first_position ? (
+                            <p
+                              style={{
+                                background: "#e09494",
+                                fontSize: "12px",
+                                height: "50px",
+                                display: "flex",
+                                lineHeight: "15px",
+                                fontWeight: "500",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.title}
+                            </p>
+                          ) : item?.priority && item?.first_position ? (
+                            <p
+                              style={{
+                                background: "rgb(171, 217, 150)",
+                                fontSize: "12px",
+                                height: "50px",
+                                display: "flex",
+                                lineHeight: "15px",
+                                fontWeight: "500",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.title}
+                            </p>
+                          ) : (
+                            item?.title
+                          )}
+                        </div>
                       </div>
                       <div className="mainForIcons">
                         <div className="divWithClicableIcons">
@@ -957,7 +1207,13 @@ export class Posts extends Component {
                           </div>
                           {this.state.hashesArrowDown &&
                             item.id === this.state.hashesArrowWitchIsOn.id && (
-                              <div id="noredirection" className="offeredHashes">
+                              <div
+                                id="noredirection"
+                                className="offeredHashes"
+                                ref={this.inputEl}
+                                onBlur={() => this.handleHashArrowClick(item)}
+                                tabindex="1"
+                              >
                                 {getSitesList.data?.data?.map((el, i) => {
                                   if (el.id === item.site) {
                                     return el.categories.map((el, i) => {
@@ -1039,7 +1295,7 @@ export class Posts extends Component {
                             </div>
                             <p>imp</p>
                           </div>
-                          <p>{item.in}</p>
+                          <p>{item.imp?.toLocaleString()}</p>
                         </div>
                         <div className="statistic">
                           <div>
@@ -1061,7 +1317,7 @@ export class Posts extends Component {
                             </div>
                             <p>clk</p>
                           </div>
-                          <p>{item.out}</p>
+                          <p>{item.clk?.toLocaleString()}</p>
                         </div>
                         <div className="statistic">
                           <div>
@@ -1083,9 +1339,9 @@ export class Posts extends Component {
                             </div>
                             <p>ctr</p>
                           </div>
-                          <p>{item.txr}</p>
+                          <p>{item.ctr?.toLocaleString()}</p>
                         </div>
-                        <div className="statistic">
+                        {/* <div className="statistic">
                           <div>
                             <div className="arrowDiv">
                               <img
@@ -1106,8 +1362,8 @@ export class Posts extends Component {
                             <p>wimp</p>
                           </div>
                           <p>{item.txr}</p>
-                        </div>
-                        <div className="statistic">
+                        </div> */}
+                        {/* <div className="statistic">
                           <div>
                             <div className="arrowDiv">
                               <img
@@ -1128,8 +1384,8 @@ export class Posts extends Component {
                             <p>wclk</p>
                           </div>
                           <p>{item.txr}</p>
-                        </div>
-                        <div className="statistic">
+                        </div> */}
+                        {/* <div className="statistic">
                           <div>
                             <div className="arrowDiv">
                               <img
@@ -1150,8 +1406,8 @@ export class Posts extends Component {
                             <p>wctr</p>
                           </div>
                           <p>{item.txr}</p>
-                        </div>
-                        <div className="statistic">
+                        </div> */}
+                        {/* <div className="statistic">
                           <div>
                             <div className="arrowDiv">
                               <img
@@ -1172,7 +1428,7 @@ export class Posts extends Component {
                             <p>pimp</p>
                           </div>
                           <p>{item.txr}</p>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   );
@@ -1200,12 +1456,12 @@ export class Posts extends Component {
                       <div>
                         <img
                           src={arrowUp}
-                          onClick={() => this.handleArrowSort("status", "Up")}
+                          onClick={() => this.handleArrowSort("status", "1")}
                           alt="arrow"
                         />
                         <img
                           src={secondarrowDown}
-                          onClick={() => this.handleArrowSort("status", "Down")}
+                          onClick={() => this.handleArrowSort("status", "-1")}
                           alt="arrow"
                         />
                       </div>
@@ -1217,12 +1473,12 @@ export class Posts extends Component {
                       <div>
                         <img
                           src={arrowUp}
-                          onClick={() => this.handleArrowSort("site", "Up")}
+                          onClick={() => this.handleArrowSort("site", "1")}
                           alt="arrow"
                         />
                         <img
                           src={secondarrowDown}
-                          onClick={() => this.handleArrowSort("site", "Down")}
+                          onClick={() => this.handleArrowSort("site", "-1")}
                           alt="arrow"
                         />
                       </div>
@@ -1234,12 +1490,12 @@ export class Posts extends Component {
                       <div>
                         <img
                           src={arrowUp}
-                          onClick={() => this.handleArrowSort("image", "Up")}
+                          onClick={() => this.handleArrowSort("image", "1")}
                           alt="arrow"
                         />
                         <img
                           src={secondarrowDown}
-                          onClick={() => this.handleArrowSort("image", "Down")}
+                          onClick={() => this.handleArrowSort("image", "-1")}
                           alt="arrow"
                         />
                       </div>
@@ -1251,15 +1507,13 @@ export class Posts extends Component {
                       <div>
                         <img
                           src={arrowUp}
-                          onClick={() =>
-                            this.handleArrowSort("timestamp", "Up")
-                          }
+                          onClick={() => this.handleArrowSort("timestamp", "1")}
                           alt="arrow"
                         />
                         <img
                           src={secondarrowDown}
                           onClick={() =>
-                            this.handleArrowSort("timestamp", "Down")
+                            this.handleArrowSort("timestamp", "-1")
                           }
                           alt="arrow"
                         />
@@ -1272,12 +1526,12 @@ export class Posts extends Component {
                       <div>
                         <img
                           src={arrowUp}
-                          onClick={() => this.handleArrowSort("title", "Up")}
+                          onClick={() => this.handleArrowSort("title", "1")}
                           alt="arrow"
                         />
                         <img
                           src={secondarrowDown}
-                          onClick={() => this.handleArrowSort("title", "Down")}
+                          onClick={() => this.handleArrowSort("title", "-1")}
                           alt="arrow"
                         />
                       </div>
@@ -1337,7 +1591,7 @@ export class Posts extends Component {
                       <p>ctr</p>
                     </div>
                   </th>
-                  <th>
+                  {/* <th>
                     <div>
                       <div>
                         <img
@@ -1353,8 +1607,8 @@ export class Posts extends Component {
                       </div>
                       <p>wimp</p>
                     </div>
-                  </th>
-                  <th>
+                  </th> */}
+                  {/* <th>
                     <div>
                       <div>
                         <img
@@ -1370,8 +1624,8 @@ export class Posts extends Component {
                       </div>
                       <p>wclk</p>
                     </div>
-                  </th>
-                  <th>
+                  </th> */}
+                  {/* <th>
                     <div>
                       <div>
                         <img
@@ -1387,8 +1641,8 @@ export class Posts extends Component {
                       </div>
                       <p>wctr</p>
                     </div>
-                  </th>
-                  <th>
+                  </th> */}
+                  {/* <th>
                     <div>
                       <div>
                         <img
@@ -1404,7 +1658,7 @@ export class Posts extends Component {
                       </div>
                       <p>pimp</p>
                     </div>
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
 
@@ -1490,10 +1744,36 @@ export class Posts extends Component {
                         <td>
                           {item?.timestamp &&
                             `${moment(item?.timestamp * 1000).format(
-                              "MM-DD-YYYY"
+                              "DD/MM/YYYY"
                             )}`}
                         </td>
-                        <td>{item.title}</td>
+                        <td>
+                          {item?.priority && !item?.first_position ? (
+                            <p
+                              style={{
+                                background: "#e09494",
+                                height: "47px",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.title}
+                            </p>
+                          ) : item?.priority && item?.first_position ? (
+                            <p
+                              style={{
+                                background: "rgb(171, 217, 150)",
+                                height: "47px",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.title}
+                            </p>
+                          ) : (
+                            item?.title
+                          )}
+                        </td>
                         <td>
                           <>
                             <div className="divWithHashes">
@@ -1524,6 +1804,9 @@ export class Posts extends Component {
                                 <div
                                   id="noredirection"
                                   className="offeredHashes"
+                                  ref={this.inputEl}
+                                  onBlur={() => this.handleHashArrowClick(item)}
+                                  tabindex="1"
                                 >
                                   {getSitesList.data?.data?.map((el, i) => {
                                     if (el.id === item.site) {
@@ -1589,13 +1872,9 @@ export class Posts extends Component {
                               )}
                           </>
                         </td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
-                        <td>{item.txr}</td>
+                        <td>{item.imp?.toLocaleString()}</td>
+                        <td>{item.clk?.toLocaleString()}</td>
+                        <td>{item.ctr?.toLocaleString()}</td>
                       </tr>
                     );
                   })}

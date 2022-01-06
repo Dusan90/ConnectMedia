@@ -6,9 +6,22 @@ import { API_URL, GET_WIDGET } from "./urlConsts";
 
 const url = (endpoint) => `${API_URL}${endpoint}`;
 
-const getWidgetsList = async ({ page, limit, search }) => {
+const getWidgetsList = async ({
+  page,
+  limit,
+  search,
+  sortName,
+  sortDir,
+  status,
+  user,
+  category,
+  site,
+  state,
+}) => {
   return await axiosInstance.get(
-    `${url(GET_WIDGET)}?page=${page}&limit=${limit}&search=${search}`
+    `${url(
+      GET_WIDGET
+    )}?page=${page}&limit=${limit}&search=${search}&sort_key=${sortName}&sort_dir=${sortDir}&filter_state=${state}&filter_site=${site}&filter_category=${category}&filter_status=${status}&filter_owner=${user}`
   );
 };
 
@@ -79,9 +92,8 @@ const deleteWidget = async ({ id }) => {
   return await axiosInstance.delete(`${url(GET_WIDGET)}/${id}`);
 };
 
-const viewWidget = async () => {
-  // return await axiosInstance.get(`${url(GET_WIDGET)}`)
-  console.log("get view");
+const viewWidget = async ({ id }) => {
+  return await axiosInstance.get(`${url("/widget/")}${id}/test`);
 };
 
 export default {

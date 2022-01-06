@@ -194,8 +194,7 @@ function SearchContainer({
             )}
             {(pageName === "POSTS" ||
               pageName === "WIDGETS" ||
-              pageName === "CATEGORIES" ||
-              pageName === "TOTALS") && (
+              pageName === "CATEGORIES") && (
               <div className="box-2" onClick={handleSitesShow}>
                 <DropDown
                   label={sites}
@@ -210,25 +209,29 @@ function SearchContainer({
                 />
               </div>
             )}
-            {pageName !== "USERS" && <div className="horizontal" />}
-            {pageName !== "USERS" && pageName !== "CATEGORIES" && (
-              <div className="box-3" onClick={handleCategorieShow}>
-                <DropDown
-                  label={categorie}
-                  isItOpen={showCategorieOptions}
-                  handleAllOptions={handleAllOptionsCateg}
-                  options={
-                    !getCategoryListError &&
-                    getCategoryListData &&
-                    getCategoryListData.data
-                  }
-                  handleChangeOptions={handleChangeOptionscategorie}
-                />
-              </div>
-            )}
-            {pageName !== "USERS" && pageName !== "CATEGORIES" && (
+            {pageName !== "USERS" && pageName !== "TOTALS" && (
               <div className="horizontal" />
             )}
+            {pageName !== "USERS" &&
+              pageName !== "TOTALS" &&
+              pageName !== "CATEGORIES" && (
+                <div className="box-3" onClick={handleCategorieShow}>
+                  <DropDown
+                    label={categorie}
+                    isItOpen={showCategorieOptions}
+                    handleAllOptions={handleAllOptionsCateg}
+                    options={
+                      !getCategoryListError &&
+                      getCategoryListData &&
+                      getCategoryListData.data
+                    }
+                    handleChangeOptions={handleChangeOptionscategorie}
+                  />
+                </div>
+              )}
+            {pageName !== "USERS" &&
+              pageName !== "CATEGORIES" &&
+              pageName !== "TOTALS" && <div className="horizontal" />}
           </div>
           {pageName !== "TOTALS" &&
             pageName !== "USERS" &&

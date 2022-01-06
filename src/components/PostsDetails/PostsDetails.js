@@ -19,7 +19,11 @@ import {
   GetSiteDetailsActionRequest,
   GetSitesListActionRequest,
 } from "../../store/actions/SitesListAction";
+import { SpecPostChartRequest } from "../../store/actions/ChartAction";
 import { NotificationManager } from "react-notifications";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import moment from "moment";
 
 const customSelectStyles = {
@@ -36,15 +40,6 @@ const customSelectStyles = {
     color: "black",
   }),
 };
-
-const data = [
-  {
-    name: "Page A",
-    uv: 590,
-    pv: 800,
-    amt: 1400,
-  },
-];
 
 const options = [0, 1, 2, 3];
 
@@ -71,6 +66,12 @@ export class PostsDetails extends Component {
       site: null,
       categories: null,
       wordToPass: "",
+      postChartData: "",
+      priority_lifetime: null,
+      priority: null,
+      first_position: null,
+      startDate: new Date().setDate(new Date().getDate() - 7),
+      endDate: new Date(),
     };
   }
 
@@ -97,6 +98,20 @@ export class PostsDetails extends Component {
         search: "",
         limit: "",
         page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
+      })
+    );
+    this.props.dispatch(
+      SpecPostChartRequest({
+        id: this.props.match.params.id,
+        from: Math.round(new Date(this.state.startDate).getTime() / 1000),
+        to: Math.round(new Date(this.state.endDate).getTime() / 1000),
       })
     );
   }
@@ -109,6 +124,7 @@ export class PostsDetails extends Component {
       createPost,
       updatePostDetails,
       getSitesList,
+      specPostChart,
     } = this.props;
     const {
       data: getPostDetailsData,
@@ -142,6 +158,22 @@ export class PostsDetails extends Component {
       loading: getSitesListLoading,
       error: getSitesListError,
     } = getSitesList;
+
+    const {
+      data: specPostChartData,
+      loading: specPostChartLoading,
+      error: specPostChartError,
+    } = specPostChart;
+
+    if (
+      prevProps.specPostChart !== specPostChart &&
+      !specPostChartError &&
+      !specPostChartLoading &&
+      specPostChartData
+    ) {
+      this.setState({ postChartData: specPostChartData.data });
+    }
+
     if (
       prevProps.getSitesList !== getSitesList &&
       !getSitesListError &&
@@ -177,6 +209,7 @@ export class PostsDetails extends Component {
           id: getPostDetailsData.data.site.id,
         })
       );
+      console.log(getPostDetails);
       this.setState({
         dataState: getPostDetails.data.state,
         postDetailsData: getPostDetailsData.data,
@@ -185,6 +218,9 @@ export class PostsDetails extends Component {
         description: getPostDetailsData.data?.description,
         author: getPostDetailsData.data?.author,
         content: getPostDetailsData.data?.content,
+        priority_lifetime: getPostDetailsData.data?.priority_lifetime,
+        priority: getPostDetailsData.data?.priority,
+        first_position: getPostDetailsData.data?.first_position,
       });
     }
 
@@ -275,6 +311,9 @@ export class PostsDetails extends Component {
         site,
         dataState,
         categories,
+        priority_lifetime,
+        priority,
+        first_position,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
@@ -289,6 +328,9 @@ export class PostsDetails extends Component {
             site,
             status: dataState,
             categories,
+            priority_lifetime,
+            priority,
+            first_position,
           })
         );
       } else {
@@ -305,6 +347,9 @@ export class PostsDetails extends Component {
             site,
             status: dataState,
             categories,
+            priority_lifetime,
+            priority,
+            first_position,
           })
         );
       }
@@ -360,6 +405,8 @@ export class PostsDetails extends Component {
       site,
       siteOptions,
       siteDetailsData,
+      priority,
+      first_position,
     } = this.state;
     const categorialOption = siteDetailsData?.categories?.map((el) => {
       return { value: el.category.id, label: el.category.name };
@@ -388,11 +435,186 @@ export class PostsDetails extends Component {
         )}
         {tabClicked === "statsDiv" && (
           <>
-            {" "}
-            <div style={{ height: "500px", marginTop: "20px" }}>
-              <Chart customStyle={{ padding: "0" }} />
+            <h2
+              style={{ marginBottom: "20px" }}
+            >{`Chart for post ${postDetailsData?.title}`}</h2>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+              <h4>Select date range</h4>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <DatePicker
+                  dateFormat="dd/MM/yyyy"
+                  selected={this.state.startDate}
+                  onChange={(date) => {
+                    this.setState({ startDate: date });
+                    setTimeout(() => {
+                      this.props.dispatch(
+                        SpecPostChartRequest({
+                          id: this.props.match.params.id,
+                          from: Math.round(
+                            new Date(this.state.startDate).getTime() / 1000
+                          ),
+                          to: Math.round(
+                            new Date(this.state.endDate).getTime() / 1000
+                          ),
+                        })
+                      );
+                    });
+                  }}
+                  selectsStart
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                />
+                <DatePicker
+                  dateFormat="dd/MM/yyyy"
+                  selected={this.state.endDate}
+                  onChange={(date) => {
+                    this.setState({ endDate: date });
+                    setTimeout(() => {
+                      this.props.dispatch(
+                        SpecPostChartRequest({
+                          id: this.props.match.params.id,
+                          from: Math.round(
+                            new Date(this.state.startDate).getTime() / 1000
+                          ),
+                          to: Math.round(
+                            new Date(this.state.endDate).getTime() / 1000
+                          ),
+                        })
+                      );
+                    });
+                  }}
+                  selectsEnd
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                  minDate={this.state.startDate}
+                />
+              </div>
             </div>
-            <h1
+            <div>
+              <table style={{ marginTop: "20px" }}>
+                <thead>
+                  <tr style={{ height: "40px" }}>
+                    <th style={{ width: "100px" }}>Date</th>
+                    <th style={{ width: "100px" }}>Clicks</th>
+                    <th style={{ width: "100px" }}>Ctr</th>
+                    <th style={{ width: "100px" }}>Impressions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.postChartData.length !== 0 &&
+                    this.state.postChartData?.map((el) => (
+                      <tr style={{ height: "40px" }}>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.name}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.clicks.toLocaleString()}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.ctr.toLocaleString()}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.impressions.toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+                <tfoot>
+                  <tr style={{ height: "40px" }}>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      Total
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.postChartData.length !== 0 &&
+                        this.state.postChartData
+                          ?.reduce((a, b) => +a + +b.clicks, 0)
+                          .toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.postChartData.length !== 0 &&
+                      !isNaN(
+                        (this.state.postChartData?.reduce(
+                          (a, b) => +a + +b.clicks,
+                          0
+                        ) /
+                          this.state.postChartData?.reduce(
+                            (a, b) => +a + +b.impressions,
+                            0
+                          )) *
+                          100
+                      )
+                        ? (
+                            (this.state.postChartData?.reduce(
+                              (a, b) => +a + +b.clicks,
+                              0
+                            ) /
+                              this.state.postChartData?.reduce(
+                                (a, b) => +a + +b.impressions,
+                                0
+                              )) *
+                            100
+                          ).toLocaleString()
+                        : 0}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.postChartData.length !== 0 &&
+                        this.state.postChartData
+                          ?.reduce((a, b) => +a + +b.impressions, 0)
+                          .toLocaleString()}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <div style={{ height: "500px", marginTop: "20px" }}>
+              <Chart
+                dataToShow={this.state.postChartData}
+                fields={{ 0: "clicks", 1: "ctr", 2: "impressions" }}
+                customStyle={{ padding: "0" }}
+              />
+            </div>
+
+            {/* <h1
               style={{
                 marginTop: "50px",
                 textAlign: "center",
@@ -403,8 +625,13 @@ export class PostsDetails extends Component {
             </h1>
             <div style={{ height: `200px` }}>
               <VerticalChart customData={data} customStyle={{ padding: "0" }} />
-            </div>
+            </div> */}
           </>
+        )}
+        {tabClicked !== "statsDiv" && (
+          <h2
+            style={{ marginBottom: "20px" }}
+          >{`Details for post ${postDetailsData?.title}`}</h2>
         )}
         {tabClicked !== "statsDiv" && (
           <div className="mainSiteInfoDiv">
@@ -589,7 +816,7 @@ export class PostsDetails extends Component {
                   )}
                 </div>
                 <h1 style={{ margin: "20px 0" }}>Order</h1>
-                <div className="description_div">
+                {/* <div className="description_div">
                   <h4>Content</h4>
                   {!isIteditable && <p>{postDetailsData?.content}</p>}
                   {isIteditable && (
@@ -599,6 +826,106 @@ export class PostsDetails extends Component {
                       value={this.state.content}
                       onChange={(e) => this.handleChangeInputs(e)}
                     />
+                  )}
+                </div> */}
+                <div className="description_div">
+                  <h4>Lifetime (hours)</h4>
+                  {!isIteditable && <p>{postDetailsData?.priority_lifetime}</p>}
+                  {isIteditable && (
+                    <input
+                      type="number"
+                      min="0"
+                      onChange={(e) => {
+                        if (
+                          (!isNaN(e.target.value) &&
+                            parseInt(e.target.value) >= 0) ||
+                          e.target.value === ""
+                        ) {
+                          let val =
+                            e.target.value === ""
+                              ? e.target.value
+                              : parseInt(e.target.value);
+                          setTimeout(() => {
+                            this.setState({ priority_lifetime: val });
+                          });
+                        }
+                      }}
+                      name="ratio"
+                      value={
+                        this.state.priority_lifetime !== null &&
+                        this.state.priority_lifetime
+                      }
+                    />
+                  )}
+                </div>
+                <div className="tracking_div">
+                  <h4>Priority</h4>
+                  {!isIteditable && <p>{`${postDetailsData?.priority}`}</p>}
+                  {isIteditable && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <input
+                        name="priority"
+                        value={
+                          priority !== null
+                            ? priority
+                            : postDetailsData?.priority
+                        }
+                        checked={
+                          priority !== null
+                            ? priority
+                            : postDetailsData?.priority
+                        }
+                        onChange={(e) =>
+                          this.setState({ priority: e.target.checked })
+                        }
+                        style={{ width: "20px" }}
+                        type="checkbox"
+                      />{" "}
+                      <label htmlFor="check">Is this post a priority</label>
+                    </div>
+                  )}
+                </div>
+                <div className="tracking_div">
+                  <h4>First position</h4>
+                  {!isIteditable && (
+                    <p>{`${postDetailsData?.first_position}`}</p>
+                  )}
+                  {isIteditable && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <input
+                        name="first_position"
+                        value={
+                          first_position !== null
+                            ? first_position
+                            : postDetailsData?.first_position
+                        }
+                        checked={
+                          first_position !== null
+                            ? first_position
+                            : postDetailsData?.first_position
+                        }
+                        onChange={(e) =>
+                          this.setState({ first_position: e.target.checked })
+                        }
+                        style={{ width: "20px" }}
+                        type="checkbox"
+                      />{" "}
+                      <label htmlFor="check">
+                        Move this post into first position
+                      </label>
+                    </div>
                   )}
                 </div>
               </div>
@@ -643,7 +970,7 @@ export class PostsDetails extends Component {
                       {postDetailsData?.timestamp &&
                         `${moment(
                           new Date(postDetailsData?.timestamp * 1000)
-                        ).format("MM-DD-YYYY")}`}
+                        ).format("DD/MM/YYYY")}`}
                     </p>
                   )}
                   {isIteditable && (
@@ -724,11 +1051,13 @@ export class PostsDetails extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { PostsReducer, SitesListReducer, CategoryReducer } = state;
+  const { PostsReducer, SitesListReducer, CategoryReducer, ChartRreducer } =
+    state;
   const { getPostDetails, deletePost, createPost, updatePostDetails } =
     PostsReducer;
   const { getCategoryList } = CategoryReducer;
   const { getSitesList, getSiteDetails } = SitesListReducer;
+  const { specPostChart } = ChartRreducer;
   return {
     getPostDetails,
     getSitesList,
@@ -737,6 +1066,7 @@ const mapStateToProps = (state) => {
     deletePost,
     createPost,
     updatePostDetails,
+    specPostChart,
   };
 };
 

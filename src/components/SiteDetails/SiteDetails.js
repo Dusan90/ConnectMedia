@@ -11,6 +11,7 @@ import {
   GetSiteDetailsActionRequest,
   DeleteSiteActionRequest,
   UpdateSiteDetailsActionRequest,
+  GetSitesListActionRequest,
 } from "../../store/actions/SitesListAction";
 import {
   BindCategoryActionRequest,
@@ -21,6 +22,8 @@ import { SpecSiteChartRequest } from "../../store/actions/ChartAction";
 import Chart from "../../containers/Chart/Chart";
 import Select from "react-select";
 import { NotificationManager } from "react-notifications";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const test2 = [
   { mesto: "Beograd", title: "vesti" },
@@ -81,6 +84,13 @@ export class SiteDetails extends Component {
       wordToPass: "",
       siteChartData: "",
       ratio: null,
+      numberOfRatio: [],
+      optionsForRatioSelect: [],
+      random_ratio: null,
+      post_lifetime: null,
+      ctr_ratio: null,
+      startDate: new Date().setDate(new Date().getDate() - 7),
+      endDate: new Date(),
     };
   }
 
@@ -96,6 +106,13 @@ export class SiteDetails extends Component {
           search: "",
           limit: "",
           page: "",
+          sortName: "",
+          sortDir: "",
+          status: "",
+          user: "",
+          category: "",
+          site: "",
+          state: "",
         })
       );
     }
@@ -111,7 +128,26 @@ export class SiteDetails extends Component {
     }
 
     this.props.dispatch(
-      SpecSiteChartRequest({ id: this.props.match.params.id })
+      SpecSiteChartRequest({
+        id: this.props.match.params.id,
+        from: Math.round(new Date(this.state.startDate).getTime() / 1000),
+        to: Math.round(new Date(this.state.endDate).getTime() / 1000),
+      })
+    );
+
+    this.props.dispatch(
+      GetSitesListActionRequest({
+        search: "",
+        limit: "",
+        page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
+      })
     );
   }
 
@@ -124,7 +160,13 @@ export class SiteDetails extends Component {
       unbindCategory,
       bindCategory,
       specSiteChart,
+      getSitesList,
     } = this.props;
+    const {
+      data: getSitesListData,
+      loading: getSitesListLoading,
+      error: getSitesListError,
+    } = getSitesList;
     const {
       data: specSiteChartData,
       loading: specSiteChartLoading,
@@ -162,6 +204,18 @@ export class SiteDetails extends Component {
       loading: bindCategoryLoading,
       error: bindCategoryError,
     } = bindCategory;
+
+    if (
+      prevProps.getSitesList !== getSitesList &&
+      !getSitesListError &&
+      !getSitesListLoading &&
+      getSitesListData
+    ) {
+      const option = getSitesListData.data.map((el) => {
+        return { value: el.id, label: el.name };
+      });
+      this.setState({ optionsForRatioSelect: option });
+    }
 
     if (
       prevProps.bindCategory !== bindCategory &&
@@ -234,6 +288,10 @@ export class SiteDetails extends Component {
         guess_remote: getSiteDetailsData.data?.guess_remote,
         tag_map: getSiteDetailsData.data?.tag_map,
         ratio: getSiteDetailsData.data?.ratio,
+        numberOfRatio: getSiteDetailsData.data?.ratios,
+        random_ratio: getSiteDetailsData.data?.random_ratio,
+        post_lifetime: getSiteDetailsData.data?.post_lifetime,
+        ctr_ratio: getSiteDetailsData.data?.ctr_ratio,
       });
       if (getSiteDetailsData?.data?.translations?.feed.length !== 0) {
         this.setState({
@@ -364,6 +422,10 @@ export class SiteDetails extends Component {
         guess_remote,
         tag_map,
         ratio,
+        numberOfRatio,
+        random_ratio,
+        post_lifetime,
+        ctr_ratio,
       } = this.state;
       const categorieFormating = categories.map((el) => {
         return {
@@ -402,6 +464,10 @@ export class SiteDetails extends Component {
           categories: categorieFormating,
           feed_translations,
           ratio,
+          ratios: numberOfRatio,
+          random_ratio,
+          post_lifetime,
+          ctr_ratio,
         })
       );
     } else if (page === "cancel") {
@@ -547,12 +613,27 @@ export class SiteDetails extends Component {
       better_images,
       auto_publish,
       copy_from_site,
+      numberOfRatio,
+      optionsForRatioSelect,
     } = this.state;
     const categorialOption = siteDetailsData?.categories?.map(
       (el) => el.category.id
     );
 
-    console.log(this.state.ratio);
+    const optionsSelection = numberOfRatio.map((el) => {
+      return el.id;
+    });
+
+    const optionsS = optionsForRatioSelect.map((el) => {
+      if (optionsSelection.includes(el.value)) {
+        return { ...el, isdisabled: true };
+      } else {
+        return el;
+      }
+    });
+
+    console.log(categorialOption);
+
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget
@@ -574,12 +655,192 @@ export class SiteDetails extends Component {
           </div>
         )}
         {tabClicked === "statsDiv" && (
-          <div style={{ height: "500px", marginTop: "20px" }}>
-            <Chart
-              customStyle={{ padding: "0" }}
-              dataToShow={this.state.siteChartData}
-            />
-          </div>
+          <>
+            <h2
+              style={{ marginBottom: "20px" }}
+            >{`Chart for site ${siteDetailsData?.name}`}</h2>
+
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+              <h4>Select date range</h4>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <DatePicker
+                  dateFormat="dd/MM/yyyy"
+                  selected={this.state.startDate}
+                  onChange={(date) => {
+                    this.setState({ startDate: date });
+                    setTimeout(() => {
+                      this.props.dispatch(
+                        SpecSiteChartRequest({
+                          id: this.props.match.params.id,
+                          from: Math.round(
+                            new Date(this.state.startDate).getTime() / 1000
+                          ),
+                          to: Math.round(
+                            new Date(this.state.endDate).getTime() / 1000
+                          ),
+                        })
+                      );
+                    });
+                  }}
+                  selectsStart
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                />
+                <DatePicker
+                  dateFormat="dd/MM/yyyy"
+                  selected={this.state.endDate}
+                  onChange={(date) => {
+                    this.setState({ endDate: date });
+                    setTimeout(() => {
+                      this.props.dispatch(
+                        SpecSiteChartRequest({
+                          id: this.props.match.params.id,
+                          from: Math.round(
+                            new Date(this.state.startDate).getTime() / 1000
+                          ),
+                          to: Math.round(
+                            new Date(this.state.endDate).getTime() / 1000
+                          ),
+                        })
+                      );
+                    });
+                  }}
+                  selectsEnd
+                  startDate={this.state.startDate}
+                  endDate={this.state.endDate}
+                  minDate={this.state.startDate}
+                />
+              </div>
+            </div>
+            <div>
+              <table style={{ marginTop: "20px" }}>
+                <thead>
+                  <tr style={{ height: "40px" }}>
+                    <th style={{ width: "100px" }}>Date</th>
+                    <th style={{ width: "100px" }}>In</th>
+                    <th style={{ width: "100px" }}>Out</th>
+                    <th style={{ width: "100px" }}>Txr</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.siteChartData.length !== 0 &&
+                    this.state.siteChartData?.map((el) => (
+                      <tr style={{ height: "40px" }}>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.name}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.in.toLocaleString()}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.out.toLocaleString()}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.txr.toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+                <tfoot>
+                  <tr style={{ height: "40px" }}>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      Total
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.siteChartData.length !== 0 &&
+                        this.state.siteChartData
+                          ?.reduce((a, b) => +a + +b.in, 0)
+                          .toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.siteChartData.length !== 0 &&
+                        this.state.siteChartData
+                          ?.reduce((a, b) => +a + +b.out, 0)
+                          .toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {this.state.siteChartData.length !== 0 &&
+                      !isNaN(
+                        (this.state.siteChartData?.reduce(
+                          (a, b) => +a + +b.out,
+                          0
+                        ) /
+                          this.state.siteChartData?.reduce(
+                            (a, b) => +a + +b.in,
+                            0
+                          )) *
+                          100
+                      )
+                        ? (
+                            (this.state.siteChartData?.reduce(
+                              (a, b) => +a + +b.out,
+                              0
+                            ) /
+                              this.state.siteChartData?.reduce(
+                                (a, b) => +a + +b.in,
+                                0
+                              )) *
+                            100
+                          ).toLocaleString()
+                        : 0}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <div style={{ height: "500px", marginTop: "20px" }}>
+              <Chart
+                customStyle={{ padding: "0" }}
+                dataToShow={this.state.siteChartData}
+                fields={{ 0: "in", 1: "out", 2: "txr" }}
+              />
+            </div>
+          </>
+        )}
+        {tabClicked !== "statsDiv" && (
+          <h2
+            style={{ marginBottom: "20px" }}
+          >{`Details for site ${siteDetailsData?.name}`}</h2>
         )}
         {tabClicked !== "statsDiv" && (
           <div className="mainSiteInfoDiv">
@@ -709,7 +970,7 @@ export class SiteDetails extends Component {
                                     options={optionss}
                                 />} */}
                 </div>
-                <div className="description_div">
+                {/* <div className="description_div">
                   <h4>Description</h4>
                   {!isIteditable && <p>{siteDetailsData?.description}</p>}
                   {isIteditable && (
@@ -720,8 +981,8 @@ export class SiteDetails extends Component {
                       value={this.state.description}
                     />
                   )}
-                </div>
-                <div className="description_div">
+                </div> */}
+                {/* <div className="description_div">
                   <h4>Head</h4>
                   {!isIteditable && <p>{siteDetailsData?.head}</p>}
                   {isIteditable && (
@@ -732,8 +993,8 @@ export class SiteDetails extends Component {
                       value={this.state.head}
                     />
                   )}
-                </div>
-                <div className="info_div">
+                </div> */}
+                {/* <div className="info_div">
                   <div className="endcFactMini">
                     <h4>Encoding</h4>
                     {!isIteditable && <p>{siteDetailsData?.encoding}</p>}
@@ -774,8 +1035,8 @@ export class SiteDetails extends Component {
                       />
                     )}
                   </div>
-                </div>
-                <div className="tracking_div">
+                </div> */}
+                {/* <div className="tracking_div">
                   <h4>Tracking</h4>
                   {!isIteditable && <p>{`${siteDetailsData?.tracking}`}</p>}
                   {isIteditable && (
@@ -809,7 +1070,7 @@ export class SiteDetails extends Component {
                       </label>
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
 
               <div className="feedDiv">
@@ -834,7 +1095,7 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div>
-                <div className="images_div">
+                {/* <div className="images_div">
                   <h4>Look for better images</h4>
                   {!isIteditable && (
                     <p>{`${siteDetailsData?.better_images}`}</p>
@@ -870,8 +1131,8 @@ export class SiteDetails extends Component {
                       </label>
                     </div>
                   )}
-                </div>
-                <div className="definition_div">
+                </div> */}
+                {/* <div className="definition_div">
                   <h4>Feed definition</h4>
                   {!isIteditable && <p>{siteDetailsData?.feed_definition}</p>}
                   {isIteditable && (
@@ -894,7 +1155,7 @@ export class SiteDetails extends Component {
                       type="text"
                     />
                   )}
-                </div>
+                </div> */}
                 {/* <div className='expression_div'>
                                 <h4>Uniq ID expression</h4>
                                 {!isIteditable && <p></p>}
@@ -914,7 +1175,7 @@ export class SiteDetails extends Component {
                   )}
                 </div>
                 <div className="interval_div">
-                  <h4>Ratio</h4>
+                  <h4>Ratio (%)</h4>
                   {!isIteditable && <p>{siteDetailsData?.ratio}</p>}
                   {isIteditable && (
                     <input
@@ -923,7 +1184,7 @@ export class SiteDetails extends Component {
                       onChange={(e) => {
                         if (
                           (!isNaN(e.target.value) &&
-                            parseInt(e.target.value) > 0) ||
+                            parseInt(e.target.value) >= 0) ||
                           e.target.value === ""
                         ) {
                           let val =
@@ -940,7 +1201,96 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div>
-                <div className="autopublish_div">
+                <div className="interval_div">
+                  <h4>Initial ratio (%)</h4>
+                  {!isIteditable && <p>{siteDetailsData?.random_ratio}</p>}
+                  {isIteditable && (
+                    <input
+                      type="number"
+                      min="0"
+                      onChange={(e) => {
+                        if (
+                          (!isNaN(e.target.value) &&
+                            parseInt(e.target.value) >= 0) ||
+                          e.target.value === ""
+                        ) {
+                          let val =
+                            e.target.value === ""
+                              ? e.target.value
+                              : parseInt(e.target.value);
+                          setTimeout(() => {
+                            this.setState({ random_ratio: val });
+                          });
+                        }
+                      }}
+                      name="ratio"
+                      value={
+                        this.state.random_ratio !== null &&
+                        this.state.random_ratio
+                      }
+                    />
+                  )}
+                </div>
+                <div className="interval_div">
+                  <h4>Post lifetime (days)</h4>
+                  {!isIteditable && <p>{siteDetailsData?.post_lifetime}</p>}
+                  {isIteditable && (
+                    <input
+                      type="number"
+                      min="0"
+                      onChange={(e) => {
+                        if (
+                          (!isNaN(e.target.value) &&
+                            parseInt(e.target.value) >= 0) ||
+                          e.target.value === ""
+                        ) {
+                          let val =
+                            e.target.value === ""
+                              ? e.target.value
+                              : parseInt(e.target.value);
+                          setTimeout(() => {
+                            this.setState({ post_lifetime: val });
+                          });
+                        }
+                      }}
+                      name="ratio"
+                      value={
+                        this.state.post_lifetime !== null &&
+                        this.state.post_lifetime
+                      }
+                    />
+                  )}
+                </div>
+                <div className="interval_div">
+                  <h4>Ctr ratio (%)</h4>
+                  {!isIteditable && <p>{siteDetailsData?.ctr_ratio}</p>}
+                  {isIteditable && (
+                    <input
+                      type="number"
+                      min="0"
+                      onChange={(e) => {
+                        if (
+                          (!isNaN(e.target.value) &&
+                            parseInt(e.target.value) >= 0) ||
+                          e.target.value === ""
+                        ) {
+                          let val =
+                            e.target.value === ""
+                              ? e.target.value
+                              : parseInt(e.target.value);
+                          setTimeout(() => {
+                            this.setState({ ctr_ratio: val });
+                          });
+                        }
+                      }}
+                      name="ratio"
+                      value={
+                        this.state.ctr_ratio !== null && this.state.ctr_ratio
+                      }
+                    />
+                  )}
+                </div>
+                {/* <div className="autopublish_div">
                   <h4>Autopublish</h4>
                   {!isIteditable && <p>{`${siteDetailsData?.auto_publish}`}</p>}
                   {isIteditable && (
@@ -972,8 +1322,8 @@ export class SiteDetails extends Component {
                       <label htmlFor="check">limit to feed</label>
                     </div>
                   )}
-                </div>
-                {siteDetailsData?.categories?.length !== 0 &&
+                </div> */}
+                {/* {siteDetailsData?.categories?.length !== 0 &&
                   !siteDetailsData?.auto_publish && (
                     <div className="table_div">
                       <div className="leftTable">
@@ -1092,7 +1442,7 @@ export class SiteDetails extends Component {
                         </table>
                       </div>
                     </div>
-                  )}
+                  )} */}
               </div>
             </div>
             <div className="rightSideDiv">
@@ -1109,7 +1459,7 @@ export class SiteDetails extends Component {
                       </p>
                     </div>
                   )}
-                  {isIteditable && (
+                  {isIteditable && categorialOption && (
                     <Select
                       defaultValue={categorialOption?.map((el) => {
                         return this.state.cateOptions.find(
@@ -1130,7 +1480,7 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div>
-                <div className="copySite_div">
+                {/* <div className="copySite_div">
                   <h4>Copy from site</h4>
                   {!isIteditable && (
                     <p> {`${siteDetailsData?.copy_from_site}`}</p>
@@ -1159,8 +1509,8 @@ export class SiteDetails extends Component {
                       </label>
                     </div>
                   )}
-                </div>
-                <div className="guessRemote_div">
+                </div> */}
+                {/* <div className="guessRemote_div">
                   <h4>
                     Guess remote category from url - enter the number of the
                     path segment
@@ -1174,8 +1524,8 @@ export class SiteDetails extends Component {
                       onChange={(e) => this.handleChange(e)}
                     />
                   )}
-                </div>
-                <div className="indexTag_div">
+                </div> */}
+                {/* <div className="indexTag_div">
                   <h4>
                     Index of tag for mapping <br /> (1=first,2=seocnd,..)
                   </h4>
@@ -1188,7 +1538,7 @@ export class SiteDetails extends Component {
                       onChange={(e) => this.handleChange(e)}
                     />
                   )}
-                </div>
+                </div> */}
               </div>
               <div className="feedCategoriesDiv">
                 <h1>
@@ -1246,7 +1596,7 @@ export class SiteDetails extends Component {
               </div>
 
               <div className="remoteCategoriesDiv">
-                <div className="divButtonsmaping">
+                {/* <div className="divButtonsmaping">
                   <h1>
                     Remote Category -<span>{`>`}</span> Category
                   </h1>
@@ -1282,8 +1632,8 @@ export class SiteDetails extends Component {
                       />
                     </div>
                   )}
-                </div>
-                <table>
+                </div> */}
+                {/* <table>
                   <thead>
                     <tr>
                       <th>
@@ -1358,15 +1708,132 @@ export class SiteDetails extends Component {
                                     }
                                   />
                                   {/* <img src={xButton} onClick={() => handleDelete} alt="x" /> */}
-                                </div>
+                {/* </div>
                               </td>
                             )}
                           </tr>
                         );
                       })}
-                  </tbody>
-                </table>
+                  </tbody> */}
+                {/* // </table> */}
               </div>
+              <h1>Ratio</h1>
+              {this.state.numberOfRatio.length !== 0 &&
+                this.state.numberOfRatio.map((el, index) => (
+                  <div
+                    className="interval_div"
+                    style={{ gap: isIteditable && "10px" }}
+                    key={index}
+                  >
+                    {!isIteditable && <h4>{el.name}</h4>}
+                    {isIteditable && (
+                      <div style={{ flex: 1 }}>
+                        <Select
+                          value={{
+                            label: `${el.name}`,
+                          }}
+                          className="basic"
+                          classNamePrefix="select"
+                          // placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}
+                          styles={{
+                            control: (base, state) => ({
+                              ...base,
+                              flex: 1,
+                              fontWeight: "500",
+                              background: "#d6dbdc",
+                            }),
+                            placeholder: () => ({
+                              color: "black",
+                            }),
+                          }}
+                          isClearable={true}
+                          isSearchable={true}
+                          name={`feed${el.id}`}
+                          options={optionsS}
+                          onChange={(e) => {
+                            const newRatiolist = [...this.state.numberOfRatio];
+                            if (newRatiolist[index]["id"] === el.id) {
+                              newRatiolist[index]["id"] = e.value;
+                              newRatiolist[index]["name"] = e.label;
+                              setTimeout(() => {
+                                this.setState({
+                                  numberOfRatio: newRatiolist,
+                                });
+                              });
+                            }
+                          }}
+                          isClearable={false}
+                          isOptionDisabled={(option) => option.isdisabled}
+                        />
+                      </div>
+                    )}
+                    {!isIteditable && <p>{el.ratio}</p>}
+                    {isIteditable && (
+                      <input
+                        type="number"
+                        min="0"
+                        style={{ flex: 1, margin: 0 }}
+                        onChange={(e) => {
+                          if (
+                            (!isNaN(e.target.value) &&
+                              parseInt(e.target.value) >= 0) ||
+                            e.target.value === ""
+                          ) {
+                            const newRatiolist = [...this.state.numberOfRatio];
+                            if (newRatiolist[index]["id"] === el.id) {
+                              newRatiolist[index]["ratio"] = parseInt(
+                                e.target.value
+                              );
+                              setTimeout(() => {
+                                this.setState({
+                                  numberOfRatio: newRatiolist,
+                                });
+                              });
+                            }
+                          }
+                        }}
+                        name="ratio"
+                        value={el.ratio}
+                      />
+                    )}
+                    {isIteditable && (
+                      <p
+                        className="deleteRatioRow"
+                        onClick={() => {
+                          const newRatiolist = [...this.state.numberOfRatio];
+                          if (newRatiolist[index]["id"] === el.id) {
+                            const newone = newRatiolist.filter(
+                              (elm) => elm.id !== el.id
+                            );
+                            setTimeout(() => {
+                              this.setState({ numberOfRatio: newone });
+                            });
+                          }
+                        }}
+                      >
+                        X
+                      </p>
+                    )}
+                  </div>
+                ))}
+              {isIteditable && (
+                <div className="interval_div">
+                  <button
+                    onClick={() => {
+                      const newRatiolist = [
+                        ...this.state.numberOfRatio,
+                        { id: "", name: "", ratio: "" },
+                      ];
+                      setTimeout(() => {
+                        this.setState({ numberOfRatio: newRatiolist });
+                      });
+                    }}
+                    className="addingButton"
+                  >
+                    Add ratio
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -1402,8 +1869,13 @@ export class SiteDetails extends Component {
 
 const mapStateToProps = (state) => {
   const { SitesListReducer, CategoryReducer, ChartRreducer } = state;
-  const { getSiteDetails, deleteSite, updateSiteDetails, createSite } =
-    SitesListReducer;
+  const {
+    getSitesList,
+    getSiteDetails,
+    deleteSite,
+    updateSiteDetails,
+    createSite,
+  } = SitesListReducer;
   const { getCategoryList, bindCategory, unbindCategory } = CategoryReducer;
   const { specSiteChart } = ChartRreducer;
 
@@ -1416,6 +1888,7 @@ const mapStateToProps = (state) => {
     unbindCategory,
     bindCategory,
     specSiteChart,
+    getSitesList,
   };
 };
 
