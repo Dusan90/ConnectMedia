@@ -2,8 +2,7 @@
 FROM node:16.13 as builder
 WORKDIR /src
 COPY . .
-RUN yarn install --production --silent && \
-  yarn build --silent
+RUN npm ci --silent && npm run --silent build
 
 
 
