@@ -1,4 +1,5 @@
-export const API_URL = process.env.REACT_APP_API_URL_PREFIX;
+export const API_URL = "https://connectmedia.rs/api/v1";
+// export const API_URL = process.env.REACT_APP_API_URL_PREFIX;
 
 //login
 export const GET_LOGIN = "/auth";
