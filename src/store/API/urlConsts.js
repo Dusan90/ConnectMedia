@@ -1,4 +1,8 @@
-export const API_URL = "https://connectmedia.rs/api/v1";
+export const API_URL = (() => {
+  return process.env.REACT_APP_API_URL_PREFIX
+    ? process.env.REACT_APP_API_URL_PREFIX
+    : "/api/v1";
+})();
 // export const API_URL = process.env.REACT_APP_API_URL_PREFIX;
 
 //login
