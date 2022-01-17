@@ -79,6 +79,7 @@ export class WidgetsDetails extends Component {
       viewWidget: "",
       startDate: new Date().setDate(new Date().getDate() - 7),
       endDate: new Date(),
+      blacklisted_tags: null,
     };
   }
 
@@ -261,6 +262,16 @@ export class WidgetsDetails extends Component {
         template: getWidgetDetailsData.data?.template,
         description: getWidgetDetailsData.data?.description,
       });
+      if (getWidgetDetailsData?.data?.blacklisted_tags?.length !== 0) {
+        const tagToshow = getWidgetDetailsData?.data?.blacklisted_tags.map(
+          (el) => el
+        );
+        this.setState({
+          // tagToshow.join('\r\n')
+          blacklisted_tags: tagToshow.join("\r\n").trim(),
+          // .replace(/ /g, "\n"),
+        });
+      }
     }
 
     if (
@@ -326,6 +337,10 @@ export class WidgetsDetails extends Component {
     }
   }
 
+  handleChangeTags = (e) => {
+    this.setState({ blacklisted_tags: e.target.value });
+  };
+
   handleButtonActive = (page) => {
     if (page === "save") {
       const {
@@ -348,6 +363,7 @@ export class WidgetsDetails extends Component {
         encoding,
         template,
         publicValue,
+        blacklisted_tags,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
@@ -371,6 +387,15 @@ export class WidgetsDetails extends Component {
             height,
             encoding,
             template,
+            blacklisted_tags:
+              typeof blacklisted_tags === "string"
+                ? blacklisted_tags
+                    .replace(/\r\n/g, "\r")
+                    .replace(/\n/g, "\r")
+                    .replace(/  +/g, " ")
+                    .trim()
+                    .split(/\r/)
+                : null,
           })
         );
       } else {
@@ -396,6 +421,15 @@ export class WidgetsDetails extends Component {
             height,
             encoding,
             template,
+            blacklisted_tags:
+              typeof blacklisted_tags === "string"
+                ? blacklisted_tags
+                    .replace(/\r\n/g, "\r")
+                    .replace(/\n/g, "\r")
+                    .replace(/  +/g, " ")
+                    .trim()
+                    .split(/\r/)
+                : null,
           })
         );
       }
@@ -1116,6 +1150,31 @@ export class WidgetsDetails extends Component {
                       />
                     )}
                   </div> */}
+                </div>
+                <h1>Tags</h1>
+                <div className="blacklisted_tags_div">
+                  <h4>Blacklisted tags</h4>
+                  {!isIteditable && (
+                    <div>
+                      {WidgetDetailsData?.blacklisted_tags?.map((el) => (
+                        <p style={{ marginBottom: "5px" }}>{el}</p>
+                      ))}
+                    </div>
+                  )}
+                  {isIteditable && (
+                    <textarea
+                      name="blacklisted_tags"
+                      value={
+                        this.state.blacklisted_tags !== null
+                          ? this.state.blacklisted_tags
+                          : ""
+                      }
+                      onChange={(e) => this.handleChangeTags(e)}
+                      // placeholder={siteDetailsData?.feeds?.map(
+                      //   (el) => `${el.url} `
+                      // )}
+                    />
+                  )}
                 </div>
               </div>
             </div>

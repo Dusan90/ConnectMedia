@@ -335,6 +335,71 @@
         padding-bottom: 35px;
         text-align: start;
       }
+      .blacklisted_tags_div {
+        display: flex;
+        padding: 2px 0;
+        border-bottom: 1px solid #bbbbbb;
+        h4 {
+          min-width: 120px;
+          font-weight: normal;
+          font-size: 15px;
+          line-height: 37px;
+          min-height: 42px;
+          display: flex;
+          align-items: center;
+          padding-left: 10px;
+        }
+        p {
+          word-break: break-word;
+          display: flex;
+          align-items: center;
+        }
+        a {
+          word-break: break-word;
+          display: flex;
+          align-items: center;
+          color: #00a3ff;
+        }
+        input {
+          background: #d6dbdc;
+          border-radius: 5px;
+          border: none;
+          outline: none;
+          width: 100%;
+          text-indent: 10px;
+          margin-right: 20px;
+          font-size: 14px;
+          line-height: 37px;
+          &::placeholder {
+            font-size: 14px;
+            line-height: 37px;
+          }
+        }
+        .basic-single {
+          background: #d6dbdc;
+          border-radius: 5px;
+          border: none;
+          outline: none;
+          width: 100%;
+          text-indent: 10px;
+          margin-right: 20px;
+          font-size: 14px;
+          line-height: 37px;
+          &::placeholder {
+            font-size: 14px;
+            line-height: 37px;
+          }
+        }
+
+        &.selectable {
+          select {
+            .options {
+              background: white !important;
+              font-size: 18px;
+            }
+          }
+        }
+      }
       .categoriesDiv {
         .categ_div,
         .copySite_div,
