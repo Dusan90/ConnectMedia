@@ -393,8 +393,11 @@ export class WidgetsDetails extends Component {
                     .replace(/\r\n/g, "\r")
                     .replace(/\n/g, "\r")
                     .replace(/  +/g, " ")
+                    .replace(/, /g, "\r")
+                    .replace(/,/g, "\r")
                     .trim()
                     .split(/\r/)
+                    .filter((el) => el)
                 : null,
           })
         );
@@ -427,8 +430,11 @@ export class WidgetsDetails extends Component {
                     .replace(/\r\n/g, "\r")
                     .replace(/\n/g, "\r")
                     .replace(/  +/g, " ")
+                    .replace(/, /g, "\r")
+                    .replace(/,/g, "\r")
                     .trim()
                     .split(/\r/)
+                    .filter((el) => el)
                 : null,
           })
         );
@@ -1155,9 +1161,22 @@ export class WidgetsDetails extends Component {
                 <div className="blacklisted_tags_div">
                   <h4>Blacklisted tags</h4>
                   {!isIteditable && (
-                    <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                      }}
+                    >
                       {WidgetDetailsData?.blacklisted_tags?.map((el) => (
-                        <p style={{ marginBottom: "5px" }}>{el}</p>
+                        <p
+                          style={{
+                            marginBottom: "5px",
+                            justifySelf: "center",
+                          }}
+                        >
+                          {el}
+                        </p>
                       ))}
                     </div>
                   )}
