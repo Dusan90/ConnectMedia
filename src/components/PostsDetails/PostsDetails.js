@@ -221,6 +221,8 @@ export class PostsDetails extends Component {
         priority_lifetime: getPostDetailsData.data?.priority_lifetime,
         priority: getPostDetailsData.data?.priority,
         first_position: getPostDetailsData.data?.first_position,
+        file: getPostDetailsData.data?.image,
+        date: getPostDetailsData.data?.timestamp,
       });
     }
 
@@ -932,24 +934,20 @@ export class PostsDetails extends Component {
             </div>
             <div className="rightSideDiv">
               <div className="categoriesDiv">
-                <h1>Categories</h1>
+                <h1>Details</h1>
                 <div className="categ_div">
                   <h4>Categories</h4>
-                  {!isIteditable && (
-                    <div className="listOfCateg">
-                      <p>
-                        {postDetailsData?.categories?.map(
-                          (el) => `${el.name} `
-                        )}
-                      </p>
-                    </div>
-                  )}
-                  {isIteditable && (
+
+                  <div className="listOfCateg">
+                    <p>{postDetailsData?.categories?.map((el) => `${el}, `)}</p>
+                  </div>
+
+                  {/* {isIteditable && (
                     <Select
                       className="basic-single"
                       classNamePrefix="select"
                       defaultValue={postDetailsData?.categories?.map((el) => {
-                        return { value: el.id, label: el.name };
+                        return { value: el.id, label: el };
                       })}
                       // isLoading={true}
                       onChange={this.handlePostDetailsCategorie}
@@ -960,7 +958,7 @@ export class PostsDetails extends Component {
                       name="merge"
                       options={categorialOption}
                     />
-                  )}
+                  )} */}
                 </div>
                 <div className="categ_div">
                   <h4>Date</h4>
@@ -978,22 +976,29 @@ export class PostsDetails extends Component {
                       className="dateInput"
                       name="date"
                       onChange={(e) => this.handleChangeInputs(e)}
-                      type="date"
-                      placeholder={
-                        postDetailsData?.timestamp &&
-                        new Date(postDetailsData?.timestamp)
+                      value={
+                        this.state.date &&
+                        `${moment(new Date(this.state.date * 1000)).format(
+                          "YYYY-MM-DD"
+                        )}`
                       }
+                      type="date"
+                      // placeholder={
+                      //   postDetailsData?.timestamp &&
+                      //   new Date(postDetailsData?.timestamp)
+                      // }
                     />
                   )}
                 </div>
                 <div className="categ_div">
                   <h4>Image</h4>
+                  {!isIteditable && <p>{postDetailsData?.image}</p>}
                   {isIteditable && (
                     <input
                       type="text"
                       id="file"
                       onChange={this.handleChangeFile}
-                      placeholder="Enter image url"
+                      value={this.state.file}
                     />
                   )}
                 </div>

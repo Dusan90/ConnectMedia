@@ -409,7 +409,7 @@ function ShortTableRowContainer({
                         className="offeredHashes"
                         ref={inputEl}
                         onBlur={() => handleHashArrowClick(item)}
-                        tabindex="1"
+                        tabIndex="1"
                       >
                         {categoryList.map((el, i) => {
                           return (

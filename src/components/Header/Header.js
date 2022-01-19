@@ -198,7 +198,7 @@ function Header() {
           </p>
           <Bars active={pathname === "/users"} />
         </div>
-        <div className="cont">
+        {/* <div className="cont">
           <p
             onClick={() => handleTabChange("/categories")}
             style={{ opacity: pathname === "/categories" ? "1" : "0.6" }}
@@ -206,7 +206,7 @@ function Header() {
             Categories
           </p>
           <Bars active={pathname === "/categories"} />
-        </div>
+        </div> */}
         <div className="cont">
           <p
             onClick={() => handleTabChange("/totals")}
@@ -338,7 +338,7 @@ function Header() {
           </p>
           <Bars active={pathname === "/users"} />
         </div>
-        <div className="cont">
+        {/* <div className="cont">
           <p
             onClick={() => handleTabChange("/categories")}
             style={{ opacity: pathname === "/categories" ? "1" : "0.6" }}
@@ -346,7 +346,7 @@ function Header() {
             Categories
           </p>
           <Bars active={pathname === "/categories"} />
-        </div>
+        </div> */}
         <div className="cont">
           <p
             onClick={() => handleTabChange("/totals")}

@@ -849,26 +849,34 @@ export class Posts extends Component {
   };
 
   findcategory = (item) => {
-    const mapcategorynames = this.props.getCategoryList?.data?.data.filter(
-      (el) => item.categories.includes(el.id)
-    );
-    let getNames = mapcategorynames?.slice(0, 2).map((element, i) => {
+    // const mapcategorynames = this.props.getCategoryList?.data?.data.filter(
+    //   (el) => item.categories.includes(el.id)
+    // );
+    // let getNames = mapcategorynames?.slice(0, 2).map((element, i) => {
+    //   return (
+    //     <p id="noredirection" key={i}>
+    //       <a
+    //         id="noredirection"
+    //         onClick={() => {
+    //           const newData = item.categories.filter(
+    //             (elm) => elm !== element.id
+    //           );
+    //           this.props.dispatch(
+    //             UpdatePostDetailsActionRequest({
+    //               id: item.id,
+    //               categories: newData,
+    //             })
+    //           );
+    //         }}
+    //       >{`${element.name}, `}</a>
+    //     </p>
+    //   );
+    // });
+
+    let getNames = item?.categories?.slice(0, 2).map((element, i) => {
       return (
         <p id="noredirection" key={i}>
-          <a
-            id="noredirection"
-            onClick={() => {
-              const newData = item.categories.filter(
-                (elm) => elm !== element.id
-              );
-              this.props.dispatch(
-                UpdatePostDetailsActionRequest({
-                  id: item.id,
-                  categories: newData,
-                })
-              );
-            }}
-          >{`${element.name}, `}</a>
+          <a id="noredirection">{`${element}, `}</a>
         </p>
       );
     });
@@ -1214,7 +1222,10 @@ export class Posts extends Component {
                                 onBlur={() => this.handleHashArrowClick(item)}
                                 tabindex="1"
                               >
-                                {getSitesList.data?.data?.map((el, i) => {
+                                {item.categories.map((el) => {
+                                  return <p>{el}</p>;
+                                })}
+                                {/* {getSitesList.data?.data?.map((el, i) => {
                                   if (el.id === item.site) {
                                     return el.categories.map((el, i) => {
                                       return (
@@ -1269,7 +1280,7 @@ export class Posts extends Component {
                                       );
                                     });
                                   }
-                                })}
+                                })} */}
                               </div>
                             )}
                         </>
@@ -1808,7 +1819,10 @@ export class Posts extends Component {
                                   onBlur={() => this.handleHashArrowClick(item)}
                                   tabindex="1"
                                 >
-                                  {getSitesList.data?.data?.map((el, i) => {
+                                  {item.categories.map((el) => {
+                                    return <p>{el}</p>;
+                                  })}
+                                  {/* {getSitesList.data?.data?.map((el, i) => {
                                     if (el.id === item.site) {
                                       return el.categories.map((el, i) => {
                                         return (
@@ -1867,7 +1881,7 @@ export class Posts extends Component {
                                         );
                                       });
                                     }
-                                  })}
+                                  })} */}
                                 </div>
                               )}
                           </>

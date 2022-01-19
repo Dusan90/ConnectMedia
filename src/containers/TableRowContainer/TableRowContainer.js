@@ -518,7 +518,7 @@ function TableRowContainer({
                         <div
                           ref={inputEl}
                           onBlur={() => handleHashArrowClick(item)}
-                          tabindex="1"
+                          tabIndex="1"
                           id="noredirection"
                           className="offeredHashes"
                         >
