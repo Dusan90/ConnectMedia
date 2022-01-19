@@ -54,6 +54,8 @@ export class Posts extends Component {
       loading: true,
       sortName: "",
       sortDir: "",
+      first_position: false,
+      priority: false,
     };
     this.inputEl = React.createRef(null);
   }
@@ -81,6 +83,8 @@ export class Posts extends Component {
         page: this.state.page,
         sortName: this.state.sortName,
         sortDir: this.state.sortDir,
+        priority: this.state.priority,
+        first_position: this.state.first_position,
         status: this.state.selectedStatusSearch
           ? this.state.selectedStatusSearch?.id
           : "",
@@ -252,6 +256,8 @@ export class Posts extends Component {
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
           sortDir: this.state.sortDir,
           status: this.state.selectedStatusSearch
             ? this.state.selectedStatusSearch?.id
@@ -292,6 +298,8 @@ export class Posts extends Component {
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
           sortDir: this.state.sortDir,
           status: this.state.selectedStatusSearch
             ? this.state.selectedStatusSearch?.id
@@ -354,6 +362,8 @@ export class Posts extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
           sortName: this.state.sortName,
           sortDir: this.state.sortDir,
           status: this.state.selectedStatusSearch
@@ -390,6 +400,8 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            priority: this.state.priority,
+            first_position: this.state.first_position,
             sortName: this.state.sortName,
             sortDir: this.state.sortDir,
             status: this.state.selectedStatusSearch
@@ -409,6 +421,39 @@ export class Posts extends Component {
     }
   };
 
+  handleSearchOnMainByprioOrFirst = (value, el) => {
+    if (el === "prio") {
+      this.setState({ priority: value });
+    } else if (el === "first") {
+      this.setState({ first_position: value });
+    }
+
+    setTimeout(() => {
+      this.props.dispatch(
+        GetPostsListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
+        })
+      );
+    });
+  };
+
   handleSortByStatus = (value) => {
     if (this.state.selectedStatusSearch?.id === value || value === "NOTRASH") {
       this.setState({ selectedStatusSearch: "" });
@@ -423,6 +468,8 @@ export class Posts extends Component {
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
           sortDir: this.state.sortDir,
           status: this.state.selectedStatusSearch
             ? this.state.selectedStatusSearch?.id
@@ -452,6 +499,8 @@ export class Posts extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
           sortName: this.state.sortName,
           sortDir: this.state.sortDir,
           status: this.state.selectedStatusSearch
@@ -493,6 +542,8 @@ export class Posts extends Component {
           search: value,
           limit: this.state.countPerPage,
           page: this.state.page,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
           sortName: this.state.sortName,
           sortDir: this.state.sortDir,
           status: this.state.selectedStatusSearch
@@ -612,6 +663,8 @@ export class Posts extends Component {
           search: "",
           limit: this.state.countPerPage,
           page: this.state.page,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
           sortName: sortByClicked,
           sortDir: value,
           status: this.state.selectedStatusSearch
@@ -657,6 +710,8 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            priority: this.state.priority,
+            first_position: this.state.first_position,
             sortName: this.state.sortName,
             sortDir: this.state.sortDir,
             status: this.state.selectedStatusSearch
@@ -683,6 +738,8 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            priority: this.state.priority,
+            first_position: this.state.first_position,
             sortName: this.state.sortName,
             sortDir: this.state.sortDir,
             status: this.state.selectedStatusSearch
@@ -719,6 +776,8 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            priority: this.state.priority,
+            first_position: this.state.first_position,
             sortName: this.state.sortName,
             sortDir: this.state.sortDir,
             status: this.state.selectedStatusSearch
@@ -743,6 +802,8 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            priority: this.state.priority,
+            first_position: this.state.first_position,
             sortName: this.state.sortName,
             sortDir: this.state.sortDir,
             status: this.state.selectedStatusSearch
@@ -767,6 +828,8 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            priority: this.state.priority,
+            first_position: this.state.first_position,
             sortName: this.state.sortName,
             sortDir: this.state.sortDir,
             status: this.state.selectedStatusSearch
@@ -793,6 +856,8 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            priority: this.state.priority,
+            first_position: this.state.first_position,
             sortName: this.state.sortName,
             sortDir: this.state.sortDir,
             status: this.state.selectedStatusSearch
@@ -817,6 +882,8 @@ export class Posts extends Component {
             search: "",
             limit: this.state.countPerPage,
             page: this.state.page,
+            priority: this.state.priority,
+            first_position: this.state.first_position,
             sortName: this.state.sortName,
             sortDir: this.state.sortDir,
             status: this.state.selectedStatusSearch
@@ -906,6 +973,7 @@ export class Posts extends Component {
           handleSearchBar={this.handleSearchBar}
           handleSubtmit={this.handleSubtmit}
           handleSortByStatus={this.handleSortByStatus}
+          handleSearchOnMainByprioOrFirst={this.handleSearchOnMainByprioOrFirst}
           handleHomePageSort={this.handleHomePageSort}
           handlePageChange={this.handlePageChange}
         />

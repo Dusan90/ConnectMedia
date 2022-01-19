@@ -28,6 +28,7 @@ function SearchContainer({
   handleAddSomeMore,
   handleCountPerPage,
   handleSortByStatus,
+  handleSearchOnMainByprioOrFirst,
   handleSubtmit,
   handleSearchBar,
   secondHeaderCustomStyle,
@@ -35,6 +36,8 @@ function SearchContainer({
 }) {
   const [user, setUser] = useState("all users");
   const [statusOn, setStatusOn] = useState("NOTRASH");
+  const [priority, setPriority] = useState(false);
+  const [first, setFirst] = useState(false);
   // const dispatch = useDispatch()
   const location = useLocation();
   const [showUserOptions, setShowUserOptions] = useState(false);
@@ -120,6 +123,20 @@ function SearchContainer({
   const handleAllOptionsCateg = (el) => {
     setCategorie(el);
     handleAllOptionsOnMain(el, "categories");
+  };
+
+  const handleSearchByPrio = (el) => {
+    setPriority(el);
+    setTimeout(() => {
+      handleSearchOnMainByprioOrFirst(el, "prio");
+    });
+  };
+
+  const handleSearchByFirst = (el) => {
+    setFirst(el);
+    setTimeout(() => {
+      handleSearchOnMainByprioOrFirst(el, "first");
+    });
   };
 
   const handleStatusShow = (el) => {
@@ -209,10 +226,43 @@ function SearchContainer({
                 />
               </div>
             )}
-            {pageName !== "USERS" && pageName !== "TOTALS" && (
-              <div className="horizontal" />
+            {pageName === "POSTS" && <div className="horizontal" />}
+            {pageName === "POSTS" && (
+              <div className="box-3">
+                <div
+                  className="mainPrio"
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                  }}
+                >
+                  <div
+                    className="priorityClass"
+                    style={{
+                      borderBottom: priority && "5px solid #94d7e0",
+                    }}
+                    onClick={() => handleSearchByPrio(!priority)}
+                  >
+                    <p style={{ margin: 0 }}>PRIORITY</p>
+                  </div>
+                  {pageName === "POSTS" && <div className="horizontal" />}
+                  <div
+                    className="firstClass"
+                    style={{
+                      borderBottom: first && "5px solid #94d7e0",
+                    }}
+                    onClick={() => handleSearchByFirst(!first)}
+                  >
+                    <p style={{ margin: 0 }}>FIRST</p>
+                  </div>
+                </div>
+              </div>
             )}
-            {pageName !== "USERS" &&
+            {/* {pageName !== "USERS" && pageName !== "TOTALS" && (
+              <div className="horizontal" />
+            )} */}
+            {/* {pageName !== "USERS" &&
               pageName !== "TOTALS" &&
               pageName !== "CATEGORIES" && (
                 <div className="box-3" onClick={handleCategorieShow}>
@@ -228,7 +278,7 @@ function SearchContainer({
                     handleChangeOptions={handleChangeOptionscategorie}
                   />
                 </div>
-              )}
+              )} */}
             {pageName !== "USERS" &&
               pageName !== "CATEGORIES" &&
               pageName !== "TOTALS" && <div className="horizontal" />}

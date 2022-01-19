@@ -200,6 +200,12 @@
         .box-3 {
           min-width: 168px;
           position: relative;
+          .mainPrio {
+            border-radius: 5px;
+            &:hover {
+              cursor: pointer;
+            }
+          }
           .options {
             position: absolute;
             width: 250px;
@@ -224,6 +230,7 @@
               background: gray;
               border-radius: 10px;
             }
+
             div {
               height: 30px;
               p {
