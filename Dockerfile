@@ -2,9 +2,8 @@
 FROM node:16.13 as builder
 WORKDIR /src
 COPY . .
+ENV APP_URL ${APP_URL}
 RUN npm ci --silent && npm run --silent build
-
-
 
 
 # base image, can be upgraded in future
