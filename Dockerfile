@@ -3,7 +3,7 @@ FROM node:16.13 as builder
 WORKDIR /src
 COPY . .
 # ENV APP_URL ${APP_URL}
-RUN cat store/API/urlConsts.js
+RUN cat /src/store/API/urlConsts.js
 RUN npm ci --silent && npm run --silent build
 
 
