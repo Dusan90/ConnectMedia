@@ -2,7 +2,7 @@
 FROM node:16.13 as builder
 WORKDIR /src
 COPY . .
-ENV APP_URL ${APP_URL}
+# ENV APP_URL ${APP_URL}
 RUN npm ci --silent && npm run --silent build
 
 
@@ -21,4 +21,4 @@ RUN echo healthcheck > /app/providus.html
 COPY --from=builder /src/build /app
 
 # actually configured on Jenkins Deploy job
-ENV APP_URL ${APP_URL}
+# ENV APP_URL ${APP_URL}
