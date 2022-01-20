@@ -292,50 +292,73 @@ export class Categories extends Component {
     });
   };
 
+  handleAllView = (value) => {
+    this.setState({ countPerPage: parseInt(value) });
+    setTimeout(() => {
+      this.setState({ page: 1 });
+      this.props.dispatch(
+        GetCategoryListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: "",
+          category: "",
+          site: this.state.selectedSitesSearch
+            ? this.state.selectedSitesSearch?.id
+            : "",
+          state: "",
+        })
+      );
+    });
+  };
+
   handleCountPerPage = (e) => {
-    if (e.target.value === "" || e.target.value === "0") {
-      this.setState({ countPerPage: 10 });
-      setTimeout(() => {
-        this.setState({ page: 1 });
-        this.props.dispatch(
-          GetCategoryListActionRequest({
-            search: "",
-            limit: this.state.countPerPage,
-            page: this.state.page,
-            sortName: this.state.sortName,
-            sortDir: this.state.sortDir,
-            status: "",
-            user: "",
-            category: "",
-            site: this.state.selectedSitesSearch
-              ? this.state.selectedSitesSearch?.id
-              : "",
-            state: "",
-          })
-        );
-      });
-    } else {
-      this.setState({ countPerPage: parseInt(e.target.value) });
-      setTimeout(() => {
-        this.setState({ page: 1 });
-        this.props.dispatch(
-          GetCategoryListActionRequest({
-            search: "",
-            limit: this.state.countPerPage,
-            page: this.state.page,
-            sortName: this.state.sortName,
-            sortDir: this.state.sortDir,
-            status: "",
-            user: "",
-            category: "",
-            site: this.state.selectedSitesSearch
-              ? this.state.selectedSitesSearch?.id
-              : "",
-            state: "",
-          })
-        );
-      });
-    }
+    // if (e.target.value === "" || e.target.value === "0") {
+    //   this.setState({ countPerPage: 10 });
+    //   setTimeout(() => {
+    //     this.setState({ page: 1 });
+    //     this.props.dispatch(
+    //       GetCategoryListActionRequest({
+    //         search: "",
+    //         limit: this.state.countPerPage,
+    //         page: this.state.page,
+    //         sortName: this.state.sortName,
+    //         sortDir: this.state.sortDir,
+    //         status: "",
+    //         user: "",
+    //         category: "",
+    //         site: this.state.selectedSitesSearch
+    //           ? this.state.selectedSitesSearch?.id
+    //           : "",
+    //         state: "",
+    //       })
+    //     );
+    //   });
+    // } else {
+    this.setState({ countPerPage: parseInt(e.target.value) });
+    setTimeout(() => {
+      this.setState({ page: 1 });
+      this.props.dispatch(
+        GetCategoryListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: "",
+          category: "",
+          site: this.state.selectedSitesSearch
+            ? this.state.selectedSitesSearch?.id
+            : "",
+          state: "",
+        })
+      );
+    });
+    // }
   };
 
   handleAddSomeMore = () => {
@@ -422,6 +445,7 @@ export class Categories extends Component {
           handleAddSomeMore={this.handleAddSomeMore}
           state={this.state}
           handleCountPerPage={this.handleCountPerPage}
+          handleAllView={this.handleAllView}
           pageName={"CATEGORIES"}
           handleSearchBar={this.handleSearchBar}
           handleSubtmit={this.handleSubtmit}

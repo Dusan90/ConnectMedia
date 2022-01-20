@@ -546,60 +546,88 @@ export class Home extends Component {
     });
   };
 
+  handleAllView = (value) => {
+    this.setState({ countPerPage: parseInt(value) });
+    setTimeout(() => {
+      this.setState({ page: 1 });
+
+      this.props.dispatch(
+        GetSitesListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+        })
+      );
+    });
+  };
+
   handleCountPerPage = (e) => {
-    if (e.target.value === "" || e.target.value === "0") {
-      this.setState({ countPerPage: 10 });
-      setTimeout(() => {
-        this.setState({ page: 1 });
+    // if (e.target.value === "" || e.target.value === "0") {
+    //   this.setState({ countPerPage: 10 });
+    //   setTimeout(() => {
+    //     this.setState({ page: 1 });
 
-        this.props.dispatch(
-          GetSitesListActionRequest({
-            search: "",
-            limit: this.state.countPerPage,
-            page: this.state.page,
-            sortName: this.state.sortName,
-            sortDir: this.state.sortDir,
-            status: "",
-            user: this.state.selectedUserSearch
-              ? this.state.selectedUserSearch?.id
-              : "",
-            category: this.state.selectedCategorieSearch
-              ? this.state.selectedCategorieSearch?.id
-              : "",
-            site: "",
-            state: this.state.selectedStatusSearch
-              ? this.state.selectedStatusSearch?.id
-              : "",
-          })
-        );
-      });
-    } else {
-      this.setState({ countPerPage: parseInt(e.target.value) });
-      setTimeout(() => {
-        this.setState({ page: 1 });
+    //     this.props.dispatch(
+    //       GetSitesListActionRequest({
+    //         search: "",
+    //         limit: this.state.countPerPage,
+    //         page: this.state.page,
+    //         sortName: this.state.sortName,
+    //         sortDir: this.state.sortDir,
+    //         status: "",
+    //         user: this.state.selectedUserSearch
+    //           ? this.state.selectedUserSearch?.id
+    //           : "",
+    //         category: this.state.selectedCategorieSearch
+    //           ? this.state.selectedCategorieSearch?.id
+    //           : "",
+    //         site: "",
+    //         state: this.state.selectedStatusSearch
+    //           ? this.state.selectedStatusSearch?.id
+    //           : "",
+    //       })
+    //     );
+    //   });
+    // } else {
+    this.setState({ countPerPage: parseInt(e.target.value) });
+    setTimeout(() => {
+      this.setState({ page: 1 });
 
-        this.props.dispatch(
-          GetSitesListActionRequest({
-            search: "",
-            limit: this.state.countPerPage,
-            page: this.state.page,
-            sortName: this.state.sortName,
-            sortDir: this.state.sortDir,
-            status: "",
-            user: this.state.selectedUserSearch
-              ? this.state.selectedUserSearch?.id
-              : "",
-            category: this.state.selectedCategorieSearch
-              ? this.state.selectedCategorieSearch?.id
-              : "",
-            site: "",
-            state: this.state.selectedStatusSearch
-              ? this.state.selectedStatusSearch?.id
-              : "",
-          })
-        );
-      });
-    }
+      this.props.dispatch(
+        GetSitesListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch?.id
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+        })
+      );
+    });
+    // }
   };
   handleSearchOnMainPage = (el, secondElement) => {
     if (this.props.location?.data?.searchByuser && !secondElement) {
@@ -800,6 +828,7 @@ export class Home extends Component {
           handleSearchOnMainPage={this.handleSearchOnMainPage}
           state={this.state}
           handleCountPerPage={this.handleCountPerPage}
+          handleAllView={this.handleAllView}
           pageName={"SITES"}
           handleSearchBar={this.handleSearchBar}
           handleSubtmit={this.handleSubtmit}

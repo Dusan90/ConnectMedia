@@ -699,64 +699,94 @@ export class Posts extends Component {
     });
   };
 
+  handleAllView = (value) => {
+    this.setState({ countPerPage: parseInt(value) });
+    setTimeout(() => {
+      this.setState({ page: 1 });
+
+      this.props.dispatch(
+        GetPostsListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
+        })
+      );
+    });
+  };
+
   handleCountPerPage = (e) => {
-    if (e.target.value === "" || e.target.value === "0") {
-      this.setState({ countPerPage: 10 });
-      setTimeout(() => {
-        this.setState({ page: 1 });
+    // if (e.target.value === "" || e.target.value === "0") {
+    //   this.setState({ countPerPage: 10 });
+    //   setTimeout(() => {
+    //     this.setState({ page: 1 });
 
-        this.props.dispatch(
-          GetPostsListActionRequest({
-            search: "",
-            limit: this.state.countPerPage,
-            page: this.state.page,
-            priority: this.state.priority,
-            first_position: this.state.first_position,
-            sortName: this.state.sortName,
-            sortDir: this.state.sortDir,
-            status: this.state.selectedStatusSearch
-              ? this.state.selectedStatusSearch?.id
-              : "",
-            user: "",
-            category: this.state.selectedCategorieSearch
-              ? this.state.selectedCategorieSearch?.id
-              : "",
-            site: this.state.selectedSiteSearch
-              ? this.state.selectedSiteSearch?.id
-              : "",
-            state: "",
-          })
-        );
-      });
-    } else {
-      this.setState({ countPerPage: parseInt(e.target.value) });
-      setTimeout(() => {
-        this.setState({ page: 1 });
+    //     this.props.dispatch(
+    //       GetPostsListActionRequest({
+    //         search: "",
+    //         limit: this.state.countPerPage,
+    //         page: this.state.page,
+    //         priority: this.state.priority,
+    //         first_position: this.state.first_position,
+    //         sortName: this.state.sortName,
+    //         sortDir: this.state.sortDir,
+    //         status: this.state.selectedStatusSearch
+    //           ? this.state.selectedStatusSearch?.id
+    //           : "",
+    //         user: "",
+    //         category: this.state.selectedCategorieSearch
+    //           ? this.state.selectedCategorieSearch?.id
+    //           : "",
+    //         site: this.state.selectedSiteSearch
+    //           ? this.state.selectedSiteSearch?.id
+    //           : "",
+    //         state: "",
+    //       })
+    //     );
+    //   });
+    // } else {
+    this.setState({ countPerPage: parseInt(e.target.value) });
+    setTimeout(() => {
+      this.setState({ page: 1 });
 
-        this.props.dispatch(
-          GetPostsListActionRequest({
-            search: "",
-            limit: this.state.countPerPage,
-            page: this.state.page,
-            priority: this.state.priority,
-            first_position: this.state.first_position,
-            sortName: this.state.sortName,
-            sortDir: this.state.sortDir,
-            status: this.state.selectedStatusSearch
-              ? this.state.selectedStatusSearch?.id
-              : "",
-            user: "",
-            category: this.state.selectedCategorieSearch
-              ? this.state.selectedCategorieSearch?.id
-              : "",
-            site: this.state.selectedSiteSearch
-              ? this.state.selectedSiteSearch?.id
-              : "",
-            state: "",
-          })
-        );
-      });
-    }
+      this.props.dispatch(
+        GetPostsListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
+        })
+      );
+    });
+    // }
   };
 
   handleAddSomeMore = () => {
@@ -969,6 +999,7 @@ export class Posts extends Component {
           handleAddSomeMore={this.handleAddSomeMore}
           state={this.state}
           handleCountPerPage={this.handleCountPerPage}
+          handleAllView={this.handleAllView}
           pageName={"POSTS"}
           handleSearchBar={this.handleSearchBar}
           handleSubtmit={this.handleSubtmit}

@@ -27,6 +27,7 @@ function SearchContainer({
   state,
   handleAddSomeMore,
   handleCountPerPage,
+  handleAllView,
   handleSortByStatus,
   handleSearchOnMainByprioOrFirst,
   handleSubtmit,
@@ -233,28 +234,33 @@ function SearchContainer({
                   className="mainPrio"
                   style={{
                     width: "100%",
-                    display: "flex",
-                    justifyContent: "space-evenly",
+                    // display: "flex",
+                    // justifyContent: "space-evenly",
                   }}
                 >
                   <div
                     className="priorityClass"
                     style={{
                       borderBottom: priority && "5px solid #94d7e0",
+                      borderRight: "1px solid #94d7e0",
+                      width: "100%",
                     }}
                     onClick={() => handleSearchByPrio(!priority)}
                   >
-                    <p style={{ margin: 0 }}>PRIORITY</p>
+                    <p style={{ margin: "0 auto", padding: "0 5px 0 0" }}>
+                      PRIORITY
+                    </p>
                   </div>
-                  {pageName === "POSTS" && <div className="horizontal" />}
+                  {/* {pageName === "POSTS" && <div className="horizontal" />} */}
                   <div
                     className="firstClass"
                     style={{
                       borderBottom: first && "5px solid #94d7e0",
+                      width: "100%",
                     }}
                     onClick={() => handleSearchByFirst(!first)}
                   >
-                    <p style={{ margin: 0 }}>FIRST</p>
+                    <p style={{ margin: "0 auto" }}>FIRST</p>
                   </div>
                 </div>
               </div>
@@ -372,12 +378,20 @@ function SearchContainer({
             <div>
               <p
                 style={{ fontSize: "13px", textAlign: "center", margin: 0 }}
-              >{`${page * state.countPerPage - state.countPerPage} - ${
-                state.countPerPage * page
+              >{`${
+                isNaN(state.countPerPage)
+                  ? 0
+                  : page * state.countPerPage - state.countPerPage
+              } - ${
+                isNaN(state.countPerPage) ? 0 : state.countPerPage * page
               } of ${state.info?.total}`}</p>
             </div>
 
-            <input type="number" onChange={(e) => handleCountPerPage(e)} />
+            <input
+              type="number"
+              onChange={(e) => handleCountPerPage(e)}
+              value={state.countPerPage}
+            />
             <p>per page </p>
             <Pagination
               activePage={page}
@@ -392,6 +406,9 @@ function SearchContainer({
               nextPageText={<img src={arrowRight} alt="arrowRight" />}
               itemClass={"mainLinkClass"}
             />
+            <button onClick={() => handleAllView(state.info?.total)}>
+              All
+            </button>
           </div>
         </div>
       )}

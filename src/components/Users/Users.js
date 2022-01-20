@@ -276,36 +276,52 @@ export class Users extends Component {
     }
   };
 
+  handleAllView = (value) => {
+    this.setState({ countPerPage: parseInt(value) });
+    setTimeout(() => {
+      this.setState({ page: 1 });
+      this.props.dispatch(
+        GetUsersListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+        })
+      );
+    });
+  };
+
   handleCountPerPage = (e) => {
-    if (e.target.value === "" || e.target.value === "0") {
-      this.setState({ countPerPage: 10 });
-      setTimeout(() => {
-        this.setState({ page: 1 });
-        this.props.dispatch(
-          GetUsersListActionRequest({
-            search: "",
-            limit: this.state.countPerPage,
-            page: this.state.page,
-            sortName: this.state.sortName,
-            sortDir: this.state.sortDir,
-          })
-        );
-      });
-    } else {
-      this.setState({ countPerPage: parseInt(e.target.value) });
-      setTimeout(() => {
-        this.setState({ page: 1 });
-        this.props.dispatch(
-          GetUsersListActionRequest({
-            search: "",
-            limit: this.state.countPerPage,
-            page: this.state.page,
-            sortName: this.state.sortName,
-            sortDir: this.state.sortDir,
-          })
-        );
-      });
-    }
+    // if (e.target.value === "" || e.target.value === "0") {
+    //   this.setState({ countPerPage: 10 });
+    //   setTimeout(() => {
+    //     this.setState({ page: 1 });
+    //     this.props.dispatch(
+    //       GetUsersListActionRequest({
+    //         search: "",
+    //         limit: this.state.countPerPage,
+    //         page: this.state.page,
+    //         sortName: this.state.sortName,
+    //         sortDir: this.state.sortDir,
+    //       })
+    //     );
+    //   });
+    // } else {
+    this.setState({ countPerPage: parseInt(e.target.value) });
+    setTimeout(() => {
+      this.setState({ page: 1 });
+      this.props.dispatch(
+        GetUsersListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+        })
+      );
+    });
+    // }
   };
 
   handleAddSomeMore = () => {
@@ -346,6 +362,7 @@ export class Users extends Component {
           pageName={"USERS"}
           state={this.state}
           handleCountPerPage={this.handleCountPerPage}
+          handleAllView={this.handleAllView}
           handleSearchBar={this.handleSearchBar}
           handleSubtmit={this.handleSubtmit}
           handlePageChange={this.handlePageChange}
