@@ -2,7 +2,7 @@
 FROM node:16.13 as builder
 WORKDIR /src
 COPY . .
-# ENV APP_URL ${APP_URL}
+
 RUN npm ci --silent && npm run --silent build
 
 
@@ -16,9 +16,10 @@ COPY nginx.conf /etc/nginx/nginx.conf
 RUN mkdir -p /app
 # make simple healthcheck file, used by container orchestrator
 RUN echo healthcheck > /app/providus.html
+RUN date > /app/build.txt
 
 # copying angular app from builder image to it's own directory
 COPY --from=builder /src/build /app
 
 # actually configured on Jenkins Deploy job
-# ENV APP_URL ${APP_URL}
+ENV APP_URL ${APP_URL}
