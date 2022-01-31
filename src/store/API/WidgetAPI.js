@@ -47,6 +47,7 @@ const createWidget = async (payload) => {
     encoding: payload.encoding,
     template: payload.template,
     blacklisted_tags: payload.blacklisted_tags,
+    blacklisted_sites: payload.blacklisted_sites,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
@@ -80,6 +81,7 @@ const updateWidgetDetails = async (payload) => {
     encoding: payload.encoding,
     template: payload.template,
     blacklisted_tags: payload.blacklisted_tags,
+    blacklisted_sites: payload.blacklisted_sites,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)

@@ -326,7 +326,7 @@ export class PostsDetails extends Component {
             description,
             author,
             content,
-            timestamp: date ? date : new Date().getTime(),
+            timestamp: date ? date : Math.round(new Date().getTime() / 1000),
             site,
             status: dataState,
             categories,
@@ -631,9 +631,9 @@ export class PostsDetails extends Component {
           </>
         )}
         {tabClicked !== "statsDiv" && (
-          <h2
-            style={{ marginBottom: "20px" }}
-          >{`Details for post ${postDetailsData?.title}`}</h2>
+          <h2 style={{ marginBottom: "20px" }}>{`Details for post ${
+            postDetailsData?.title ? postDetailsData?.title : ""
+          }`}</h2>
         )}
         {tabClicked !== "statsDiv" && (
           <div className="mainSiteInfoDiv">

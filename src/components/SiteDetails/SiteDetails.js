@@ -838,9 +838,9 @@ export class SiteDetails extends Component {
           </>
         )}
         {tabClicked !== "statsDiv" && (
-          <h2
-            style={{ marginBottom: "20px" }}
-          >{`Details for site ${siteDetailsData?.name}`}</h2>
+          <h2 style={{ marginBottom: "20px" }}>{`Details for site ${
+            siteDetailsData?.name ? siteDetailsData?.name : ""
+          }`}</h2>
         )}
         {tabClicked !== "statsDiv" && (
           <div className="mainSiteInfoDiv">
@@ -1446,7 +1446,7 @@ export class SiteDetails extends Component {
               </div>
             </div>
             <div className="rightSideDiv">
-              <div className="categoriesDiv">
+              {/* <div className="categoriesDiv">
                 <h1>Categories</h1>
                 <div className="categ_div">
                   <h4>Categories</h4>
@@ -1479,8 +1479,8 @@ export class SiteDetails extends Component {
                       onChange={(e) => this.handleOption(e)}
                     />
                   )}
-                </div>
-                {/* <div className="copySite_div">
+                </div> */}
+              {/* <div className="copySite_div">
                   <h4>Copy from site</h4>
                   {!isIteditable && (
                     <p> {`${siteDetailsData?.copy_from_site}`}</p>
@@ -1510,7 +1510,7 @@ export class SiteDetails extends Component {
                     </div>
                   )}
                 </div> */}
-                {/* <div className="guessRemote_div">
+              {/* <div className="guessRemote_div">
                   <h4>
                     Guess remote category from url - enter the number of the
                     path segment
@@ -1525,7 +1525,7 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div> */}
-                {/* <div className="indexTag_div">
+              {/* <div className="indexTag_div">
                   <h4>
                     Index of tag for mapping <br /> (1=first,2=seocnd,..)
                   </h4>
@@ -1539,8 +1539,8 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div> */}
-              </div>
-              <div className="feedCategoriesDiv">
+              {/* </div> */}
+              {/* <div className="feedCategoriesDiv">
                 <h1>
                   Feed -<span>{`>`}</span> Category
                 </h1>
@@ -1586,17 +1586,17 @@ export class SiteDetails extends Component {
                               {/* <select>
                                           <option className='options' value="">none selected</option>
                                       </select> */}
-                              {/* <img src={xButton} alt="x" /> */}
-                            </div>
+              {/* <img src={xButton} alt="x" /> */}
+              {/* </div>
                           )}
                         </div>
                       );
                     }
                   })}
-              </div>
+              </div> */}
 
-              <div className="remoteCategoriesDiv">
-                {/* <div className="divButtonsmaping">
+              {/* <div className="remoteCategoriesDiv"> */}
+              {/* <div className="divButtonsmaping">
                   <h1>
                     Remote Category -<span>{`>`}</span> Category
                   </h1>
@@ -1633,7 +1633,7 @@ export class SiteDetails extends Component {
                     </div>
                   )}
                 </div> */}
-                {/* <table>
+              {/* <table>
                   <thead>
                     <tr>
                       <th>
@@ -1708,15 +1708,15 @@ export class SiteDetails extends Component {
                                     }
                                   />
                                   {/* <img src={xButton} onClick={() => handleDelete} alt="x" /> */}
-                {/* </div>
+              {/* </div>
                               </td>
                             )}
                           </tr>
                         );
                       })}
                   </tbody> */}
-                {/* // </table> */}
-              </div>
+              {/* // </table> */}
+              {/* </div> */}
               <h1>Ratio</h1>
               {this.state.numberOfRatio.length !== 0 &&
                 this.state.numberOfRatio.map((el, index) => (

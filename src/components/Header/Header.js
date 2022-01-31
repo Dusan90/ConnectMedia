@@ -65,6 +65,10 @@ function Header() {
     if (!logOutLoading && !logOutError && logOutData) {
       sessionStorage.removeItem("token");
       sessionStorage.removeItem("isLoged");
+      sessionStorage.removeItem("filterPosts");
+      sessionStorage.removeItem("filterWidgets");
+      sessionStorage.removeItem("filterSites");
+
       history.push("/");
     }
   }, [LoginReducer.logOut]);

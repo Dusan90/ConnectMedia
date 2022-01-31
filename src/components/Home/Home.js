@@ -26,7 +26,7 @@ export class Home extends Component {
       info: "",
       filteredDate: "",
       tipeSearch: "",
-      inputValue: null,
+      inputValue: "",
       checkboxList: [],
       hashesArrowDown: false,
       hashesArrowWitchIsOn: "",
@@ -65,26 +65,59 @@ export class Home extends Component {
   //   };
 
   componentDidMount() {
-    this.props.dispatch(
-      GetSitesListActionRequest({
-        search: "",
-        limit: this.state.countPerPage,
-        page: this.state.page,
-        sortName: this.state.sortName,
-        sortDir: this.state.sortDir,
-        status: "",
-        user: this.state.selectedUserSearch
-          ? this.state.selectedUserSearch?.id
-          : "",
-        category: this.state.selectedCategorieSearch
-          ? this.state.selectedCategorieSearch?.id
-          : "",
-        site: "",
-        state: this.state.selectedStatusSearch
-          ? this.state.selectedStatusSearch?.id
-          : "",
-      })
-    );
+    const dataa = JSON.parse(sessionStorage.getItem("filterSites"));
+    if (dataa) {
+      this.setState({
+        inputValue: dataa.search ? dataa.search : "",
+        countPerPage: parseInt(dataa.limit),
+        page: parseInt(dataa.page) + 1,
+        sortName: dataa.sort_key,
+        sortDir: dataa.sort_dir,
+        selectedStatusSearch: dataa.filters?.state
+          ? { id: parseInt(dataa.filters?.state) }
+          : null,
+        selectedUserSearch: dataa.filters?.owner
+          ? { id: parseInt(dataa.filters?.owner) }
+          : null,
+      });
+      this.props.dispatch(
+        GetSitesListActionRequest({
+          search: dataa.search ? dataa.search : "",
+          limit: dataa.limit,
+          page: parseInt(dataa.page) + 1,
+          sortName: dataa.sort_key,
+          sortDir: dataa.sort_dir,
+          status: "",
+          user: dataa.filters?.owner ? dataa.filters?.owner : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: dataa.filters?.state ? dataa.filters?.state : "",
+        })
+      );
+    } else {
+      this.props.dispatch(
+        GetSitesListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: "",
+          user: this.state.selectedUserSearch
+            ? this.state.selectedUserSearch
+            : "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: "",
+          state: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+        })
+      );
+    }
     this.props.dispatch(
       GetCategoryListActionRequest({
         search: "",
@@ -173,7 +206,7 @@ export class Home extends Component {
       );
       this.props.dispatch(
         GetSitesListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -226,7 +259,7 @@ export class Home extends Component {
       );
       this.props.dispatch(
         GetSitesListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -273,12 +306,20 @@ export class Home extends Component {
           info: getSitesListData?.info,
           loading: false,
         });
+        sessionStorage.setItem(
+          "filterSites",
+          JSON.stringify(getSitesListData?.info)
+        );
       } else {
         this.setState({
           data: getSitesListData?.data,
           info: getSitesListData?.info,
           loading: false,
         });
+        sessionStorage.setItem(
+          "filterSites",
+          JSON.stringify(getSitesListData?.info)
+        );
       }
       if (
         selectedStatusSearch === null &&
@@ -321,7 +362,7 @@ export class Home extends Component {
       this.setState({ confirmMessage: false });
       this.props.dispatch(
         GetSitesListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -348,7 +389,7 @@ export class Home extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetSitesListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -379,7 +420,7 @@ export class Home extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetSitesListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -416,7 +457,7 @@ export class Home extends Component {
 
   handleSearchBar = (e) => {
     const value = e.target.value.toLowerCase();
-    // this.setState({ inputValue: value });
+    this.setState({ inputValue: value });
     setTimeout(() => {
       this.props.dispatch(
         GetSitesListActionRequest({
@@ -518,7 +559,7 @@ export class Home extends Component {
 
       this.props.dispatch(
         GetSitesListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: sortByClicked,
@@ -553,7 +594,7 @@ export class Home extends Component {
 
       this.props.dispatch(
         GetSitesListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -608,7 +649,7 @@ export class Home extends Component {
 
       this.props.dispatch(
         GetSitesListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -635,7 +676,7 @@ export class Home extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetSitesListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             sortName: this.state.sortName,
@@ -659,7 +700,7 @@ export class Home extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetSitesListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             sortName: this.state.sortName,
@@ -683,7 +724,7 @@ export class Home extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetSitesListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             sortName: this.state.sortName,
@@ -709,7 +750,7 @@ export class Home extends Component {
           setTimeout(() => {
             this.props.dispatch(
               GetSitesListActionRequest({
-                search: "",
+                search: this.state.inputValue,
                 limit: this.state.countPerPage,
                 page: this.state.page,
                 sortName: this.state.sortName,
@@ -733,7 +774,7 @@ export class Home extends Component {
           setTimeout(() => {
             this.props.dispatch(
               GetSitesListActionRequest({
-                search: "",
+                search: this.state.inputValue,
                 limit: this.state.countPerPage,
                 page: this.state.page,
                 sortName: this.state.sortName,
@@ -784,7 +825,7 @@ export class Home extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetSitesListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,

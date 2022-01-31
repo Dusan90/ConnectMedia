@@ -93,7 +93,7 @@ export class Login extends Component {
           />
           <div className="buttonAndATagDiv">
             <LogOutButton
-              label={"Sing in"}
+              label={"Sign in"}
               handleClick={this.handleSubmit}
               colorization={"outOFBlure"}
               customStyles={{
