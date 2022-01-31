@@ -80,6 +80,7 @@ export class WidgetsDetails extends Component {
       startDate: new Date().setDate(new Date().getDate() - 7),
       endDate: new Date(),
       blacklisted_tags: null,
+      numberOfBlockSites: [],
     };
   }
 
@@ -261,6 +262,7 @@ export class WidgetsDetails extends Component {
         height: getWidgetDetailsData.data?.height,
         template: getWidgetDetailsData.data?.template,
         description: getWidgetDetailsData.data?.description,
+        numberOfBlockSites: getWidgetDetailsData.data?.blacklisted_sites,
       });
       if (getWidgetDetailsData?.data?.blacklisted_tags?.length !== 0) {
         const tagToshow = getWidgetDetailsData?.data?.blacklisted_tags.map(
@@ -364,6 +366,7 @@ export class WidgetsDetails extends Component {
         template,
         publicValue,
         blacklisted_tags,
+        numberOfBlockSites,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
@@ -399,6 +402,7 @@ export class WidgetsDetails extends Component {
                     .split(/\r/)
                     .filter((el) => el)
                 : null,
+            blacklisted_sites: numberOfBlockSites,
           })
         );
       } else {
@@ -436,6 +440,7 @@ export class WidgetsDetails extends Component {
                     .split(/\r/)
                     .filter((el) => el)
                 : null,
+            blacklisted_sites: numberOfBlockSites,
           })
         );
       }
@@ -494,13 +499,26 @@ export class WidgetsDetails extends Component {
       same_window,
       ignore_impressions,
       siteOptions,
+      numberOfBlockSites,
     } = this.state;
 
     const categorialOption = categoryList?.map((el) => {
       return { value: el.id, label: el.name };
     });
 
-    console.log(site);
+    const optionsSelection = numberOfBlockSites.map((el) => {
+      return el.id;
+    });
+
+    const optionsS = siteOptions.map((el) => {
+      if (optionsSelection.includes(el.value)) {
+        return { ...el, isdisabled: true };
+      } else {
+        return el;
+      }
+    });
+
+    console.log(this.state);
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget
@@ -718,9 +736,9 @@ export class WidgetsDetails extends Component {
           </>
         )}
         {tabClicked !== "statsDiv" && tabClicked !== "viewDiv" && (
-          <h2
-            style={{ marginBottom: "20px" }}
-          >{`Details for widget ${WidgetDetailsData?.name}`}</h2>
+          <h2 style={{ marginBottom: "20px" }}>{`Details for widget ${
+            WidgetDetailsData?.name ? WidgetDetailsData?.name : ""
+          }`}</h2>
         )}
         {tabClicked !== "statsDiv" &&
           tabClicked !== "embedDiv" &&
@@ -1195,6 +1213,127 @@ export class WidgetsDetails extends Component {
                     />
                   )}
                 </div>
+                <h1>Block list</h1>
+                {this.state.numberOfBlockSites.length !== 0 &&
+                  this.state.numberOfBlockSites.map((el, index) => (
+                    <div
+                      className="interval_div"
+                      style={{ gap: isIteditable && "10px" }}
+                      key={index}
+                    >
+                      {!isIteditable && <h4>{el.name}</h4>}
+                      {isIteditable && (
+                        <div style={{ flex: 1 }}>
+                          <Select
+                            value={{
+                              label: `${el.name}`,
+                            }}
+                            className="basic"
+                            classNamePrefix="select"
+                            // placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}
+                            styles={{
+                              control: (base, state) => ({
+                                ...base,
+                                flex: 1,
+                                fontWeight: "500",
+                                background: "#d6dbdc",
+                              }),
+                              placeholder: () => ({
+                                color: "black",
+                              }),
+                            }}
+                            isClearable={true}
+                            isSearchable={true}
+                            name={`feed${el.id}`}
+                            options={optionsS}
+                            onChange={(e) => {
+                              const newlist = [
+                                ...this.state.numberOfBlockSites,
+                              ];
+                              if (newlist[index]["id"] === el.id) {
+                                newlist[index]["id"] = e.value;
+                                newlist[index]["name"] = e.label;
+                                setTimeout(() => {
+                                  this.setState({
+                                    numberOfBlockSites: newlist,
+                                  });
+                                });
+                              }
+                            }}
+                            isClearable={false}
+                            isOptionDisabled={(option) => option.isdisabled}
+                          />
+                        </div>
+                      )}
+                      {/* {!isIteditable && <p>{el.ratio}</p>} */}
+                      {/* {isIteditable && (
+                        <input
+                          type="number"
+                          min="0"
+                          style={{ flex: 1, margin: 0 }}
+                          onChange={(e) => {
+                            if (
+                              (!isNaN(e.target.value) &&
+                                parseInt(e.target.value) >= 0) ||
+                              e.target.value === ""
+                            ) {
+                              const newlist = [
+                                ...this.state.numberOfBlockSites,
+                              ];
+                              if (newlist[index]["id"] === el.id) {
+                                newlist[index]["ratio"] = parseInt(
+                                  e.target.value
+                                );
+                                setTimeout(() => {
+                                  this.setState({
+                                    numberOfBlockSites: newlist,
+                                  });
+                                });
+                              }
+                            }
+                          }}
+                          name="ratio"
+                          value={el.ratio}
+                        />
+                      )} */}
+                      {isIteditable && (
+                        <p
+                          className="deleteRatioRow"
+                          onClick={() => {
+                            const newlist = [...this.state.numberOfBlockSites];
+                            if (newlist[index]["id"] === el.id) {
+                              const newone = newlist.filter(
+                                (elm) => elm.id !== el.id
+                              );
+                              setTimeout(() => {
+                                this.setState({ numberOfBlockSites: newone });
+                              });
+                            }
+                          }}
+                        >
+                          X
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                {isIteditable && (
+                  <div className="interval_div">
+                    <button
+                      onClick={() => {
+                        const newlist = [
+                          ...this.state.numberOfBlockSites,
+                          { id: "", name: "" },
+                        ];
+                        setTimeout(() => {
+                          this.setState({ numberOfBlockSites: newlist });
+                        });
+                      }}
+                      className="addingButton"
+                    >
+                      Add site
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}
