@@ -95,28 +95,30 @@ export class Posts extends Component {
           ? dataa.filters?.first_position
           : null,
       });
-      this.props.dispatch(
-        GetPostsListActionRequest({
-          search: dataa.search ? dataa.search : "",
-          limit: dataa.limit,
-          page: parseInt(dataa.page) + 1,
-          sortName: dataa.sort_key,
-          sortDir: dataa.sort_dir,
-          priority: dataa.filters?.priority ? dataa.filters?.priority : "",
-          first_position: dataa.filters?.first_position
-            ? dataa.filters?.first_position
-            : "",
-          status: this.state.selectedStatusSearch
-            ? this.state.selectedStatusSearch?.id
-            : "",
-          user: "",
-          category: this.state.selectedCategorieSearch
-            ? this.state.selectedCategorieSearch?.id
-            : "",
-          site: dataa.filters?.site ? dataa.filters?.site : "",
-          state: "",
-        })
-      );
+      setTimeout(() => {
+        this.props.dispatch(
+          GetPostsListActionRequest({
+            search: dataa.search ? dataa.search : "",
+            limit: dataa.limit,
+            page: parseInt(dataa.page) + 1,
+            sortName: dataa.sort_key,
+            sortDir: dataa.sort_dir,
+            priority: dataa.filters?.priority ? dataa.filters?.priority : "",
+            first_position: dataa.filters?.first_position
+              ? dataa.filters?.first_position
+              : "",
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: dataa.filters?.site ? dataa.filters?.site : "",
+            state: "",
+          })
+        );
+      });
     } else {
       this.props.dispatch(
         GetPostsListActionRequest({
