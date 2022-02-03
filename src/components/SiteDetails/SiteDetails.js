@@ -719,7 +719,7 @@ export class SiteDetails extends Component {
                     <th style={{ width: "100px" }}>Date</th>
                     <th style={{ width: "100px" }}>In</th>
                     <th style={{ width: "100px" }}>Out</th>
-                    <th style={{ width: "100px" }}>Txr</th>
+                    <th style={{ width: "100px" }}>Txr (%)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -767,6 +767,7 @@ export class SiteDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       Total
@@ -775,6 +776,7 @@ export class SiteDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.siteChartData.length !== 0 &&
@@ -786,6 +788,7 @@ export class SiteDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.siteChartData.length !== 0 &&
@@ -797,6 +800,7 @@ export class SiteDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.siteChartData.length !== 0 &&

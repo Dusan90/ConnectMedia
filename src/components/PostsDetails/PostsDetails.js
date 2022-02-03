@@ -497,9 +497,9 @@ export class PostsDetails extends Component {
                 <thead>
                   <tr style={{ height: "40px" }}>
                     <th style={{ width: "100px" }}>Date</th>
-                    <th style={{ width: "100px" }}>Clicks</th>
-                    <th style={{ width: "100px" }}>Ctr</th>
                     <th style={{ width: "100px" }}>Impressions</th>
+                    <th style={{ width: "100px" }}>Clicks</th>
+                    <th style={{ width: "100px" }}>Ctr (%)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -520,6 +520,14 @@ export class PostsDetails extends Component {
                             textAlign: "center",
                           }}
                         >
+                          {el.impressions.toLocaleString()}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
                           {el.clicks.toLocaleString()}
                         </td>
                         <td
@@ -530,14 +538,6 @@ export class PostsDetails extends Component {
                         >
                           {el.ctr.toLocaleString()}
                         </td>
-                        <td
-                          style={{
-                            borderTop: "1px solid black",
-                            textAlign: "center",
-                          }}
-                        >
-                          {el.impressions.toLocaleString()}
-                        </td>
                       </tr>
                     ))}
                 </tbody>
@@ -547,6 +547,7 @@ export class PostsDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       Total
@@ -555,6 +556,19 @@ export class PostsDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {this.state.postChartData.length !== 0 &&
+                        this.state.postChartData
+                          ?.reduce((a, b) => +a + +b.impressions, 0)
+                          .toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.postChartData.length !== 0 &&
@@ -566,6 +580,7 @@ export class PostsDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.postChartData.length !== 0 &&
@@ -592,17 +607,6 @@ export class PostsDetails extends Component {
                             100
                           ).toLocaleString()
                         : 0}
-                    </td>
-                    <td
-                      style={{
-                        borderTop: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {this.state.postChartData.length !== 0 &&
-                        this.state.postChartData
-                          ?.reduce((a, b) => +a + +b.impressions, 0)
-                          .toLocaleString()}
                     </td>
                   </tr>
                 </tfoot>
@@ -939,7 +943,16 @@ export class PostsDetails extends Component {
                   <h4>Categories</h4>
 
                   <div className="listOfCateg">
-                    <p>{postDetailsData?.categories?.map((el) => `${el}, `)}</p>
+                    <p>
+                      {postDetailsData?.categories?.map(
+                        (el, i) =>
+                          `${el}${
+                            postDetailsData?.categories.length - 1 !== i
+                              ? ","
+                              : ""
+                          } `
+                      )}
+                    </p>
                   </div>
 
                   {/* {isIteditable && (

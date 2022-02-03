@@ -286,7 +286,7 @@
     }
     .pageInfoDiv {
       background: #295265;
-      width: 344px;
+      width: 370px;
       height: 63px;
       border-bottom-left-radius: 5px;
       border-bottom-right-radius: 5px;
@@ -297,7 +297,7 @@
       div {
         border: 1px solid #94d7e0;
         height: 31px;
-        width: 105px;
+        min-width: 125px;
         border-radius: 3px;
         display: flex;
         align-content: center;

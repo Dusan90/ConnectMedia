@@ -373,7 +373,11 @@ function TableRowContainer({
                     <img src={visit} alt="visit" />
                     <p
                       onClick={() => {
-                        window.open(`${item?.url && item?.url}`);
+                        pageName !== "widgets"
+                          ? window.open(`${item?.url && item?.url}`)
+                          : window.open(
+                              `${item?.site?.url && item?.site?.url}`
+                            );
                       }}
                       id="noredirection"
                     >

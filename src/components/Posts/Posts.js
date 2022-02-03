@@ -1027,7 +1027,9 @@ export class Posts extends Component {
     let getNames = item?.categories?.slice(0, 2).map((element, i) => {
       return (
         <p id="noredirection" key={i}>
-          <a id="noredirection">{`${element}, `}</a>
+          <a id="noredirection">{`${element}${
+            item?.categories.length - 1 !== i ? "," : ""
+          } `}</a>
         </p>
       );
     });
