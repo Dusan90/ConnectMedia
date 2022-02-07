@@ -23,6 +23,8 @@ export function* LogOutSaga({ payload }) {
     sessionStorage.removeItem("filterPosts");
     sessionStorage.removeItem("filterWidgets");
     sessionStorage.removeItem("filterSites");
+    sessionStorage.removeItem("root");
+
     yield put(ACTIONS.LogoutActionReceive(response.data));
   } catch (err) {
     yield put(ACTIONS.LogoutActionError(err.response));

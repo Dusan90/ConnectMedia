@@ -30,6 +30,8 @@ export function* GetUsersListSaga({ payload }) {
       sessionStorage.removeItem("filterPosts");
       sessionStorage.removeItem("filterWidgets");
       sessionStorage.removeItem("filterSites");
+      sessionStorage.removeItem("root");
+
       NotificationManager.error(`${err.response.data.message}`, "Failed", 2000);
       History.push("/");
     }

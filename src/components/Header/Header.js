@@ -13,6 +13,7 @@ import {
 } from "../../store/actions/UsersActions";
 import { NotificationManager } from "react-notifications";
 import "./Header.scss";
+import Util from "../../containers/util";
 
 const Bars = ({ active }) => {
   return (
@@ -68,6 +69,7 @@ function Header() {
       sessionStorage.removeItem("filterPosts");
       sessionStorage.removeItem("filterWidgets");
       sessionStorage.removeItem("filterSites");
+      sessionStorage.removeItem("root");
 
       history.push("/");
     }
@@ -76,6 +78,7 @@ function Header() {
   useEffect(() => {
     if (!getSelfUserLoading && !getSelfUserError && getSelfUserData) {
       setCurrentUserData(getSelfUserData.data);
+      sessionStorage.setItem("root", getSelfUserData.data?.root);
     }
   }, [UsersReducer.getSelfUser]);
 
@@ -211,15 +214,17 @@ function Header() {
           </p>
           <Bars active={pathname === "/categories"} />
         </div> */}
-        <div className="cont">
-          <p
-            onClick={() => handleTabChange("/totals")}
-            style={{ opacity: pathname === "/totals" ? "1" : "0.6" }}
-          >
-            Totals
-          </p>
-          <Bars active={pathname === "/totals"} />
-        </div>
+        {Util?.isRoot() && (
+          <div className="cont">
+            <p
+              onClick={() => handleTabChange("/totals")}
+              style={{ opacity: pathname === "/totals" ? "1" : "0.6" }}
+            >
+              Totals
+            </p>
+            <Bars active={pathname === "/totals"} />
+          </div>
+        )}
       </div>
       <div className="UserDetailDiv">
         <div className="col-1">
@@ -351,15 +356,17 @@ function Header() {
           </p>
           <Bars active={pathname === "/categories"} />
         </div> */}
-        <div className="cont">
-          <p
-            onClick={() => handleTabChange("/totals")}
-            style={{ opacity: pathname === "/totals" ? "1" : "0.6" }}
-          >
-            Totals
-          </p>
-          <Bars active={pathname === "/totals"} />
-        </div>
+        {Util?.isRoot() && (
+          <div className="cont">
+            <p
+              onClick={() => handleTabChange("/totals")}
+              style={{ opacity: pathname === "/totals" ? "1" : "0.6" }}
+            >
+              Totals
+            </p>
+            <Bars active={pathname === "/totals"} />
+          </div>
+        )}
       </div>
       {/*{isNotificationOpen && <div className='NavBarDivNotifications'>*/}
       {/*    <div className='notification' onClick={handleBellNotifications}>*/}

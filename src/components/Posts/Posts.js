@@ -24,6 +24,7 @@ import { GetUsersListActionRequest } from "../../store/actions/UsersActions";
 import moment from "moment";
 import { NotificationManager } from "react-notifications";
 import { filtering } from "./Filtering";
+import Util from "../../containers/util";
 
 import "../Home/Home.scss";
 
@@ -1133,14 +1134,18 @@ export class Posts extends Component {
                 data.map((item, key) => {
                   return (
                     <div key={key} className="mainDivShotScreen">
-                      <div className="checkAndTrashDiv">
-                        {/* <input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /> */}
-                        <img
-                          src={secondTrash}
-                          onClick={() => this.handleTrashFunctionaliti(item.id)}
-                          alt="trash"
-                        />
-                      </div>
+                      {Util.isRoot() && (
+                        <div className="checkAndTrashDiv">
+                          {/* <input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /> */}
+                          <img
+                            src={secondTrash}
+                            onClick={() =>
+                              this.handleTrashFunctionaliti(item.id)
+                            }
+                            alt="trash"
+                          />
+                        </div>
+                      )}
                       <div className="statusDiv">
                         <div>
                           <div className="arrowDiv">
@@ -1334,10 +1339,14 @@ export class Posts extends Component {
                           >
                             visit
                           </p>
-                          <img src={edit} alt="edit" />
-                          <p onClick={() => this.haneldeRedirect(item, "edit")}>
-                            edit
-                          </p>
+                          {Util.isRoot() && <img src={edit} alt="edit" />}
+                          {Util.isRoot() && (
+                            <p
+                              onClick={() => this.haneldeRedirect(item, "edit")}
+                            >
+                              edit
+                            </p>
+                          )}
                           <img src={stats} alt="stats" />
                           <p
                             onClick={() => this.haneldeRedirect(item, "stats")}
@@ -1616,7 +1625,7 @@ export class Posts extends Component {
               <thead>
                 <tr>
                   {/* <th></th> */}
-                  <th></th>
+                  {Util.isRoot() && <th></th>}
                   <th>
                     <div>
                       <div>
@@ -1837,16 +1846,18 @@ export class Posts extends Component {
                         onClick={(e) => this.handlePageRedirect(e, item)}
                       >
                         {/* <td><input type="checkbox" id='noredirection' value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /></td> */}
-                        <td>
-                          <img
-                            src={secondTrash}
-                            onClick={() =>
-                              this.handleTrashFunctionaliti(item.id)
-                            }
-                            alt="trash"
-                            id="noredirection"
-                          />
-                        </td>
+                        {Util.isRoot() && (
+                          <td>
+                            <img
+                              src={secondTrash}
+                              onClick={() =>
+                                this.handleTrashFunctionaliti(item.id)
+                              }
+                              alt="trash"
+                              id="noredirection"
+                            />
+                          </td>
+                        )}
                         <td>
                           {" "}
                           <div

@@ -336,8 +336,8 @@ export class Totals extends Component {
               </thead>
               <tbody>
                 {this.state.chartData.length !== 0 &&
-                  this.state.chartData?.map((el) => (
-                    <tr style={{ height: "40px" }}>
+                  this.state.chartData?.map((el, i) => (
+                    <tr key={i} style={{ height: "40px" }}>
                       <td
                         style={{
                           borderTop: "1px solid black",

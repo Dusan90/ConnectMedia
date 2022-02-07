@@ -15,6 +15,7 @@ import {
   GetCategoryListActionRequest,
 } from "../../store/actions/CategoryAction";
 import { UpdateWidgetDetailsActionRequest } from "../../store/actions/WidgetActions";
+import Util from "../util";
 
 function ShortTableRowContainer({
   data,
@@ -116,14 +117,16 @@ function ShortTableRowContainer({
         data.map((item, key) => {
           return (
             <div key={key} className="mainDivShotScreen">
-              <div className="checkAndTrashDiv">
-                {/* <input type="checkbox" value={checkboxList} checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /> */}
-                <img
-                  src={secondTrash}
-                  alt="trash"
-                  onClick={() => handleTrashFunctionaliti(item.id)}
-                />
-              </div>
+              {Util.isRoot() && (
+                <div className="checkAndTrashDiv">
+                  {/* <input type="checkbox" value={checkboxList} checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /> */}
+                  <img
+                    src={secondTrash}
+                    alt="trash"
+                    onClick={() => handleTrashFunctionaliti(item.id)}
+                  />
+                </div>
+              )}
               <div className="statusDiv">
                 <div>
                   <div className="arrowDiv">
@@ -275,21 +278,27 @@ function ShortTableRowContainer({
               </div>
               <div className="mainForIcons">
                 <div className="divWithClicableIcons">
-                  <img src={visit} alt="visit" />
-                  <p
-                    onClick={() => {
-                      pageName !== "widgets"
-                        ? window.open(`${item?.url && item?.url}`)
-                        : window.open(`${item?.site?.url && item?.site?.url}`);
-                    }}
-                  >
-                    visit
-                  </p>
-                  <img src={edit} alt="edit" />
-                  {pageName !== "widgets" && (
+                  {((pageName === "widgets" && Util.isRoot()) ||
+                    pageName !== "widgets") && <img src={visit} alt="visit" />}
+                  {((pageName === "widgets" && Util.isRoot()) ||
+                    pageName !== "widgets") && (
+                    <p
+                      onClick={() => {
+                        pageName !== "widgets"
+                          ? window.open(`${item?.url && item?.url}`)
+                          : window.open(
+                              `${item?.site?.url && item?.site?.url}`
+                            );
+                      }}
+                    >
+                      visit
+                    </p>
+                  )}
+                  {Util.isRoot() && <img src={edit} alt="edit" />}
+                  {pageName !== "widgets" && Util.isRoot() && (
                     <p onClick={() => haneldeRedirect(item, "edit")}>edit</p>
                   )}
-                  {pageName === "widgets" && (
+                  {pageName === "widgets" && Util.isRoot() && (
                     <p
                       onClick={() =>
                         history.push({
@@ -336,8 +345,10 @@ function ShortTableRowContainer({
                       widgets
                     </p>
                   )}
-                  {pageName === "widgets" && <img src={visit} alt="visit" />}
-                  {pageName === "widgets" && (
+                  {pageName === "widgets" && Util.isRoot() && (
+                    <img src={visit} alt="visit" />
+                  )}
+                  {pageName === "widgets" && Util.isRoot() && (
                     <p
                       onClick={() => haneldeRedirect(item, "embed")}
                       id="noredirection"
