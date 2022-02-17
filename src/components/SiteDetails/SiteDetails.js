@@ -621,12 +621,12 @@ export class SiteDetails extends Component {
       (el) => el.category.id
     );
 
-    const optionsSelection = numberOfRatio.map((el) => {
+    const optionsSelection = numberOfRatio?.map((el) => {
       return el.id;
     });
 
-    const optionsS = optionsForRatioSelect.map((el) => {
-      if (optionsSelection.includes(el.value)) {
+    const optionsS = optionsForRatioSelect?.map((el) => {
+      if (optionsSelection?.includes(el.value)) {
         return { ...el, isdisabled: true };
       } else {
         return el;
