@@ -196,15 +196,17 @@ function Header() {
           <Bars active={pathname === "/widgets"} />
         </div>
         {/* <div className='cont'><p onClick={() => handleTabChange('/stats')} style={{ opacity: pathname === '/stats' ? '1' : '0.6' }}>Stats</p><Bars active={pathname === '/stats'} /></div> */}
-        <div className="cont">
-          <p
-            onClick={() => handleTabChange("/users")}
-            style={{ opacity: pathname === "/users" ? "1" : "0.6" }}
-          >
-            Users
-          </p>
-          <Bars active={pathname === "/users"} />
-        </div>
+        {Util?.isRoot() && (
+          <div className="cont">
+            <p
+              onClick={() => handleTabChange("/users")}
+              style={{ opacity: pathname === "/users" ? "1" : "0.6" }}
+            >
+              Users
+            </p>
+            <Bars active={pathname === "/users"} />
+          </div>
+        )}
         {/* <div className="cont">
           <p
             onClick={() => handleTabChange("/categories")}
@@ -338,15 +340,17 @@ function Header() {
           </p>
           <Bars active={pathname === "/stats"} />
         </div> */}
-        <div className="cont">
-          <p
-            onClick={() => handleTabChange("/users")}
-            style={{ opacity: pathname === "/users" ? "1" : "0.6" }}
-          >
-            Users
-          </p>
-          <Bars active={pathname === "/users"} />
-        </div>
+        {Util?.isRoot() && (
+          <div className="cont">
+            <p
+              onClick={() => handleTabChange("/users")}
+              style={{ opacity: pathname === "/users" ? "1" : "0.6" }}
+            >
+              Users
+            </p>
+            <Bars active={pathname === "/users"} />
+          </div>
+        )}
         {/* <div className="cont">
           <p
             onClick={() => handleTabChange("/categories")}

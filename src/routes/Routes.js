@@ -64,13 +64,13 @@ const routesList = [
     title: "WidgetsDetails",
   },
   {
-    permissions: null,
+    permissions: Util?.isRoot(),
     path: `/users`,
     page: "Users",
     title: "Users",
   },
   {
-    permissions: null,
+    permissions: Util?.isRoot(),
     path: `/users/:id`,
     page: "UsersDetails",
     title: "UsersDetails",
