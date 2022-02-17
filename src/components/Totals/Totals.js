@@ -326,9 +326,9 @@ export class Totals extends Component {
               <thead>
                 <tr style={{ height: "40px" }}>
                   <th style={{ width: "100px" }}>Date</th>
-                  <th style={{ width: "100px" }}>Clicks</th>
-                  <th style={{ width: "100px" }}>Ctr</th>
                   <th style={{ width: "100px" }}>Impressions</th>
+                  <th style={{ width: "100px" }}>Clicks</th>
+                  <th style={{ width: "100px" }}>Ctr (%)</th>
                   <th style={{ width: "100px" }}>Unique</th>
                   <th style={{ width: "100px" }}>Unique perc</th>
                   <th style={{ width: "100px" }}>Visits</th>
@@ -336,8 +336,8 @@ export class Totals extends Component {
               </thead>
               <tbody>
                 {this.state.chartData.length !== 0 &&
-                  this.state.chartData?.map((el) => (
-                    <tr style={{ height: "40px" }}>
+                  this.state.chartData?.map((el, i) => (
+                    <tr key={i} style={{ height: "40px" }}>
                       <td
                         style={{
                           borderTop: "1px solid black",
@@ -345,6 +345,14 @@ export class Totals extends Component {
                         }}
                       >
                         {el.name}
+                      </td>
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {el.impressions.toLocaleString()}
                       </td>
                       <td
                         style={{
@@ -362,14 +370,7 @@ export class Totals extends Component {
                       >
                         {el.ctr.toLocaleString()}
                       </td>
-                      <td
-                        style={{
-                          borderTop: "1px solid black",
-                          textAlign: "center",
-                        }}
-                      >
-                        {el.impressions.toLocaleString()}
-                      </td>
+
                       <td
                         style={{
                           borderTop: "1px solid black",
@@ -403,6 +404,7 @@ export class Totals extends Component {
                     style={{
                       borderTop: "1px solid black",
                       textAlign: "center",
+                      fontWeight: "bold",
                     }}
                   >
                     Total
@@ -411,6 +413,19 @@ export class Totals extends Component {
                     style={{
                       borderTop: "1px solid black",
                       textAlign: "center",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {this.state.chartData.length !== 0 &&
+                      this.state.chartData
+                        ?.reduce((a, b) => +a + +b.impressions, 0)
+                        .toLocaleString()}
+                  </td>
+                  <td
+                    style={{
+                      borderTop: "1px solid black",
+                      textAlign: "center",
+                      fontWeight: "bold",
                     }}
                   >
                     {this.state.chartData.length !== 0 &&
@@ -422,6 +437,7 @@ export class Totals extends Component {
                     style={{
                       borderTop: "1px solid black",
                       textAlign: "center",
+                      fontWeight: "bold",
                     }}
                   >
                     {this.state.chartData.length !== 0 &&
@@ -449,21 +465,12 @@ export class Totals extends Component {
                         ).toLocaleString()
                       : 0}
                   </td>
+
                   <td
                     style={{
                       borderTop: "1px solid black",
                       textAlign: "center",
-                    }}
-                  >
-                    {this.state.chartData.length !== 0 &&
-                      this.state.chartData
-                        ?.reduce((a, b) => +a + +b.impressions, 0)
-                        .toLocaleString()}
-                  </td>
-                  <td
-                    style={{
-                      borderTop: "1px solid black",
-                      textAlign: "center",
+                      fontWeight: "bold",
                     }}
                   >
                     {this.state.chartData.length !== 0 &&
@@ -475,6 +482,7 @@ export class Totals extends Component {
                     style={{
                       borderTop: "1px solid black",
                       textAlign: "center",
+                      fontWeight: "bold",
                     }}
                   >
                     {this.state.chartData.length !== 0 &&
@@ -506,6 +514,7 @@ export class Totals extends Component {
                     style={{
                       borderTop: "1px solid black",
                       textAlign: "center",
+                      fontWeight: "bold",
                     }}
                   >
                     {this.state.chartData.length !== 0 &&

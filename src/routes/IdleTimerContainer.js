@@ -14,6 +14,8 @@ export class IdleTimerContainer extends Component {
       sessionStorage.removeItem("filterPosts");
       sessionStorage.removeItem("filterWidgets");
       sessionStorage.removeItem("filterSites");
+      sessionStorage.removeItem("root");
+
       window.location.reload();
     }
   };

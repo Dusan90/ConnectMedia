@@ -11,6 +11,7 @@ import arrowLeft from "../../assets/img/SecondHeader/Vector.svg";
 import arrowRight from "../../assets/img/SecondHeader/Vector(1).svg";
 import Pagination from "react-js-pagination";
 import DropDown from "../DropDown/DropDown";
+import Util from "../util";
 // import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
 // import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
 // import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
@@ -349,22 +350,24 @@ function SearchContainer({
                     <p>ERROR</p>
                   </div>
 
-                  <div
-                    className="trashDiv"
-                    style={{
-                      borderBottom:
-                        state.selectedStatusSearch?.id === 3 &&
-                        "5px solid #94d7e0",
-                    }}
-                    onClick={() => handleStatusShow(3)}
-                  >
-                    <img src={trash} alt="trash" />
-                  </div>
+                  {Util.isRoot() && (
+                    <div
+                      className="trashDiv"
+                      style={{
+                        borderBottom:
+                          state.selectedStatusSearch?.id === 3 &&
+                          "5px solid #94d7e0",
+                      }}
+                      onClick={() => handleStatusShow(3)}
+                    >
+                      <img src={trash} alt="trash" />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
         </div>
-        {pageName !== "TOTALS" && (
+        {pageName !== "TOTALS" && Util.isRoot() && (
           <div className="section2">
             <div className="sectionSearch">
               <div>

@@ -20,6 +20,7 @@ import { GetSitesListActionRequest } from "../../store/actions/SitesListAction";
 import { SpecWidgetChartRequest } from "../../store/actions/ChartAction";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Util from "../../containers/util";
 
 import ViewWidgets from "./ViewWidgets";
 
@@ -86,7 +87,7 @@ export class WidgetsDetails extends Component {
 
   handleWhereEverNav = (page) => {
     if (page === "editDiv") {
-      this.setState({ isIteditable: true });
+      Util.isRoot() && this.setState({ isIteditable: true });
     } else if (page === "statsDiv") {
       this.setState({ isIteditable: false });
     } else if (page === "viewDiv") {
@@ -603,9 +604,9 @@ export class WidgetsDetails extends Component {
                 <thead>
                   <tr style={{ height: "40px" }}>
                     <th style={{ width: "100px" }}>Date</th>
-                    <th style={{ width: "100px" }}>Clicks</th>
-                    <th style={{ width: "100px" }}>Ctr</th>
                     <th style={{ width: "100px" }}>Impressions</th>
+                    <th style={{ width: "100px" }}>Clicks</th>
+                    <th style={{ width: "100px" }}>Ctr (%)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -626,6 +627,14 @@ export class WidgetsDetails extends Component {
                             textAlign: "center",
                           }}
                         >
+                          {el.impressions.toLocaleString()}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
                           {el.clicks.toLocaleString()}
                         </td>
                         <td
@@ -636,14 +645,6 @@ export class WidgetsDetails extends Component {
                         >
                           {el.ctr.toLocaleString()}
                         </td>
-                        <td
-                          style={{
-                            borderTop: "1px solid black",
-                            textAlign: "center",
-                          }}
-                        >
-                          {el.impressions.toLocaleString()}
-                        </td>
                       </tr>
                     ))}
                 </tbody>
@@ -653,6 +654,7 @@ export class WidgetsDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       Total
@@ -661,6 +663,19 @@ export class WidgetsDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {this.state.widgetChartData.length !== 0 &&
+                        this.state.widgetChartData
+                          ?.reduce((a, b) => +a + +b.impressions, 0)
+                          .toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.widgetChartData.length !== 0 &&
@@ -672,6 +687,7 @@ export class WidgetsDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.widgetChartData.length !== 0 &&
@@ -698,17 +714,6 @@ export class WidgetsDetails extends Component {
                             100
                           ).toLocaleString()
                         : 0}
-                    </td>
-                    <td
-                      style={{
-                        borderTop: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {this.state.widgetChartData.length !== 0 &&
-                        this.state.widgetChartData
-                          ?.reduce((a, b) => +a + +b.impressions, 0)
-                          .toLocaleString()}
                     </td>
                   </tr>
                 </tfoot>
@@ -1059,33 +1064,35 @@ export class WidgetsDetails extends Component {
                       />
                     )}
                   </div>
-                  <div className="description_div">
-                    <h4>Template</h4>
-                    {!isIteditable && <p>{WidgetDetailsData?.template}</p>}
-                    {isIteditable && (
-                      <textarea
-                        defaultValue={this.state.template}
-                        style={{
-                          flex: "1",
-                          padding: "10px",
-                          background: "#d6dbdc",
-                          marginRight: "20px",
-                          border: "none",
-                          borderRadius: "5px",
-                        }}
-                        type="text"
-                        name="template"
-                        onChange={(e) => this.handlewidgetInput(e)}
-                      />
-                    )}
-                  </div>
+                  {Util.isRoot() && (
+                    <div className="description_div">
+                      <h4>Template</h4>
+                      {!isIteditable && <p>{WidgetDetailsData?.template}</p>}
+                      {isIteditable && (
+                        <textarea
+                          defaultValue={this.state.template}
+                          style={{
+                            flex: "1",
+                            padding: "10px",
+                            background: "#d6dbdc",
+                            marginRight: "20px",
+                            border: "none",
+                            borderRadius: "5px",
+                          }}
+                          type="text"
+                          name="template"
+                          onChange={(e) => this.handlewidgetInput(e)}
+                        />
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="rightSideDiv">
                 <div className="categoriesDiv">
-                  <h1>Categories</h1>
+                  <h1>Details</h1>
 
-                  <div className="categ_div">
+                  {/* <div className="categ_div">
                     <h4>Categories</h4>
                     {!isIteditable && (
                       <div className="listOfCateg">
@@ -1116,7 +1123,7 @@ export class WidgetsDetails extends Component {
                         options={categorialOption}
                       />
                     )}
-                  </div>
+                  </div> */}
 
                   <div className="categ_div selectable">
                     <h4 style={{ width: "100px" }}>Site</h4>

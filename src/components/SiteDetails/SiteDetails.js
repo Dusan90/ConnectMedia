@@ -24,6 +24,7 @@ import Select from "react-select";
 import { NotificationManager } from "react-notifications";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Util from "../../containers/util";
 
 const test2 = [
   { mesto: "Beograd", title: "vesti" },
@@ -375,7 +376,7 @@ export class SiteDetails extends Component {
 
   handleWhereEverNav = (page) => {
     if (page === "editDiv") {
-      this.setState({ isIteditable: true });
+      Util.isRoot() && this.setState({ isIteditable: true });
     } else if (page === "statsDiv") {
       this.setState({ isIteditable: false });
     } else if (page === "postsDiv") {
@@ -718,8 +719,10 @@ export class SiteDetails extends Component {
                   <tr style={{ height: "40px" }}>
                     <th style={{ width: "100px" }}>Date</th>
                     <th style={{ width: "100px" }}>In</th>
-                    <th style={{ width: "100px" }}>Out</th>
-                    <th style={{ width: "100px" }}>Txr</th>
+                    {Util.isRoot() && <th style={{ width: "100px" }}>Out</th>}
+                    {Util.isRoot() && (
+                      <th style={{ width: "100px" }}>Txr (%)</th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -742,22 +745,26 @@ export class SiteDetails extends Component {
                         >
                           {el.in.toLocaleString()}
                         </td>
-                        <td
-                          style={{
-                            borderTop: "1px solid black",
-                            textAlign: "center",
-                          }}
-                        >
-                          {el.out.toLocaleString()}
-                        </td>
-                        <td
-                          style={{
-                            borderTop: "1px solid black",
-                            textAlign: "center",
-                          }}
-                        >
-                          {el.txr.toLocaleString()}
-                        </td>
+                        {Util.isRoot() && (
+                          <td
+                            style={{
+                              borderTop: "1px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {el.out.toLocaleString()}
+                          </td>
+                        )}
+                        {Util.isRoot() && (
+                          <td
+                            style={{
+                              borderTop: "1px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {el.txr.toLocaleString()}
+                          </td>
+                        )}
                       </tr>
                     ))}
                 </tbody>
@@ -767,6 +774,7 @@ export class SiteDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       Total
@@ -775,6 +783,7 @@ export class SiteDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.siteChartData.length !== 0 &&
@@ -782,48 +791,54 @@ export class SiteDetails extends Component {
                           ?.reduce((a, b) => +a + +b.in, 0)
                           .toLocaleString()}
                     </td>
-                    <td
-                      style={{
-                        borderTop: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {this.state.siteChartData.length !== 0 &&
-                        this.state.siteChartData
-                          ?.reduce((a, b) => +a + +b.out, 0)
-                          .toLocaleString()}
-                    </td>
-                    <td
-                      style={{
-                        borderTop: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {this.state.siteChartData.length !== 0 &&
-                      !isNaN(
-                        (this.state.siteChartData?.reduce(
-                          (a, b) => +a + +b.out,
-                          0
-                        ) /
-                          this.state.siteChartData?.reduce(
-                            (a, b) => +a + +b.in,
+                    {Util.isRoot() && (
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {this.state.siteChartData.length !== 0 &&
+                          this.state.siteChartData
+                            ?.reduce((a, b) => +a + +b.out, 0)
+                            .toLocaleString()}
+                      </td>
+                    )}
+                    {Util.isRoot() && (
+                      <td
+                        style={{
+                          borderTop: "1px solid black",
+                          textAlign: "center",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {this.state.siteChartData.length !== 0 &&
+                        !isNaN(
+                          (this.state.siteChartData?.reduce(
+                            (a, b) => +a + +b.out,
                             0
-                          )) *
-                          100
-                      )
-                        ? (
-                            (this.state.siteChartData?.reduce(
-                              (a, b) => +a + +b.out,
+                          ) /
+                            this.state.siteChartData?.reduce(
+                              (a, b) => +a + +b.in,
                               0
-                            ) /
-                              this.state.siteChartData?.reduce(
-                                (a, b) => +a + +b.in,
-                                0
-                              )) *
+                            )) *
                             100
-                          ).toLocaleString()
-                        : 0}
-                    </td>
+                        )
+                          ? (
+                              (this.state.siteChartData?.reduce(
+                                (a, b) => +a + +b.out,
+                                0
+                              ) /
+                                this.state.siteChartData?.reduce(
+                                  (a, b) => +a + +b.in,
+                                  0
+                                )) *
+                              100
+                            ).toLocaleString()
+                          : 0}
+                      </td>
+                    )}
                   </tr>
                 </tfoot>
               </table>
@@ -832,7 +847,11 @@ export class SiteDetails extends Component {
               <Chart
                 customStyle={{ padding: "0" }}
                 dataToShow={this.state.siteChartData}
-                fields={{ 0: "in", 1: "out", 2: "txr" }}
+                fields={{
+                  0: "in",
+                  1: Util.isRoot() && "out",
+                  2: Util.isRoot() && "txr",
+                }}
               />
             </div>
           </>
@@ -1174,122 +1193,130 @@ export class SiteDetails extends Component {
                     />
                   )}
                 </div>
-                <div className="interval_div">
-                  <h4>Ratio (%)</h4>
-                  {!isIteditable && <p>{siteDetailsData?.ratio}</p>}
-                  {isIteditable && (
-                    <input
-                      type="number"
-                      min="0"
-                      onChange={(e) => {
-                        if (
-                          (!isNaN(e.target.value) &&
-                            parseInt(e.target.value) >= 0) ||
-                          e.target.value === ""
-                        ) {
-                          let val =
+                {Util.isRoot() && (
+                  <div className="interval_div">
+                    <h4>Ratio (%)</h4>
+                    {!isIteditable && <p>{siteDetailsData?.ratio}</p>}
+                    {isIteditable && (
+                      <input
+                        type="number"
+                        min="0"
+                        onChange={(e) => {
+                          if (
+                            (!isNaN(e.target.value) &&
+                              parseInt(e.target.value) >= 0) ||
                             e.target.value === ""
-                              ? e.target.value
-                              : parseInt(e.target.value);
-                          setTimeout(() => {
-                            this.setState({ ratio: val });
-                          });
-                        }
-                      }}
-                      name="ratio"
-                      value={this.state.ratio !== null && this.state.ratio}
-                    />
-                  )}
-                </div>
-                <div className="interval_div">
-                  <h4>Initial ratio (%)</h4>
-                  {!isIteditable && <p>{siteDetailsData?.random_ratio}</p>}
-                  {isIteditable && (
-                    <input
-                      type="number"
-                      min="0"
-                      onChange={(e) => {
-                        if (
-                          (!isNaN(e.target.value) &&
-                            parseInt(e.target.value) >= 0) ||
-                          e.target.value === ""
-                        ) {
-                          let val =
+                          ) {
+                            let val =
+                              e.target.value === ""
+                                ? e.target.value
+                                : parseInt(e.target.value);
+                            setTimeout(() => {
+                              this.setState({ ratio: val });
+                            });
+                          }
+                        }}
+                        name="ratio"
+                        value={this.state.ratio !== null && this.state.ratio}
+                      />
+                    )}
+                  </div>
+                )}
+                {Util.isRoot() && (
+                  <div className="interval_div">
+                    <h4>Initial ratio (%)</h4>
+                    {!isIteditable && <p>{siteDetailsData?.random_ratio}</p>}
+                    {isIteditable && (
+                      <input
+                        type="number"
+                        min="0"
+                        onChange={(e) => {
+                          if (
+                            (!isNaN(e.target.value) &&
+                              parseInt(e.target.value) >= 0) ||
                             e.target.value === ""
-                              ? e.target.value
-                              : parseInt(e.target.value);
-                          setTimeout(() => {
-                            this.setState({ random_ratio: val });
-                          });
+                          ) {
+                            let val =
+                              e.target.value === ""
+                                ? e.target.value
+                                : parseInt(e.target.value);
+                            setTimeout(() => {
+                              this.setState({ random_ratio: val });
+                            });
+                          }
+                        }}
+                        name="ratio"
+                        value={
+                          this.state.random_ratio !== null &&
+                          this.state.random_ratio
                         }
-                      }}
-                      name="ratio"
-                      value={
-                        this.state.random_ratio !== null &&
-                        this.state.random_ratio
-                      }
-                    />
-                  )}
-                </div>
-                <div className="interval_div">
-                  <h4>Post lifetime (days)</h4>
-                  {!isIteditable && <p>{siteDetailsData?.post_lifetime}</p>}
-                  {isIteditable && (
-                    <input
-                      type="number"
-                      min="0"
-                      onChange={(e) => {
-                        if (
-                          (!isNaN(e.target.value) &&
-                            parseInt(e.target.value) >= 0) ||
-                          e.target.value === ""
-                        ) {
-                          let val =
+                      />
+                    )}
+                  </div>
+                )}
+                {Util.isRoot() && (
+                  <div className="interval_div">
+                    <h4>Post lifetime (days)</h4>
+                    {!isIteditable && <p>{siteDetailsData?.post_lifetime}</p>}
+                    {isIteditable && (
+                      <input
+                        type="number"
+                        min="0"
+                        onChange={(e) => {
+                          if (
+                            (!isNaN(e.target.value) &&
+                              parseInt(e.target.value) >= 0) ||
                             e.target.value === ""
-                              ? e.target.value
-                              : parseInt(e.target.value);
-                          setTimeout(() => {
-                            this.setState({ post_lifetime: val });
-                          });
+                          ) {
+                            let val =
+                              e.target.value === ""
+                                ? e.target.value
+                                : parseInt(e.target.value);
+                            setTimeout(() => {
+                              this.setState({ post_lifetime: val });
+                            });
+                          }
+                        }}
+                        name="ratio"
+                        value={
+                          this.state.post_lifetime !== null &&
+                          this.state.post_lifetime
                         }
-                      }}
-                      name="ratio"
-                      value={
-                        this.state.post_lifetime !== null &&
-                        this.state.post_lifetime
-                      }
-                    />
-                  )}
-                </div>
-                <div className="interval_div">
-                  <h4>Ctr ratio (%)</h4>
-                  {!isIteditable && <p>{siteDetailsData?.ctr_ratio}</p>}
-                  {isIteditable && (
-                    <input
-                      type="number"
-                      min="0"
-                      onChange={(e) => {
-                        if (
-                          (!isNaN(e.target.value) &&
-                            parseInt(e.target.value) >= 0) ||
-                          e.target.value === ""
-                        ) {
-                          let val =
+                      />
+                    )}
+                  </div>
+                )}
+                {Util.isRoot() && (
+                  <div className="interval_div">
+                    <h4>Ctr ratio (%)</h4>
+                    {!isIteditable && <p>{siteDetailsData?.ctr_ratio}</p>}
+                    {isIteditable && (
+                      <input
+                        type="number"
+                        min="0"
+                        onChange={(e) => {
+                          if (
+                            (!isNaN(e.target.value) &&
+                              parseInt(e.target.value) >= 0) ||
                             e.target.value === ""
-                              ? e.target.value
-                              : parseInt(e.target.value);
-                          setTimeout(() => {
-                            this.setState({ ctr_ratio: val });
-                          });
+                          ) {
+                            let val =
+                              e.target.value === ""
+                                ? e.target.value
+                                : parseInt(e.target.value);
+                            setTimeout(() => {
+                              this.setState({ ctr_ratio: val });
+                            });
+                          }
+                        }}
+                        name="ratio"
+                        value={
+                          this.state.ctr_ratio !== null && this.state.ctr_ratio
                         }
-                      }}
-                      name="ratio"
-                      value={
-                        this.state.ctr_ratio !== null && this.state.ctr_ratio
-                      }
-                    />
-                  )}
-                </div>
+                      />
+                    )}
+                  </div>
+                )}
                 {/* <div className="autopublish_div">
                   <h4>Autopublish</h4>
                   {!isIteditable && <p>{`${siteDetailsData?.auto_publish}`}</p>}
@@ -1717,8 +1744,9 @@ export class SiteDetails extends Component {
                   </tbody> */}
               {/* // </table> */}
               {/* </div> */}
-              <h1>Ratio</h1>
-              {this.state.numberOfRatio.length !== 0 &&
+              {Util.isRoot() && <h1>Ratio</h1>}
+              {Util.isRoot() &&
+                this.state.numberOfRatio.length !== 0 &&
                 this.state.numberOfRatio.map((el, index) => (
                   <div
                     className="interval_div"
@@ -1816,7 +1844,7 @@ export class SiteDetails extends Component {
                     )}
                   </div>
                 ))}
-              {isIteditable && (
+              {Util.isRoot() && isIteditable && (
                 <div className="interval_div">
                   <button
                     onClick={() => {

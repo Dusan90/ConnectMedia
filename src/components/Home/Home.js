@@ -16,6 +16,7 @@ import { GetCategoryListActionRequest } from "../../store/actions/CategoryAction
 import { GetUsersListActionRequest } from "../../store/actions/UsersActions";
 import { NotificationManager } from "react-notifications";
 import { filtering } from "./Filtering";
+import Util from "../../containers/util";
 
 export class Home extends Component {
   constructor(props) {

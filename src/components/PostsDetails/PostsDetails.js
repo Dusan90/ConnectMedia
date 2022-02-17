@@ -23,6 +23,7 @@ import { SpecPostChartRequest } from "../../store/actions/ChartAction";
 import { NotificationManager } from "react-notifications";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Util from "../../containers/util";
 
 import moment from "moment";
 
@@ -279,7 +280,7 @@ export class PostsDetails extends Component {
 
   handleWhereEverNav = (page) => {
     if (page === "editDiv") {
-      this.setState({ isIteditable: true });
+      Util.isRoot() && this.setState({ isIteditable: true });
     } else {
       this.setState({ isIteditable: false });
     }
@@ -497,9 +498,9 @@ export class PostsDetails extends Component {
                 <thead>
                   <tr style={{ height: "40px" }}>
                     <th style={{ width: "100px" }}>Date</th>
-                    <th style={{ width: "100px" }}>Clicks</th>
-                    <th style={{ width: "100px" }}>Ctr</th>
                     <th style={{ width: "100px" }}>Impressions</th>
+                    <th style={{ width: "100px" }}>Clicks</th>
+                    <th style={{ width: "100px" }}>Ctr (%)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -520,6 +521,14 @@ export class PostsDetails extends Component {
                             textAlign: "center",
                           }}
                         >
+                          {el.impressions.toLocaleString()}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
                           {el.clicks.toLocaleString()}
                         </td>
                         <td
@@ -530,14 +539,6 @@ export class PostsDetails extends Component {
                         >
                           {el.ctr.toLocaleString()}
                         </td>
-                        <td
-                          style={{
-                            borderTop: "1px solid black",
-                            textAlign: "center",
-                          }}
-                        >
-                          {el.impressions.toLocaleString()}
-                        </td>
                       </tr>
                     ))}
                 </tbody>
@@ -547,6 +548,7 @@ export class PostsDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       Total
@@ -555,6 +557,19 @@ export class PostsDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {this.state.postChartData.length !== 0 &&
+                        this.state.postChartData
+                          ?.reduce((a, b) => +a + +b.impressions, 0)
+                          .toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        borderTop: "1px solid black",
+                        textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.postChartData.length !== 0 &&
@@ -566,6 +581,7 @@ export class PostsDetails extends Component {
                       style={{
                         borderTop: "1px solid black",
                         textAlign: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       {this.state.postChartData.length !== 0 &&
@@ -592,17 +608,6 @@ export class PostsDetails extends Component {
                             100
                           ).toLocaleString()
                         : 0}
-                    </td>
-                    <td
-                      style={{
-                        borderTop: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {this.state.postChartData.length !== 0 &&
-                        this.state.postChartData
-                          ?.reduce((a, b) => +a + +b.impressions, 0)
-                          .toLocaleString()}
                     </td>
                   </tr>
                 </tfoot>
@@ -817,7 +822,7 @@ export class PostsDetails extends Component {
                     />
                   )}
                 </div>
-                <h1 style={{ margin: "20px 0" }}>Order</h1>
+                {Util.isRoot() && <h1 style={{ margin: "20px 0" }}>Order</h1>}
                 {/* <div className="description_div">
                   <h4>Content</h4>
                   {!isIteditable && <p>{postDetailsData?.content}</p>}
@@ -830,106 +835,114 @@ export class PostsDetails extends Component {
                     />
                   )}
                 </div> */}
-                <div className="description_div">
-                  <h4>Lifetime (hours)</h4>
-                  {!isIteditable && <p>{postDetailsData?.priority_lifetime}</p>}
-                  {isIteditable && (
-                    <input
-                      type="number"
-                      min="0"
-                      onChange={(e) => {
-                        if (
-                          (!isNaN(e.target.value) &&
-                            parseInt(e.target.value) >= 0) ||
-                          e.target.value === ""
-                        ) {
-                          let val =
+                {Util.isRoot() && (
+                  <div className="description_div">
+                    <h4>Lifetime (hours)</h4>
+                    {!isIteditable && (
+                      <p>{postDetailsData?.priority_lifetime}</p>
+                    )}
+                    {isIteditable && (
+                      <input
+                        type="number"
+                        min="0"
+                        onChange={(e) => {
+                          if (
+                            (!isNaN(e.target.value) &&
+                              parseInt(e.target.value) >= 0) ||
                             e.target.value === ""
-                              ? e.target.value
-                              : parseInt(e.target.value);
-                          setTimeout(() => {
-                            this.setState({ priority_lifetime: val });
-                          });
-                        }
-                      }}
-                      name="ratio"
-                      value={
-                        this.state.priority_lifetime !== null &&
-                        this.state.priority_lifetime
-                      }
-                    />
-                  )}
-                </div>
-                <div className="tracking_div">
-                  <h4>Priority</h4>
-                  {!isIteditable && <p>{`${postDetailsData?.priority}`}</p>}
-                  {isIteditable && (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <input
-                        name="priority"
+                          ) {
+                            let val =
+                              e.target.value === ""
+                                ? e.target.value
+                                : parseInt(e.target.value);
+                            setTimeout(() => {
+                              this.setState({ priority_lifetime: val });
+                            });
+                          }
+                        }}
+                        name="ratio"
                         value={
-                          priority !== null
-                            ? priority
-                            : postDetailsData?.priority
+                          this.state.priority_lifetime !== null &&
+                          this.state.priority_lifetime
                         }
-                        checked={
-                          priority !== null
-                            ? priority
-                            : postDetailsData?.priority
-                        }
-                        onChange={(e) =>
-                          this.setState({ priority: e.target.checked })
-                        }
-                        style={{ width: "20px" }}
-                        type="checkbox"
-                      />{" "}
-                      <label htmlFor="check">Is this post a priority</label>
-                    </div>
-                  )}
-                </div>
-                <div className="tracking_div">
-                  <h4>First position</h4>
-                  {!isIteditable && (
-                    <p>{`${postDetailsData?.first_position}`}</p>
-                  )}
-                  {isIteditable && (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <input
-                        name="first_position"
-                        value={
-                          first_position !== null
-                            ? first_position
-                            : postDetailsData?.first_position
-                        }
-                        checked={
-                          first_position !== null
-                            ? first_position
-                            : postDetailsData?.first_position
-                        }
-                        onChange={(e) =>
-                          this.setState({ first_position: e.target.checked })
-                        }
-                        style={{ width: "20px" }}
-                        type="checkbox"
-                      />{" "}
-                      <label htmlFor="check">
-                        Move this post into first position
-                      </label>
-                    </div>
-                  )}
-                </div>
+                      />
+                    )}
+                  </div>
+                )}
+                {Util.isRoot() && (
+                  <div className="tracking_div">
+                    <h4>Priority</h4>
+                    {!isIteditable && <p>{`${postDetailsData?.priority}`}</p>}
+                    {isIteditable && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <input
+                          name="priority"
+                          value={
+                            priority !== null
+                              ? priority
+                              : postDetailsData?.priority
+                          }
+                          checked={
+                            priority !== null
+                              ? priority
+                              : postDetailsData?.priority
+                          }
+                          onChange={(e) =>
+                            this.setState({ priority: e.target.checked })
+                          }
+                          style={{ width: "20px" }}
+                          type="checkbox"
+                        />{" "}
+                        <label htmlFor="check">Is this post a priority</label>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {Util.isRoot() && (
+                  <div className="tracking_div">
+                    <h4>First position</h4>
+                    {!isIteditable && (
+                      <p>{`${postDetailsData?.first_position}`}</p>
+                    )}
+                    {isIteditable && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <input
+                          name="first_position"
+                          value={
+                            first_position !== null
+                              ? first_position
+                              : postDetailsData?.first_position
+                          }
+                          checked={
+                            first_position !== null
+                              ? first_position
+                              : postDetailsData?.first_position
+                          }
+                          onChange={(e) =>
+                            this.setState({ first_position: e.target.checked })
+                          }
+                          style={{ width: "20px" }}
+                          type="checkbox"
+                        />{" "}
+                        <label htmlFor="check">
+                          Move this post into first position
+                        </label>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <div className="rightSideDiv">
@@ -939,7 +952,16 @@ export class PostsDetails extends Component {
                   <h4>Categories</h4>
 
                   <div className="listOfCateg">
-                    <p>{postDetailsData?.categories?.map((el) => `${el}, `)}</p>
+                    <p>
+                      {postDetailsData?.categories?.map(
+                        (el, i) =>
+                          `${el}${
+                            postDetailsData?.categories.length - 1 !== i
+                              ? ","
+                              : ""
+                          } `
+                      )}
+                    </p>
                   </div>
 
                   {/* {isIteditable && (

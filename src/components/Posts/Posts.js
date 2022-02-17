@@ -24,6 +24,7 @@ import { GetUsersListActionRequest } from "../../store/actions/UsersActions";
 import moment from "moment";
 import { NotificationManager } from "react-notifications";
 import { filtering } from "./Filtering";
+import Util from "../../containers/util";
 
 import "../Home/Home.scss";
 
@@ -95,28 +96,30 @@ export class Posts extends Component {
           ? dataa.filters?.first_position
           : null,
       });
-      this.props.dispatch(
-        GetPostsListActionRequest({
-          search: dataa.search ? dataa.search : "",
-          limit: dataa.limit,
-          page: parseInt(dataa.page) + 1,
-          sortName: dataa.sort_key,
-          sortDir: dataa.sort_dir,
-          priority: dataa.filters?.priority ? dataa.filters?.priority : "",
-          first_position: dataa.filters?.first_position
-            ? dataa.filters?.first_position
-            : "",
-          status: this.state.selectedStatusSearch
-            ? this.state.selectedStatusSearch?.id
-            : "",
-          user: "",
-          category: this.state.selectedCategorieSearch
-            ? this.state.selectedCategorieSearch?.id
-            : "",
-          site: dataa.filters?.site ? dataa.filters?.site : "",
-          state: "",
-        })
-      );
+      setTimeout(() => {
+        this.props.dispatch(
+          GetPostsListActionRequest({
+            search: dataa.search ? dataa.search : "",
+            limit: dataa.limit,
+            page: parseInt(dataa.page) + 1,
+            sortName: dataa.sort_key,
+            sortDir: dataa.sort_dir,
+            priority: dataa.filters?.priority ? dataa.filters?.priority : "",
+            first_position: dataa.filters?.first_position
+              ? dataa.filters?.first_position
+              : "",
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: dataa.filters?.site ? dataa.filters?.site : "",
+            state: "",
+          })
+        );
+      });
     } else {
       this.props.dispatch(
         GetPostsListActionRequest({
@@ -1025,7 +1028,9 @@ export class Posts extends Component {
     let getNames = item?.categories?.slice(0, 2).map((element, i) => {
       return (
         <p id="noredirection" key={i}>
-          <a id="noredirection">{`${element}, `}</a>
+          <a id="noredirection">{`${element}${
+            item?.categories.length - 1 !== i ? "," : ""
+          } `}</a>
         </p>
       );
     });
@@ -1129,14 +1134,18 @@ export class Posts extends Component {
                 data.map((item, key) => {
                   return (
                     <div key={key} className="mainDivShotScreen">
-                      <div className="checkAndTrashDiv">
-                        {/* <input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /> */}
-                        <img
-                          src={secondTrash}
-                          onClick={() => this.handleTrashFunctionaliti(item.id)}
-                          alt="trash"
-                        />
-                      </div>
+                      {Util.isRoot() && (
+                        <div className="checkAndTrashDiv">
+                          {/* <input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /> */}
+                          <img
+                            src={secondTrash}
+                            onClick={() =>
+                              this.handleTrashFunctionaliti(item.id)
+                            }
+                            alt="trash"
+                          />
+                        </div>
+                      )}
                       <div className="statusDiv">
                         <div>
                           <div className="arrowDiv">
@@ -1330,10 +1339,14 @@ export class Posts extends Component {
                           >
                             visit
                           </p>
-                          <img src={edit} alt="edit" />
-                          <p onClick={() => this.haneldeRedirect(item, "edit")}>
-                            edit
-                          </p>
+                          {Util.isRoot() && <img src={edit} alt="edit" />}
+                          {Util.isRoot() && (
+                            <p
+                              onClick={() => this.haneldeRedirect(item, "edit")}
+                            >
+                              edit
+                            </p>
+                          )}
                           <img src={stats} alt="stats" />
                           <p
                             onClick={() => this.haneldeRedirect(item, "stats")}
@@ -1612,7 +1625,7 @@ export class Posts extends Component {
               <thead>
                 <tr>
                   {/* <th></th> */}
-                  <th></th>
+                  {Util.isRoot() && <th></th>}
                   <th>
                     <div>
                       <div>
@@ -1833,16 +1846,18 @@ export class Posts extends Component {
                         onClick={(e) => this.handlePageRedirect(e, item)}
                       >
                         {/* <td><input type="checkbox" id='noredirection' value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /></td> */}
-                        <td>
-                          <img
-                            src={secondTrash}
-                            onClick={() =>
-                              this.handleTrashFunctionaliti(item.id)
-                            }
-                            alt="trash"
-                            id="noredirection"
-                          />
-                        </td>
+                        {Util.isRoot() && (
+                          <td>
+                            <img
+                              src={secondTrash}
+                              onClick={() =>
+                                this.handleTrashFunctionaliti(item.id)
+                              }
+                              alt="trash"
+                              id="noredirection"
+                            />
+                          </td>
+                        )}
                         <td>
                           {" "}
                           <div
