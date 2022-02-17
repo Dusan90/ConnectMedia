@@ -11,6 +11,7 @@ import arrowLeft from "../../assets/img/SecondHeader/Vector.svg";
 import arrowRight from "../../assets/img/SecondHeader/Vector(1).svg";
 import Pagination from "react-js-pagination";
 import DropDown from "../DropDown/DropDown";
+import Util from "../util";
 // import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
 // import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
 // import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
@@ -36,9 +37,9 @@ function SearchContainer({
   customStyleForlesTabs,
 }) {
   const [user, setUser] = useState("all users");
-  const [statusOn, setStatusOn] = useState("NOTRASH");
-  const [priority, setPriority] = useState(false);
-  const [first, setFirst] = useState(false);
+  const [statusOn, setStatusOn] = useState(
+    state.selectedStatusSearch?.id ? state.selectedStatusSearch?.id : "NOTRASH"
+  );
   // const dispatch = useDispatch()
   const location = useLocation();
   const [showUserOptions, setShowUserOptions] = useState(false);
@@ -127,14 +128,12 @@ function SearchContainer({
   };
 
   const handleSearchByPrio = (el) => {
-    setPriority(el);
     setTimeout(() => {
       handleSearchOnMainByprioOrFirst(el, "prio");
     });
   };
 
   const handleSearchByFirst = (el) => {
-    setFirst(el);
     setTimeout(() => {
       handleSearchOnMainByprioOrFirst(el, "first");
     });
@@ -153,7 +152,7 @@ function SearchContainer({
     if (location?.data?.searchBy && location?.data?.prevPath) {
       const pasedDataSearch = location?.data?.searchBy;
       const prePath = location?.data?.prevPath;
-      prePath === "/sites" && setSites(pasedDataSearch.name);
+      prePath === "/sites" && handleSearchOnMainPage(pasedDataSearch, "sites");
     } else if (location?.data?.searchBycategory && location?.data?.prevPath) {
       const pasedDataSearch = location?.data?.searchBycategory;
       const prePath = location?.data?.prevPath;
@@ -161,7 +160,7 @@ function SearchContainer({
     } else if (location?.data?.searchByuser && location?.data?.prevPath) {
       const pasedDataSearch = location?.data?.searchByuser;
       const prePath = location?.data?.prevPath;
-      prePath === "/users" && setUser(pasedDataSearch.name);
+      prePath === "/users" && handleSearchOnMainPage(pasedDataSearch, "users");
     } else if (location?.dataFromStats?.searchBycategory) {
       const el = location?.dataFromStats;
       if (el.pageName === "stats") {
@@ -198,7 +197,13 @@ function SearchContainer({
             {pageName === "SITES" && (
               <div className="box-2" onClick={handleUsersShow}>
                 <DropDown
-                  label={user}
+                  label={
+                    state.selectedUserSearch
+                      ? getUsersListData?.data.find(
+                          (el) => el.id === state.selectedUserSearch?.id
+                        )?.name
+                      : user
+                  }
                   isItOpen={showUserOptions}
                   handleAllOptions={handleAllOptionsUser}
                   options={
@@ -215,7 +220,13 @@ function SearchContainer({
               pageName === "CATEGORIES") && (
               <div className="box-2" onClick={handleSitesShow}>
                 <DropDown
-                  label={sites}
+                  label={
+                    state.selectedSiteSearch
+                      ? getSitesListData?.data.find(
+                          (el) => el.id === state.selectedSiteSearch?.id
+                        )?.name
+                      : sites
+                  }
                   isItOpen={showSitesOptions}
                   handleAllOptions={handleAllOptionsSite}
                   options={
@@ -241,11 +252,11 @@ function SearchContainer({
                   <div
                     className="priorityClass"
                     style={{
-                      borderBottom: priority && "5px solid #94d7e0",
+                      borderBottom: state.priority && "5px solid #94d7e0",
                       borderRight: "1px solid #94d7e0",
                       width: "100%",
                     }}
-                    onClick={() => handleSearchByPrio(!priority)}
+                    onClick={() => handleSearchByPrio(!state.priority)}
                   >
                     <p style={{ margin: "0 auto", padding: "0 5px 0 0" }}>
                       PRIORITY
@@ -255,10 +266,10 @@ function SearchContainer({
                   <div
                     className="firstClass"
                     style={{
-                      borderBottom: first && "5px solid #94d7e0",
+                      borderBottom: state.first_position && "5px solid #94d7e0",
                       width: "100%",
                     }}
-                    onClick={() => handleSearchByFirst(!first)}
+                    onClick={() => handleSearchByFirst(!state.first_position)}
                   >
                     <p style={{ margin: "0 auto" }}>FIRST</p>
                   </div>
@@ -298,7 +309,8 @@ function SearchContainer({
                     className="col1"
                     style={{
                       borderBottom:
-                        statusOn === "NOTRASH" && "5px solid #94d7e0",
+                        state.selectedStatusSearch === "" &&
+                        "5px solid #94d7e0",
                     }}
                     onClick={() => handleStatusShow("NOTRASH")}
                   >
@@ -307,7 +319,9 @@ function SearchContainer({
                   <div
                     className="col2"
                     style={{
-                      borderBottom: statusOn === 1 && "5px solid #94d7e0",
+                      borderBottom:
+                        state.selectedStatusSearch?.id === 1 &&
+                        "5px solid #94d7e0",
                     }}
                     onClick={() => handleStatusShow(1)}
                   >
@@ -316,7 +330,9 @@ function SearchContainer({
                   <div
                     className="col3"
                     style={{
-                      borderBottom: statusOn === 0 && "5px solid #94d7e0",
+                      borderBottom:
+                        state.selectedStatusSearch?.id === 0 &&
+                        "5px solid #94d7e0",
                     }}
                     onClick={() => handleStatusShow(0)}
                   >
@@ -325,27 +341,33 @@ function SearchContainer({
                   <div
                     className="col4"
                     style={{
-                      borderBottom: statusOn === 2 && "5px solid #94d7e0",
+                      borderBottom:
+                        state.selectedStatusSearch?.id === 2 &&
+                        "5px solid #94d7e0",
                     }}
                     onClick={() => handleStatusShow(2)}
                   >
                     <p>ERROR</p>
                   </div>
 
-                  <div
-                    className="trashDiv"
-                    style={{
-                      borderBottom: statusOn === 3 && "5px solid #94d7e0",
-                    }}
-                    onClick={() => handleStatusShow(3)}
-                  >
-                    <img src={trash} alt="trash" />
-                  </div>
+                  {Util.isRoot() && (
+                    <div
+                      className="trashDiv"
+                      style={{
+                        borderBottom:
+                          state.selectedStatusSearch?.id === 3 &&
+                          "5px solid #94d7e0",
+                      }}
+                      onClick={() => handleStatusShow(3)}
+                    >
+                      <img src={trash} alt="trash" />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
         </div>
-        {pageName !== "TOTALS" && (
+        {pageName !== "TOTALS" && Util.isRoot() && (
           <div className="section2">
             <div className="sectionSearch">
               <div>
@@ -355,6 +377,7 @@ function SearchContainer({
                     type="text"
                     placeholder="search"
                     onChange={(e) => handleSearchBar(e)}
+                    value={state.inputValue}
                   />
                 </form>
               </div>

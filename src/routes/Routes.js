@@ -6,6 +6,7 @@ import history from "./History";
 import Login from "../components/Login/Login";
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
+import Util from "../containers/util";
 
 // const urlPrefix = process.env.REACT_APP_BSC_URL_PREFIX;
 
@@ -87,7 +88,7 @@ const routesList = [
   //     title: 'CategoriesDetails',
   // },
   {
-    permissions: null,
+    permissions: Util?.isRoot(),
     path: `/totals`,
     page: "Totals",
     title: "Totals",

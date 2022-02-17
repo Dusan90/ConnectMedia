@@ -16,6 +16,7 @@ import {
   GetCategoryListActionRequest,
 } from "../../store/actions/CategoryAction";
 import { UpdateWidgetDetailsActionRequest } from "../../store/actions/WidgetActions";
+import Util from "../util";
 
 function TableRowContainer({
   data,
@@ -118,7 +119,7 @@ function TableRowContainer({
       <thead>
         <tr>
           {/* <th></th> */}
-          <th></th>
+          {Util.isRoot() && <th></th>}
           <th>
             <div>
               <div>
@@ -216,60 +217,66 @@ function TableRowContainer({
               <p>{pageName === "widgets" ? "imp" : "in"}</p>
             </div>
           </th>
-          <th>
-            <div>
+          {((pageName !== "widgets" && Util.isRoot()) ||
+            pageName === "widgets") && (
+            <th>
               <div>
-                <img
-                  src={arrowUp}
-                  onClick={() =>
-                    handleArrowSort(
-                      pageName === "widgets" ? "clk" : "out",
-                      "Up"
-                    )
-                  }
-                  alt="arrow"
-                />
-                <img
-                  src={secondarrowDown}
-                  onClick={() =>
-                    handleArrowSort(
-                      pageName === "widgets" ? "clk" : "out",
-                      "Down"
-                    )
-                  }
-                  alt="arrow"
-                />
+                <div>
+                  <img
+                    src={arrowUp}
+                    onClick={() =>
+                      handleArrowSort(
+                        pageName === "widgets" ? "clk" : "out",
+                        "Up"
+                      )
+                    }
+                    alt="arrow"
+                  />
+                  <img
+                    src={secondarrowDown}
+                    onClick={() =>
+                      handleArrowSort(
+                        pageName === "widgets" ? "clk" : "out",
+                        "Down"
+                      )
+                    }
+                    alt="arrow"
+                  />
+                </div>
+                <p>{pageName === "widgets" ? "clk" : "out"}</p>
               </div>
-              <p>{pageName === "widgets" ? "clk" : "out"}</p>
-            </div>
-          </th>
-          <th>
-            <div>
+            </th>
+          )}
+          {((pageName !== "widgets" && Util.isRoot()) ||
+            pageName === "widgets") && (
+            <th>
               <div>
-                <img
-                  src={arrowUp}
-                  onClick={() =>
-                    handleArrowSort(
-                      pageName === "widgets" ? "ctr" : "txr",
-                      "Up"
-                    )
-                  }
-                  alt="arrow"
-                />
-                <img
-                  src={secondarrowDown}
-                  onClick={() =>
-                    handleArrowSort(
-                      pageName === "widgets" ? "ctr" : "txr",
-                      "Down"
-                    )
-                  }
-                  alt="arrow"
-                />
+                <div>
+                  <img
+                    src={arrowUp}
+                    onClick={() =>
+                      handleArrowSort(
+                        pageName === "widgets" ? "ctr" : "txr",
+                        "Up"
+                      )
+                    }
+                    alt="arrow"
+                  />
+                  <img
+                    src={secondarrowDown}
+                    onClick={() =>
+                      handleArrowSort(
+                        pageName === "widgets" ? "ctr" : "txr",
+                        "Down"
+                      )
+                    }
+                    alt="arrow"
+                  />
+                </div>
+                <p>{pageName === "widgets" ? "ctr" : "txr"}</p>
               </div>
-              <p>{pageName === "widgets" ? "ctr" : "txr"}</p>
-            </div>
-          </th>
+            </th>
+          )}
         </tr>
       </thead>
 
@@ -279,14 +286,16 @@ function TableRowContainer({
             return (
               <tr key={key} onClick={(e) => handlePageRedirect(e, item)}>
                 {/* <td><input type="checkbox" value={checkboxList} id='noredirection' checked={checkboxList[item.id]} onChange={(e) => handleCheckbox(e, item)} /></td> */}
-                <td>
-                  <img
-                    src={secondTrash}
-                    onClick={() => handleTrashFunctionaliti(item.id)}
-                    alt="trash"
-                    id="noredirection"
-                  />
-                </td>
+                {Util.isRoot() && (
+                  <td>
+                    <img
+                      src={secondTrash}
+                      onClick={() => handleTrashFunctionaliti(item.id)}
+                      alt="trash"
+                      id="noredirection"
+                    />
+                  </td>
+                )}
                 <td>
                   {pageName !== "widgets" && (
                     <div
@@ -370,17 +379,27 @@ function TableRowContainer({
                 </td>
                 <td>
                   <div className="divWithClicableIcons">
-                    <img src={visit} alt="visit" />
-                    <p
-                      onClick={() => {
-                        window.open(`${item?.url && item?.url}`);
-                      }}
-                      id="noredirection"
-                    >
-                      visit
-                    </p>
-                    <img src={edit} alt="edit" />
-                    {pageName !== "widgets" && (
+                    {((pageName === "widgets" && Util.isRoot()) ||
+                      pageName !== "widgets") && (
+                      <img src={visit} alt="visit" />
+                    )}
+                    {((pageName === "widgets" && Util.isRoot()) ||
+                      pageName !== "widgets") && (
+                      <p
+                        onClick={() => {
+                          pageName !== "widgets"
+                            ? window.open(`${item?.url && item?.url}`)
+                            : window.open(
+                                `${item?.site?.url && item?.site?.url}`
+                              );
+                        }}
+                        id="noredirection"
+                      >
+                        visit
+                      </p>
+                    )}
+                    {Util.isRoot() && <img src={edit} alt="edit" />}
+                    {pageName !== "widgets" && Util.isRoot() && (
                       <p
                         onClick={() => haneldeRedirect(item, "edit")}
                         id="noredirection"
@@ -388,7 +407,7 @@ function TableRowContainer({
                         edit
                       </p>
                     )}
-                    {pageName === "widgets" && (
+                    {pageName === "widgets" && Util.isRoot() && (
                       <p
                         onClick={() =>
                           history.push({
@@ -443,8 +462,10 @@ function TableRowContainer({
                         widgets
                       </p>
                     )}
-                    {pageName === "widgets" && <img src={visit} alt="visit" />}
-                    {pageName === "widgets" && (
+                    {pageName === "widgets" && Util.isRoot() && (
+                      <img src={visit} alt="visit" />
+                    )}
+                    {pageName === "widgets" && Util.isRoot() && (
                       <p
                         onClick={() => haneldeRedirect(item, "embed")}
                         id="noredirection"
@@ -596,10 +617,10 @@ function TableRowContainer({
                 {pageName !== "widgets" && (
                   <td>{item.stats.in?.toLocaleString()}</td>
                 )}
-                {pageName !== "widgets" && (
+                {pageName !== "widgets" && Util.isRoot() && (
                   <td>{item.stats.out?.toLocaleString()}</td>
                 )}
-                {pageName !== "widgets" && (
+                {pageName !== "widgets" && Util.isRoot() && (
                   <td>{item.stats.txr?.toLocaleString()}</td>
                 )}
               </tr>

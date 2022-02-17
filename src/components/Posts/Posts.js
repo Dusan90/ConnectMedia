@@ -24,6 +24,7 @@ import { GetUsersListActionRequest } from "../../store/actions/UsersActions";
 import moment from "moment";
 import { NotificationManager } from "react-notifications";
 import { filtering } from "./Filtering";
+import Util from "../../containers/util";
 
 import "../Home/Home.scss";
 
@@ -36,7 +37,7 @@ export class Posts extends Component {
       info: "",
       filteredDate: "",
       tipeSearch: "",
-      inputValue: null,
+      inputValue: "",
       checkboxList: [],
       hashesArrowDown: false,
       hashesArrowWitchIsOn: "",
@@ -76,28 +77,73 @@ export class Posts extends Component {
   //   };
 
   componentDidMount() {
-    this.props.dispatch(
-      GetPostsListActionRequest({
-        search: "",
-        limit: this.state.countPerPage,
-        page: this.state.page,
-        sortName: this.state.sortName,
-        sortDir: this.state.sortDir,
-        priority: this.state.priority,
-        first_position: this.state.first_position,
-        status: this.state.selectedStatusSearch
-          ? this.state.selectedStatusSearch?.id
-          : "",
-        user: "",
-        category: this.state.selectedCategorieSearch
-          ? this.state.selectedCategorieSearch?.id
-          : "",
-        site: this.state.selectedSiteSearch
-          ? this.state.selectedSiteSearch?.id
-          : "",
-        state: "",
-      })
-    );
+    const dataa = JSON.parse(sessionStorage.getItem("filterPosts"));
+    if (dataa) {
+      this.setState({
+        inputValue: dataa.search ? dataa.search : "",
+        countPerPage: parseInt(dataa.limit),
+        page: parseInt(dataa.page) + 1,
+        sortName: dataa.sort_key,
+        sortDir: dataa.sort_dir,
+        selectedStatusSearch: dataa.filters?.status
+          ? { id: parseInt(dataa.filters?.status) }
+          : null,
+        selectedSiteSearch: dataa.filters?.site
+          ? { id: parseInt(dataa.filters?.site) }
+          : null,
+        priority: dataa.filters?.priority ? dataa.filters?.priority : null,
+        first_position: dataa.filters?.first_position
+          ? dataa.filters?.first_position
+          : null,
+      });
+      setTimeout(() => {
+        this.props.dispatch(
+          GetPostsListActionRequest({
+            search: dataa.search ? dataa.search : "",
+            limit: dataa.limit,
+            page: parseInt(dataa.page) + 1,
+            sortName: dataa.sort_key,
+            sortDir: dataa.sort_dir,
+            priority: dataa.filters?.priority ? dataa.filters?.priority : "",
+            first_position: dataa.filters?.first_position
+              ? dataa.filters?.first_position
+              : "",
+            status: this.state.selectedStatusSearch
+              ? this.state.selectedStatusSearch?.id
+              : "",
+            user: "",
+            category: this.state.selectedCategorieSearch
+              ? this.state.selectedCategorieSearch?.id
+              : "",
+            site: dataa.filters?.site ? dataa.filters?.site : "",
+            state: "",
+          })
+        );
+      });
+    } else {
+      this.props.dispatch(
+        GetPostsListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          priority: this.state.priority,
+          first_position: this.state.first_position,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
+        })
+      );
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -163,13 +209,22 @@ export class Posts extends Component {
         this.setState({
           data: getPostsListData.data,
           info: getPostsListData.info,
+          loading: false,
         });
+        sessionStorage.setItem(
+          "filterPosts",
+          JSON.stringify(getPostsListData?.info)
+        );
       } else {
         this.setState({
           data: getPostsListData.data,
           info: getPostsListData.info,
           loading: false,
         });
+        sessionStorage.setItem(
+          "filterPosts",
+          JSON.stringify(getPostsListData?.info)
+        );
       }
 
       setTimeout(() => {
@@ -252,7 +307,7 @@ export class Posts extends Component {
       NotificationManager.success("Post successfully updated", "Success", 2000);
       this.props.dispatch(
         GetPostsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -294,7 +349,7 @@ export class Posts extends Component {
       this.setState({ confirmMessage: false });
       this.props.dispatch(
         GetPostsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -359,7 +414,7 @@ export class Posts extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           priority: this.state.priority,
@@ -397,7 +452,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             priority: this.state.priority,
@@ -431,7 +486,7 @@ export class Posts extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -464,7 +519,7 @@ export class Posts extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -496,7 +551,7 @@ export class Posts extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           priority: this.state.priority,
@@ -535,7 +590,7 @@ export class Posts extends Component {
 
   handleSearchBar = (e) => {
     const value = e.target.value.toLowerCase();
-    // this.setState({ inputValue: value });
+    this.setState({ inputValue: value });
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
@@ -660,7 +715,7 @@ export class Posts extends Component {
       this.setState({ sortName: sortByClicked, sortDir: value });
       this.props.dispatch(
         GetPostsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           priority: this.state.priority,
@@ -706,7 +761,7 @@ export class Posts extends Component {
 
       this.props.dispatch(
         GetPostsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           priority: this.state.priority,
@@ -765,7 +820,7 @@ export class Posts extends Component {
 
       this.props.dispatch(
         GetPostsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           priority: this.state.priority,
@@ -803,7 +858,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             priority: this.state.priority,
@@ -829,7 +884,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             priority: this.state.priority,
@@ -855,7 +910,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             priority: this.state.priority,
@@ -883,7 +938,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             priority: this.state.priority,
@@ -909,7 +964,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             priority: this.state.priority,
@@ -973,7 +1028,9 @@ export class Posts extends Component {
     let getNames = item?.categories?.slice(0, 2).map((element, i) => {
       return (
         <p id="noredirection" key={i}>
-          <a id="noredirection">{`${element}, `}</a>
+          <a id="noredirection">{`${element}${
+            item?.categories.length - 1 !== i ? "," : ""
+          } `}</a>
         </p>
       );
     });
@@ -1077,14 +1134,18 @@ export class Posts extends Component {
                 data.map((item, key) => {
                   return (
                     <div key={key} className="mainDivShotScreen">
-                      <div className="checkAndTrashDiv">
-                        {/* <input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /> */}
-                        <img
-                          src={secondTrash}
-                          onClick={() => this.handleTrashFunctionaliti(item.id)}
-                          alt="trash"
-                        />
-                      </div>
+                      {Util.isRoot() && (
+                        <div className="checkAndTrashDiv">
+                          {/* <input type="checkbox" value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /> */}
+                          <img
+                            src={secondTrash}
+                            onClick={() =>
+                              this.handleTrashFunctionaliti(item.id)
+                            }
+                            alt="trash"
+                          />
+                        </div>
+                      )}
                       <div className="statusDiv">
                         <div>
                           <div className="arrowDiv">
@@ -1278,10 +1339,14 @@ export class Posts extends Component {
                           >
                             visit
                           </p>
-                          <img src={edit} alt="edit" />
-                          <p onClick={() => this.haneldeRedirect(item, "edit")}>
-                            edit
-                          </p>
+                          {Util.isRoot() && <img src={edit} alt="edit" />}
+                          {Util.isRoot() && (
+                            <p
+                              onClick={() => this.haneldeRedirect(item, "edit")}
+                            >
+                              edit
+                            </p>
+                          )}
                           <img src={stats} alt="stats" />
                           <p
                             onClick={() => this.haneldeRedirect(item, "stats")}
@@ -1560,7 +1625,7 @@ export class Posts extends Component {
               <thead>
                 <tr>
                   {/* <th></th> */}
-                  <th></th>
+                  {Util.isRoot() && <th></th>}
                   <th>
                     <div>
                       <div>
@@ -1781,16 +1846,18 @@ export class Posts extends Component {
                         onClick={(e) => this.handlePageRedirect(e, item)}
                       >
                         {/* <td><input type="checkbox" id='noredirection' value={this.state.checkboxList} checked={this.state.checkboxList[item.id]} onChange={(e) => this.handleCheckbox(e, item)} /></td> */}
-                        <td>
-                          <img
-                            src={secondTrash}
-                            onClick={() =>
-                              this.handleTrashFunctionaliti(item.id)
-                            }
-                            alt="trash"
-                            id="noredirection"
-                          />
-                        </td>
+                        {Util.isRoot() && (
+                          <td>
+                            <img
+                              src={secondTrash}
+                              onClick={() =>
+                                this.handleTrashFunctionaliti(item.id)
+                              }
+                              alt="trash"
+                              id="noredirection"
+                            />
+                          </td>
+                        )}
                         <td>
                           {" "}
                           <div

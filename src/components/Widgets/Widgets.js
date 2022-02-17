@@ -41,7 +41,7 @@ export class Widgets extends Component {
       info: "",
       filteredDate: "",
       tipeSearch: "",
-      inputValue: null,
+      inputValue: "",
       checkboxList: [],
       hashesArrowDown: false,
       hashesArrowWitchIsOn: "",
@@ -76,26 +76,59 @@ export class Widgets extends Component {
   //   };
 
   componentDidMount() {
-    this.props.dispatch(
-      GetWidgetsListActionRequest({
-        search: "",
-        limit: this.state.countPerPage,
-        page: this.state.page,
-        sortName: this.state.sortName,
-        sortDir: this.state.sortDir,
-        status: this.state.selectedStatusSearch
-          ? this.state.selectedStatusSearch?.id
-          : "",
-        user: "",
-        category: this.state.selectedCategorieSearch
-          ? this.state.selectedCategorieSearch?.id
-          : "",
-        site: this.state.selectedSiteSearch
-          ? this.state.selectedSiteSearch?.id
-          : "",
-        state: "",
-      })
-    );
+    const dataa = JSON.parse(sessionStorage.getItem("filterWidgets"));
+    if (dataa) {
+      this.setState({
+        inputValue: dataa.search ? dataa.search : "",
+        countPerPage: parseInt(dataa.limit),
+        page: parseInt(dataa.page) + 1,
+        sortName: dataa.sort_key,
+        sortDir: dataa.sort_dir,
+        selectedStatusSearch: dataa.filters?.status
+          ? { id: parseInt(dataa.filters?.status) }
+          : null,
+        selectedSiteSearch: dataa.filters?.site
+          ? { id: parseInt(dataa.filters?.site) }
+          : null,
+      });
+      this.props.dispatch(
+        GetWidgetsListActionRequest({
+          search: dataa.search ? dataa.search : "",
+          limit: dataa.limit,
+          page: parseInt(dataa.page) + 1,
+          sortName: dataa.sort_key,
+          sortDir: dataa.sort_dir,
+          status: dataa.filters?.status ? dataa.filters?.status : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: dataa.filters?.site ? dataa.filters?.site : "",
+          state: "",
+        })
+      );
+    } else {
+      this.props.dispatch(
+        GetWidgetsListActionRequest({
+          search: "",
+          limit: this.state.countPerPage,
+          page: this.state.page,
+          sortName: this.state.sortName,
+          sortDir: this.state.sortDir,
+          status: this.state.selectedStatusSearch
+            ? this.state.selectedStatusSearch?.id
+            : "",
+          user: "",
+          category: this.state.selectedCategorieSearch
+            ? this.state.selectedCategorieSearch?.id
+            : "",
+          site: this.state.selectedSiteSearch
+            ? this.state.selectedSiteSearch?.id
+            : "",
+          state: "",
+        })
+      );
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -160,7 +193,7 @@ export class Widgets extends Component {
       this.setState({ confirmMessage: false });
       this.props.dispatch(
         GetWidgetsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -221,13 +254,22 @@ export class Widgets extends Component {
         this.setState({
           data: getWidgetsListData.data,
           info: getWidgetsListData.info,
+          loading: false,
         });
+        sessionStorage.setItem(
+          "filterWidgets",
+          JSON.stringify(getWidgetsListData?.info)
+        );
       } else {
         this.setState({
           data: getWidgetsListData.data,
           info: getWidgetsListData.info,
           loading: false,
         });
+        sessionStorage.setItem(
+          "filterWidgets",
+          JSON.stringify(getWidgetsListData?.info)
+        );
       }
 
       //   setTimeout(() => {
@@ -301,7 +343,7 @@ export class Widgets extends Component {
       this.props.history.push("/widgets");
       this.props.dispatch(
         GetWidgetsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -342,7 +384,7 @@ export class Widgets extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetWidgetsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -379,7 +421,7 @@ export class Widgets extends Component {
 
   handleSearchBar = (e) => {
     const value = e.target.value.toLowerCase();
-    // this.setState({ inputValue: value });
+    this.setState({ inputValue: value });
     setTimeout(() => {
       this.props.dispatch(
         GetWidgetsListActionRequest({
@@ -427,7 +469,7 @@ export class Widgets extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetWidgetsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -487,7 +529,7 @@ export class Widgets extends Component {
 
       this.props.dispatch(
         GetWidgetsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: sortByClicked,
@@ -522,7 +564,7 @@ export class Widgets extends Component {
 
       this.props.dispatch(
         GetWidgetsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -577,7 +619,7 @@ export class Widgets extends Component {
 
       this.props.dispatch(
         GetWidgetsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
@@ -607,6 +649,7 @@ export class Widgets extends Component {
   };
 
   handleSearchOnMainPage = (el, secondElement) => {
+    console.log(el, secondElement);
     if (this.props.location?.data?.searchByuser && !secondElement) {
       this.setState({ selectedUserSearch: el });
       const newData = this.state.data.filter((elm) => {
@@ -617,7 +660,7 @@ export class Widgets extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetWidgetsListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             sortName: this.state.sortName,
@@ -641,7 +684,7 @@ export class Widgets extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetWidgetsListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             sortName: this.state.sortName,
@@ -665,7 +708,7 @@ export class Widgets extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetWidgetsListActionRequest({
-            search: "",
+            search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
             sortName: this.state.sortName,
@@ -690,7 +733,7 @@ export class Widgets extends Component {
         setTimeout(() => {
           this.props.dispatch(
             GetWidgetsListActionRequest({
-              search: "",
+              search: this.state.inputValue,
               limit: this.state.countPerPage,
               page: this.state.page,
               sortName: this.state.sortName,
@@ -714,7 +757,7 @@ export class Widgets extends Component {
         setTimeout(() => {
           this.props.dispatch(
             GetWidgetsListActionRequest({
-              search: "",
+              search: this.state.inputValue,
               limit: this.state.countPerPage,
               page: this.state.page,
               sortName: this.state.sortName,
@@ -759,7 +802,7 @@ export class Widgets extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetWidgetsListActionRequest({
-          search: "",
+          search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
           sortName: this.state.sortName,
