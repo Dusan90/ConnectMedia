@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./Home.scss";
 import { connect } from "react-redux";
-import ViewSectionCard from "../../containers/viewSections/ViewSectionCard";
+// import ViewSectionCard from "../../containers/viewSections/ViewSectionCard";
 import TableRowContainer from "../../containers/TableRowContainer/TableRowContainer";
 import ShortTableRowContainer from "../../containers/TableRowContainer/ShortTableRowContainer";
 import SearchContainer from "../../containers/SearchContainer/SearchContainer";
@@ -15,8 +15,8 @@ import {
 import { GetCategoryListActionRequest } from "../../store/actions/CategoryAction";
 import { GetUsersListActionRequest } from "../../store/actions/UsersActions";
 import { NotificationManager } from "react-notifications";
-import { filtering } from "./Filtering";
-import Util from "../../containers/util";
+// import { filtering } from "./Filtering";
+// import Util from "../../containers/util";
 
 export class Home extends Component {
   constructor(props) {
