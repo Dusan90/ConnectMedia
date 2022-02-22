@@ -421,7 +421,7 @@ function SearchContainer({
               itemsCountPerPage={
                 state.countPerPage ? parseInt(state.countPerPage) : 10
               }
-              totalItemsCount={state.info?.total}
+              totalItemsCount={state.info?.total ? state.info?.total : 0}
               pageRangeDisplayed={2}
               onChange={handlePageChange}
               hideFirstLastPages={true}

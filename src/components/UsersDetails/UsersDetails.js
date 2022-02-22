@@ -50,6 +50,7 @@ export class UsersDetails extends Component {
       contactperson: null,
       phone: null,
       vat: null,
+      root: false,
     };
   }
 
@@ -117,6 +118,7 @@ export class UsersDetails extends Component {
         contactperson: getSpecUserDetailsData.data?.contact,
         phone: getSpecUserDetailsData.data?.phone,
         vat: getSpecUserDetailsData.data?.vat,
+        root: getSpecUserDetailsData.data?.root,
       });
     }
 
@@ -177,6 +179,7 @@ export class UsersDetails extends Component {
       vat,
       phone,
       role,
+      root,
     } = this.state;
     this.props.dispatch(
       UpdateSpecUsersActionRequest({
@@ -189,6 +192,7 @@ export class UsersDetails extends Component {
         email,
         name,
         vat,
+        root,
         phone,
         roles: role,
       })
@@ -222,7 +226,7 @@ export class UsersDetails extends Component {
   };
 
   render() {
-    const { isIteditable, usersData } = this.state;
+    const { isIteditable, usersData, root } = this.state;
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget
@@ -398,6 +402,34 @@ export class UsersDetails extends Component {
                     value={this.state.vat}
                     onChange={(e) => this.handleUserChanges(e)}
                   />
+                )}
+              </div>
+              <div className="head_div">
+                <h4>Root</h4>
+                {!isIteditable && (
+                  <p style={{ marginLeft: "20px" }}>{`${usersData?.root}`}</p>
+                )}
+                {isIteditable && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <input
+                      style={{ width: "20px" }}
+                      type="checkbox"
+                      name="check"
+                      value={root !== null ? root : usersData?.root}
+                      checked={root !== null ? root : usersData?.root}
+                      onChange={(e) =>
+                        this.setState({
+                          root: e.target.checked,
+                        })
+                      }
+                    />
+                  </div>
                 )}
               </div>
             </div>

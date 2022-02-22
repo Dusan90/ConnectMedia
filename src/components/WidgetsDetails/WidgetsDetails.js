@@ -21,6 +21,7 @@ import { SpecWidgetChartRequest } from "../../store/actions/ChartAction";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Util from "../../containers/util";
+import { GetPostsListActionRequest } from "../../store/actions/PostActions";
 
 import ViewWidgets from "./ViewWidgets";
 
@@ -82,6 +83,9 @@ export class WidgetsDetails extends Component {
       endDate: new Date(),
       blacklisted_tags: null,
       numberOfBlockSites: [],
+      numberOfCustomPosts: [],
+      inputValueForCustomPosts: "",
+      Postdata: [],
     };
   }
 
@@ -161,7 +165,13 @@ export class WidgetsDetails extends Component {
       getSitesList,
       specWidgetChart,
       viewWidget,
+      getPostsList,
     } = this.props;
+    const {
+      loading: getPostsListLoading,
+      error: getPostsListError,
+      data: getPostsListData,
+    } = getPostsList;
     const {
       data: getWidgetDetailsData,
       loading: getWidgetDetailsLoading,
@@ -204,6 +214,20 @@ export class WidgetsDetails extends Component {
       loading: viewWidgetLoading,
       error: viewWidgetError,
     } = viewWidget;
+
+    if (
+      prevProps.getPostsList !== getPostsList &&
+      !getPostsListLoading &&
+      !getPostsListError &&
+      getPostsListData
+    ) {
+      const postsOptions = getPostsListData.data.map((el) => {
+        return { value: el.id, label: el.title ? el.title : "no name" };
+      });
+      this.setState({
+        Postdata: postsOptions,
+      });
+    }
 
     if (
       prevProps.viewWidget !== viewWidget &&
@@ -252,6 +276,11 @@ export class WidgetsDetails extends Component {
       !getWidgetDetailsLoading &&
       getWidgetDetailsData
     ) {
+      const existCustomPosts = getWidgetDetailsData.data?.forced_posts?.map(
+        (el) => {
+          return { id: el.id, name: el.title ? el.title : "no title" };
+        }
+      );
       this.setState({
         dataState: getWidgetDetails.data.status,
         WidgetDetailsData: getWidgetDetailsData.data,
@@ -264,6 +293,7 @@ export class WidgetsDetails extends Component {
         template: getWidgetDetailsData.data?.template,
         description: getWidgetDetailsData.data?.description,
         numberOfBlockSites: getWidgetDetailsData.data?.blacklisted_sites,
+        numberOfCustomPosts: existCustomPosts,
       });
       if (getWidgetDetailsData?.data?.blacklisted_tags?.length !== 0) {
         const tagToshow = getWidgetDetailsData?.data?.blacklisted_tags.map(
@@ -368,6 +398,7 @@ export class WidgetsDetails extends Component {
         publicValue,
         blacklisted_tags,
         numberOfBlockSites,
+        numberOfCustomPosts,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
@@ -404,6 +435,7 @@ export class WidgetsDetails extends Component {
                     .filter((el) => el)
                 : null,
             blacklisted_sites: numberOfBlockSites,
+            forced_posts: numberOfCustomPosts,
           })
         );
       } else {
@@ -442,6 +474,7 @@ export class WidgetsDetails extends Component {
                     .filter((el) => el)
                 : null,
             blacklisted_sites: numberOfBlockSites,
+            forced_posts: numberOfCustomPosts,
           })
         );
       }
@@ -485,6 +518,29 @@ export class WidgetsDetails extends Component {
     this.setState({ categories: saveData });
   };
 
+  handleSearchOnSelect = (e) => {
+    const value = e.toLowerCase();
+    this.setState({ inputValueForCustomPosts: value });
+    if (value.length >= 3) {
+      setTimeout(() => {
+        this.props.dispatch(
+          GetPostsListActionRequest({
+            search: value,
+            limit: "",
+            page: "",
+            sortName: "",
+            sortDir: "",
+            status: "",
+            user: "",
+            category: "",
+            site: "",
+            state: "",
+          })
+        );
+      });
+    }
+  };
+
   render() {
     const {
       isIteditable,
@@ -501,6 +557,8 @@ export class WidgetsDetails extends Component {
       ignore_impressions,
       siteOptions,
       numberOfBlockSites,
+      numberOfCustomPosts,
+      Postdata,
     } = this.state;
 
     const categorialOption = categoryList?.map((el) => {
@@ -513,6 +571,18 @@ export class WidgetsDetails extends Component {
 
     const optionsS = siteOptions.map((el) => {
       if (optionsSelection.includes(el.value)) {
+        return { ...el, isdisabled: true };
+      } else {
+        return el;
+      }
+    });
+
+    const optionsSelectionCustomPosts = numberOfCustomPosts?.map((el) => {
+      return el.id;
+    });
+
+    const optionsCustomPosts = Postdata?.map((el) => {
+      if (optionsSelectionCustomPosts.includes(el.value)) {
         return { ...el, isdisabled: true };
       } else {
         return el;
@@ -1341,6 +1411,107 @@ export class WidgetsDetails extends Component {
                     </button>
                   </div>
                 )}
+                {Util.isRoot() && <h1>Forced posts</h1>}
+                {this.state.numberOfCustomPosts?.length !== 0 &&
+                  Util.isRoot() &&
+                  this.state.numberOfCustomPosts?.map((el, index) => (
+                    <div
+                      className="interval_div"
+                      style={{ gap: isIteditable && "10px" }}
+                      key={index}
+                    >
+                      {!isIteditable && <h4>{el.name}</h4>}
+                      {isIteditable && (
+                        <div style={{ flex: 1 }}>
+                          <Select
+                            placeholder={"Enter min 3 characters..."}
+                            value={
+                              el.name
+                                ? {
+                                    label: `${el.name}`,
+                                  }
+                                : ""
+                            }
+                            className="basic"
+                            classNamePrefix="select"
+                            styles={{
+                              control: (base, state) => ({
+                                ...base,
+                                flex: 1,
+                                fontWeight: "500",
+                                background: "#d6dbdc",
+                              }),
+                              placeholder: () => ({
+                                color: "black",
+                              }),
+                            }}
+                            isSearchable={true}
+                            name={`feed${el.id}`}
+                            options={
+                              this.state.inputValueForCustomPosts.length >= 3
+                                ? optionsCustomPosts
+                                : []
+                            }
+                            onInputChange={(e) => {
+                              this.handleSearchOnSelect(e);
+                            }}
+                            onChange={(e) => {
+                              const newlist = [
+                                ...this.state.numberOfCustomPosts,
+                              ];
+                              if (newlist[index]["id"] === el.id) {
+                                newlist[index]["id"] = e.value;
+                                newlist[index]["name"] = e.label;
+                                setTimeout(() => {
+                                  this.setState({
+                                    numberOfCustomPosts: newlist,
+                                  });
+                                });
+                              }
+                            }}
+                            isClearable={false}
+                            isOptionDisabled={(option) => option.isdisabled}
+                          />
+                        </div>
+                      )}
+                      {isIteditable && (
+                        <p
+                          className="deleteRatioRow"
+                          onClick={() => {
+                            const newlist = [...this.state.numberOfCustomPosts];
+                            if (newlist[index]["id"] === el.id) {
+                              const newone = newlist.filter(
+                                (elm) => elm.id !== el.id
+                              );
+                              setTimeout(() => {
+                                this.setState({ numberOfCustomPosts: newone });
+                              });
+                            }
+                          }}
+                        >
+                          X
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                {isIteditable && Util.isRoot() && (
+                  <div className="interval_div">
+                    <button
+                      onClick={() => {
+                        const newlist = [
+                          ...this.state.numberOfCustomPosts,
+                          { id: "", name: "" },
+                        ];
+                        setTimeout(() => {
+                          this.setState({ numberOfCustomPosts: newlist });
+                        });
+                      }}
+                      className="addingButton"
+                    >
+                      Add post
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -1402,8 +1573,13 @@ export class WidgetsDetails extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { WidgetReducer, SitesListReducer, CategoryReducer, ChartRreducer } =
-    state;
+  const {
+    WidgetReducer,
+    SitesListReducer,
+    CategoryReducer,
+    ChartRreducer,
+    PostsReducer,
+  } = state;
   const {
     getWidgetDetails,
     deleteWidget,
@@ -1414,7 +1590,10 @@ const mapStateToProps = (state) => {
   const { getCategoryList } = CategoryReducer;
   const { getSitesList, getSiteDetails } = SitesListReducer;
   const { specWidgetChart } = ChartRreducer;
+  const { getPostsList } = PostsReducer;
+
   return {
+    getPostsList,
     getWidgetDetails,
     getSitesList,
     getSiteDetails,

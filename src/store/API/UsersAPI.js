@@ -44,6 +44,7 @@ const createUser = async ({
   contact,
   phone,
   vat,
+  root,
 }) => {
   const formData = new FormData();
   {
@@ -79,6 +80,9 @@ const createUser = async ({
   {
     vat && formData.append("vat", vat);
   }
+  {
+    root && formData.append("root", root);
+  }
   const data = {
     name,
     email,
@@ -91,6 +95,7 @@ const createUser = async ({
     contact,
     phone,
     vat,
+    root,
   };
   return await axios.post(`${API_URL}${GET_SELF_USER}`, data, {
     headers: {
@@ -130,6 +135,7 @@ const updateSpecUser = async ({
   contact,
   phone,
   vat,
+  root,
 }) => {
   const objective = {
     address,
@@ -142,6 +148,7 @@ const updateSpecUser = async ({
     vat,
     phone,
     roles,
+    root,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
