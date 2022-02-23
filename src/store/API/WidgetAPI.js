@@ -49,6 +49,7 @@ const createWidget = async (payload) => {
     blacklisted_tags: payload.blacklisted_tags,
     blacklisted_sites: payload.blacklisted_sites,
     forced_posts: payload.forced_posts,
+    inherit_posts_from: payload.inherit_posts_from,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
@@ -84,6 +85,7 @@ const updateWidgetDetails = async (payload) => {
     blacklisted_tags: payload.blacklisted_tags,
     blacklisted_sites: payload.blacklisted_sites,
     forced_posts: payload.forced_posts,
+    inherit_posts_from: payload.inherit_posts_from,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)

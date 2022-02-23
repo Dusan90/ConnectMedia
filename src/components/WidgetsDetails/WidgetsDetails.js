@@ -4,11 +4,14 @@ import NavWidget from "../../containers/NavWidget/NavWidget";
 // import xButton from '../../assets/img/SiteDetails/xButton.svg'
 import { connect } from "react-redux";
 import "../SiteDetails/SiteDetails.scss";
+import arrowUp from "../../assets/img/TableIcons/arrow(1).svg";
+import secondarrowDown from "../../assets/img/TableIcons/arrow.svg";
 import SaveButtonEdit from "../../containers/Buttons/SaveButtonEdit";
 import Chart from "../../containers/Chart/Chart";
 import VerticalChart from "../../containers/Chart/VerticalChart";
 import Select from "react-select";
 import {
+  GetWidgetsListActionRequest,
   GetWidgetDetailsActionRequest,
   CreateWidgetActionRequest,
   UpdateWidgetDetailsActionRequest,
@@ -84,8 +87,10 @@ export class WidgetsDetails extends Component {
       blacklisted_tags: null,
       numberOfBlockSites: [],
       numberOfCustomPosts: [],
+      inherit_posts_from: null,
       inputValueForCustomPosts: "",
       Postdata: [],
+      widgetOption: [],
     };
   }
 
@@ -107,6 +112,20 @@ export class WidgetsDetails extends Component {
   };
 
   componentDidMount() {
+    this.props.dispatch(
+      GetWidgetsListActionRequest({
+        search: "",
+        limit: "",
+        page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
+      })
+    );
     this.props.dispatch(
       GetCategoryListActionRequest({
         search: "",
@@ -166,7 +185,13 @@ export class WidgetsDetails extends Component {
       specWidgetChart,
       viewWidget,
       getPostsList,
+      getWidgetsList,
     } = this.props;
+    const {
+      loading: getWidgetsListLoading,
+      error: getWidgetsListError,
+      data: getWidgetsListData,
+    } = getWidgetsList;
     const {
       loading: getPostsListLoading,
       error: getPostsListError,
@@ -214,6 +239,19 @@ export class WidgetsDetails extends Component {
       loading: viewWidgetLoading,
       error: viewWidgetError,
     } = viewWidget;
+    if (
+      prevProps.getWidgetsList !== getWidgetsList &&
+      !getWidgetsListLoading &&
+      !getWidgetsListError &&
+      getWidgetsListData
+    ) {
+      const widgetsOptions = getWidgetsListData.data.map((el) => {
+        return { value: el.id, label: el.name ? el.name : "no name" };
+      });
+      this.setState({
+        widgetOption: widgetsOptions,
+      });
+    }
 
     if (
       prevProps.getPostsList !== getPostsList &&
@@ -281,6 +319,13 @@ export class WidgetsDetails extends Component {
           return { id: el.id, name: el.title ? el.title : "no title" };
         }
       );
+      const inheritedFrom =
+        Object.keys(getWidgetDetailsData.data?.inherit_posts_from).length !== 0
+          ? {
+              value: getWidgetDetailsData.data?.inherit_posts_from.id,
+              label: getWidgetDetailsData.data?.inherit_posts_from.name,
+            }
+          : getWidgetDetailsData.data?.inherit_posts_from;
       this.setState({
         dataState: getWidgetDetails.data.status,
         WidgetDetailsData: getWidgetDetailsData.data,
@@ -294,6 +339,7 @@ export class WidgetsDetails extends Component {
         description: getWidgetDetailsData.data?.description,
         numberOfBlockSites: getWidgetDetailsData.data?.blacklisted_sites,
         numberOfCustomPosts: existCustomPosts,
+        inherit_posts_from: inheritedFrom,
       });
       if (getWidgetDetailsData?.data?.blacklisted_tags?.length !== 0) {
         const tagToshow = getWidgetDetailsData?.data?.blacklisted_tags.map(
@@ -399,6 +445,7 @@ export class WidgetsDetails extends Component {
         blacklisted_tags,
         numberOfBlockSites,
         numberOfCustomPosts,
+        inherit_posts_from,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
@@ -436,6 +483,7 @@ export class WidgetsDetails extends Component {
                 : null,
             blacklisted_sites: numberOfBlockSites,
             forced_posts: numberOfCustomPosts,
+            inherit_posts_from,
           })
         );
       } else {
@@ -475,6 +523,7 @@ export class WidgetsDetails extends Component {
                 : null,
             blacklisted_sites: numberOfBlockSites,
             forced_posts: numberOfCustomPosts,
+            inherit_posts_from,
           })
         );
       }
@@ -561,6 +610,8 @@ export class WidgetsDetails extends Component {
       Postdata,
     } = this.state;
 
+    console.log(this.state);
+
     const categorialOption = categoryList?.map((el) => {
       return { value: el.id, label: el.name };
     });
@@ -589,7 +640,6 @@ export class WidgetsDetails extends Component {
       }
     });
 
-    console.log(this.state);
     return (
       <div className="mainSiteDetailsDiv">
         <NavWidget
@@ -1412,6 +1462,66 @@ export class WidgetsDetails extends Component {
                   </div>
                 )}
                 {Util.isRoot() && <h1>Forced posts</h1>}
+                {Util.isRoot() && (
+                  <div
+                    className="interval_div"
+                    style={{ gap: isIteditable && "10px" }}
+                  >
+                    {Util.isRoot() && (
+                      <h4 style={{ minWidth: "120px" }}>Inherit from</h4>
+                    )}
+                    {!isIteditable && Util.isRoot() && (
+                      <h4>{this.state.inherit_posts_from?.label}</h4>
+                    )}
+                    {isIteditable && Util.isRoot() && (
+                      <div style={{ flex: 1 }}>
+                        <Select
+                          placeholder={"Enter widget..."}
+                          value={
+                            Object.keys(this.state.inherit_posts_from)
+                              .length !== 0
+                              ? {
+                                  label: `${this.state.inherit_posts_from.label}`,
+                                }
+                              : ""
+                          }
+                          className="basic"
+                          classNamePrefix="select"
+                          styles={{
+                            control: (base, state) => ({
+                              ...base,
+                              flex: 1,
+                              fontWeight: "500",
+                              background: "#d6dbdc",
+                            }),
+                            placeholder: () => ({
+                              color: "black",
+                            }),
+                          }}
+                          isSearchable={true}
+                          name={`feed${this.state.inherit_posts_from?.value}`}
+                          options={this.state.widgetOption}
+                          onChange={(e) => {
+                            this.setState({ inherit_posts_from: e });
+                          }}
+                          isClearable={false}
+                        />
+                      </div>
+                    )}
+                    {isIteditable && (
+                      <p
+                        className="deleteRatioRow"
+                        onClick={() => {
+                          this.setState({
+                            inherit_posts_from: {},
+                          });
+                        }}
+                      >
+                        X
+                      </p>
+                    )}
+                  </div>
+                )}
                 {this.state.numberOfCustomPosts?.length !== 0 &&
                   Util.isRoot() &&
                   this.state.numberOfCustomPosts?.map((el, index) => (
@@ -1474,6 +1584,45 @@ export class WidgetsDetails extends Component {
                           />
                         </div>
                       )}
+
+                      {isIteditable && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            padding: "5px 0",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <img
+                            src={arrowUp}
+                            onClick={() => {
+                              const arr = this.state.numberOfCustomPosts;
+                              const tem = arr[index];
+                              if (index !== 0) {
+                                arr[index] = arr[index - 1];
+                                arr[index - 1] = tem;
+                                this.setState({ numberOfCustomPosts: arr });
+                              }
+                            }}
+                            alt="arrow"
+                          />
+                          <img
+                            src={secondarrowDown}
+                            onClick={() => {
+                              const arr = this.state.numberOfCustomPosts;
+                              const tem = arr[index];
+                              if (index !== arr.length - 1) {
+                                arr[index] = arr[index + 1];
+                                arr[index + 1] = tem;
+                                this.setState({ numberOfCustomPosts: arr });
+                              }
+                            }}
+                            alt="arrow"
+                          />
+                        </div>
+                      )}
+
                       {isIteditable && (
                         <p
                           className="deleteRatioRow"
@@ -1586,6 +1735,7 @@ const mapStateToProps = (state) => {
     createWidget,
     updateWidgetDetails,
     viewWidget,
+    getWidgetsList,
   } = WidgetReducer;
   const { getCategoryList } = CategoryReducer;
   const { getSitesList, getSiteDetails } = SitesListReducer;
@@ -1603,6 +1753,7 @@ const mapStateToProps = (state) => {
     updateWidgetDetails,
     specWidgetChart,
     viewWidget,
+    getWidgetsList,
   };
 };
 
