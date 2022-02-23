@@ -319,13 +319,16 @@ export class WidgetsDetails extends Component {
           return { id: el.id, name: el.title ? el.title : "no title" };
         }
       );
+      const whitchIsIt = !getWidgetDetailsData.data?.inherit_posts_from
+        ? {}
+        : getWidgetDetailsData.data?.inherit_posts_from;
       const inheritedFrom =
-        Object.keys(getWidgetDetailsData.data?.inherit_posts_from).length !== 0
+        Object.keys(whitchIsIt).length !== 0
           ? {
-              value: getWidgetDetailsData.data?.inherit_posts_from.id,
-              label: getWidgetDetailsData.data?.inherit_posts_from.name,
+              value: whitchIsIt.id,
+              label: whitchIsIt.name,
             }
-          : getWidgetDetailsData.data?.inherit_posts_from;
+          : whitchIsIt;
       this.setState({
         dataState: getWidgetDetails.data.status,
         WidgetDetailsData: getWidgetDetailsData.data,
