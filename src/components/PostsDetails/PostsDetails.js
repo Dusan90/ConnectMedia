@@ -70,9 +70,11 @@ export class PostsDetails extends Component {
       postChartData: "",
       priority_lifetime: null,
       priority: null,
+      is_custom: null,
       first_position: null,
       startDate: new Date().setDate(new Date().getDate() - 7),
       endDate: new Date(),
+      lifetime: null,
     };
   }
 
@@ -220,7 +222,9 @@ export class PostsDetails extends Component {
         author: getPostDetailsData.data?.author,
         content: getPostDetailsData.data?.content,
         priority_lifetime: getPostDetailsData.data?.priority_lifetime,
+        lifetime: getPostDetailsData.data?.lifetime,
         priority: getPostDetailsData.data?.priority,
+        is_custom: getPostDetailsData.data?.is_custom,
         first_position: getPostDetailsData.data?.first_position,
         file: getPostDetailsData.data?.image,
         date: getPostDetailsData.data?.timestamp,
@@ -315,7 +319,9 @@ export class PostsDetails extends Component {
         dataState,
         categories,
         priority_lifetime,
+        lifetime,
         priority,
+        is_custom,
         first_position,
       } = this.state;
       if (this.props.location.data?.createNew) {
@@ -332,7 +338,9 @@ export class PostsDetails extends Component {
             status: dataState,
             categories,
             priority_lifetime,
+            lifetime,
             priority,
+            is_custom,
             first_position,
           })
         );
@@ -351,7 +359,9 @@ export class PostsDetails extends Component {
             status: dataState,
             categories,
             priority_lifetime,
+            lifetime,
             priority,
+            is_custom,
             first_position,
           })
         );
@@ -409,6 +419,7 @@ export class PostsDetails extends Component {
       siteOptions,
       siteDetailsData,
       priority,
+      is_custom,
       first_position,
     } = this.state;
     const categorialOption = siteDetailsData?.categories?.map((el) => {
@@ -837,7 +848,7 @@ export class PostsDetails extends Component {
                 </div> */}
                 {Util.isRoot() && (
                   <div className="description_div">
-                    <h4>Lifetime (hours)</h4>
+                    <h4>Priority lifetime (hours)</h4>
                     {!isIteditable && (
                       <p>{postDetailsData?.priority_lifetime}</p>
                     )}
@@ -982,6 +993,72 @@ export class PostsDetails extends Component {
                     />
                   )} */}
                 </div>
+                {Util.isRoot() && (
+                  <div className="categ_div">
+                    <h4>Lifetime</h4>
+                    {!isIteditable && <p>{postDetailsData?.lifetime}</p>}
+                    {isIteditable && (
+                      <input
+                        type="number"
+                        min="0"
+                        onChange={(e) => {
+                          if (
+                            (!isNaN(e.target.value) &&
+                              parseInt(e.target.value) >= 0) ||
+                            e.target.value === ""
+                          ) {
+                            let val =
+                              e.target.value === ""
+                                ? e.target.value
+                                : parseInt(e.target.value);
+                            setTimeout(() => {
+                              this.setState({ lifetime: val });
+                            });
+                          }
+                        }}
+                        name="ratio"
+                        value={
+                          this.state.lifetime !== null && this.state.lifetime
+                        }
+                      />
+                    )}
+                  </div>
+                )}
+                {Util.isRoot() && (
+                  <div className="categ_div">
+                    <h4>Is custom</h4>
+                    {!isIteditable && <p>{`${postDetailsData?.is_custom}`}</p>}
+                    {isIteditable && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <input
+                          name="is_custom"
+                          value={
+                            is_custom !== null
+                              ? is_custom
+                              : postDetailsData?.is_custom
+                          }
+                          checked={
+                            is_custom !== null
+                              ? is_custom
+                              : postDetailsData?.is_custom
+                          }
+                          onChange={(e) =>
+                            this.setState({ is_custom: e.target.checked })
+                          }
+                          style={{ width: "20px" }}
+                          type="checkbox"
+                        />{" "}
+                        <label htmlFor="check">Is this post custom</label>
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="categ_div">
                   <h4>Date</h4>
 
