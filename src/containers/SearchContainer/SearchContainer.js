@@ -12,6 +12,8 @@ import arrowRight from "../../assets/img/SecondHeader/Vector(1).svg";
 import Pagination from "react-js-pagination";
 import DropDown from "../DropDown/DropDown";
 import Util from "../util";
+import arrowDown from "../../assets/img/SecondHeader/arrowDown.svg";
+
 // import { GetCategoryListActionRequest } from '../../store/actions/CategoryAction'
 // import { GetSitesListActionRequest } from '../../store/actions/SitesListAction'
 // import { GetUsersListActionRequest } from '../../store/actions/UsersActions'
@@ -47,6 +49,7 @@ function SearchContainer({
   const [showCategorieOptions, setShowCategorieOptions] = useState(false);
   const [sites, setSites] = useState("all sites");
   const [showSitesOptions, setShowSitesOptions] = useState(false);
+  const [showFilterOptions, setShowFilterOptions] = useState(false);
   const states = useSelector((state) => state);
   const { CategoryReducer, SitesListReducer, UsersReducer } = states;
   const { error: getCategoryListError, data: getCategoryListData } =
@@ -106,6 +109,14 @@ function SearchContainer({
       return !prevProps;
     });
     setShowCategorieOptions(false);
+    setShowFilterOptions(false);
+  };
+
+  const handleFilterShow = () => {
+    setShowFilterOptions((prevProps) => {
+      return !prevProps;
+    });
+    setShowSitesOptions(false);
   };
 
   const handleChangeOptionssites = (el) => {
@@ -130,6 +141,12 @@ function SearchContainer({
   const handleSearchByPrio = (el) => {
     setTimeout(() => {
       handleSearchOnMainByprioOrFirst(el, "prio");
+    });
+  };
+
+  const handleSearchByCustom = (el) => {
+    setTimeout(() => {
+      handleSearchOnMainByprioOrFirst(el, "custom");
     });
   };
 
@@ -240,41 +257,138 @@ function SearchContainer({
             )}
             {pageName === "POSTS" && <div className="horizontal" />}
             {pageName === "POSTS" && (
-              <div className="box-3">
-                <div
-                  className="mainPrio"
-                  style={{
-                    width: "100%",
-                    // display: "flex",
-                    // justifyContent: "space-evenly",
-                  }}
-                >
-                  <div
-                    className="priorityClass"
-                    style={{
-                      borderBottom: state.priority && "5px solid #94d7e0",
-                      borderRight: "1px solid #94d7e0",
-                      width: "100%",
-                    }}
-                    onClick={() => handleSearchByPrio(!state.priority)}
-                  >
-                    <p style={{ margin: "0 auto", padding: "0 5px 0 0" }}>
-                      PRIORITY
-                    </p>
-                  </div>
-                  {/* {pageName === "POSTS" && <div className="horizontal" />} */}
-                  <div
-                    className="firstClass"
-                    style={{
-                      borderBottom: state.first_position && "5px solid #94d7e0",
-                      width: "100%",
-                    }}
-                    onClick={() => handleSearchByFirst(!state.first_position)}
-                  >
-                    <p style={{ margin: "0 auto" }}>FIRST</p>
-                  </div>
-                </div>
+              <div className="box-3" onClick={handleFilterShow}>
+                <p className="mainInfoPtag">{"Filters"} </p>
+                <img src={arrowDown} alt="arrow down" />
+                {
+                  // isItOpen &&
+                  showFilterOptions && (
+                    <div className="options">
+                      <div
+                        className="priorityClass"
+                        style={{
+                          backgroundColor: state.priority && "#94d7e0",
+
+                          width: "100%",
+                        }}
+                        onClick={() => handleSearchByPrio(!state.priority)}
+                      >
+                        <p
+                          style={{
+                            textAlign: "left",
+                          }}
+                        >
+                          Priority
+                        </p>
+                      </div>
+                      {/* {pageName === "POSTS" && <div className="horizontal" />} */}
+                      <div
+                        className="priorityClass"
+                        style={{
+                          backgroundColor: state.custom_only && "#94d7e0",
+
+                          width: "100%",
+                        }}
+                        onClick={() => handleSearchByCustom(!state.custom_only)}
+                      >
+                        <p
+                          style={{
+                            textAlign: "left",
+                          }}
+                        >
+                          Custom
+                        </p>
+                      </div>
+                      <div
+                        className="firstClass"
+                        style={{
+                          backgroundColor: state.first_position && "#94d7e0",
+
+                          width: "100%",
+                        }}
+                        onClick={() =>
+                          handleSearchByFirst(!state.first_position)
+                        }
+                      >
+                        <p
+                          style={{
+                            textAlign: "left",
+                          }}
+                        >
+                          First
+                        </p>
+                      </div>
+                    </div>
+                  )
+                }
               </div>
+              // <div className="box-3">
+              //   <div
+              //     className="mainPrio"
+              //     style={{
+              //       width: "100%",
+              //       // display: "flex",
+              //       // justifyContent: "space-evenly",
+              //     }}
+              //   >
+              //     <div
+              //       className="priorityClass"
+              //       style={{
+              //         backgroundColor: state.priority && "#94d7e0",
+
+              //         width: "100%",
+              //       }}
+              //       onClick={() => handleSearchByPrio(!state.priority)}
+              //     >
+              //       <p
+              //         style={{
+              //           margin: "0 auto",
+              //           color: state.priority && "#062c3d",
+              //         }}
+              //       >
+              //         PRIORITY
+              //       </p>
+              //     </div>
+
+              //     {/* {pageName === "POSTS" && <div className="horizontal" />} */}
+              //     <div
+              //       className="priorityClass"
+              //       style={{
+              //         backgroundColor: state.custom_only && "#94d7e0",
+
+              //         width: "100%",
+              //       }}
+              //       onClick={() => handleSearchByCustom(!state.custom_only)}
+              //     >
+              //       <p
+              //         style={{
+              //           margin: "0 auto",
+              //           color: state.custom_only && "#062c3d",
+              //         }}
+              //       >
+              //         CUSTOM
+              //       </p>
+              //     </div>
+              //     <div
+              //       className="firstClass"
+              //       style={{
+              //         backgroundColor: state.first_position && "#94d7e0",
+
+              //         width: "100%",
+              //       }}
+              //       onClick={() => handleSearchByFirst(!state.first_position)}
+              //     >
+              //       <p
+              //         style={{
+              //           margin: "0 auto",
+              //           color: state.first_position && "#062c3d",
+              //         }}
+              //       >
+              //         FIRST
+              //       </p>
+              //     </div>
+              //   </div>
+              // </div>
             )}
             {/* {pageName !== "USERS" && pageName !== "TOTALS" && (
               <div className="horizontal" />

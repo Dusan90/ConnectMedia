@@ -19,11 +19,12 @@ const getPostsList = async ({
   state,
   first_position,
   priority,
+  custom_only,
 }) => {
   return await axiosInstance.get(
     `${url(
       GET_POST
-    )}?page=${page}&limit=${limit}&search=${search}&filter_priority=${priority}&filter_first_position=${first_position}&sort_key=${sortName}&sort_dir=${sortDir}&filter_state=${state}&filter_site=${site}&filter_category=${category}&filter_status=${status}&filter_owner=${user}`
+    )}?page=${page}&limit=${limit}&search=${search}&custom_only=${custom_only}&filter_priority=${priority}&filter_first_position=${first_position}&sort_key=${sortName}&sort_dir=${sortDir}&filter_state=${state}&filter_site=${site}&filter_category=${category}&filter_status=${status}&filter_owner=${user}`
   );
 };
 

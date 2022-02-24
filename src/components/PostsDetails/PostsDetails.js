@@ -848,7 +848,7 @@ export class PostsDetails extends Component {
                 </div> */}
                 {Util.isRoot() && (
                   <div className="description_div">
-                    <h4>Priority lifetime (hours)</h4>
+                    <h4>Pri. lifetime (h)</h4>
                     {!isIteditable && (
                       <p>{postDetailsData?.priority_lifetime}</p>
                     )}
