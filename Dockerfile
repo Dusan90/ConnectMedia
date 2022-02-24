@@ -3,7 +3,7 @@ FROM node:16.13 as builder
 WORKDIR /src
 COPY . .
 
-RUN npm ci --silent && npm run --silent build && date > /app/build.txt && echo ${IMAGE_TAG} > /app/image.txt
+RUN npm ci --silent && npm run --silent build && date > /src/build/build.txt && echo ${IMAGE_TAG} > /src/build/image.txt
 
 
 # base image, can be upgraded in future
