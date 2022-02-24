@@ -16,6 +16,7 @@ import {
 } from "../../store/actions/UsersActions";
 import { NotificationManager } from "react-notifications";
 import "../Home/Home.scss";
+import Util from "../../containers/util";
 
 export class Users extends Component {
   constructor(props) {
@@ -326,7 +327,7 @@ export class Users extends Component {
 
   handleAddSomeMore = () => {
     const { getSelfUser } = this.props;
-    if (getSelfUser?.data?.data?.roles?.includes(0)) {
+    if (getSelfUser?.data?.data?.roles?.includes(0) || Util?.isRoot()) {
       this.setState({ addButtonClicked: !this.state.addButtonClicked });
     } else {
       NotificationManager.error(
