@@ -198,24 +198,36 @@
           }
         }
         .box-3 {
-          min-width: 168px;
+          min-width: 120px;
           position: relative;
-          .mainPrio {
-            border-radius: 5px;
-            &:hover {
-              cursor: pointer;
-            }
-            @media only screen and (max-width: 1150px) {
-              .priorityClass {
-                border-top-left-radius: 5px;
-                border-bottom-left-radius: 5px;
-              }
-              .firstClass {
-                border-top-right-radius: 5px;
-                border-bottom-right-radius: 5px;
-              }
-            }
-          }
+          // .mainPrio {
+          //   border-radius: 5px;
+          //   display: flex;
+          //   flex-direction: column;
+          //   justify-content: space-evenly;
+          //   .priorityClass {
+          //     height: 17px;
+          //     text-align: center;
+          //     p {
+          //       height: 17px;
+          //       padding: 0;
+          //       font-size: 18px;
+          //       color: #000000 !important;
+          //     }
+          //   }
+          //   .firstClass {
+          //     height: 17px;
+          //     p {
+          //       height: 17px;
+          //       padding: 0;
+          //       font-size: 18px;
+          //       color: #000000 !important;
+          //     }
+          //   }
+          //   &:hover {
+          //     cursor: pointer;
+          //   }
+          // }
           .options {
             position: absolute;
             width: 250px;
@@ -297,7 +309,7 @@
       div {
         border: 1px solid #94d7e0;
         height: 31px;
-        min-width: 125px;
+        min-width: 110px;
         border-radius: 3px;
         display: flex;
         align-content: center;

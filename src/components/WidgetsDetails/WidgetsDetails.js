@@ -587,6 +587,7 @@ export class WidgetsDetails extends Component {
             category: "",
             site: "",
             state: "",
+            custom_only: "",
           })
         );
       });
