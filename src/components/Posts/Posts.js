@@ -57,6 +57,7 @@ export class Posts extends Component {
       sortDir: "",
       first_position: false,
       priority: false,
+      custom_only: false,
     };
     this.inputEl = React.createRef(null);
   }
@@ -80,6 +81,9 @@ export class Posts extends Component {
     const dataa = JSON.parse(sessionStorage.getItem("filterPosts"));
     if (dataa) {
       this.setState({
+        custom_only: dataa.filters?.custom_only
+          ? dataa.filters?.custom_only
+          : null,
         inputValue: dataa.search ? dataa.search : "",
         countPerPage: parseInt(dataa.limit),
         page: parseInt(dataa.page) + 1,
@@ -99,6 +103,9 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
+            custom_only: dataa.filters?.custom_only
+              ? dataa.filters?.custom_only
+              : "",
             search: dataa.search ? dataa.search : "",
             limit: dataa.limit,
             page: parseInt(dataa.page) + 1,
@@ -129,6 +136,7 @@ export class Posts extends Component {
           sortName: this.state.sortName,
           sortDir: this.state.sortDir,
           priority: this.state.priority,
+          custom_only: this.state.custom_only,
           first_position: this.state.first_position,
           status: this.state.selectedStatusSearch
             ? this.state.selectedStatusSearch?.id
@@ -307,6 +315,7 @@ export class Posts extends Component {
       NotificationManager.success("Post successfully updated", "Success", 2000);
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -349,6 +358,7 @@ export class Posts extends Component {
       this.setState({ confirmMessage: false });
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -414,6 +424,7 @@ export class Posts extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -452,6 +463,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
+            custom_only: this.state.custom_only,
             search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
@@ -481,11 +493,14 @@ export class Posts extends Component {
       this.setState({ priority: value });
     } else if (el === "first") {
       this.setState({ first_position: value });
+    } else if (el === "custom") {
+      this.setState({ custom_only: value });
     }
 
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -519,6 +534,7 @@ export class Posts extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -551,6 +567,7 @@ export class Posts extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -594,6 +611,7 @@ export class Posts extends Component {
     setTimeout(() => {
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: value,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -715,6 +733,7 @@ export class Posts extends Component {
       this.setState({ sortName: sortByClicked, sortDir: value });
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -761,6 +780,7 @@ export class Posts extends Component {
 
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -820,6 +840,7 @@ export class Posts extends Component {
 
       this.props.dispatch(
         GetPostsListActionRequest({
+          custom_only: this.state.custom_only,
           search: this.state.inputValue,
           limit: this.state.countPerPage,
           page: this.state.page,
@@ -858,6 +879,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
+            custom_only: this.state.custom_only,
             search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
@@ -884,6 +906,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
+            custom_only: this.state.custom_only,
             search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
@@ -910,6 +933,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
+            custom_only: this.state.custom_only,
             search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
@@ -938,6 +962,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
+            custom_only: this.state.custom_only,
             search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
@@ -964,6 +989,7 @@ export class Posts extends Component {
       setTimeout(() => {
         this.props.dispatch(
           GetPostsListActionRequest({
+            custom_only: this.state.custom_only,
             search: this.state.inputValue,
             limit: this.state.countPerPage,
             page: this.state.page,
