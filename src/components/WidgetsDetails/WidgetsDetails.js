@@ -1482,6 +1482,7 @@ export class WidgetsDetails extends Component {
                         <Select
                           placeholder={"Enter widget..."}
                           value={
+                            this.state.inherit_posts_from &&
                             Object.keys(this.state.inherit_posts_from)
                               .length !== 0
                               ? {
