@@ -67,6 +67,10 @@
             align-items: center;
             color: #00a3ff;
           }
+          input {
+            text-indent: 10px;
+            text-decoration: none !important;
+          }
           input,
           .basic-single {
             background: #d6dbdc;
@@ -74,7 +78,6 @@
             border: none;
             outline: none;
             width: 100%;
-            text-indent: 10px;
             margin-right: 20px;
             font-size: 14px;
             line-height: 37px;

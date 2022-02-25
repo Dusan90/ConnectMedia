@@ -116,6 +116,7 @@ const updateSiteDetails = async ({
   random_ratio,
   post_lifetime,
   ctr_ratio,
+  owner,
 }) => {
   const objective = {
     name,
@@ -143,6 +144,7 @@ const updateSiteDetails = async ({
     random_ratio,
     post_lifetime,
     ctr_ratio,
+    owner,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
