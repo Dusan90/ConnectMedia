@@ -270,7 +270,10 @@ export class Totals extends Component {
             }}
           >
             <h4>Select date range</h4>
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div
+              className="datePickerDiv"
+              style={{ display: "flex", gap: "10px" }}
+            >
               <DatePicker
                 dateFormat="dd/MM/yyyy"
                 selected={this.state.startDate}
@@ -321,8 +324,8 @@ export class Totals extends Component {
           </div>
         </div>
         {!this.state.loading && (
-          <div style={{ padding: "0 35px" }}>
-            <table style={{ marginTop: "20px" }}>
+          <div style={{ padding: "0 35px", overflowX: "auto" }}>
+            <table style={{ marginTop: "20px", minWidth: "500px" }}>
               <thead>
                 <tr style={{ height: "40px" }}>
                   <th style={{ width: "100px" }}>Date</th>

@@ -672,7 +672,10 @@ export class WidgetsDetails extends Component {
             >{`Chart for widget ${WidgetDetailsData?.name}`}</h2>
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
               <h4>Select date range</h4>
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div
+                style={{ display: "flex", gap: "10px" }}
+                className="datePickerDiv"
+              >
                 <DatePicker
                   dateFormat="dd/MM/yyyy"
                   selected={this.state.startDate}
