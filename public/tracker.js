@@ -4,9 +4,26 @@ var ayuBase = 'https://connectmedia.rs'
 var ayuStats = []
 var cooldowns = {}
 var ayuRetry = 0
+var ayuLoaded = false
 
 console.debug('Ayu tracker imported!')
-loadAyu()
+
+ayuDocReady(initAyu)
+
+function initAyu() {
+    distanceCheck()
+    if (!ayuLoaded) {
+        window.addEventListener('scroll', distanceCheck)
+    }
+}
+
+function ayuDocReady(fn) {
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        setTimeout(fn, 1);
+    } else {
+        document.addEventListener("DOMContentLoaded", fn);
+    }
+} 
 
 function loadAyu() {
     var targets = document.querySelectorAll('div[data-ayu-widget]')
@@ -42,6 +59,21 @@ function loadAyu() {
             }
         }
     })
+}
+
+function distanceCheck() {
+    if (!ayuLoaded) {
+        let elements = document.querySelectorAll('div[data-ayu-widget]')
+        elements.forEach((elm) => {
+            let distance = elm.getBoundingClientRect().top
+            if (distance <= (window.innerHeight * 2)) {
+                ayuLoaded = true
+            }
+        })
+        if (ayuLoaded) {
+            loadAyu()
+        }
+    }
 }
 
 function ayuEvalBodyScripts() {
