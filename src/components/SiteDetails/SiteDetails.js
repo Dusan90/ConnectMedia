@@ -25,13 +25,7 @@ import { NotificationManager } from "react-notifications";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Util from "../../containers/util";
-
-const test2 = [
-  { mesto: "Beograd", title: "vesti" },
-  { mesto: "dobra vest", title: "vesti" },
-  { mesto: "dobra vest", title: "vesti" },
-  { mesto: "kultura", title: "zanimljivosti" },
-];
+import { GetUsersListActionRequest } from "../../store/actions/UsersActions";
 
 const options = [0, 1, 2, 3];
 
@@ -87,11 +81,13 @@ export class SiteDetails extends Component {
       ratio: null,
       numberOfRatio: [],
       optionsForRatioSelect: [],
+      optionsForUsers: [],
       random_ratio: null,
       post_lifetime: null,
       ctr_ratio: null,
       startDate: new Date().setDate(new Date().getDate() - 7),
       endDate: new Date(),
+      owner: null,
     };
   }
 
@@ -150,6 +146,15 @@ export class SiteDetails extends Component {
         state: "",
       })
     );
+    this.props.dispatch(
+      GetUsersListActionRequest({
+        search: "",
+        limit: "",
+        page: "",
+        sortName: "",
+        sortDir: "",
+      })
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -162,7 +167,13 @@ export class SiteDetails extends Component {
       bindCategory,
       specSiteChart,
       getSitesList,
+      getUsersList,
     } = this.props;
+    const {
+      loading: getUsersListLoading,
+      error: getUsersListError,
+      data: getUsersListData,
+    } = getUsersList;
     const {
       data: getSitesListData,
       loading: getSitesListLoading,
@@ -205,6 +216,18 @@ export class SiteDetails extends Component {
       loading: bindCategoryLoading,
       error: bindCategoryError,
     } = bindCategory;
+
+    if (
+      prevProps.getUsersList !== getUsersList &&
+      !getUsersListLoading &&
+      !getUsersListError &&
+      getUsersListData
+    ) {
+      const userOption = getUsersListData.data.map((el) => {
+        return { value: el.id, label: el.email };
+      });
+      this.setState({ optionsForUsers: userOption });
+    }
 
     if (
       prevProps.getSitesList !== getSitesList &&
@@ -273,6 +296,10 @@ export class SiteDetails extends Component {
       !getSiteDetailsLoading &&
       getSiteDetailsData
     ) {
+      const owneris = getSiteDetailsData.data?.owner && {
+        value: getSiteDetailsData.data?.owner?.id,
+        label: getSiteDetailsData.data?.owner?.email,
+      };
       this.setState({
         dataState: getSiteDetails.data.state,
         siteDetailsData: getSiteDetailsData.data,
@@ -293,6 +320,7 @@ export class SiteDetails extends Component {
         random_ratio: getSiteDetailsData.data?.random_ratio,
         post_lifetime: getSiteDetailsData.data?.post_lifetime,
         ctr_ratio: getSiteDetailsData.data?.ctr_ratio,
+        owner: owneris,
       });
       if (getSiteDetailsData?.data?.translations?.feed.length !== 0) {
         this.setState({
@@ -427,6 +455,7 @@ export class SiteDetails extends Component {
         random_ratio,
         post_lifetime,
         ctr_ratio,
+        owner,
       } = this.state;
       const categorieFormating = categories.map((el) => {
         return {
@@ -469,6 +498,7 @@ export class SiteDetails extends Component {
           random_ratio,
           post_lifetime,
           ctr_ratio,
+          owner,
         })
       );
     } else if (page === "cancel") {
@@ -633,7 +663,7 @@ export class SiteDetails extends Component {
       }
     });
 
-    console.log(categorialOption);
+    console.log(this.state);
 
     return (
       <div className="mainSiteDetailsDiv">
@@ -663,7 +693,10 @@ export class SiteDetails extends Component {
 
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
               <h4>Select date range</h4>
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div
+                style={{ display: "flex", gap: "10px" }}
+                className="datePickerDiv"
+              >
                 <DatePicker
                   dateFormat="dd/MM/yyyy"
                   selected={this.state.startDate}
@@ -970,24 +1003,37 @@ export class SiteDetails extends Component {
                 </div>
                 <div className="owner_div">
                   <h4>Owner</h4>
-                  {
+                  {!isIteditable && (
                     <Link to={`/users/${siteDetailsData?.owner?.id}`}>
                       {siteDetailsData?.owner?.email}
                     </Link>
-                  }
-                  {/* {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Owner' placeholder='nina.aralica@alo.rs' />} */}
-                  {/* {isIteditable && <Select
-                                    className="basic-single"
-                                    classNamePrefix="select"
-                                    // defaultValue={colourOptions[0]}
-                                    // isLoading={true}
-                                    placeholder={this.state.owner.email}
-                                    styles={customSelectStyles}
-                                    isClearable={true}
-                                    isSearchable={true}
-                                    name="merge"
-                                    options={optionss}
-                                />} */}
+                  )}
+                  {/* {isIteditable && <input type="text" onChange={(e) => this.handleChange(e)} name='Owner' placeholder='nina.aralica@alo.rs' />}  */}
+                  {isIteditable && (
+                    <Select
+                      className="basic-single"
+                      classNamePrefix="select"
+                      value={
+                        this.state.owner &&
+                        Object.keys(this.state.owner).length !== 0
+                          ? {
+                              label: `${this.state.owner.label}`,
+                            }
+                          : ""
+                      }
+                      // defaultValue={colourOptions[0]}
+                      // isLoading={true}
+                      onChange={(e) => {
+                        this.setState({ owner: e });
+                      }}
+                      placeholder={"Select owner..."}
+                      styles={customSelectStyles}
+                      isClearable={false}
+                      isSearchable={true}
+                      name="merge"
+                      options={this.state.optionsForUsers}
+                    />
+                  )}
                 </div>
                 {/* <div className="description_div">
                   <h4>Description</h4>
@@ -1896,7 +1942,8 @@ export class SiteDetails extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { SitesListReducer, CategoryReducer, ChartRreducer } = state;
+  const { SitesListReducer, CategoryReducer, ChartRreducer, UsersReducer } =
+    state;
   const {
     getSitesList,
     getSiteDetails,
@@ -1906,6 +1953,7 @@ const mapStateToProps = (state) => {
   } = SitesListReducer;
   const { getCategoryList, bindCategory, unbindCategory } = CategoryReducer;
   const { specSiteChart } = ChartRreducer;
+  const { getUsersList } = UsersReducer;
 
   return {
     getSiteDetails,
@@ -1917,6 +1965,7 @@ const mapStateToProps = (state) => {
     bindCategory,
     specSiteChart,
     getSitesList,
+    getUsersList,
   };
 };
 

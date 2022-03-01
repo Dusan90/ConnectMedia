@@ -154,6 +154,21 @@ export class WidgetsDetails extends Component {
         state: "",
       })
     );
+    this.props.dispatch(
+      GetPostsListActionRequest({
+        search: "",
+        limit: "",
+        page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
+        custom_only: "true",
+      })
+    );
 
     if (!this.props?.location?.data?.createNew) {
       this.props.dispatch(
@@ -570,29 +585,13 @@ export class WidgetsDetails extends Component {
     this.setState({ categories: saveData });
   };
 
-  handleSearchOnSelect = (e) => {
-    const value = e.toLowerCase();
-    this.setState({ inputValueForCustomPosts: value });
-    if (value.length >= 3) {
-      setTimeout(() => {
-        this.props.dispatch(
-          GetPostsListActionRequest({
-            search: value,
-            limit: "",
-            page: "",
-            sortName: "",
-            sortDir: "",
-            status: "",
-            user: "",
-            category: "",
-            site: "",
-            state: "",
-            custom_only: "",
-          })
-        );
-      });
-    }
-  };
+  // handleSearchOnSelect = (e) => {
+  //   const value = e.toLowerCase();
+  //   this.setState({ inputValueForCustomPosts: value });
+  //   if (value.length >= 3) {
+
+  //   }
+  // };
 
   render() {
     const {
@@ -673,7 +672,10 @@ export class WidgetsDetails extends Component {
             >{`Chart for widget ${WidgetDetailsData?.name}`}</h2>
             <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
               <h4>Select date range</h4>
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div
+                style={{ display: "flex", gap: "10px" }}
+                className="datePickerDiv"
+              >
                 <DatePicker
                   dateFormat="dd/MM/yyyy"
                   selected={this.state.startDate}
@@ -1480,7 +1482,7 @@ export class WidgetsDetails extends Component {
                     {isIteditable && Util.isRoot() && (
                       <div style={{ flex: 1 }}>
                         <Select
-                          placeholder={"Enter widget..."}
+                          placeholder={"Select widget..."}
                           value={
                             this.state.inherit_posts_from &&
                             Object.keys(this.state.inherit_posts_from)
@@ -1539,7 +1541,7 @@ export class WidgetsDetails extends Component {
                       {isIteditable && (
                         <div style={{ flex: 1 }}>
                           <Select
-                            placeholder={"Enter min 3 characters..."}
+                            placeholder={"Select custom post..."}
                             value={
                               el.name
                                 ? {
@@ -1563,13 +1565,14 @@ export class WidgetsDetails extends Component {
                             isSearchable={true}
                             name={`feed${el.id}`}
                             options={
-                              this.state.inputValueForCustomPosts.length >= 3
-                                ? optionsCustomPosts
-                                : []
+                              // this.state.inputValueForCustomPosts.length >= 3
+                              // ?
+                              optionsCustomPosts
+                              // : []
                             }
-                            onInputChange={(e) => {
-                              this.handleSearchOnSelect(e);
-                            }}
+                            // onInputChange={(e) => {
+                            //   this.handleSearchOnSelect(e);
+                            // }}
                             onChange={(e) => {
                               const newlist = [
                                 ...this.state.numberOfCustomPosts,
