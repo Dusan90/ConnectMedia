@@ -83,7 +83,7 @@ export class Posts extends Component {
       this.setState({
         custom_only: dataa.filters?.custom_only
           ? dataa.filters?.custom_only
-          : null,
+          : false,
         inputValue: dataa.search ? dataa.search : "",
         countPerPage: parseInt(dataa.limit),
         page: parseInt(dataa.page) + 1,
@@ -95,10 +95,10 @@ export class Posts extends Component {
         selectedSiteSearch: dataa.filters?.site
           ? { id: parseInt(dataa.filters?.site) }
           : null,
-        priority: dataa.filters?.priority ? dataa.filters?.priority : null,
+        priority: dataa.filters?.priority ? dataa.filters?.priority : false,
         first_position: dataa.filters?.first_position
           ? dataa.filters?.first_position
-          : null,
+          : false,
       });
       setTimeout(() => {
         this.props.dispatch(
