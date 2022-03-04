@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import MainIcon from "../../assets/img/Header/Frame.svg";
+import MainIcon from "../../assets/img/Header/widget4media_Negativ-1.png";
 import User from "../../assets/img/Header/Group5378.svg";
 import Bell from "../../assets/img/Header/Icons.svg";
 import ArrowDown from "../../assets/img/Header/Vector.svg";

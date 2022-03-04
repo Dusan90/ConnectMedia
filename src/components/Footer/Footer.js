@@ -4,7 +4,7 @@ import "./Footer.scss";
 function Footer() {
   return (
     <div className="mainFooterDiv">
-      <p>Copyright Connect Media (c) </p>
+      <p>Copyright Widget 4 Media (c) </p>
     </div>
   );
 }

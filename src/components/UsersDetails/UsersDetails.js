@@ -407,9 +407,7 @@ export class UsersDetails extends Component {
               </div>
               <div className="head_div">
                 <h4>Root</h4>
-                {!isIteditable && (
-                  <p style={{ marginLeft: "20px" }}>{`${usersData?.root}`}</p>
-                )}
+                {!isIteditable && <p>{`${usersData?.root}`}</p>}
                 {isIteditable && (
                   <div
                     style={{

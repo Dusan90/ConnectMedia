@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Login.scss";
-import mainImage from "../../assets/img/Header/mainPic.svg";
+import mainImage from "../../assets/img/Header/widget4media_Negativ-1.png";
 import LogOutButton from "../../containers/Buttons/LogOutButton";
 import { connect } from "react-redux";
 import { LoginActionRequest } from "../../store/actions/LoginAction";
