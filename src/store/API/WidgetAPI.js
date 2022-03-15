@@ -41,6 +41,7 @@ const createWidget = async (payload) => {
     append: payload.append,
     same_window: payload.same_window,
     ignore_impressions: payload.ignore_impressions,
+    watermark: payload.watermark,
     count: payload.count,
     width: payload.width,
     height: payload.height,
@@ -86,6 +87,7 @@ const updateWidgetDetails = async (payload) => {
     blacklisted_sites: payload.blacklisted_sites,
     forced_posts: payload.forced_posts,
     inherit_posts_from: payload.inherit_posts_from,
+    watermark: payload.watermark,
   };
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)

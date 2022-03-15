@@ -91,6 +91,7 @@ export class WidgetsDetails extends Component {
       inputValueForCustomPosts: "",
       Postdata: [],
       widgetOption: [],
+      watermark: null,
     };
   }
 
@@ -101,7 +102,7 @@ export class WidgetsDetails extends Component {
       this.setState({ isIteditable: false });
     } else if (page === "viewDiv") {
       window.open(
-        `https://connectmedia.rs/api/v1/widget/${this.props.match.params.id}/test`
+        `https://www.w4m.rs/api/v1/widget/${this.props.match.params.id}/test`
       );
     } else if (page === "embedDiv") {
       this.setState({ isIteditable: false });
@@ -358,6 +359,7 @@ export class WidgetsDetails extends Component {
         numberOfBlockSites: getWidgetDetailsData.data?.blacklisted_sites,
         numberOfCustomPosts: existCustomPosts,
         inherit_posts_from: inheritedFrom,
+        watermark: getWidgetDetailsData.data?.watermark,
       });
       if (getWidgetDetailsData?.data?.blacklisted_tags?.length !== 0) {
         const tagToshow = getWidgetDetailsData?.data?.blacklisted_tags.map(
@@ -464,6 +466,7 @@ export class WidgetsDetails extends Component {
         numberOfBlockSites,
         numberOfCustomPosts,
         inherit_posts_from,
+        watermark,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
@@ -482,6 +485,7 @@ export class WidgetsDetails extends Component {
             append,
             same_window,
             ignore_impressions,
+            watermark,
             count,
             width,
             height,
@@ -522,6 +526,7 @@ export class WidgetsDetails extends Component {
             append,
             same_window,
             ignore_impressions,
+            watermark,
             count,
             width,
             height,
@@ -607,6 +612,7 @@ export class WidgetsDetails extends Component {
       direct,
       same_window,
       ignore_impressions,
+      watermark,
       siteOptions,
       numberOfBlockSites,
       numberOfCustomPosts,
@@ -1141,6 +1147,44 @@ export class WidgetsDetails extends Component {
                       </div>
                     )}
                   </div>
+                  {/* <div className="head_div">
+                    <h4>Watermark</h4>
+                    {!isIteditable && (
+                      <p
+                        style={{ marginLeft: "20px" }}
+                      >{`${WidgetDetailsData?.watermark}`}</p>
+                    )}
+                    {isIteditable && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <input
+                          style={{ width: "20px" }}
+                          type="checkbox"
+                          name="check"
+                          value={
+                            watermark !== null
+                              ? watermark
+                              : WidgetDetailsData?.watermark
+                          }
+                          checked={
+                            watermark !== null
+                              ? watermark
+                              : WidgetDetailsData?.watermark
+                          }
+                          onChange={(e) =>
+                            this.setState({
+                              watermark: e.target.checked,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
+                  </div> */}
                   <h1 style={{ margin: "20px 0" }}>Template data</h1>
                   <div className="description_div">
                     <h4>Count</h4>
@@ -1375,7 +1419,6 @@ export class WidgetsDetails extends Component {
                                 color: "black",
                               }),
                             }}
-                            isClearable={true}
                             isSearchable={true}
                             name={`feed${el.id}`}
                             options={optionsS}
@@ -1715,7 +1758,7 @@ export class WidgetsDetails extends Component {
             Async Js.
             <textarea
               className={"widget-embed-scripts"}
-              value={`<script src="https://connectmedia.rs/api/v1/embed/tracker.js" async></script>`}
+              value={`<script src="https://www.w4m.rs/api/v1/embed/tracker.js" async></script>`}
               disabled={true}
             />
           </div>
