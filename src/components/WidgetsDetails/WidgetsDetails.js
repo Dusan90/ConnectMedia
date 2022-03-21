@@ -1147,12 +1147,10 @@ export class WidgetsDetails extends Component {
                       </div>
                     )}
                   </div>
-                  {/* <div className="head_div">
+                  <div className="head_div">
                     <h4>Watermark</h4>
                     {!isIteditable && (
-                      <p
-                        style={{ marginLeft: "20px" }}
-                      >{`${WidgetDetailsData?.watermark}`}</p>
+                      <p>{`${WidgetDetailsData?.watermark}`}</p>
                     )}
                     {isIteditable && (
                       <div
@@ -1184,7 +1182,7 @@ export class WidgetsDetails extends Component {
                         />
                       </div>
                     )}
-                  </div> */}
+                  </div>
                   <h1 style={{ margin: "20px 0" }}>Template data</h1>
                   <div className="description_div">
                     <h4>Count</h4>
