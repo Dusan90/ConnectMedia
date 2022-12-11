@@ -57,6 +57,7 @@ export class PostsDetails extends Component {
       siteOptions: [],
       postDetailsData: "",
       file: null,
+      imageFile: null,
       tabClicked: "",
       name: null,
       url: null,
@@ -302,6 +303,7 @@ export class PostsDetails extends Component {
   handleChangeFile = (event) => {
     this.setState({
       file: event.target.value,
+      imageFile: null,
     });
   };
 
@@ -323,11 +325,12 @@ export class PostsDetails extends Component {
         priority,
         is_custom,
         first_position,
+        imageFile,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
           CreatePostActionRequest({
-            image: file,
+            image: file ? file : imageFile ? imageFile : null,
             title: name,
             link: url,
             description,
@@ -348,7 +351,7 @@ export class PostsDetails extends Component {
         this.props.dispatch(
           UpdatePostDetailsActionRequest({
             id: this.props.match.params.id,
-            image: file,
+            image: file ? file : imageFile ? imageFile : null,
             title: name,
             link: url,
             description,
@@ -389,6 +392,14 @@ export class PostsDetails extends Component {
       this.setState({ [e.target.name]: parseInt(seconds) });
     } else {
       this.setState({ [e.target.name]: e.target.value });
+    }
+  };
+
+  handleuploadPicture = (e) => {
+    if (e.target.files[0].name.match(/.(jpg|jpeg|png|gif)$/i)) {
+      let img = e.target.files[0];
+      this.setState({ imageFile: img, file: null });
+      console.log(img, "sta se desava");
     }
   };
 
@@ -1094,14 +1105,32 @@ export class PostsDetails extends Component {
                 </div>
                 <div className="categ_div">
                   <h4>Image</h4>
-                  {!isIteditable && <p>{postDetailsData?.image}</p>}
+                  {!isIteditable && (
+                    <p>{postDetailsData?.image?.slice(0, 100)}</p>
+                  )}
                   {isIteditable && (
                     <input
                       type="text"
                       id="file"
                       onChange={this.handleChangeFile}
-                      value={this.state.file}
+                      value={
+                        this.state.file
+                          ? this.state.file
+                          : this.state.imageFile
+                          ? this.state.imageFile?.name
+                          : ""
+                      }
                     />
+                  )}
+                  {isIteditable && (
+                    <label className="custom-file-upload">
+                      <input
+                        type="file"
+                        onChange={(e) => this.handleuploadPicture(e)}
+                        onClick={(e) => (e.target.value = "")}
+                      />
+                      Upload
+                    </label>
                   )}
                 </div>
                 {this.state.file ? (
@@ -1109,6 +1138,14 @@ export class PostsDetails extends Component {
                     <img
                       style={{ width: "300px" }}
                       src={this.state.file}
+                      alt="uploaded"
+                    />
+                  </div>
+                ) : !this.state.file && this.state.imageFile ? (
+                  <div className="categ_div">
+                    <img
+                      style={{ width: "300px" }}
+                      src={URL.createObjectURL(this.state.imageFile)}
                       alt="uploaded"
                     />
                   </div>

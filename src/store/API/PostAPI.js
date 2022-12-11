@@ -52,7 +52,7 @@ const createPost = async ({
     guid,
     title,
     link,
-    image,
+    // image,
     timestamp,
     categories,
     description,
@@ -67,7 +67,32 @@ const createPost = async ({
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
   );
-  return await axiosInstance.post(`${url(GET_POST)}`, dataforSend);
+
+  const convertToBase64 = (file) => {
+    if (typeof file === "string") {
+      return image;
+    } else {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+          resolve(fileReader.result);
+        };
+        fileReader.onerror = (error) => {
+          reject(error);
+        };
+      });
+    }
+  };
+
+  const base64 = await convertToBase64(image);
+
+  console.log(base64, "helloooo");
+
+  return await axiosInstance.post(`${url(GET_POST)}`, {
+    ...dataforSend,
+    image: base64,
+  });
 };
 
 const getPostDetails = async ({ id }) => {
@@ -99,7 +124,7 @@ const updatePostDetails = async ({
     guid,
     title,
     link,
-    image,
+    // image,
     timestamp,
     categories,
     description,
@@ -114,7 +139,30 @@ const updatePostDetails = async ({
   let dataforSend = Object.fromEntries(
     Object.entries(objective).filter(([_, v]) => v != null)
   );
-  return await axiosInstance.put(`${url(GET_POST)}/${id}`, dataforSend);
+
+  const convertToBase64 = (file) => {
+    if (typeof file === "string") {
+      return image;
+    } else {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+          resolve(fileReader.result);
+        };
+        fileReader.onerror = (error) => {
+          reject(error);
+        };
+      });
+    }
+  };
+
+  const base64 = await convertToBase64(image);
+
+  return await axiosInstance.put(`${url(GET_POST)}/${id}`, {
+    ...dataforSend,
+    image: base64,
+  });
 };
 
 const deletePost = async ({ id }) => {
