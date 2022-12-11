@@ -399,7 +399,12 @@ export class PostsDetails extends Component {
     if (e.target.files[0].name.match(/.(jpg|jpeg|png|gif)$/i)) {
       let img = e.target.files[0];
       this.setState({ imageFile: img, file: null });
-      console.log(img, "sta se desava");
+    } else {
+      NotificationManager.error(
+        "Image must be in jpg,jpeg,png, or gif format",
+        "Failed",
+        2000
+      );
     }
   };
 
