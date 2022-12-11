@@ -471,6 +471,24 @@
               }
             }
           }
+          input[type="file"] {
+            display: none;
+          }
+          .custom-file-upload {
+            background: #418d9e;
+            border-radius: 3px;
+            height: 42px;
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            p {
+              margin: 0 auto;
+            }
+            &:hover {
+              cursor: pointer;
+            }
+          }
         }
         .copySite_div {
           h4 {
