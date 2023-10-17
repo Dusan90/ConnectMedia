@@ -102,7 +102,7 @@ export class WidgetsDetails extends Component {
       this.setState({ isIteditable: false });
     } else if (page === "viewDiv") {
       window.open(
-        `https://www.w4m.rs/api/v1/widget/${this.props.match.params.id}/test`
+        `https://www.widget4media.com/api/v1/widget/${this.props.match.params.id}/test`
       );
     } else if (page === "embedDiv") {
       this.setState({ isIteditable: false });
@@ -1758,7 +1758,7 @@ export class WidgetsDetails extends Component {
             Async Js.
             <textarea
               className={"widget-embed-scripts"}
-              value={`<script src="https://www.w4m.rs/api/v1/embed/tracker.js" async></script>`}
+              value={`<script src="https://www.widget4media.com/tracker.js" async></script>`}
               disabled={true}
             />
           </div>
