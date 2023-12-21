@@ -38,6 +38,15 @@ export function* GetPostDetailsSaga({ payload }) {
   }
 }
 
+export function* GetPostDetailsStatsPromoSaga({ payload }) {
+  try {
+    const response = yield call(API.getPostDetailsStatsPromo, payload);
+    yield put(ACTIONS.GetPostDetailsStatsPromoActionReceive(response.data));
+  } catch (err) {
+    yield put(ACTIONS.GetPostDetailsStatsPromoActionError(err.response));
+  }
+}
+
 export function* CreatePostSaga({ payload }) {
   try {
     const response = yield call(API.createPost, payload);
@@ -69,6 +78,11 @@ export function* postsListSaga() {
   yield takeLatest(TYPES.GET_POSTS_LIST_REQUEST, GetPostsListSaga);
   yield takeLatest(TYPES.CREATE_POST_REQUEST, CreatePostSaga);
   yield takeLatest(TYPES.GET_POST_DETAILS_REQUEST, GetPostDetailsSaga);
+  yield takeLatest(
+    TYPES.GET_POST_DETAILS_STATS_PROMO_REQUEST,
+    GetPostDetailsStatsPromoSaga
+  );
+
   yield takeLatest(TYPES.UPDATE_POST_DETAILS_REQUEST, UpdatePostDetailsSaga);
   yield takeLatest(TYPES.DELETE_POST_REQUEST, DeletePostSaga);
 }

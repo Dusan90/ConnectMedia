@@ -98,6 +98,9 @@ const createPost = async ({
 const getPostDetails = async ({ id }) => {
   return await axiosInstance.get(`${url(GET_POST)}/${id}`);
 };
+const getPostDetailsStatsPromo = async ({ id }) => {
+  return await axiosInstance.get(`${url(GET_POST)}/${id}/stats/promo`);
+};
 
 const updatePostDetails = async ({
   id,
@@ -172,6 +175,7 @@ const deletePost = async ({ id }) => {
 export default {
   getPostsList,
   getPostDetails,
+  getPostDetailsStatsPromo,
   createPost,
   updatePostDetails,
   deletePost,

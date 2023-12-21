@@ -18,6 +18,7 @@ function NavWidget({
   handleTrashClick,
   isButtonNamepased,
   wordToPass,
+  isCustom,
 }) {
   const [whichIsActive, setWhichIsActive] = useState(
     isButtonNamepased ? isButtonNamepased : "siteDetails"
@@ -85,6 +86,18 @@ function NavWidget({
               alt="stats"
             />
             <p>stats</p>
+          </div>
+        )}
+        {pageName === "posts" && isCustom && (
+          <div
+            onClick={() => handlePageChange("promoDiv")}
+            className={`promoDiv ${whichIsActive === "promoDiv" && "active"}`}
+          >
+            <img
+              src={whichIsActive === "promoDiv" ? statsBlack : stats}
+              alt="promo"
+            />
+            <p>promo</p>
           </div>
         )}
         {(pageName === "users" || pageName === "categories") && (

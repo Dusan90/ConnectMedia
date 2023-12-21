@@ -11,6 +11,7 @@ import VerticalChart from "../../containers/Chart/VerticalChart";
 import Select from "react-select";
 import {
   GetPostDetailsActionRequest,
+  GetPostDetailsStatsPromoActionRequest,
   CreatePostActionRequest,
   UpdatePostDetailsActionRequest,
   DeletePostActionRequest,
@@ -76,6 +77,7 @@ export class PostsDetails extends Component {
       startDate: new Date().setDate(new Date().getDate() - 7),
       endDate: new Date(),
       lifetime: null,
+      postDetailsDataStatsPromo: [],
     };
   }
 
@@ -129,6 +131,7 @@ export class PostsDetails extends Component {
       updatePostDetails,
       getSitesList,
       specPostChart,
+      getPostDetailsStatsPromo,
     } = this.props;
     const {
       data: getPostDetailsData,
@@ -140,6 +143,11 @@ export class PostsDetails extends Component {
       loading: getSiteDetailsLoading,
       error: getSiteDetailsError,
     } = getSiteDetails;
+    const {
+      data: getPostDetailsStatsPromoData,
+      loading: getPostDetailsStatsPromoLoading,
+      error: getPostDetailsStatsPromoError,
+    } = getPostDetailsStatsPromo;
     const {
       data: deletePostData,
       loading: deletePostLoading,
@@ -203,6 +211,18 @@ export class PostsDetails extends Component {
     }
 
     if (
+      prevProps.getPostDetailsStatsPromo !== getPostDetailsStatsPromo &&
+      !getPostDetailsStatsPromoError &&
+      !getPostDetailsStatsPromoLoading &&
+      getPostDetailsStatsPromoData
+    ) {
+      this.setState({
+        // dataState: getPostDetailsStatsPromo.data.state,
+        postDetailsDataStatsPromo: getPostDetailsStatsPromoData.data,
+      });
+    }
+
+    if (
       prevProps.getPostDetails !== getPostDetails &&
       !getPostDetailsError &&
       !getPostDetailsLoading &&
@@ -230,6 +250,13 @@ export class PostsDetails extends Component {
         file: getPostDetailsData.data?.image,
         date: getPostDetailsData.data?.timestamp,
       });
+      getPostDetailsData.data?.is_custom &&
+        getPostDetailsData.data?.is_custom === true &&
+        this.props.dispatch(
+          GetPostDetailsStatsPromoActionRequest({
+            id: this.props.match.params.id,
+          })
+        );
     }
 
     if (
@@ -449,6 +476,7 @@ export class PostsDetails extends Component {
           wordToPass={wordToPass}
           handleTrashClick={this.handleTrashClick}
           isButtonNamepased={this.props?.location?.data?.buttonClicked}
+          isCustom={postDetailsData?.is_custom}
           pageName={"posts"}
         />
         {this.state.confirmMessage && (
@@ -665,12 +693,52 @@ export class PostsDetails extends Component {
             </div> */}
           </>
         )}
-        {tabClicked !== "statsDiv" && (
+        {tabClicked === "promoDiv" && (
+          <>
+            <h2
+              style={{ marginBottom: "20px" }}
+            >{`Promo stats for post ${postDetailsData?.title}`}</h2>
+            <div>
+              <table style={{ marginTop: "20px" }}>
+                <thead>
+                  <tr style={{ height: "40px" }}>
+                    <th style={{ width: "100px" }}>Origin</th>
+                    <th style={{ width: "100px" }}>Clicks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.postDetailsDataStatsPromo.length !== 0 &&
+                    this.state.postDetailsDataStatsPromo?.map((el) => (
+                      <tr style={{ height: "40px" }}>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.origin?.name}
+                        </td>
+                        <td
+                          style={{
+                            borderTop: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {el.clicks}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+        {tabClicked !== "statsDiv" && tabClicked !== "promoDiv" && (
           <h2 style={{ marginBottom: "20px" }}>{`Details for post ${
             postDetailsData?.title ? postDetailsData?.title : ""
           }`}</h2>
         )}
-        {tabClicked !== "statsDiv" && (
+        {tabClicked !== "statsDiv" && tabClicked !== "promoDiv" && (
           <div className="mainSiteInfoDiv">
             <div className="leftSideDiv">
               <div className="generalDiv">
@@ -1202,8 +1270,13 @@ export class PostsDetails extends Component {
 const mapStateToProps = (state) => {
   const { PostsReducer, SitesListReducer, CategoryReducer, ChartRreducer } =
     state;
-  const { getPostDetails, deletePost, createPost, updatePostDetails } =
-    PostsReducer;
+  const {
+    getPostDetails,
+    deletePost,
+    createPost,
+    updatePostDetails,
+    getPostDetailsStatsPromo,
+  } = PostsReducer;
   const { getCategoryList } = CategoryReducer;
   const { getSitesList, getSiteDetails } = SitesListReducer;
   const { specPostChart } = ChartRreducer;
@@ -1211,6 +1284,7 @@ const mapStateToProps = (state) => {
     getPostDetails,
     getSitesList,
     getSiteDetails,
+    getPostDetailsStatsPromo,
     getCategoryList,
     deletePost,
     createPost,
