@@ -198,6 +198,15 @@ export class PostsDetails extends Component {
         return { value: el.id, label: el.name ? el.name : "no name" };
       });
       this.setState({ siteOptions });
+      if (this.props?.location?.data?.urlpost) {
+        console.log(this.props);
+      } else {
+        this.props.dispatch(
+          GetPostDetailsActionRequest({
+            id: this.props.match.params.id,
+          })
+        );
+      }
     }
 
     if (
