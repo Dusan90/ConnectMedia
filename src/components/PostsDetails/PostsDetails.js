@@ -78,10 +78,25 @@ export class PostsDetails extends Component {
       endDate: new Date(),
       lifetime: null,
       postDetailsDataStatsPromo: [],
+      numberOfBlockSites: [],
     };
   }
 
   componentDidMount() {
+    this.props.dispatch(
+      GetSitesListActionRequest({
+        search: "",
+        limit: "",
+        page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
+      })
+    );
     if (this.props?.location?.data?.urlpost) {
       this.setState({
         url: this.props.location.data?.urlpost,
@@ -99,20 +114,7 @@ export class PostsDetails extends Component {
         })
       );
     }
-    this.props.dispatch(
-      GetSitesListActionRequest({
-        search: "",
-        limit: "",
-        page: "",
-        sortName: "",
-        sortDir: "",
-        status: "",
-        user: "",
-        category: "",
-        site: "",
-        state: "",
-      })
-    );
+
     this.props.dispatch(
       SpecPostChartRequest({
         id: this.props.match.params.id,
@@ -233,6 +235,19 @@ export class PostsDetails extends Component {
           id: getPostDetailsData.data.site.id,
         })
       );
+      const arrayForExluded =
+        getPostDetailsData.data?.exclude_on?.length !== 0 &&
+        this.state.siteOptions?.length !== 0
+          ? getPostDetailsData.data?.exclude_on?.map((el) => {
+              return {
+                id: this.state.siteOptions.find((option) => option.value === el)
+                  ?.value,
+                name: this.state.siteOptions.find(
+                  (option) => option.value === el
+                )?.lebel,
+              };
+            })
+          : [];
       console.log(getPostDetails);
       this.setState({
         dataState: getPostDetails.data.state,
@@ -247,6 +262,10 @@ export class PostsDetails extends Component {
         priority: getPostDetailsData.data?.priority,
         is_custom: getPostDetailsData.data?.is_custom,
         first_position: getPostDetailsData.data?.first_position,
+        numberOfBlockSites:
+          getPostDetailsData.data?.exclude_on?.length === 0
+            ? getPostDetailsData.data?.exclude_on
+            : arrayForExluded,
         file: getPostDetailsData.data?.image,
         date: getPostDetailsData.data?.timestamp,
       });
@@ -353,6 +372,7 @@ export class PostsDetails extends Component {
         is_custom,
         first_position,
         imageFile,
+        numberOfBlockSites,
       } = this.state;
       if (this.props.location.data?.createNew) {
         this.props.dispatch(
@@ -372,6 +392,9 @@ export class PostsDetails extends Component {
             priority,
             is_custom,
             first_position,
+            exclude_on: numberOfBlockSites.map((el) => {
+              return el.id;
+            }),
           })
         );
       } else {
@@ -393,6 +416,9 @@ export class PostsDetails extends Component {
             priority,
             is_custom,
             first_position,
+            exclude_on: numberOfBlockSites.map((el) => {
+              return el.id;
+            }),
           })
         );
       }
@@ -464,9 +490,21 @@ export class PostsDetails extends Component {
       priority,
       is_custom,
       first_position,
+      numberOfBlockSites,
     } = this.state;
     const categorialOption = siteDetailsData?.categories?.map((el) => {
       return { value: el.category.id, label: el.category.name };
+    });
+
+    const optionsSelection = numberOfBlockSites.map((el) => {
+      return el.id;
+    });
+    const optionsS = siteOptions.map((el) => {
+      if (optionsSelection.includes(el.value)) {
+        return { ...el, isdisabled: true };
+      } else {
+        return el;
+      }
     });
 
     return (
@@ -1234,6 +1272,125 @@ export class PostsDetails extends Component {
                   ""
                 )}
               </div>
+              {Util.isRoot() && <h1>Exclude on</h1>}
+              {Util.isRoot() &&
+                this.state.numberOfBlockSites.length !== 0 &&
+                this.state.numberOfBlockSites.map((el, index) => (
+                  <div
+                    className="interval_div"
+                    style={{ gap: isIteditable && "10px" }}
+                    key={index}
+                  >
+                    {!isIteditable && <h4>{el.name}</h4>}
+                    {isIteditable && (
+                      <div style={{ flex: 1 }}>
+                        <Select
+                          value={{
+                            label: `${el.name}`,
+                          }}
+                          className="basic"
+                          classNamePrefix="select"
+                          // placeholder={siteDetailsData?.translations.feed?.map(elm => elm.feed.id === el.id ? elm.category.name : '')}
+                          styles={{
+                            control: (base, state) => ({
+                              ...base,
+                              flex: 1,
+                              fontWeight: "500",
+                              background: "#d6dbdc",
+                            }),
+                            placeholder: () => ({
+                              color: "black",
+                            }),
+                          }}
+                          isSearchable={true}
+                          name={`feed${el.id}`}
+                          options={optionsS}
+                          onChange={(e) => {
+                            const newlist = [...this.state.numberOfBlockSites];
+                            if (newlist[index]["id"] === el.id) {
+                              newlist[index]["id"] = e.value;
+                              newlist[index]["name"] = e.label;
+                              setTimeout(() => {
+                                this.setState({
+                                  numberOfBlockSites: newlist,
+                                });
+                              });
+                            }
+                          }}
+                          isClearable={false}
+                          isOptionDisabled={(option) => option.isdisabled}
+                        />
+                      </div>
+                    )}
+                    {/* {!isIteditable && <p>{el.ratio}</p>} */}
+                    {/* {isIteditable && (
+                        <input
+                          type="number"
+                          min="0"
+                          style={{ flex: 1, margin: 0 }}
+                          onChange={(e) => {
+                            if (
+                              (!isNaN(e.target.value) &&
+                                parseInt(e.target.value) >= 0) ||
+                              e.target.value === ""
+                            ) {
+                              const newlist = [
+                                ...this.state.numberOfBlockSites,
+                              ];
+                              if (newlist[index]["id"] === el.id) {
+                                newlist[index]["ratio"] = parseInt(
+                                  e.target.value
+                                );
+                                setTimeout(() => {
+                                  this.setState({
+                                    numberOfBlockSites: newlist,
+                                  });
+                                });
+                              }
+                            }
+                          }}
+                          name="ratio"
+                          value={el.ratio}
+                        />
+                      )} */}
+                    {isIteditable && (
+                      <p
+                        className="deleteRatioRow"
+                        onClick={() => {
+                          const newlist = [...this.state.numberOfBlockSites];
+                          if (newlist[index]["id"] === el.id) {
+                            const newone = newlist.filter(
+                              (elm) => elm.id !== el.id
+                            );
+                            setTimeout(() => {
+                              this.setState({ numberOfBlockSites: newone });
+                            });
+                          }
+                        }}
+                      >
+                        X
+                      </p>
+                    )}
+                  </div>
+                ))}
+              {Util.isRoot() && isIteditable && (
+                <div className="interval_div">
+                  <button
+                    onClick={() => {
+                      const newlist = [
+                        ...this.state.numberOfBlockSites,
+                        { id: "", name: "" },
+                      ];
+                      setTimeout(() => {
+                        this.setState({ numberOfBlockSites: newlist });
+                      });
+                    }}
+                    className="addingButton"
+                  >
+                    Add site
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
