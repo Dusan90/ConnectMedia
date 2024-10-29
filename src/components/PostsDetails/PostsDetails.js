@@ -198,6 +198,18 @@ export class PostsDetails extends Component {
         return { value: el.id, label: el.name ? el.name : "no name" };
       });
       this.setState({ siteOptions });
+      const arrayForExluded =
+        getPostDetailsData.data?.exclude_on && siteOptions
+          ? getPostDetailsData.data.exclude_on
+              .map((el) => {
+                const option = siteOptions.find(
+                  (option) => option.value === el
+                );
+                return option ? { id: option.value, name: option.label } : null;
+              })
+              .filter(Boolean) // filtrira null vrednosti ako ne postoji match
+          : [];
+      this.setState({ numberOfBlockSites: arrayForExluded });
       if (this.props?.location?.data?.urlpost) {
         console.log(this.props);
       } else {
@@ -245,17 +257,15 @@ export class PostsDetails extends Component {
         })
       );
       const arrayForExluded =
-        getPostDetailsData.data?.exclude_on?.length !== 0 &&
-        this.state.siteOptions?.length !== 0
-          ? getPostDetailsData.data?.exclude_on?.map((el) => {
-              return {
-                id: this.state.siteOptions.find((option) => option.value === el)
-                  ?.value,
-                name: this.state.siteOptions.find(
+        getPostDetailsData.data?.exclude_on && this.state.siteOptions
+          ? getPostDetailsData.data.exclude_on
+              .map((el) => {
+                const option = this.state.siteOptions.find(
                   (option) => option.value === el
-                )?.lebel,
-              };
-            })
+                );
+                return option ? { id: option.value, name: option.label } : null;
+              })
+              .filter(Boolean) // filtrira null vrednosti ako ne postoji match
           : [];
       console.log(getPostDetails);
       this.setState({
