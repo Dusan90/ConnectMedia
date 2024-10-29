@@ -198,18 +198,6 @@ export class PostsDetails extends Component {
         return { value: el.id, label: el.name ? el.name : "no name" };
       });
       this.setState({ siteOptions });
-      const arrayForExluded =
-        getPostDetailsData.data?.exclude_on && siteOptions
-          ? getPostDetailsData.data.exclude_on
-              .map((el) => {
-                const option = siteOptions.find(
-                  (option) => option.value === el
-                );
-                return option ? { id: option.value, name: option.label } : null;
-              })
-              .filter(Boolean) // filtrira null vrednosti ako ne postoji match
-          : [];
-      this.setState({ numberOfBlockSites: arrayForExluded });
       if (this.props?.location?.data?.urlpost) {
         console.log(this.props);
       } else {
