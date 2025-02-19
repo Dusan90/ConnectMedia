@@ -78,6 +78,20 @@ export class Posts extends Component {
   //   };
 
   componentDidMount() {
+    this.props.dispatch(
+      GetSitesListActionRequest({
+        search: "",
+        limit: "",
+        page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
+      })
+    );
     const dataa = JSON.parse(sessionStorage.getItem("filterPosts"));
     if (dataa) {
       this.setState({
