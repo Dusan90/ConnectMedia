@@ -76,6 +76,20 @@ export class Widgets extends Component {
   //   };
 
   componentDidMount() {
+    this.props.dispatch(
+      GetSitesListActionRequest({
+        search: "",
+        limit: "",
+        page: "",
+        sortName: "",
+        sortDir: "",
+        status: "",
+        user: "",
+        category: "",
+        site: "",
+        state: "",
+      })
+    );
     const dataa = JSON.parse(sessionStorage.getItem("filterWidgets"));
     if (dataa) {
       this.setState({
